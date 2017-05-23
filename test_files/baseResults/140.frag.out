@@ -1,0 +1,159 @@
+140.frag
+WARNING: 0:3: varying deprecated in version 130; may be removed in future release
+ERROR: 0:17: '#error' : GL_ES is not set  
+ERROR: 0:20: 'fragment-shader struct input' : not supported for this version or the enabled extensions 
+ERROR: 0:24: 'location' : not supported for this version or the enabled extensions 
+ERROR: 0:24: 'location qualifier on input' : not supported for this version or the enabled extensions 
+ERROR: 0:26: 'location' : not supported for this version or the enabled extensions 
+ERROR: 0:26: 'location qualifier on output' : not supported for this version or the enabled extensions 
+ERROR: 0:38: 'assign' :  l-value required "v" (can't modify shader input)
+ERROR: 0:38: 'out' : Non-L-value cannot be passed for 'out' or 'inout' parameters. 
+ERROR: 8 compilation errors.  No code generated.
+
+
+Shader version: 140
+Requested GL_ARB_explicit_attrib_location
+Requested GL_ARB_separate_shader_objects
+ERROR: node is still EOpNull!
+0:10  Function Definition: main( (void)
+0:10    Function Parameters: 
+0:12    Sequence
+0:12      Sequence
+0:12        move second child to first child (float)
+0:12          'clip' (float)
+0:12          direct index (smooth float)
+0:12            'gl_ClipDistance' (smooth in 5-element array of float)
+0:12            Constant:
+0:12              2 (const int)
+0:22  Sequence
+0:22    move second child to first child (float)
+0:22      'patch' (float)
+0:22      Constant:
+0:22        3.100000
+0:36  Function Definition: foo( (void)
+0:36    Function Parameters: 
+0:38    Sequence
+0:38      Sequence
+0:38        move second child to first child (2-component vector of float)
+0:38          'r1' (2-component vector of float)
+0:38          modf (2-component vector of float)
+0:38            vector swizzle (2-component vector of float)
+0:38              'v' (smooth in 4-component vector of float)
+0:38              Sequence
+0:38                Constant:
+0:38                  0 (const int)
+0:38                Constant:
+0:38                  1 (const int)
+0:38            vector swizzle (2-component vector of float)
+0:38              'v' (smooth in 4-component vector of float)
+0:38              Sequence
+0:38                Constant:
+0:38                  2 (const int)
+0:38                Constant:
+0:38                  3 (const int)
+0:39      Sequence
+0:39        move second child to first child (2-component vector of float)
+0:39          'r2' (2-component vector of float)
+0:39          modf (2-component vector of float)
+0:39            vector swizzle (2-component vector of float)
+0:39              'o' (out 4-component vector of float)
+0:39              Sequence
+0:39                Constant:
+0:39                  0 (const int)
+0:39                Constant:
+0:39                  1 (const int)
+0:39            vector swizzle (2-component vector of float)
+0:39              'o' (out 4-component vector of float)
+0:39              Sequence
+0:39                Constant:
+0:39                  2 (const int)
+0:39                Constant:
+0:39                  3 (const int)
+0:?   Linker Objects
+0:?     'v' (smooth in 4-component vector of float)
+0:?     'i' (smooth in 4-component vector of float)
+0:?     'o' (out 4-component vector of float)
+0:?     'gl_ClipDistance' (smooth in 5-element array of float)
+0:?     'gl_ClipDistance' (smooth in 5-element array of float)
+0:?     's' (smooth in structure{float f})
+0:?     'patch' (float)
+0:?     'vl' (layout(location=3 ) smooth in 4-component vector of float)
+0:?     'factorBad' (layout(location=3 ) out 4-component vector of float)
+0:?     'factor' (layout(location=5 ) out 4-component vector of float)
+0:?     'vl2' (layout(location=4 ) smooth in 4-component vector of float)
+
+
+Linked fragment stage:
+
+
+Shader version: 140
+Requested GL_ARB_explicit_attrib_location
+Requested GL_ARB_separate_shader_objects
+ERROR: node is still EOpNull!
+0:10  Function Definition: main( (void)
+0:10    Function Parameters: 
+0:12    Sequence
+0:12      Sequence
+0:12        move second child to first child (float)
+0:12          'clip' (float)
+0:12          direct index (smooth float)
+0:12            'gl_ClipDistance' (smooth in 5-element array of float)
+0:12            Constant:
+0:12              2 (const int)
+0:22  Sequence
+0:22    move second child to first child (float)
+0:22      'patch' (float)
+0:22      Constant:
+0:22        3.100000
+0:36  Function Definition: foo( (void)
+0:36    Function Parameters: 
+0:38    Sequence
+0:38      Sequence
+0:38        move second child to first child (2-component vector of float)
+0:38          'r1' (2-component vector of float)
+0:38          modf (2-component vector of float)
+0:38            vector swizzle (2-component vector of float)
+0:38              'v' (smooth in 4-component vector of float)
+0:38              Sequence
+0:38                Constant:
+0:38                  0 (const int)
+0:38                Constant:
+0:38                  1 (const int)
+0:38            vector swizzle (2-component vector of float)
+0:38              'v' (smooth in 4-component vector of float)
+0:38              Sequence
+0:38                Constant:
+0:38                  2 (const int)
+0:38                Constant:
+0:38                  3 (const int)
+0:39      Sequence
+0:39        move second child to first child (2-component vector of float)
+0:39          'r2' (2-component vector of float)
+0:39          modf (2-component vector of float)
+0:39            vector swizzle (2-component vector of float)
+0:39              'o' (out 4-component vector of float)
+0:39              Sequence
+0:39                Constant:
+0:39                  0 (const int)
+0:39                Constant:
+0:39                  1 (const int)
+0:39            vector swizzle (2-component vector of float)
+0:39              'o' (out 4-component vector of float)
+0:39              Sequence
+0:39                Constant:
+0:39                  2 (const int)
+0:39                Constant:
+0:39                  3 (const int)
+0:?   Linker Objects
+0:?     'v' (smooth in 4-component vector of float)
+0:?     'i' (smooth in 4-component vector of float)
+0:?     'o' (out 4-component vector of float)
+0:?     'gl_ClipDistance' (smooth in 5-element array of float)
+0:?     'gl_ClipDistance' (smooth in 5-element array of float)
+0:?     's' (smooth in structure{float f})
+0:?     'patch' (float)
+0:?     'vl' (layout(location=3 ) smooth in 4-component vector of float)
+0:?     'factorBad' (layout(location=3 ) out 4-component vector of float)
+0:?     'factor' (layout(location=5 ) out 4-component vector of float)
+0:?     'vl2' (layout(location=4 ) smooth in 4-component vector of float)
+

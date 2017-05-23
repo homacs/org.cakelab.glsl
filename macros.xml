@@ -1,0 +1,78 @@
+<project name="utils">
+	
+	<macrodef name="replaceproperty" taskname="@{taskname}">
+	    <attribute name="src" />
+	    <attribute name="dest" default="" />
+	    <attribute name="replace" default="" />
+	    <attribute name="with" default="" />
+	    <sequential>
+	        <loadresource property="@{dest}">
+	            <propertyresource name="@{src}" />
+	            <filterchain>
+	                <tokenfilter>
+	                    <filetokenizer/>
+	                    <replacestring from="@{replace}" to="@{with}"/>
+	                </tokenfilter>
+	            </filterchain>
+	        </loadresource>
+	    </sequential>
+	</macrodef>
+	
+	
+    <macrodef name="antlr.java">
+    	<!-- MANDATORY ATTRIBUTES -->
+        <attribute name="srcdir"/>
+        <attribute name="outdir"/>
+        <attribute name="package"/>
+        <attribute name="file"/>
+    	<!-- OPTIONAL  ATTRIBUTES -->
+        <attribute name="encoding" default="UTF-8"/>
+        <attribute name="listener" default="true"/>
+        <attribute name="visitor" default="false"/>
+        <sequential>
+        	<fail unless="antlr.jar" message="property antlr.jar must point to an antlr4 complete jar file"/>
+
+        	<local name="package.name"/>
+        	<property name="package.name" value="@{package}"/>
+
+        	<local name="grammar.package.dir"/>
+        	<replaceproperty dest="grammar.package.dir" src="package.name" replace="." with="/" />
+
+        	
+        	<local name="tmpdir"/>
+    		<tempfile property="tmpdir" destDir="${java.io.tmpdir}" prefix="antlr.java-@{file}-"/>
+    		<mkdir dir="${tmpdir}"/>
+
+        	<local name="param.listener"/>
+        	<condition property="param.listener" value="-listener" else="-no-listener">
+        		<istrue value="@{listener}"/>
+        	</condition>
+        	
+        	<local name="param.visitor"/>
+        	<condition property="param.visitor" value="-no-visitor" else="-visitor">
+        		<isfalse value="@{visitor}"/>
+        	</condition>
+        	
+        	<echo level="info" message="java -jar ${antlr.jar} -o ${tmpdir} -lib @{srcdir} -package @{package} -encoding @{encoding} ${param.visitor} ${param.listener} @{srcdir}/@{file}"/>
+        	
+    		<java fork="true" dir="." jar="${antlr.jar}">
+    			<arg value="-o" />      <arg value="${tmpdir}" />
+    			<arg value="-lib"/>     <arg value="@{srcdir}"/>
+    			<arg value="-package"/> <arg value="@{package}"/>
+    			<arg value="-encoding"/><arg value="@{encoding}"/>
+    			<arg value="${param.visitor}"/>
+    			<arg value="${param.listener}"/>
+    			<arg value="@{srcdir}/@{file}"/>
+    		</java>
+    		<move todir="@{outdir}/${grammar.package.dir}">
+    			<fileset dir="${tmpdir}/@{srcdir}">
+    				<include name="**/*.java" />
+    			</fileset>
+    		</move>
+    		<delete dir="${tmpdir}"/>
+        	
+        </sequential>
+    </macrodef>
+
+	
+</project>

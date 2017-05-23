@@ -1,0 +1,45 @@
+<project name="org.cakelab.glsl" default="all">
+
+	<import file="./macros.xml" as="macros"/>
+
+
+	<property name="lib.dir" value="libs" />
+	<property name="gen.dir" value="generated" />
+	<property name="grammar.dir" value="grammar" />
+	<property name="grammar.package" value="${ant.project.name}" />
+	
+	<property name="antlr.jar" value="${lib.dir}/antlr-4.7/antlr-4.7-complete.jar"/>
+
+	<path id="classpath">
+		<fileset dir="${lib.dir}" includes="**/*.jar" />
+	</path>
+
+	<target name="clean">
+		<delete includeemptydirs="true">
+			<fileset dir="${gen.dir}" includes="**/*" />
+		</delete>
+	</target>
+
+	<target name="glsl.grammar">
+		<antlr.java 
+				srcdir="${grammar.dir}" 
+				outdir="${gen.dir}"
+				package="${grammar.package}.parser"
+				visitor="true"
+				file="GLSL.g4"
+		/>
+	</target>
+
+	<target name="glslpp.grammar">
+		<antlr.java 
+				srcdir="${grammar.dir}" 
+				outdir="${gen.dir}"
+				package="${grammar.package}.pp"
+				visitor="true"
+				file="GLSLPP.g4"
+		/>
+	</target>
+
+	<target name="all" depends="clean, glsl.grammar, glslpp.grammar" />
+
+</project>
