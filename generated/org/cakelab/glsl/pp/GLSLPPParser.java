@@ -17,107 +17,110 @@ public class GLSLPPParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, INCLUDE=5, DEFINE=6, UNDEF=7, IFDEF=8, 
-		IFNDEF=9, ELIF=10, ENDIF=11, ERROR=12, PRAGMA=13, EXTENSION=14, VERSION=15, 
-		LINE=16, PPOP_DEFINED=17, PPBUILTIN_LINE=18, PPBUILTIN_FILE=19, PPBUILTIN_VERSION=20, 
-		CORE=21, COMPATIBILITY=22, ES=23, ATTRIBUTE=24, CONST=25, UNIFORM=26, 
-		VARYING=27, BUFFER=28, SHARED=29, COHERENT=30, VOLATILE=31, RESTRICT=32, 
-		READONLY=33, WRITEONLY=34, ATOMIC_UINT=35, LAYOUT=36, CENTROID=37, FLAT=38, 
-		SMOOTH=39, NOPERSPECTIVE=40, PATCH=41, SAMPLE=42, BREAK=43, CONTINUE=44, 
-		DO=45, FOR=46, WHILE=47, SWITCH=48, CASE=49, DEFAULT=50, IF=51, ELSE=52, 
-		SUBROUTINE=53, IN=54, OUT=55, INOUT=56, FLOAT=57, DOUBLE=58, INT=59, VOID=60, 
-		BOOL=61, TRUE=62, FALSE=63, INVARIANT=64, PRECISE=65, DISCARD=66, RETURN=67, 
-		MAT2=68, MAT3=69, MAT4=70, DMAT2=71, DMAT3=72, DMAT4=73, MAT2X2=74, MAT2X3=75, 
-		MAT2X4=76, DMAT2X2=77, DMAT2X3=78, DMAT2X4=79, MAT3X2=80, MAT3X3=81, MAT3X4=82, 
-		DMAT3X2=83, DMAT3X3=84, DMAT3X4=85, MAT4X2=86, MAT4X3=87, MAT4X4=88, DMAT4X2=89, 
-		DMAT4X3=90, DMAT4X4=91, VEC2=92, VEC3=93, VEC4=94, IVEC2=95, IVEC3=96, 
-		IVEC4=97, BVEC2=98, BVEC3=99, BVEC4=100, DVEC2=101, DVEC3=102, DVEC4=103, 
-		UINT=104, UVEC2=105, UVEC3=106, UVEC4=107, LOW_PRECISION=108, MEDIUM_PRECISION=109, 
-		HIGH_PRECISION=110, PRECISION=111, SAMPLER1D=112, SAMPLER2D=113, SAMPLER3D=114, 
-		SAMPLERCUBE=115, SAMPLER1DSHADOW=116, SAMPLER2DSHADOW=117, SAMPLERCUBESHADOW=118, 
-		SAMPLER1DARRAY=119, SAMPLER2DARRAY=120, SAMPLER1DARRAYSHADOW=121, SAMPLER2DARRAYSHADOW=122, 
-		ISAMPLER1D=123, ISAMPLER2D=124, ISAMPLER3D=125, ISAMPLERCUBE=126, ISAMPLER1DARRAY=127, 
-		ISAMPLER2DARRAY=128, USAMPLER1D=129, USAMPLER2D=130, USAMPLER3D=131, USAMPLERCUBE=132, 
-		USAMPLER1DARRAY=133, USAMPLER2DARRAY=134, SAMPLER2DRECT=135, SAMPLER2DRECTSHADOW=136, 
-		ISAMPLER2DRECT=137, USAMPLER2DRECT=138, SAMPLERBUFFER=139, ISAMPLERBUFFER=140, 
-		USAMPLERBUFFER=141, SAMPLER2DMS=142, ISAMPLER2DMS=143, USAMPLER2DMS=144, 
-		SAMPLER2DMSARRAY=145, ISAMPLER2DMSARRAY=146, USAMPLER2DMSARRAY=147, SAMPLERCUBEARRAY=148, 
-		SAMPLERCUBEARRAYSHADOW=149, ISAMPLERCUBEARRAY=150, USAMPLERCUBEARRAY=151, 
-		IMAGE1D=152, IIMAGE1D=153, UIMAGE1D=154, IMAGE2D=155, IIMAGE2D=156, UIMAGE2D=157, 
-		IMAGE3D=158, IIMAGE3D=159, UIMAGE3D=160, IMAGE2DRECT=161, IIMAGE2DRECT=162, 
-		UIMAGE2DRECT=163, IMAGECUBE=164, IIMAGECUBE=165, UIMAGECUBE=166, IMAGEBUFFER=167, 
-		IIMAGEBUFFER=168, UIMAGEBUFFER=169, IMAGE1DARRAY=170, IIMAGE1DARRAY=171, 
-		UIMAGE1DARRAY=172, IMAGE2DARRAY=173, IIMAGE2DARRAY=174, UIMAGE2DARRAY=175, 
-		IMAGECUBEARRAY=176, IIMAGECUBEARRAY=177, UIMAGECUBEARRAY=178, IMAGE2DMS=179, 
-		IIMAGE2DMS=180, UIMAGE2DMS=181, IMAGE2DMSARRAY=182, IIMAGE2DMSARRAY=183, 
-		UIMAGE2DMSARRAY=184, STRUCT=185, COMMON=186, PARTITION=187, ACTIVE=188, 
-		ASM=189, CLASS=190, UNION=191, ENUM=192, TYPEDEF=193, TEMPLATE=194, THIS=195, 
-		RESOURCE=196, GOTO=197, INLINE=198, NOINLINE=199, PUBLIC=200, STATIC=201, 
-		EXTERN=202, EXTERNAL=203, INTERFACE=204, LONG=205, SHORT=206, HALF=207, 
-		FIXED=208, UNSIGNED=209, SUPERP=210, INPUT=211, OUTPUT=212, HVEC2=213, 
-		HVEC3=214, HVEC4=215, FVEC2=216, FVEC3=217, FVEC4=218, SAMPLER3DRECT=219, 
-		FILTER=220, SIZEOF=221, CAST=222, NAMESPACE=223, USING=224, SAMPLEREXTERNALOES=225, 
-		MULTILINE_COMMENT=226, SINGLELINE_COMMENT=227, BOOLCONSTANT=228, IDENTIFIER=229, 
-		FLOATCONSTANT=230, DOUBLECONSTANT=231, INTCONSTANT=232, UINTCONSTANT=233, 
-		LEFT_OP=234, RIGHT_OP=235, INC_OP=236, DEC_OP=237, LE_OP=238, GE_OP=239, 
-		EQ_OP=240, NE_OP=241, AND_OP=242, OR_OP=243, XOR_OP=244, MUL_ASSIGN=245, 
-		DIV_ASSIGN=246, ADD_ASSIGN=247, MOD_ASSIGN=248, LEFT_ASSIGN=249, RIGHT_ASSIGN=250, 
-		AND_ASSIGN=251, XOR_ASSIGN=252, OR_ASSIGN=253, SUB_ASSIGN=254, LEFT_PAREN=255, 
-		RIGHT_PAREN=256, LEFT_BRACKET=257, RIGHT_BRACKET=258, LEFT_BRACE=259, 
-		RIGHT_BRACE=260, DOT=261, COMMA=262, COLON=263, EQUAL=264, SEMICOLON=265, 
-		BANG=266, DASH=267, TILDE=268, PLUS=269, STAR=270, SLASH=271, PERCENT=272, 
-		LEFT_ANGLE=273, RIGHT_ANGLE=274, VERTICAL_BAR=275, CARET=276, AMPERSAND=277, 
-		QUESTION=278, HASH=279, PPOP_CONCAT=280, DOUBLE_QUOTE=281, SINGLE_QUOTE=282, 
-		DOTS=283, IDENTIFIER_LEFT_PAREN=284, CRLF=285, HIDDEN_CRLF=286, WHITESPACE=287, 
-		LINE_CONTINUATION=288, CHARACTER_CONSTANT=289, PREFIXED_CHARACTER_CONSTANT=290, 
-		STRING_LITERAL=291, STD_HEADER_NAME=292, PREFIXED_STRING_LITERAL=293;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, ATTRIBUTE=8, CONST=9, 
+		UNIFORM=10, VARYING=11, BUFFER=12, SHARED=13, COHERENT=14, VOLATILE=15, 
+		RESTRICT=16, READONLY=17, WRITEONLY=18, ATOMIC_UINT=19, LAYOUT=20, CENTROID=21, 
+		FLAT=22, SMOOTH=23, NOPERSPECTIVE=24, PATCH=25, SAMPLE=26, BREAK=27, CONTINUE=28, 
+		DO=29, FOR=30, WHILE=31, SWITCH=32, CASE=33, DEFAULT=34, IF=35, ELSE=36, 
+		SUBROUTINE=37, IN=38, OUT=39, INOUT=40, FLOAT=41, DOUBLE=42, INT=43, VOID=44, 
+		BOOL=45, TRUE=46, FALSE=47, INVARIANT=48, PRECISE=49, DISCARD=50, RETURN=51, 
+		MAT2=52, MAT3=53, MAT4=54, DMAT2=55, DMAT3=56, DMAT4=57, MAT2X2=58, MAT2X3=59, 
+		MAT2X4=60, DMAT2X2=61, DMAT2X3=62, DMAT2X4=63, MAT3X2=64, MAT3X3=65, MAT3X4=66, 
+		DMAT3X2=67, DMAT3X3=68, DMAT3X4=69, MAT4X2=70, MAT4X3=71, MAT4X4=72, DMAT4X2=73, 
+		DMAT4X3=74, DMAT4X4=75, VEC2=76, VEC3=77, VEC4=78, IVEC2=79, IVEC3=80, 
+		IVEC4=81, BVEC2=82, BVEC3=83, BVEC4=84, DVEC2=85, DVEC3=86, DVEC4=87, 
+		UINT=88, UVEC2=89, UVEC3=90, UVEC4=91, LOW_PRECISION=92, MEDIUM_PRECISION=93, 
+		HIGH_PRECISION=94, PRECISION=95, SAMPLER1D=96, SAMPLER2D=97, SAMPLER3D=98, 
+		SAMPLERCUBE=99, SAMPLER1DSHADOW=100, SAMPLER2DSHADOW=101, SAMPLERCUBESHADOW=102, 
+		SAMPLER1DARRAY=103, SAMPLER2DARRAY=104, SAMPLER1DARRAYSHADOW=105, SAMPLER2DARRAYSHADOW=106, 
+		ISAMPLER1D=107, ISAMPLER2D=108, ISAMPLER3D=109, ISAMPLERCUBE=110, ISAMPLER1DARRAY=111, 
+		ISAMPLER2DARRAY=112, USAMPLER1D=113, USAMPLER2D=114, USAMPLER3D=115, USAMPLERCUBE=116, 
+		USAMPLER1DARRAY=117, USAMPLER2DARRAY=118, SAMPLER2DRECT=119, SAMPLER2DRECTSHADOW=120, 
+		ISAMPLER2DRECT=121, USAMPLER2DRECT=122, SAMPLERBUFFER=123, ISAMPLERBUFFER=124, 
+		USAMPLERBUFFER=125, SAMPLER2DMS=126, ISAMPLER2DMS=127, USAMPLER2DMS=128, 
+		SAMPLER2DMSARRAY=129, ISAMPLER2DMSARRAY=130, USAMPLER2DMSARRAY=131, SAMPLERCUBEARRAY=132, 
+		SAMPLERCUBEARRAYSHADOW=133, ISAMPLERCUBEARRAY=134, USAMPLERCUBEARRAY=135, 
+		IMAGE1D=136, IIMAGE1D=137, UIMAGE1D=138, IMAGE2D=139, IIMAGE2D=140, UIMAGE2D=141, 
+		IMAGE3D=142, IIMAGE3D=143, UIMAGE3D=144, IMAGE2DRECT=145, IIMAGE2DRECT=146, 
+		UIMAGE2DRECT=147, IMAGECUBE=148, IIMAGECUBE=149, UIMAGECUBE=150, IMAGEBUFFER=151, 
+		IIMAGEBUFFER=152, UIMAGEBUFFER=153, IMAGE1DARRAY=154, IIMAGE1DARRAY=155, 
+		UIMAGE1DARRAY=156, IMAGE2DARRAY=157, IIMAGE2DARRAY=158, UIMAGE2DARRAY=159, 
+		IMAGECUBEARRAY=160, IIMAGECUBEARRAY=161, UIMAGECUBEARRAY=162, IMAGE2DMS=163, 
+		IIMAGE2DMS=164, UIMAGE2DMS=165, IMAGE2DMSARRAY=166, IIMAGE2DMSARRAY=167, 
+		UIMAGE2DMSARRAY=168, SAMPLEREXTERNALOES=169, STRUCT=170, COMMON=171, PARTITION=172, 
+		ACTIVE=173, ASM=174, CLASS=175, UNION=176, ENUM=177, TYPEDEF=178, TEMPLATE=179, 
+		THIS=180, RESOURCE=181, GOTO=182, INLINE=183, NOINLINE=184, PUBLIC=185, 
+		STATIC=186, EXTERN=187, EXTERNAL=188, INTERFACE=189, LONG=190, SHORT=191, 
+		HALF=192, FIXED=193, UNSIGNED=194, SUPERP=195, INPUT=196, OUTPUT=197, 
+		HVEC2=198, HVEC3=199, HVEC4=200, FVEC2=201, FVEC3=202, FVEC4=203, SAMPLER3DRECT=204, 
+		FILTER=205, SIZEOF=206, CAST=207, NAMESPACE=208, USING=209, PPOP_DEFINED=210, 
+		WHITESPACE=211, CRLF=212, HIDDEN_CRLF=213, LINE_CONTINUATION=214, MULTILINE_COMMENT=215, 
+		SINGLELINE_COMMENT=216, BOOLCONSTANT=217, FLOATCONSTANT=218, DOUBLECONSTANT=219, 
+		INTCONSTANT=220, UINTCONSTANT=221, CHARACTER_CONSTANT=222, PREFIXED_CHARACTER_CONSTANT=223, 
+		STRING_LITERAL=224, STD_HEADER_NAME=225, PREFIXED_STRING_LITERAL=226, 
+		LEFT_OP=227, RIGHT_OP=228, INC_OP=229, DEC_OP=230, LE_OP=231, GE_OP=232, 
+		EQ_OP=233, NE_OP=234, AND_OP=235, OR_OP=236, XOR_OP=237, MUL_ASSIGN=238, 
+		DIV_ASSIGN=239, ADD_ASSIGN=240, MOD_ASSIGN=241, LEFT_ASSIGN=242, RIGHT_ASSIGN=243, 
+		AND_ASSIGN=244, XOR_ASSIGN=245, OR_ASSIGN=246, SUB_ASSIGN=247, LEFT_PAREN=248, 
+		RIGHT_PAREN=249, LEFT_BRACKET=250, RIGHT_BRACKET=251, LEFT_BRACE=252, 
+		RIGHT_BRACE=253, DOT=254, COMMA=255, COLON=256, EQUAL=257, SEMICOLON=258, 
+		BANG=259, DASH=260, TILDE=261, PLUS=262, STAR=263, SLASH=264, PERCENT=265, 
+		LEFT_ANGLE=266, RIGHT_ANGLE=267, VERTICAL_BAR=268, CARET=269, AMPERSAND=270, 
+		QUESTION=271, HASH=272, PPOP_CONCAT=273, DOTS=274, DOUBLE_QUOTE=275, SINGLE_QUOTE=276, 
+		IDENTIFIER=277, PPINCLUDE=278, PPDEFINE=279, PPUNDEF=280, PPIF=281, PPIFDEF=282, 
+		PPIFNDEF=283, PPELSE=284, PPELIF=285, PPENDIF=286, PPERROR=287, PPPRAGMA=288, 
+		PPEXTENSION=289, PPVERSION=290, PPLINE=291, PPBUILTIN_LINE=292, PPBUILTIN_FILE=293, 
+		PPBUILTIN_VERSION=294;
 	public static final int
-		RULE_glslppPreprocessingFile = 0, RULE_glslppGroup = 1, RULE_glslppGroupPart = 2, 
-		RULE_glslppIfSection = 3, RULE_glslppIfGroup = 4, RULE_glslppElifGroups = 5, 
-		RULE_glslppElifGroup = 6, RULE_glslppElseGroup = 7, RULE_glslppEndifLine = 8, 
-		RULE_glslppControlLine = 9, RULE_glslppExtensionBehaviour = 10, RULE_glslppProfile = 11, 
-		RULE_glslppIdentifierList = 12, RULE_glslppTextLine = 13, RULE_glslppNonDirective = 14, 
-		RULE_glslppReplacementList = 15, RULE_glslppTokens = 16, RULE_glslppPreprocessingToken = 17, 
-		RULE_glslppCharacterConstant = 18, RULE_glslppStringLiteral = 19, RULE_glslppHeaderName = 20, 
-		RULE_glslppIdentifier = 21, RULE_glslppNumber = 22, RULE_glslppSign = 23, 
-		RULE_glslppPunctuator = 24, RULE_glslppUnspecifiedToken = 25, RULE_glslFieldSelection = 26, 
-		RULE_glslVariableIdentifier = 27, RULE_glslTypeName = 28, RULE_glslPrimaryExpression = 29, 
-		RULE_glslIntegerConstant = 30, RULE_glslUnsignedIntegerConstant = 31, 
-		RULE_glslFloatConstant = 32, RULE_glslDoubleConstant = 33, RULE_glslPostfixExpression = 34, 
-		RULE_glslFunctionCallArguments = 35, RULE_glslConstructorCallArguments = 36, 
-		RULE_glslCallArguments = 37, RULE_glslIntegerExpression = 38, RULE_glslUnaryExpression = 39, 
-		RULE_glslUnaryOperator = 40, RULE_glslMultiplicativeExpression = 41, RULE_glslAdditiveExpression = 42, 
-		RULE_glslShiftExpression = 43, RULE_glslRelationalExpression = 44, RULE_glslEqualityExpression = 45, 
-		RULE_glslAndExpression = 46, RULE_glslExclusiveOrExpression = 47, RULE_glslInclusiveOrExpression = 48, 
-		RULE_glslLogicalAndExpression = 49, RULE_glslLogicalXorExpression = 50, 
-		RULE_glslLogicalOrExpression = 51, RULE_glslConditionalExpression = 52, 
-		RULE_glslAssignmentExpression = 53, RULE_glslAssignmentOperator = 54, 
-		RULE_glslExpression = 55, RULE_glslConstantExpression = 56, RULE_glslTypeNameList = 57, 
-		RULE_glslTypeSpecifier = 58, RULE_glslArraySpecifier = 59, RULE_glslTypeSpecifierNonarray = 60, 
-		RULE_glslStructSpecifier = 61, RULE_glslStructDeclarationList = 62, RULE_glslStructDeclaration = 63, 
-		RULE_glslStructDeclaratorList = 64, RULE_glslStructDeclarator = 65, RULE_glslInvariantQualifier = 66, 
-		RULE_glslInterpolationQualifier = 67, RULE_glslLayoutQualifier = 68, RULE_glslLayoutQualifierIdList = 69, 
-		RULE_glslLayoutQualifierId = 70, RULE_glslPreciseQualifier = 71, RULE_glslTypeQualifier = 72, 
-		RULE_glslSingleTypeQualifier = 73, RULE_glslStorageQualifier = 74, RULE_glslPrecisionQualifier = 75;
+		RULE_glslpp = 0, RULE_glslppPreprocessingFile = 1, RULE_glslppGroup = 2, 
+		RULE_glslppGroupPart = 3, RULE_glslppIfSection = 4, RULE_glslppIfGroup = 5, 
+		RULE_glslppElifGroups = 6, RULE_glslppElifGroup = 7, RULE_glslppElseGroup = 8, 
+		RULE_glslppEndifLine = 9, RULE_glslppControlLine = 10, RULE_glslppMacro = 11, 
+		RULE_glslppMacroArguments = 12, RULE_glslppExtensionBehaviour = 13, RULE_glslppProfile = 14, 
+		RULE_glslppIdentifierList = 15, RULE_glslppTextLine = 16, RULE_glslppNonDirective = 17, 
+		RULE_glslppReplacementList = 18, RULE_glslppTokens = 19, RULE_glslppPreprocessingToken = 20, 
+		RULE_glslppCharacterConstant = 21, RULE_glslppStringLiteral = 22, RULE_glslppHeaderName = 23, 
+		RULE_glslppIdentifier = 24, RULE_glslppNumber = 25, RULE_glslppSign = 26, 
+		RULE_glslppPunctuator = 27, RULE_glslppUnspecifiedToken = 28, RULE_glslFieldSelection = 29, 
+		RULE_glslVariableIdentifier = 30, RULE_glslTypeName = 31, RULE_glslPrimaryExpression = 32, 
+		RULE_glslIntegerConstant = 33, RULE_glslUnsignedIntegerConstant = 34, 
+		RULE_glslFloatConstant = 35, RULE_glslDoubleConstant = 36, RULE_glslPostfixExpression = 37, 
+		RULE_glslFunctionCallArguments = 38, RULE_glslConstructorCallArguments = 39, 
+		RULE_glslCallArguments = 40, RULE_glslIntegerExpression = 41, RULE_glslUnaryExpression = 42, 
+		RULE_glslUnaryOperator = 43, RULE_glslMultiplicativeExpression = 44, RULE_glslAdditiveExpression = 45, 
+		RULE_glslShiftExpression = 46, RULE_glslRelationalExpression = 47, RULE_glslEqualityExpression = 48, 
+		RULE_glslAndExpression = 49, RULE_glslExclusiveOrExpression = 50, RULE_glslInclusiveOrExpression = 51, 
+		RULE_glslLogicalAndExpression = 52, RULE_glslLogicalXorExpression = 53, 
+		RULE_glslLogicalOrExpression = 54, RULE_glslConditionalExpression = 55, 
+		RULE_glslAssignmentExpression = 56, RULE_glslAssignmentOperator = 57, 
+		RULE_glslExpression = 58, RULE_glslConstantExpression = 59, RULE_glslTypeNameList = 60, 
+		RULE_glslTypeSpecifier = 61, RULE_glslArraySpecifier = 62, RULE_glslTypeSpecifierNonarray = 63, 
+		RULE_glslBuiltinType = 64, RULE_glslStructSpecifier = 65, RULE_glslStructDeclarationList = 66, 
+		RULE_glslStructDeclaration = 67, RULE_glslStructDeclaratorList = 68, RULE_glslStructDeclarator = 69, 
+		RULE_glslInvariantQualifier = 70, RULE_glslInterpolationQualifier = 71, 
+		RULE_glslLayoutQualifier = 72, RULE_glslLayoutQualifierIdList = 73, RULE_glslLayoutQualifierId = 74, 
+		RULE_glslPreciseQualifier = 75, RULE_glslTypeQualifier = 76, RULE_glslSingleTypeQualifier = 77, 
+		RULE_glslStorageQualifier = 78, RULE_glslPrecisionQualifier = 79;
 	public static final String[] ruleNames = {
-		"glslppPreprocessingFile", "glslppGroup", "glslppGroupPart", "glslppIfSection", 
-		"glslppIfGroup", "glslppElifGroups", "glslppElifGroup", "glslppElseGroup", 
-		"glslppEndifLine", "glslppControlLine", "glslppExtensionBehaviour", "glslppProfile", 
-		"glslppIdentifierList", "glslppTextLine", "glslppNonDirective", "glslppReplacementList", 
-		"glslppTokens", "glslppPreprocessingToken", "glslppCharacterConstant", 
-		"glslppStringLiteral", "glslppHeaderName", "glslppIdentifier", "glslppNumber", 
-		"glslppSign", "glslppPunctuator", "glslppUnspecifiedToken", "glslFieldSelection", 
-		"glslVariableIdentifier", "glslTypeName", "glslPrimaryExpression", "glslIntegerConstant", 
-		"glslUnsignedIntegerConstant", "glslFloatConstant", "glslDoubleConstant", 
-		"glslPostfixExpression", "glslFunctionCallArguments", "glslConstructorCallArguments", 
-		"glslCallArguments", "glslIntegerExpression", "glslUnaryExpression", "glslUnaryOperator", 
-		"glslMultiplicativeExpression", "glslAdditiveExpression", "glslShiftExpression", 
-		"glslRelationalExpression", "glslEqualityExpression", "glslAndExpression", 
-		"glslExclusiveOrExpression", "glslInclusiveOrExpression", "glslLogicalAndExpression", 
-		"glslLogicalXorExpression", "glslLogicalOrExpression", "glslConditionalExpression", 
-		"glslAssignmentExpression", "glslAssignmentOperator", "glslExpression", 
-		"glslConstantExpression", "glslTypeNameList", "glslTypeSpecifier", "glslArraySpecifier", 
-		"glslTypeSpecifierNonarray", "glslStructSpecifier", "glslStructDeclarationList", 
+		"glslpp", "glslppPreprocessingFile", "glslppGroup", "glslppGroupPart", 
+		"glslppIfSection", "glslppIfGroup", "glslppElifGroups", "glslppElifGroup", 
+		"glslppElseGroup", "glslppEndifLine", "glslppControlLine", "glslppMacro", 
+		"glslppMacroArguments", "glslppExtensionBehaviour", "glslppProfile", "glslppIdentifierList", 
+		"glslppTextLine", "glslppNonDirective", "glslppReplacementList", "glslppTokens", 
+		"glslppPreprocessingToken", "glslppCharacterConstant", "glslppStringLiteral", 
+		"glslppHeaderName", "glslppIdentifier", "glslppNumber", "glslppSign", 
+		"glslppPunctuator", "glslppUnspecifiedToken", "glslFieldSelection", "glslVariableIdentifier", 
+		"glslTypeName", "glslPrimaryExpression", "glslIntegerConstant", "glslUnsignedIntegerConstant", 
+		"glslFloatConstant", "glslDoubleConstant", "glslPostfixExpression", "glslFunctionCallArguments", 
+		"glslConstructorCallArguments", "glslCallArguments", "glslIntegerExpression", 
+		"glslUnaryExpression", "glslUnaryOperator", "glslMultiplicativeExpression", 
+		"glslAdditiveExpression", "glslShiftExpression", "glslRelationalExpression", 
+		"glslEqualityExpression", "glslAndExpression", "glslExclusiveOrExpression", 
+		"glslInclusiveOrExpression", "glslLogicalAndExpression", "glslLogicalXorExpression", 
+		"glslLogicalOrExpression", "glslConditionalExpression", "glslAssignmentExpression", 
+		"glslAssignmentOperator", "glslExpression", "glslConstantExpression", 
+		"glslTypeNameList", "glslTypeSpecifier", "glslArraySpecifier", "glslTypeSpecifierNonarray", 
+		"glslBuiltinType", "glslStructSpecifier", "glslStructDeclarationList", 
 		"glslStructDeclaration", "glslStructDeclaratorList", "glslStructDeclarator", 
 		"glslInvariantQualifier", "glslInterpolationQualifier", "glslLayoutQualifier", 
 		"glslLayoutQualifierIdList", "glslLayoutQualifierId", "glslPreciseQualifier", 
@@ -126,104 +129,104 @@ public class GLSLPPParser extends Parser {
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, "'require'", "'enable'", "'warn'", "'disable'", "'include'", "'define'", 
-		"'undef'", "'ifdef'", "'ifndef'", "'elif'", "'endif'", "'error'", "'pragma'", 
-		"'extension'", "'version'", "'line'", "'defined'", "'__LINE__'", "'__FILE__'", 
-		"'__VERSION__'", "'core'", "'compatibility'", "'es'", "'attribute'", "'const'", 
-		"'uniform'", "'varying'", "'buffer'", "'shared'", "'coherent'", "'volatile'", 
-		"'restrict'", "'readonly'", "'writeonly'", "'atomic_uint'", "'layout'", 
-		"'centroid'", "'flat'", "'smooth'", "'noperspective'", "'patch'", "'sample'", 
-		"'break'", "'continue'", "'do'", "'for'", "'while'", "'switch'", "'case'", 
-		"'default'", "'if'", "'else'", "'subroutine'", "'in'", "'out'", "'inout'", 
-		"'float'", "'double'", "'int'", "'void'", "'bool'", "'true'", "'false'", 
-		"'invariant'", "'precise'", "'discard'", "'return'", "'mat2'", "'mat3'", 
-		"'mat4'", "'dmat2'", "'dmat3'", "'dmat4'", "'mat2x2'", "'mat2x3'", "'mat2x4'", 
-		"'dmat2x2'", "'dmat2x3'", "'dmat2x4'", "'mat3x2'", "'mat3x3'", "'mat3x4'", 
-		"'dmat3x2'", "'dmat3x3'", "'dmat3x4'", "'mat4x2'", "'mat4x3'", "'mat4x4'", 
-		"'dmat4x2'", "'dmat4x3'", "'dmat4x4'", "'vec2'", "'vec3'", "'vec4'", "'ivec2'", 
-		"'ivec3'", "'ivec4'", "'bvec2'", "'bvec3'", "'bvec4'", "'dvec2'", "'dvec3'", 
-		"'dvec4'", "'uint'", "'uvec2'", "'uvec3'", "'uvec4'", "'lowp'", "'mediump'", 
-		"'highp'", "'precision'", "'sampler1D'", "'sampler2D'", "'sampler3D'", 
-		"'samplerCube'", "'sampler1DShadow'", "'sampler2DShadow'", "'samplerCubeShadow'", 
-		"'sampler1DArray'", "'sampler2DArray'", "'sampler1DArrayShadow'", "'sampler2DArrayShadow'", 
-		"'isampler1D'", "'isampler2D'", "'isampler3D'", "'isamplerCube'", "'isampler1DArray'", 
-		"'isampler2DArray'", "'usampler1D'", "'usampler2D'", "'usampler3D'", "'usamplerCube'", 
-		"'usampler1DArray'", "'usampler2DArray'", "'sampler2DRect'", "'sampler2DRectShadow'", 
-		"'isampler2DRect'", "'usampler2DRect'", "'samplerBuffer'", "'isamplerBuffer'", 
-		"'usamplerBuffer'", "'sampler2DMS'", "'isampler2DMS'", "'usampler2DMS'", 
-		"'sampler2DMSArray'", "'isampler2DMSArray'", "'usampler2DMSArray'", "'samplerCubeArray'", 
-		"'samplerCubeArrayShadow'", "'isamplerCubeArray'", "'usamplerCubeArray'", 
-		"'image1D'", "'iimage1D'", "'uimage1D'", "'image2D'", "'iimage2D'", "'uimage2D'", 
-		"'image3D'", "'iimage3D'", "'uimage3D'", "'image2DRect'", "'iimage2DRect'", 
-		"'uimage2DRect'", "'imageCube'", "'iimageCube'", "'uimageCube'", "'imageBuffer'", 
-		"'iimageBuffer'", "'uimageBuffer'", "'image1DArray'", "'iimage1DArray'", 
-		"'uimage1DArray'", "'image2DArray'", "'iimage2DArray'", "'uimage2DArray'", 
-		"'imageCubeArray'", "'iimageCubeArray'", "'uimageCubeArray'", "'image2DMS'", 
-		"'iimage2DMS'", "'uimage2DMS'", "'image2DMSArray'", "'iimage2DMSArray'", 
-		"'uimage2DMSArray'", "'struct'", "'common'", "'partition'", "'active'", 
-		"'asm'", "'class'", "'union'", "'enum'", "'typedef'", "'template'", "'this'", 
-		"'resource'", "'goto'", "'inline'", "'noinline'", "'public'", "'static'", 
-		"'extern'", "'external'", "'interface'", "'long'", "'short'", "'half'", 
-		"'fixed'", "'unsigned'", "'superp'", "'input'", "'output'", "'hvec2'", 
-		"'hvec3'", "'hvec4'", "'fvec2'", "'fvec3'", "'fvec4'", "'sampler3DRect'", 
-		"'filter'", "'sizeof'", "'cast'", "'namespace'", "'using'", "'samplerExternalOES'", 
-		null, null, null, null, null, null, null, null, "'<<'", "'>>'", "'++'", 
-		"'--'", "'<='", "'>='", "'=='", "'!='", "'&&'", "'||'", "'^^'", "'*='", 
-		"'\\='", "'+='", "'%='", "'<<='", "'>>='", "'&='", "'^='", "'|='", "'-='", 
-		"'('", "')'", "'['", "']'", "'{'", "'}'", "'.'", "','", "':'", "'='", 
-		"';'", "'!'", "'-'", "'~'", "'+'", "'*'", "'/'", "'%'", "'<'", "'>'", 
-		"'|'", "'^'", "'&'", "'?'", "'#'", "'##'", "'\"'", "'''", "'...'"
+		null, "'require'", "'enable'", "'warn'", "'disable'", "'core'", "'compatibility'", 
+		"'es'", "'attribute'", "'const'", "'uniform'", "'varying'", "'buffer'", 
+		"'shared'", "'coherent'", "'volatile'", "'restrict'", "'readonly'", "'writeonly'", 
+		"'atomic_uint'", "'layout'", "'centroid'", "'flat'", "'smooth'", "'noperspective'", 
+		"'patch'", "'sample'", "'break'", "'continue'", "'do'", "'for'", "'while'", 
+		"'switch'", "'case'", "'default'", "'if'", "'else'", "'subroutine'", "'in'", 
+		"'out'", "'inout'", "'float'", "'double'", "'int'", "'void'", "'bool'", 
+		"'true'", "'false'", "'invariant'", "'precise'", "'discard'", "'return'", 
+		"'mat2'", "'mat3'", "'mat4'", "'dmat2'", "'dmat3'", "'dmat4'", "'mat2x2'", 
+		"'mat2x3'", "'mat2x4'", "'dmat2x2'", "'dmat2x3'", "'dmat2x4'", "'mat3x2'", 
+		"'mat3x3'", "'mat3x4'", "'dmat3x2'", "'dmat3x3'", "'dmat3x4'", "'mat4x2'", 
+		"'mat4x3'", "'mat4x4'", "'dmat4x2'", "'dmat4x3'", "'dmat4x4'", "'vec2'", 
+		"'vec3'", "'vec4'", "'ivec2'", "'ivec3'", "'ivec4'", "'bvec2'", "'bvec3'", 
+		"'bvec4'", "'dvec2'", "'dvec3'", "'dvec4'", "'uint'", "'uvec2'", "'uvec3'", 
+		"'uvec4'", "'lowp'", "'mediump'", "'highp'", "'precision'", "'sampler1D'", 
+		"'sampler2D'", "'sampler3D'", "'samplerCube'", "'sampler1DShadow'", "'sampler2DShadow'", 
+		"'samplerCubeShadow'", "'sampler1DArray'", "'sampler2DArray'", "'sampler1DArrayShadow'", 
+		"'sampler2DArrayShadow'", "'isampler1D'", "'isampler2D'", "'isampler3D'", 
+		"'isamplerCube'", "'isampler1DArray'", "'isampler2DArray'", "'usampler1D'", 
+		"'usampler2D'", "'usampler3D'", "'usamplerCube'", "'usampler1DArray'", 
+		"'usampler2DArray'", "'sampler2DRect'", "'sampler2DRectShadow'", "'isampler2DRect'", 
+		"'usampler2DRect'", "'samplerBuffer'", "'isamplerBuffer'", "'usamplerBuffer'", 
+		"'sampler2DMS'", "'isampler2DMS'", "'usampler2DMS'", "'sampler2DMSArray'", 
+		"'isampler2DMSArray'", "'usampler2DMSArray'", "'samplerCubeArray'", "'samplerCubeArrayShadow'", 
+		"'isamplerCubeArray'", "'usamplerCubeArray'", "'image1D'", "'iimage1D'", 
+		"'uimage1D'", "'image2D'", "'iimage2D'", "'uimage2D'", "'image3D'", "'iimage3D'", 
+		"'uimage3D'", "'image2DRect'", "'iimage2DRect'", "'uimage2DRect'", "'imageCube'", 
+		"'iimageCube'", "'uimageCube'", "'imageBuffer'", "'iimageBuffer'", "'uimageBuffer'", 
+		"'image1DArray'", "'iimage1DArray'", "'uimage1DArray'", "'image2DArray'", 
+		"'iimage2DArray'", "'uimage2DArray'", "'imageCubeArray'", "'iimageCubeArray'", 
+		"'uimageCubeArray'", "'image2DMS'", "'iimage2DMS'", "'uimage2DMS'", "'image2DMSArray'", 
+		"'iimage2DMSArray'", "'uimage2DMSArray'", "'samplerExternalOES'", "'struct'", 
+		"'common'", "'partition'", "'active'", "'asm'", "'class'", "'union'", 
+		"'enum'", "'typedef'", "'template'", "'this'", "'resource'", "'goto'", 
+		"'inline'", "'noinline'", "'public'", "'static'", "'extern'", "'external'", 
+		"'interface'", "'long'", "'short'", "'half'", "'fixed'", "'unsigned'", 
+		"'superp'", "'input'", "'output'", "'hvec2'", "'hvec3'", "'hvec4'", "'fvec2'", 
+		"'fvec3'", "'fvec4'", "'sampler3DRect'", "'filter'", "'sizeof'", "'cast'", 
+		"'namespace'", "'using'", "'defined'", null, null, null, null, null, null, 
+		null, null, null, null, null, null, null, null, null, null, "'<<'", "'>>'", 
+		"'++'", "'--'", "'<='", "'>='", "'=='", "'!='", "'&&'", "'||'", "'^^'", 
+		"'*='", "'\\='", "'+='", "'%='", "'<<='", "'>>='", "'&='", "'^='", "'|='", 
+		"'-='", "'('", "')'", "'['", "']'", "'{'", "'}'", "'.'", "','", "':'", 
+		"'='", "';'", "'!'", "'-'", "'~'", "'+'", "'*'", "'/'", "'%'", "'<'", 
+		"'>'", "'|'", "'^'", "'&'", "'?'", "'#'", "'##'", "'...'", "'\"'", "'''", 
+		null, null, null, null, null, null, null, null, null, null, null, null, 
+		null, null, null, "'__LINE__'", "'__FILE__'", "'__VERSION__'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, null, null, null, null, "INCLUDE", "DEFINE", "UNDEF", "IFDEF", "IFNDEF", 
-		"ELIF", "ENDIF", "ERROR", "PRAGMA", "EXTENSION", "VERSION", "LINE", "PPOP_DEFINED", 
-		"PPBUILTIN_LINE", "PPBUILTIN_FILE", "PPBUILTIN_VERSION", "CORE", "COMPATIBILITY", 
-		"ES", "ATTRIBUTE", "CONST", "UNIFORM", "VARYING", "BUFFER", "SHARED", 
-		"COHERENT", "VOLATILE", "RESTRICT", "READONLY", "WRITEONLY", "ATOMIC_UINT", 
-		"LAYOUT", "CENTROID", "FLAT", "SMOOTH", "NOPERSPECTIVE", "PATCH", "SAMPLE", 
-		"BREAK", "CONTINUE", "DO", "FOR", "WHILE", "SWITCH", "CASE", "DEFAULT", 
-		"IF", "ELSE", "SUBROUTINE", "IN", "OUT", "INOUT", "FLOAT", "DOUBLE", "INT", 
-		"VOID", "BOOL", "TRUE", "FALSE", "INVARIANT", "PRECISE", "DISCARD", "RETURN", 
-		"MAT2", "MAT3", "MAT4", "DMAT2", "DMAT3", "DMAT4", "MAT2X2", "MAT2X3", 
-		"MAT2X4", "DMAT2X2", "DMAT2X3", "DMAT2X4", "MAT3X2", "MAT3X3", "MAT3X4", 
-		"DMAT3X2", "DMAT3X3", "DMAT3X4", "MAT4X2", "MAT4X3", "MAT4X4", "DMAT4X2", 
-		"DMAT4X3", "DMAT4X4", "VEC2", "VEC3", "VEC4", "IVEC2", "IVEC3", "IVEC4", 
-		"BVEC2", "BVEC3", "BVEC4", "DVEC2", "DVEC3", "DVEC4", "UINT", "UVEC2", 
-		"UVEC3", "UVEC4", "LOW_PRECISION", "MEDIUM_PRECISION", "HIGH_PRECISION", 
-		"PRECISION", "SAMPLER1D", "SAMPLER2D", "SAMPLER3D", "SAMPLERCUBE", "SAMPLER1DSHADOW", 
-		"SAMPLER2DSHADOW", "SAMPLERCUBESHADOW", "SAMPLER1DARRAY", "SAMPLER2DARRAY", 
-		"SAMPLER1DARRAYSHADOW", "SAMPLER2DARRAYSHADOW", "ISAMPLER1D", "ISAMPLER2D", 
-		"ISAMPLER3D", "ISAMPLERCUBE", "ISAMPLER1DARRAY", "ISAMPLER2DARRAY", "USAMPLER1D", 
-		"USAMPLER2D", "USAMPLER3D", "USAMPLERCUBE", "USAMPLER1DARRAY", "USAMPLER2DARRAY", 
-		"SAMPLER2DRECT", "SAMPLER2DRECTSHADOW", "ISAMPLER2DRECT", "USAMPLER2DRECT", 
-		"SAMPLERBUFFER", "ISAMPLERBUFFER", "USAMPLERBUFFER", "SAMPLER2DMS", "ISAMPLER2DMS", 
-		"USAMPLER2DMS", "SAMPLER2DMSARRAY", "ISAMPLER2DMSARRAY", "USAMPLER2DMSARRAY", 
-		"SAMPLERCUBEARRAY", "SAMPLERCUBEARRAYSHADOW", "ISAMPLERCUBEARRAY", "USAMPLERCUBEARRAY", 
-		"IMAGE1D", "IIMAGE1D", "UIMAGE1D", "IMAGE2D", "IIMAGE2D", "UIMAGE2D", 
-		"IMAGE3D", "IIMAGE3D", "UIMAGE3D", "IMAGE2DRECT", "IIMAGE2DRECT", "UIMAGE2DRECT", 
-		"IMAGECUBE", "IIMAGECUBE", "UIMAGECUBE", "IMAGEBUFFER", "IIMAGEBUFFER", 
-		"UIMAGEBUFFER", "IMAGE1DARRAY", "IIMAGE1DARRAY", "UIMAGE1DARRAY", "IMAGE2DARRAY", 
-		"IIMAGE2DARRAY", "UIMAGE2DARRAY", "IMAGECUBEARRAY", "IIMAGECUBEARRAY", 
-		"UIMAGECUBEARRAY", "IMAGE2DMS", "IIMAGE2DMS", "UIMAGE2DMS", "IMAGE2DMSARRAY", 
-		"IIMAGE2DMSARRAY", "UIMAGE2DMSARRAY", "STRUCT", "COMMON", "PARTITION", 
-		"ACTIVE", "ASM", "CLASS", "UNION", "ENUM", "TYPEDEF", "TEMPLATE", "THIS", 
-		"RESOURCE", "GOTO", "INLINE", "NOINLINE", "PUBLIC", "STATIC", "EXTERN", 
-		"EXTERNAL", "INTERFACE", "LONG", "SHORT", "HALF", "FIXED", "UNSIGNED", 
-		"SUPERP", "INPUT", "OUTPUT", "HVEC2", "HVEC3", "HVEC4", "FVEC2", "FVEC3", 
-		"FVEC4", "SAMPLER3DRECT", "FILTER", "SIZEOF", "CAST", "NAMESPACE", "USING", 
-		"SAMPLEREXTERNALOES", "MULTILINE_COMMENT", "SINGLELINE_COMMENT", "BOOLCONSTANT", 
-		"IDENTIFIER", "FLOATCONSTANT", "DOUBLECONSTANT", "INTCONSTANT", "UINTCONSTANT", 
-		"LEFT_OP", "RIGHT_OP", "INC_OP", "DEC_OP", "LE_OP", "GE_OP", "EQ_OP", 
-		"NE_OP", "AND_OP", "OR_OP", "XOR_OP", "MUL_ASSIGN", "DIV_ASSIGN", "ADD_ASSIGN", 
-		"MOD_ASSIGN", "LEFT_ASSIGN", "RIGHT_ASSIGN", "AND_ASSIGN", "XOR_ASSIGN", 
-		"OR_ASSIGN", "SUB_ASSIGN", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACKET", 
-		"RIGHT_BRACKET", "LEFT_BRACE", "RIGHT_BRACE", "DOT", "COMMA", "COLON", 
-		"EQUAL", "SEMICOLON", "BANG", "DASH", "TILDE", "PLUS", "STAR", "SLASH", 
-		"PERCENT", "LEFT_ANGLE", "RIGHT_ANGLE", "VERTICAL_BAR", "CARET", "AMPERSAND", 
-		"QUESTION", "HASH", "PPOP_CONCAT", "DOUBLE_QUOTE", "SINGLE_QUOTE", "DOTS", 
-		"IDENTIFIER_LEFT_PAREN", "CRLF", "HIDDEN_CRLF", "WHITESPACE", "LINE_CONTINUATION", 
+		null, null, null, null, null, null, null, null, "ATTRIBUTE", "CONST", 
+		"UNIFORM", "VARYING", "BUFFER", "SHARED", "COHERENT", "VOLATILE", "RESTRICT", 
+		"READONLY", "WRITEONLY", "ATOMIC_UINT", "LAYOUT", "CENTROID", "FLAT", 
+		"SMOOTH", "NOPERSPECTIVE", "PATCH", "SAMPLE", "BREAK", "CONTINUE", "DO", 
+		"FOR", "WHILE", "SWITCH", "CASE", "DEFAULT", "IF", "ELSE", "SUBROUTINE", 
+		"IN", "OUT", "INOUT", "FLOAT", "DOUBLE", "INT", "VOID", "BOOL", "TRUE", 
+		"FALSE", "INVARIANT", "PRECISE", "DISCARD", "RETURN", "MAT2", "MAT3", 
+		"MAT4", "DMAT2", "DMAT3", "DMAT4", "MAT2X2", "MAT2X3", "MAT2X4", "DMAT2X2", 
+		"DMAT2X3", "DMAT2X4", "MAT3X2", "MAT3X3", "MAT3X4", "DMAT3X2", "DMAT3X3", 
+		"DMAT3X4", "MAT4X2", "MAT4X3", "MAT4X4", "DMAT4X2", "DMAT4X3", "DMAT4X4", 
+		"VEC2", "VEC3", "VEC4", "IVEC2", "IVEC3", "IVEC4", "BVEC2", "BVEC3", "BVEC4", 
+		"DVEC2", "DVEC3", "DVEC4", "UINT", "UVEC2", "UVEC3", "UVEC4", "LOW_PRECISION", 
+		"MEDIUM_PRECISION", "HIGH_PRECISION", "PRECISION", "SAMPLER1D", "SAMPLER2D", 
+		"SAMPLER3D", "SAMPLERCUBE", "SAMPLER1DSHADOW", "SAMPLER2DSHADOW", "SAMPLERCUBESHADOW", 
+		"SAMPLER1DARRAY", "SAMPLER2DARRAY", "SAMPLER1DARRAYSHADOW", "SAMPLER2DARRAYSHADOW", 
+		"ISAMPLER1D", "ISAMPLER2D", "ISAMPLER3D", "ISAMPLERCUBE", "ISAMPLER1DARRAY", 
+		"ISAMPLER2DARRAY", "USAMPLER1D", "USAMPLER2D", "USAMPLER3D", "USAMPLERCUBE", 
+		"USAMPLER1DARRAY", "USAMPLER2DARRAY", "SAMPLER2DRECT", "SAMPLER2DRECTSHADOW", 
+		"ISAMPLER2DRECT", "USAMPLER2DRECT", "SAMPLERBUFFER", "ISAMPLERBUFFER", 
+		"USAMPLERBUFFER", "SAMPLER2DMS", "ISAMPLER2DMS", "USAMPLER2DMS", "SAMPLER2DMSARRAY", 
+		"ISAMPLER2DMSARRAY", "USAMPLER2DMSARRAY", "SAMPLERCUBEARRAY", "SAMPLERCUBEARRAYSHADOW", 
+		"ISAMPLERCUBEARRAY", "USAMPLERCUBEARRAY", "IMAGE1D", "IIMAGE1D", "UIMAGE1D", 
+		"IMAGE2D", "IIMAGE2D", "UIMAGE2D", "IMAGE3D", "IIMAGE3D", "UIMAGE3D", 
+		"IMAGE2DRECT", "IIMAGE2DRECT", "UIMAGE2DRECT", "IMAGECUBE", "IIMAGECUBE", 
+		"UIMAGECUBE", "IMAGEBUFFER", "IIMAGEBUFFER", "UIMAGEBUFFER", "IMAGE1DARRAY", 
+		"IIMAGE1DARRAY", "UIMAGE1DARRAY", "IMAGE2DARRAY", "IIMAGE2DARRAY", "UIMAGE2DARRAY", 
+		"IMAGECUBEARRAY", "IIMAGECUBEARRAY", "UIMAGECUBEARRAY", "IMAGE2DMS", "IIMAGE2DMS", 
+		"UIMAGE2DMS", "IMAGE2DMSARRAY", "IIMAGE2DMSARRAY", "UIMAGE2DMSARRAY", 
+		"SAMPLEREXTERNALOES", "STRUCT", "COMMON", "PARTITION", "ACTIVE", "ASM", 
+		"CLASS", "UNION", "ENUM", "TYPEDEF", "TEMPLATE", "THIS", "RESOURCE", "GOTO", 
+		"INLINE", "NOINLINE", "PUBLIC", "STATIC", "EXTERN", "EXTERNAL", "INTERFACE", 
+		"LONG", "SHORT", "HALF", "FIXED", "UNSIGNED", "SUPERP", "INPUT", "OUTPUT", 
+		"HVEC2", "HVEC3", "HVEC4", "FVEC2", "FVEC3", "FVEC4", "SAMPLER3DRECT", 
+		"FILTER", "SIZEOF", "CAST", "NAMESPACE", "USING", "PPOP_DEFINED", "WHITESPACE", 
+		"CRLF", "HIDDEN_CRLF", "LINE_CONTINUATION", "MULTILINE_COMMENT", "SINGLELINE_COMMENT", 
+		"BOOLCONSTANT", "FLOATCONSTANT", "DOUBLECONSTANT", "INTCONSTANT", "UINTCONSTANT", 
 		"CHARACTER_CONSTANT", "PREFIXED_CHARACTER_CONSTANT", "STRING_LITERAL", 
-		"STD_HEADER_NAME", "PREFIXED_STRING_LITERAL"
+		"STD_HEADER_NAME", "PREFIXED_STRING_LITERAL", "LEFT_OP", "RIGHT_OP", "INC_OP", 
+		"DEC_OP", "LE_OP", "GE_OP", "EQ_OP", "NE_OP", "AND_OP", "OR_OP", "XOR_OP", 
+		"MUL_ASSIGN", "DIV_ASSIGN", "ADD_ASSIGN", "MOD_ASSIGN", "LEFT_ASSIGN", 
+		"RIGHT_ASSIGN", "AND_ASSIGN", "XOR_ASSIGN", "OR_ASSIGN", "SUB_ASSIGN", 
+		"LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACKET", "RIGHT_BRACKET", "LEFT_BRACE", 
+		"RIGHT_BRACE", "DOT", "COMMA", "COLON", "EQUAL", "SEMICOLON", "BANG", 
+		"DASH", "TILDE", "PLUS", "STAR", "SLASH", "PERCENT", "LEFT_ANGLE", "RIGHT_ANGLE", 
+		"VERTICAL_BAR", "CARET", "AMPERSAND", "QUESTION", "HASH", "PPOP_CONCAT", 
+		"DOTS", "DOUBLE_QUOTE", "SINGLE_QUOTE", "IDENTIFIER", "PPINCLUDE", "PPDEFINE", 
+		"PPUNDEF", "PPIF", "PPIFDEF", "PPIFNDEF", "PPELSE", "PPELIF", "PPENDIF", 
+		"PPERROR", "PPPRAGMA", "PPEXTENSION", "PPVERSION", "PPLINE", "PPBUILTIN_LINE", 
+		"PPBUILTIN_FILE", "PPBUILTIN_VERSION"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -271,17 +274,85 @@ public class GLSLPPParser extends Parser {
 	public ATN getATN() { return _ATN; }
 
 
-		public static boolean preprocessing = false;
+		/**
+		 * This method checks whether the previous token on hidden channel
+		 * equals tokenType.
+		 * 
+		 * The current token is always the next token to be consumed. 
+		 * Thus, the previous token is always the token that was just 
+		 * consumed.
+		 * 
+		 */
+		private boolean hidden(int tokenType) {
+			CommonTokenStream stream = ((CommonTokenStream)this._input);
+			java.util.List<Token> tokens = stream.getHiddenTokensToLeft(stream.index());
+			if (tokens != null && !tokens.isEmpty()) {
+				return tokens.get(tokens.size()-1).getType() == tokenType;
+			} else {
+				return false;
+			}
+		}
+		
+
+
+		public boolean preprocessing = false;
+		
+		public void preprocessing(boolean enable) {
+			preprocessing = enable;
+		}
 
 	public GLSLPPParser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
+	public static class GlslppContext extends ParserRuleContext {
+		public GlslppPreprocessingFileContext glslppPreprocessingFile() {
+			return getRuleContext(GlslppPreprocessingFileContext.class,0);
+		}
+		public GlslppContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_glslpp; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof GLSLPPListener ) ((GLSLPPListener)listener).enterGlslpp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof GLSLPPListener ) ((GLSLPPListener)listener).exitGlslpp(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof GLSLPPVisitor ) return ((GLSLPPVisitor<? extends T>)visitor).visitGlslpp(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final GlslppContext glslpp() throws RecognitionException {
+		GlslppContext _localctx = new GlslppContext(_ctx, getState());
+		enterRule(_localctx, 0, RULE_glslpp);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(160);
+			glslppPreprocessingFile();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
 	public static class GlslppPreprocessingFileContext extends ParserRuleContext {
 		public GlslppGroupContext glslppGroup() {
 			return getRuleContext(GlslppGroupContext.class,0);
 		}
-		public TerminalNode EOF() { return getToken(GLSLPPParser.EOF, 0); }
 		public GlslppPreprocessingFileContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -303,34 +374,21 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppPreprocessingFileContext glslppPreprocessingFile() throws RecognitionException {
 		GlslppPreprocessingFileContext _localctx = new GlslppPreprocessingFileContext(_ctx, getState());
-		enterRule(_localctx, 0, RULE_glslppPreprocessingFile);
+		enterRule(_localctx, 2, RULE_glslppPreprocessingFile);
 		int _la;
 		try {
-			setState(156);
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(163);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
-			case 1:
-				enterOuterAlt(_localctx, 1);
+			_la = _input.LA(1);
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE) | (1L << INVARIANT) | (1L << PRECISE) | (1L << DISCARD) | (1L << RETURN) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)) | (1L << (ENUM - 128)) | (1L << (TYPEDEF - 128)) | (1L << (TEMPLATE - 128)) | (1L << (THIS - 128)) | (1L << (RESOURCE - 128)) | (1L << (GOTO - 128)) | (1L << (INLINE - 128)) | (1L << (NOINLINE - 128)) | (1L << (PUBLIC - 128)) | (1L << (STATIC - 128)) | (1L << (EXTERN - 128)) | (1L << (EXTERNAL - 128)) | (1L << (INTERFACE - 128)) | (1L << (LONG - 128)) | (1L << (SHORT - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (PPOP_DEFINED - 192)) | (1L << (WHITESPACE - 192)) | (1L << (CRLF - 192)) | (1L << (HIDDEN_CRLF - 192)) | (1L << (LINE_CONTINUATION - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (CHARACTER_CONSTANT - 192)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 192)) | (1L << (STRING_LITERAL - 192)) | (1L << (STD_HEADER_NAME - 192)) | (1L << (PREFIXED_STRING_LITERAL - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)) | (1L << (RIGHT_PAREN - 192)) | (1L << (LEFT_BRACKET - 192)) | (1L << (RIGHT_BRACKET - 192)) | (1L << (LEFT_BRACE - 192)) | (1L << (RIGHT_BRACE - 192)) | (1L << (DOT - 192)) | (1L << (COMMA - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOTS - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (IDENTIFIER - 256)) | (1L << (PPINCLUDE - 256)) | (1L << (PPDEFINE - 256)) | (1L << (PPUNDEF - 256)) | (1L << (PPIF - 256)) | (1L << (PPIFDEF - 256)) | (1L << (PPIFNDEF - 256)) | (1L << (PPERROR - 256)) | (1L << (PPPRAGMA - 256)) | (1L << (PPEXTENSION - 256)) | (1L << (PPVERSION - 256)) | (1L << (PPLINE - 256)) | (1L << (PPBUILTIN_LINE - 256)) | (1L << (PPBUILTIN_FILE - 256)) | (1L << (PPBUILTIN_VERSION - 256)))) != 0)) {
 				{
-				setState(153);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << INCLUDE) | (1L << DEFINE) | (1L << UNDEF) | (1L << IFDEF) | (1L << IFNDEF) | (1L << ELIF) | (1L << ENDIF) | (1L << ERROR) | (1L << PRAGMA) | (1L << EXTENSION) | (1L << VERSION) | (1L << LINE) | (1L << PPOP_DEFINED) | (1L << PPBUILTIN_LINE) | (1L << PPBUILTIN_FILE) | (1L << PPBUILTIN_VERSION) | (1L << CORE) | (1L << COMPATIBILITY) | (1L << ES) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (INVARIANT - 64)) | (1L << (PRECISE - 64)) | (1L << (DISCARD - 64)) | (1L << (RETURN - 64)) | (1L << (MAT2 - 64)) | (1L << (MAT3 - 64)) | (1L << (MAT4 - 64)) | (1L << (DMAT2 - 64)) | (1L << (DMAT3 - 64)) | (1L << (DMAT4 - 64)) | (1L << (MAT2X2 - 64)) | (1L << (MAT2X3 - 64)) | (1L << (MAT2X4 - 64)) | (1L << (DMAT2X2 - 64)) | (1L << (DMAT2X3 - 64)) | (1L << (DMAT2X4 - 64)) | (1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (ISAMPLER2DARRAY - 128)) | (1L << (USAMPLER1D - 128)) | (1L << (USAMPLER2D - 128)) | (1L << (USAMPLER3D - 128)) | (1L << (USAMPLERCUBE - 128)) | (1L << (USAMPLER1DARRAY - 128)) | (1L << (USAMPLER2DARRAY - 128)) | (1L << (SAMPLER2DRECT - 128)) | (1L << (SAMPLER2DRECTSHADOW - 128)) | (1L << (ISAMPLER2DRECT - 128)) | (1L << (USAMPLER2DRECT - 128)) | (1L << (SAMPLERBUFFER - 128)) | (1L << (ISAMPLERBUFFER - 128)) | (1L << (USAMPLERBUFFER - 128)) | (1L << (SAMPLER2DMS - 128)) | (1L << (ISAMPLER2DMS - 128)) | (1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (ENUM - 192)) | (1L << (TYPEDEF - 192)) | (1L << (TEMPLATE - 192)) | (1L << (THIS - 192)) | (1L << (RESOURCE - 192)) | (1L << (GOTO - 192)) | (1L << (INLINE - 192)) | (1L << (NOINLINE - 192)) | (1L << (PUBLIC - 192)) | (1L << (STATIC - 192)) | (1L << (EXTERN - 192)) | (1L << (EXTERNAL - 192)) | (1L << (INTERFACE - 192)) | (1L << (LONG - 192)) | (1L << (SHORT - 192)) | (1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (SAMPLEREXTERNALOES - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (IDENTIFIER - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (RIGHT_PAREN - 256)) | (1L << (LEFT_BRACKET - 256)) | (1L << (RIGHT_BRACKET - 256)) | (1L << (LEFT_BRACE - 256)) | (1L << (RIGHT_BRACE - 256)) | (1L << (DOT - 256)) | (1L << (COMMA - 256)) | (1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (DOTS - 256)) | (1L << (IDENTIFIER_LEFT_PAREN - 256)) | (1L << (CRLF - 256)) | (1L << (HIDDEN_CRLF - 256)) | (1L << (WHITESPACE - 256)) | (1L << (LINE_CONTINUATION - 256)) | (1L << (CHARACTER_CONSTANT - 256)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 256)) | (1L << (STRING_LITERAL - 256)) | (1L << (STD_HEADER_NAME - 256)) | (1L << (PREFIXED_STRING_LITERAL - 256)))) != 0)) {
-					{
-					setState(152);
-					glslppGroup();
-					}
+				setState(162);
+				glslppGroup();
 				}
+			}
 
-				}
-				break;
-			case 2:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(155);
-				match(EOF);
-				}
-				break;
 			}
 		}
 		catch (RecognitionException re) {
@@ -372,31 +430,25 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppGroupContext glslppGroup() throws RecognitionException {
 		GlslppGroupContext _localctx = new GlslppGroupContext(_ctx, getState());
-		enterRule(_localctx, 2, RULE_glslppGroup);
+		enterRule(_localctx, 4, RULE_glslppGroup);
+		int _la;
 		try {
-			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(159); 
+			setState(166); 
 			_errHandler.sync(this);
-			_alt = 1;
+			_la = _input.LA(1);
 			do {
-				switch (_alt) {
-				case 1:
-					{
-					{
-					setState(158);
-					glslppGroupPart();
-					}
-					}
-					break;
-				default:
-					throw new NoViableAltException(this);
+				{
+				{
+				setState(165);
+				glslppGroupPart();
 				}
-				setState(161); 
+				}
+				setState(168); 
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
-			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
+				_la = _input.LA(1);
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE) | (1L << INVARIANT) | (1L << PRECISE) | (1L << DISCARD) | (1L << RETURN) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)) | (1L << (ENUM - 128)) | (1L << (TYPEDEF - 128)) | (1L << (TEMPLATE - 128)) | (1L << (THIS - 128)) | (1L << (RESOURCE - 128)) | (1L << (GOTO - 128)) | (1L << (INLINE - 128)) | (1L << (NOINLINE - 128)) | (1L << (PUBLIC - 128)) | (1L << (STATIC - 128)) | (1L << (EXTERN - 128)) | (1L << (EXTERNAL - 128)) | (1L << (INTERFACE - 128)) | (1L << (LONG - 128)) | (1L << (SHORT - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (PPOP_DEFINED - 192)) | (1L << (WHITESPACE - 192)) | (1L << (CRLF - 192)) | (1L << (HIDDEN_CRLF - 192)) | (1L << (LINE_CONTINUATION - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (CHARACTER_CONSTANT - 192)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 192)) | (1L << (STRING_LITERAL - 192)) | (1L << (STD_HEADER_NAME - 192)) | (1L << (PREFIXED_STRING_LITERAL - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)) | (1L << (RIGHT_PAREN - 192)) | (1L << (LEFT_BRACKET - 192)) | (1L << (RIGHT_BRACKET - 192)) | (1L << (LEFT_BRACE - 192)) | (1L << (RIGHT_BRACE - 192)) | (1L << (DOT - 192)) | (1L << (COMMA - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOTS - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (IDENTIFIER - 256)) | (1L << (PPINCLUDE - 256)) | (1L << (PPDEFINE - 256)) | (1L << (PPUNDEF - 256)) | (1L << (PPIF - 256)) | (1L << (PPIFDEF - 256)) | (1L << (PPIFNDEF - 256)) | (1L << (PPERROR - 256)) | (1L << (PPPRAGMA - 256)) | (1L << (PPEXTENSION - 256)) | (1L << (PPVERSION - 256)) | (1L << (PPLINE - 256)) | (1L << (PPBUILTIN_LINE - 256)) | (1L << (PPBUILTIN_FILE - 256)) | (1L << (PPBUILTIN_VERSION - 256)))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -441,32 +493,322 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppGroupPartContext glslppGroupPart() throws RecognitionException {
 		GlslppGroupPartContext _localctx = new GlslppGroupPartContext(_ctx, getState());
-		enterRule(_localctx, 4, RULE_glslppGroupPart);
+		enterRule(_localctx, 6, RULE_glslppGroupPart);
 		try {
-			setState(166);
+			setState(173);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
-			case 1:
+			switch (_input.LA(1)) {
+			case PPIF:
+			case PPIFDEF:
+			case PPIFNDEF:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(163);
+				setState(170);
 				glslppIfSection();
 				}
 				break;
-			case 2:
+			case HASH:
+			case PPINCLUDE:
+			case PPDEFINE:
+			case PPUNDEF:
+			case PPERROR:
+			case PPPRAGMA:
+			case PPEXTENSION:
+			case PPVERSION:
+			case PPLINE:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(164);
+				setState(171);
 				glslppControlLine();
 				}
 				break;
-			case 3:
+			case T__0:
+			case T__1:
+			case T__2:
+			case T__3:
+			case T__4:
+			case T__5:
+			case T__6:
+			case ATTRIBUTE:
+			case CONST:
+			case UNIFORM:
+			case VARYING:
+			case BUFFER:
+			case SHARED:
+			case COHERENT:
+			case VOLATILE:
+			case RESTRICT:
+			case READONLY:
+			case WRITEONLY:
+			case ATOMIC_UINT:
+			case LAYOUT:
+			case CENTROID:
+			case FLAT:
+			case SMOOTH:
+			case NOPERSPECTIVE:
+			case PATCH:
+			case SAMPLE:
+			case BREAK:
+			case CONTINUE:
+			case DO:
+			case FOR:
+			case WHILE:
+			case SWITCH:
+			case CASE:
+			case DEFAULT:
+			case IF:
+			case ELSE:
+			case SUBROUTINE:
+			case IN:
+			case OUT:
+			case INOUT:
+			case FLOAT:
+			case DOUBLE:
+			case INT:
+			case VOID:
+			case BOOL:
+			case TRUE:
+			case FALSE:
+			case INVARIANT:
+			case PRECISE:
+			case DISCARD:
+			case RETURN:
+			case MAT2:
+			case MAT3:
+			case MAT4:
+			case DMAT2:
+			case DMAT3:
+			case DMAT4:
+			case MAT2X2:
+			case MAT2X3:
+			case MAT2X4:
+			case DMAT2X2:
+			case DMAT2X3:
+			case DMAT2X4:
+			case MAT3X2:
+			case MAT3X3:
+			case MAT3X4:
+			case DMAT3X2:
+			case DMAT3X3:
+			case DMAT3X4:
+			case MAT4X2:
+			case MAT4X3:
+			case MAT4X4:
+			case DMAT4X2:
+			case DMAT4X3:
+			case DMAT4X4:
+			case VEC2:
+			case VEC3:
+			case VEC4:
+			case IVEC2:
+			case IVEC3:
+			case IVEC4:
+			case BVEC2:
+			case BVEC3:
+			case BVEC4:
+			case DVEC2:
+			case DVEC3:
+			case DVEC4:
+			case UINT:
+			case UVEC2:
+			case UVEC3:
+			case UVEC4:
+			case LOW_PRECISION:
+			case MEDIUM_PRECISION:
+			case HIGH_PRECISION:
+			case PRECISION:
+			case SAMPLER1D:
+			case SAMPLER2D:
+			case SAMPLER3D:
+			case SAMPLERCUBE:
+			case SAMPLER1DSHADOW:
+			case SAMPLER2DSHADOW:
+			case SAMPLERCUBESHADOW:
+			case SAMPLER1DARRAY:
+			case SAMPLER2DARRAY:
+			case SAMPLER1DARRAYSHADOW:
+			case SAMPLER2DARRAYSHADOW:
+			case ISAMPLER1D:
+			case ISAMPLER2D:
+			case ISAMPLER3D:
+			case ISAMPLERCUBE:
+			case ISAMPLER1DARRAY:
+			case ISAMPLER2DARRAY:
+			case USAMPLER1D:
+			case USAMPLER2D:
+			case USAMPLER3D:
+			case USAMPLERCUBE:
+			case USAMPLER1DARRAY:
+			case USAMPLER2DARRAY:
+			case SAMPLER2DRECT:
+			case SAMPLER2DRECTSHADOW:
+			case ISAMPLER2DRECT:
+			case USAMPLER2DRECT:
+			case SAMPLERBUFFER:
+			case ISAMPLERBUFFER:
+			case USAMPLERBUFFER:
+			case SAMPLER2DMS:
+			case ISAMPLER2DMS:
+			case USAMPLER2DMS:
+			case SAMPLER2DMSARRAY:
+			case ISAMPLER2DMSARRAY:
+			case USAMPLER2DMSARRAY:
+			case SAMPLERCUBEARRAY:
+			case SAMPLERCUBEARRAYSHADOW:
+			case ISAMPLERCUBEARRAY:
+			case USAMPLERCUBEARRAY:
+			case IMAGE1D:
+			case IIMAGE1D:
+			case UIMAGE1D:
+			case IMAGE2D:
+			case IIMAGE2D:
+			case UIMAGE2D:
+			case IMAGE3D:
+			case IIMAGE3D:
+			case UIMAGE3D:
+			case IMAGE2DRECT:
+			case IIMAGE2DRECT:
+			case UIMAGE2DRECT:
+			case IMAGECUBE:
+			case IIMAGECUBE:
+			case UIMAGECUBE:
+			case IMAGEBUFFER:
+			case IIMAGEBUFFER:
+			case UIMAGEBUFFER:
+			case IMAGE1DARRAY:
+			case IIMAGE1DARRAY:
+			case UIMAGE1DARRAY:
+			case IMAGE2DARRAY:
+			case IIMAGE2DARRAY:
+			case UIMAGE2DARRAY:
+			case IMAGECUBEARRAY:
+			case IIMAGECUBEARRAY:
+			case UIMAGECUBEARRAY:
+			case IMAGE2DMS:
+			case IIMAGE2DMS:
+			case UIMAGE2DMS:
+			case IMAGE2DMSARRAY:
+			case IIMAGE2DMSARRAY:
+			case UIMAGE2DMSARRAY:
+			case SAMPLEREXTERNALOES:
+			case STRUCT:
+			case COMMON:
+			case PARTITION:
+			case ACTIVE:
+			case ASM:
+			case CLASS:
+			case UNION:
+			case ENUM:
+			case TYPEDEF:
+			case TEMPLATE:
+			case THIS:
+			case RESOURCE:
+			case GOTO:
+			case INLINE:
+			case NOINLINE:
+			case PUBLIC:
+			case STATIC:
+			case EXTERN:
+			case EXTERNAL:
+			case INTERFACE:
+			case LONG:
+			case SHORT:
+			case HALF:
+			case FIXED:
+			case UNSIGNED:
+			case SUPERP:
+			case INPUT:
+			case OUTPUT:
+			case HVEC2:
+			case HVEC3:
+			case HVEC4:
+			case FVEC2:
+			case FVEC3:
+			case FVEC4:
+			case SAMPLER3DRECT:
+			case FILTER:
+			case SIZEOF:
+			case CAST:
+			case NAMESPACE:
+			case USING:
+			case PPOP_DEFINED:
+			case WHITESPACE:
+			case CRLF:
+			case HIDDEN_CRLF:
+			case LINE_CONTINUATION:
+			case MULTILINE_COMMENT:
+			case SINGLELINE_COMMENT:
+			case BOOLCONSTANT:
+			case FLOATCONSTANT:
+			case DOUBLECONSTANT:
+			case INTCONSTANT:
+			case UINTCONSTANT:
+			case CHARACTER_CONSTANT:
+			case PREFIXED_CHARACTER_CONSTANT:
+			case STRING_LITERAL:
+			case STD_HEADER_NAME:
+			case PREFIXED_STRING_LITERAL:
+			case LEFT_OP:
+			case RIGHT_OP:
+			case INC_OP:
+			case DEC_OP:
+			case LE_OP:
+			case GE_OP:
+			case EQ_OP:
+			case NE_OP:
+			case AND_OP:
+			case OR_OP:
+			case XOR_OP:
+			case MUL_ASSIGN:
+			case DIV_ASSIGN:
+			case ADD_ASSIGN:
+			case MOD_ASSIGN:
+			case LEFT_ASSIGN:
+			case RIGHT_ASSIGN:
+			case AND_ASSIGN:
+			case XOR_ASSIGN:
+			case OR_ASSIGN:
+			case SUB_ASSIGN:
+			case LEFT_PAREN:
+			case RIGHT_PAREN:
+			case LEFT_BRACKET:
+			case RIGHT_BRACKET:
+			case LEFT_BRACE:
+			case RIGHT_BRACE:
+			case DOT:
+			case COMMA:
+			case COLON:
+			case EQUAL:
+			case SEMICOLON:
+			case BANG:
+			case DASH:
+			case TILDE:
+			case PLUS:
+			case STAR:
+			case SLASH:
+			case PERCENT:
+			case LEFT_ANGLE:
+			case RIGHT_ANGLE:
+			case VERTICAL_BAR:
+			case CARET:
+			case AMPERSAND:
+			case QUESTION:
+			case PPOP_CONCAT:
+			case DOTS:
+			case DOUBLE_QUOTE:
+			case SINGLE_QUOTE:
+			case IDENTIFIER:
+			case PPBUILTIN_LINE:
+			case PPBUILTIN_FILE:
+			case PPBUILTIN_VERSION:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(165);
+				setState(172);
 				glslppTextLine();
 				}
 				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -514,33 +856,34 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppIfSectionContext glslppIfSection() throws RecognitionException {
 		GlslppIfSectionContext _localctx = new GlslppIfSectionContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_glslppIfSection);
+		enterRule(_localctx, 8, RULE_glslppIfSection);
+		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(168);
+			setState(175);
 			glslppIfGroup();
-			setState(170);
+			setState(177);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
-			case 1:
+			_la = _input.LA(1);
+			if (_la==PPELIF) {
 				{
-				setState(169);
+				setState(176);
 				glslppElifGroups();
 				}
-				break;
 			}
-			setState(173);
+
+			setState(180);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
-			case 1:
+			_la = _input.LA(1);
+			if (_la==PPELSE) {
 				{
-				setState(172);
+				setState(179);
 				glslppElseGroup();
 				}
-				break;
 			}
-			setState(175);
+
+			setState(182);
 			glslppEndifLine();
 			}
 		}
@@ -556,8 +899,7 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public static class GlslppIfGroupContext extends ParserRuleContext {
-		public TerminalNode HASH() { return getToken(GLSLPPParser.HASH, 0); }
-		public TerminalNode IF() { return getToken(GLSLPPParser.IF, 0); }
+		public TerminalNode PPIF() { return getToken(GLSLPPParser.PPIF, 0); }
 		public GlslConstantExpressionContext glslConstantExpression() {
 			return getRuleContext(GlslConstantExpressionContext.class,0);
 		}
@@ -565,11 +907,11 @@ public class GLSLPPParser extends Parser {
 		public GlslppGroupContext glslppGroup() {
 			return getRuleContext(GlslppGroupContext.class,0);
 		}
-		public TerminalNode IFDEF() { return getToken(GLSLPPParser.IFDEF, 0); }
+		public TerminalNode PPIFDEF() { return getToken(GLSLPPParser.PPIFDEF, 0); }
 		public GlslppIdentifierContext glslppIdentifier() {
 			return getRuleContext(GlslppIdentifierContext.class,0);
 		}
-		public TerminalNode IFNDEF() { return getToken(GLSLPPParser.IFNDEF, 0); }
+		public TerminalNode PPIFNDEF() { return getToken(GLSLPPParser.PPIFNDEF, 0); }
 		public GlslppIfGroupContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -591,80 +933,77 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppIfGroupContext glslppIfGroup() throws RecognitionException {
 		GlslppIfGroupContext _localctx = new GlslppIfGroupContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_glslppIfGroup);
+		enterRule(_localctx, 10, RULE_glslppIfGroup);
+		int _la;
 		try {
-			setState(198);
+			setState(202);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,9,_ctx) ) {
-			case 1:
+			switch (_input.LA(1)) {
+			case PPIF:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(177);
-				match(HASH);
-				setState(178);
-				match(IF);
-				setState(179);
+				setState(184);
+				match(PPIF);
+				setState(185);
 				glslConstantExpression();
-				setState(180);
+				setState(186);
 				match(CRLF);
-				setState(182);
+				setState(188);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
-				case 1:
+				_la = _input.LA(1);
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE) | (1L << INVARIANT) | (1L << PRECISE) | (1L << DISCARD) | (1L << RETURN) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)) | (1L << (ENUM - 128)) | (1L << (TYPEDEF - 128)) | (1L << (TEMPLATE - 128)) | (1L << (THIS - 128)) | (1L << (RESOURCE - 128)) | (1L << (GOTO - 128)) | (1L << (INLINE - 128)) | (1L << (NOINLINE - 128)) | (1L << (PUBLIC - 128)) | (1L << (STATIC - 128)) | (1L << (EXTERN - 128)) | (1L << (EXTERNAL - 128)) | (1L << (INTERFACE - 128)) | (1L << (LONG - 128)) | (1L << (SHORT - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (PPOP_DEFINED - 192)) | (1L << (WHITESPACE - 192)) | (1L << (CRLF - 192)) | (1L << (HIDDEN_CRLF - 192)) | (1L << (LINE_CONTINUATION - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (CHARACTER_CONSTANT - 192)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 192)) | (1L << (STRING_LITERAL - 192)) | (1L << (STD_HEADER_NAME - 192)) | (1L << (PREFIXED_STRING_LITERAL - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)) | (1L << (RIGHT_PAREN - 192)) | (1L << (LEFT_BRACKET - 192)) | (1L << (RIGHT_BRACKET - 192)) | (1L << (LEFT_BRACE - 192)) | (1L << (RIGHT_BRACE - 192)) | (1L << (DOT - 192)) | (1L << (COMMA - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOTS - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (IDENTIFIER - 256)) | (1L << (PPINCLUDE - 256)) | (1L << (PPDEFINE - 256)) | (1L << (PPUNDEF - 256)) | (1L << (PPIF - 256)) | (1L << (PPIFDEF - 256)) | (1L << (PPIFNDEF - 256)) | (1L << (PPERROR - 256)) | (1L << (PPPRAGMA - 256)) | (1L << (PPEXTENSION - 256)) | (1L << (PPVERSION - 256)) | (1L << (PPLINE - 256)) | (1L << (PPBUILTIN_LINE - 256)) | (1L << (PPBUILTIN_FILE - 256)) | (1L << (PPBUILTIN_VERSION - 256)))) != 0)) {
 					{
-					setState(181);
+					setState(187);
 					glslppGroup();
 					}
-					break;
 				}
+
 				}
 				break;
-			case 2:
+			case PPIFDEF:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(184);
-				match(HASH);
-				setState(185);
-				match(IFDEF);
-				setState(186);
+				setState(190);
+				match(PPIFDEF);
+				setState(191);
 				glslppIdentifier();
-				setState(187);
+				setState(192);
 				match(CRLF);
-				setState(189);
+				setState(194);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
-				case 1:
+				_la = _input.LA(1);
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE) | (1L << INVARIANT) | (1L << PRECISE) | (1L << DISCARD) | (1L << RETURN) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)) | (1L << (ENUM - 128)) | (1L << (TYPEDEF - 128)) | (1L << (TEMPLATE - 128)) | (1L << (THIS - 128)) | (1L << (RESOURCE - 128)) | (1L << (GOTO - 128)) | (1L << (INLINE - 128)) | (1L << (NOINLINE - 128)) | (1L << (PUBLIC - 128)) | (1L << (STATIC - 128)) | (1L << (EXTERN - 128)) | (1L << (EXTERNAL - 128)) | (1L << (INTERFACE - 128)) | (1L << (LONG - 128)) | (1L << (SHORT - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (PPOP_DEFINED - 192)) | (1L << (WHITESPACE - 192)) | (1L << (CRLF - 192)) | (1L << (HIDDEN_CRLF - 192)) | (1L << (LINE_CONTINUATION - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (CHARACTER_CONSTANT - 192)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 192)) | (1L << (STRING_LITERAL - 192)) | (1L << (STD_HEADER_NAME - 192)) | (1L << (PREFIXED_STRING_LITERAL - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)) | (1L << (RIGHT_PAREN - 192)) | (1L << (LEFT_BRACKET - 192)) | (1L << (RIGHT_BRACKET - 192)) | (1L << (LEFT_BRACE - 192)) | (1L << (RIGHT_BRACE - 192)) | (1L << (DOT - 192)) | (1L << (COMMA - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOTS - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (IDENTIFIER - 256)) | (1L << (PPINCLUDE - 256)) | (1L << (PPDEFINE - 256)) | (1L << (PPUNDEF - 256)) | (1L << (PPIF - 256)) | (1L << (PPIFDEF - 256)) | (1L << (PPIFNDEF - 256)) | (1L << (PPERROR - 256)) | (1L << (PPPRAGMA - 256)) | (1L << (PPEXTENSION - 256)) | (1L << (PPVERSION - 256)) | (1L << (PPLINE - 256)) | (1L << (PPBUILTIN_LINE - 256)) | (1L << (PPBUILTIN_FILE - 256)) | (1L << (PPBUILTIN_VERSION - 256)))) != 0)) {
 					{
-					setState(188);
+					setState(193);
 					glslppGroup();
 					}
-					break;
 				}
+
 				}
 				break;
-			case 3:
+			case PPIFNDEF:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(191);
-				match(HASH);
-				setState(192);
-				match(IFNDEF);
-				setState(193);
-				glslppIdentifier();
-				setState(194);
-				match(CRLF);
 				setState(196);
+				match(PPIFNDEF);
+				setState(197);
+				glslppIdentifier();
+				setState(198);
+				match(CRLF);
+				setState(200);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,8,_ctx) ) {
-				case 1:
+				_la = _input.LA(1);
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE) | (1L << INVARIANT) | (1L << PRECISE) | (1L << DISCARD) | (1L << RETURN) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)) | (1L << (ENUM - 128)) | (1L << (TYPEDEF - 128)) | (1L << (TEMPLATE - 128)) | (1L << (THIS - 128)) | (1L << (RESOURCE - 128)) | (1L << (GOTO - 128)) | (1L << (INLINE - 128)) | (1L << (NOINLINE - 128)) | (1L << (PUBLIC - 128)) | (1L << (STATIC - 128)) | (1L << (EXTERN - 128)) | (1L << (EXTERNAL - 128)) | (1L << (INTERFACE - 128)) | (1L << (LONG - 128)) | (1L << (SHORT - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (PPOP_DEFINED - 192)) | (1L << (WHITESPACE - 192)) | (1L << (CRLF - 192)) | (1L << (HIDDEN_CRLF - 192)) | (1L << (LINE_CONTINUATION - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (CHARACTER_CONSTANT - 192)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 192)) | (1L << (STRING_LITERAL - 192)) | (1L << (STD_HEADER_NAME - 192)) | (1L << (PREFIXED_STRING_LITERAL - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)) | (1L << (RIGHT_PAREN - 192)) | (1L << (LEFT_BRACKET - 192)) | (1L << (RIGHT_BRACKET - 192)) | (1L << (LEFT_BRACE - 192)) | (1L << (RIGHT_BRACE - 192)) | (1L << (DOT - 192)) | (1L << (COMMA - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOTS - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (IDENTIFIER - 256)) | (1L << (PPINCLUDE - 256)) | (1L << (PPDEFINE - 256)) | (1L << (PPUNDEF - 256)) | (1L << (PPIF - 256)) | (1L << (PPIFDEF - 256)) | (1L << (PPIFNDEF - 256)) | (1L << (PPERROR - 256)) | (1L << (PPPRAGMA - 256)) | (1L << (PPEXTENSION - 256)) | (1L << (PPVERSION - 256)) | (1L << (PPLINE - 256)) | (1L << (PPBUILTIN_LINE - 256)) | (1L << (PPBUILTIN_FILE - 256)) | (1L << (PPBUILTIN_VERSION - 256)))) != 0)) {
 					{
-					setState(195);
+					setState(199);
 					glslppGroup();
 					}
-					break;
 				}
+
 				}
 				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -706,31 +1045,25 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppElifGroupsContext glslppElifGroups() throws RecognitionException {
 		GlslppElifGroupsContext _localctx = new GlslppElifGroupsContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_glslppElifGroups);
+		enterRule(_localctx, 12, RULE_glslppElifGroups);
+		int _la;
 		try {
-			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(201); 
+			setState(205); 
 			_errHandler.sync(this);
-			_alt = 1;
+			_la = _input.LA(1);
 			do {
-				switch (_alt) {
-				case 1:
-					{
-					{
-					setState(200);
-					glslppElifGroup();
-					}
-					}
-					break;
-				default:
-					throw new NoViableAltException(this);
+				{
+				{
+				setState(204);
+				glslppElifGroup();
 				}
-				setState(203); 
+				}
+				setState(207); 
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,10,_ctx);
-			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
+				_la = _input.LA(1);
+			} while ( _la==PPELIF );
 			}
 		}
 		catch (RecognitionException re) {
@@ -745,8 +1078,7 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public static class GlslppElifGroupContext extends ParserRuleContext {
-		public TerminalNode HASH() { return getToken(GLSLPPParser.HASH, 0); }
-		public TerminalNode ELIF() { return getToken(GLSLPPParser.ELIF, 0); }
+		public TerminalNode PPELIF() { return getToken(GLSLPPParser.PPELIF, 0); }
 		public GlslConstantExpressionContext glslConstantExpression() {
 			return getRuleContext(GlslConstantExpressionContext.class,0);
 		}
@@ -775,28 +1107,27 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppElifGroupContext glslppElifGroup() throws RecognitionException {
 		GlslppElifGroupContext _localctx = new GlslppElifGroupContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_glslppElifGroup);
+		enterRule(_localctx, 14, RULE_glslppElifGroup);
+		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(205);
-			match(HASH);
-			setState(206);
-			match(ELIF);
-			setState(207);
-			glslConstantExpression();
-			setState(208);
-			match(CRLF);
+			setState(209);
+			match(PPELIF);
 			setState(210);
+			glslConstantExpression();
+			setState(211);
+			match(CRLF);
+			setState(213);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,11,_ctx) ) {
-			case 1:
+			_la = _input.LA(1);
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE) | (1L << INVARIANT) | (1L << PRECISE) | (1L << DISCARD) | (1L << RETURN) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)) | (1L << (ENUM - 128)) | (1L << (TYPEDEF - 128)) | (1L << (TEMPLATE - 128)) | (1L << (THIS - 128)) | (1L << (RESOURCE - 128)) | (1L << (GOTO - 128)) | (1L << (INLINE - 128)) | (1L << (NOINLINE - 128)) | (1L << (PUBLIC - 128)) | (1L << (STATIC - 128)) | (1L << (EXTERN - 128)) | (1L << (EXTERNAL - 128)) | (1L << (INTERFACE - 128)) | (1L << (LONG - 128)) | (1L << (SHORT - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (PPOP_DEFINED - 192)) | (1L << (WHITESPACE - 192)) | (1L << (CRLF - 192)) | (1L << (HIDDEN_CRLF - 192)) | (1L << (LINE_CONTINUATION - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (CHARACTER_CONSTANT - 192)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 192)) | (1L << (STRING_LITERAL - 192)) | (1L << (STD_HEADER_NAME - 192)) | (1L << (PREFIXED_STRING_LITERAL - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)) | (1L << (RIGHT_PAREN - 192)) | (1L << (LEFT_BRACKET - 192)) | (1L << (RIGHT_BRACKET - 192)) | (1L << (LEFT_BRACE - 192)) | (1L << (RIGHT_BRACE - 192)) | (1L << (DOT - 192)) | (1L << (COMMA - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOTS - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (IDENTIFIER - 256)) | (1L << (PPINCLUDE - 256)) | (1L << (PPDEFINE - 256)) | (1L << (PPUNDEF - 256)) | (1L << (PPIF - 256)) | (1L << (PPIFDEF - 256)) | (1L << (PPIFNDEF - 256)) | (1L << (PPERROR - 256)) | (1L << (PPPRAGMA - 256)) | (1L << (PPEXTENSION - 256)) | (1L << (PPVERSION - 256)) | (1L << (PPLINE - 256)) | (1L << (PPBUILTIN_LINE - 256)) | (1L << (PPBUILTIN_FILE - 256)) | (1L << (PPBUILTIN_VERSION - 256)))) != 0)) {
 				{
-				setState(209);
+				setState(212);
 				glslppGroup();
 				}
-				break;
 			}
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -811,8 +1142,7 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public static class GlslppElseGroupContext extends ParserRuleContext {
-		public TerminalNode HASH() { return getToken(GLSLPPParser.HASH, 0); }
-		public TerminalNode ELSE() { return getToken(GLSLPPParser.ELSE, 0); }
+		public TerminalNode PPELSE() { return getToken(GLSLPPParser.PPELSE, 0); }
 		public TerminalNode CRLF() { return getToken(GLSLPPParser.CRLF, 0); }
 		public GlslppGroupContext glslppGroup() {
 			return getRuleContext(GlslppGroupContext.class,0);
@@ -838,26 +1168,25 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppElseGroupContext glslppElseGroup() throws RecognitionException {
 		GlslppElseGroupContext _localctx = new GlslppElseGroupContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_glslppElseGroup);
+		enterRule(_localctx, 16, RULE_glslppElseGroup);
+		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(212);
-			match(HASH);
-			setState(213);
-			match(ELSE);
-			setState(214);
-			match(CRLF);
+			setState(215);
+			match(PPELSE);
 			setState(216);
+			match(CRLF);
+			setState(218);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,12,_ctx) ) {
-			case 1:
+			_la = _input.LA(1);
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE) | (1L << INVARIANT) | (1L << PRECISE) | (1L << DISCARD) | (1L << RETURN) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)) | (1L << (ENUM - 128)) | (1L << (TYPEDEF - 128)) | (1L << (TEMPLATE - 128)) | (1L << (THIS - 128)) | (1L << (RESOURCE - 128)) | (1L << (GOTO - 128)) | (1L << (INLINE - 128)) | (1L << (NOINLINE - 128)) | (1L << (PUBLIC - 128)) | (1L << (STATIC - 128)) | (1L << (EXTERN - 128)) | (1L << (EXTERNAL - 128)) | (1L << (INTERFACE - 128)) | (1L << (LONG - 128)) | (1L << (SHORT - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (PPOP_DEFINED - 192)) | (1L << (WHITESPACE - 192)) | (1L << (CRLF - 192)) | (1L << (HIDDEN_CRLF - 192)) | (1L << (LINE_CONTINUATION - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (CHARACTER_CONSTANT - 192)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 192)) | (1L << (STRING_LITERAL - 192)) | (1L << (STD_HEADER_NAME - 192)) | (1L << (PREFIXED_STRING_LITERAL - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)) | (1L << (RIGHT_PAREN - 192)) | (1L << (LEFT_BRACKET - 192)) | (1L << (RIGHT_BRACKET - 192)) | (1L << (LEFT_BRACE - 192)) | (1L << (RIGHT_BRACE - 192)) | (1L << (DOT - 192)) | (1L << (COMMA - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOTS - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (IDENTIFIER - 256)) | (1L << (PPINCLUDE - 256)) | (1L << (PPDEFINE - 256)) | (1L << (PPUNDEF - 256)) | (1L << (PPIF - 256)) | (1L << (PPIFDEF - 256)) | (1L << (PPIFNDEF - 256)) | (1L << (PPERROR - 256)) | (1L << (PPPRAGMA - 256)) | (1L << (PPEXTENSION - 256)) | (1L << (PPVERSION - 256)) | (1L << (PPLINE - 256)) | (1L << (PPBUILTIN_LINE - 256)) | (1L << (PPBUILTIN_FILE - 256)) | (1L << (PPBUILTIN_VERSION - 256)))) != 0)) {
 				{
-				setState(215);
+				setState(217);
 				glslppGroup();
 				}
-				break;
 			}
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -872,8 +1201,7 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public static class GlslppEndifLineContext extends ParserRuleContext {
-		public TerminalNode HASH() { return getToken(GLSLPPParser.HASH, 0); }
-		public TerminalNode ENDIF() { return getToken(GLSLPPParser.ENDIF, 0); }
+		public TerminalNode PPENDIF() { return getToken(GLSLPPParser.PPENDIF, 0); }
 		public TerminalNode CRLF() { return getToken(GLSLPPParser.CRLF, 0); }
 		public GlslppEndifLineContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -896,15 +1224,13 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppEndifLineContext glslppEndifLine() throws RecognitionException {
 		GlslppEndifLineContext _localctx = new GlslppEndifLineContext(_ctx, getState());
-		enterRule(_localctx, 16, RULE_glslppEndifLine);
+		enterRule(_localctx, 18, RULE_glslppEndifLine);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(218);
-			match(HASH);
-			setState(219);
-			match(ENDIF);
 			setState(220);
+			match(PPENDIF);
+			setState(221);
 			match(CRLF);
 			}
 		}
@@ -920,40 +1246,36 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public static class GlslppControlLineContext extends ParserRuleContext {
-		public TerminalNode HASH() { return getToken(GLSLPPParser.HASH, 0); }
-		public TerminalNode INCLUDE() { return getToken(GLSLPPParser.INCLUDE, 0); }
-		public GlslppTokensContext glslppTokens() {
-			return getRuleContext(GlslppTokensContext.class,0);
+		public TerminalNode PPINCLUDE() { return getToken(GLSLPPParser.PPINCLUDE, 0); }
+		public GlslppHeaderNameContext glslppHeaderName() {
+			return getRuleContext(GlslppHeaderNameContext.class,0);
 		}
 		public TerminalNode CRLF() { return getToken(GLSLPPParser.CRLF, 0); }
-		public TerminalNode DEFINE() { return getToken(GLSLPPParser.DEFINE, 0); }
+		public TerminalNode PPDEFINE() { return getToken(GLSLPPParser.PPDEFINE, 0); }
+		public GlslppMacroContext glslppMacro() {
+			return getRuleContext(GlslppMacroContext.class,0);
+		}
+		public TerminalNode PPUNDEF() { return getToken(GLSLPPParser.PPUNDEF, 0); }
 		public GlslppIdentifierContext glslppIdentifier() {
 			return getRuleContext(GlslppIdentifierContext.class,0);
 		}
-		public GlslppReplacementListContext glslppReplacementList() {
-			return getRuleContext(GlslppReplacementListContext.class,0);
+		public TerminalNode PPLINE() { return getToken(GLSLPPParser.PPLINE, 0); }
+		public GlslppTokensContext glslppTokens() {
+			return getRuleContext(GlslppTokensContext.class,0);
 		}
-		public TerminalNode IDENTIFIER_LEFT_PAREN() { return getToken(GLSLPPParser.IDENTIFIER_LEFT_PAREN, 0); }
-		public TerminalNode RIGHT_PAREN() { return getToken(GLSLPPParser.RIGHT_PAREN, 0); }
-		public GlslppIdentifierListContext glslppIdentifierList() {
-			return getRuleContext(GlslppIdentifierListContext.class,0);
-		}
-		public TerminalNode DOTS() { return getToken(GLSLPPParser.DOTS, 0); }
-		public TerminalNode COMMA() { return getToken(GLSLPPParser.COMMA, 0); }
-		public TerminalNode UNDEF() { return getToken(GLSLPPParser.UNDEF, 0); }
-		public TerminalNode LINE() { return getToken(GLSLPPParser.LINE, 0); }
-		public TerminalNode ERROR() { return getToken(GLSLPPParser.ERROR, 0); }
-		public TerminalNode PRAGMA() { return getToken(GLSLPPParser.PRAGMA, 0); }
-		public TerminalNode EXTENSION() { return getToken(GLSLPPParser.EXTENSION, 0); }
+		public TerminalNode PPERROR() { return getToken(GLSLPPParser.PPERROR, 0); }
+		public TerminalNode PPPRAGMA() { return getToken(GLSLPPParser.PPPRAGMA, 0); }
+		public TerminalNode PPEXTENSION() { return getToken(GLSLPPParser.PPEXTENSION, 0); }
 		public TerminalNode COLON() { return getToken(GLSLPPParser.COLON, 0); }
 		public GlslppExtensionBehaviourContext glslppExtensionBehaviour() {
 			return getRuleContext(GlslppExtensionBehaviourContext.class,0);
 		}
-		public TerminalNode VERSION() { return getToken(GLSLPPParser.VERSION, 0); }
+		public TerminalNode PPVERSION() { return getToken(GLSLPPParser.PPVERSION, 0); }
 		public TerminalNode INTCONSTANT() { return getToken(GLSLPPParser.INTCONSTANT, 0); }
 		public GlslppProfileContext glslppProfile() {
 			return getRuleContext(GlslppProfileContext.class,0);
 		}
+		public TerminalNode HASH() { return getToken(GLSLPPParser.HASH, 0); }
 		public GlslppNonDirectiveContext glslppNonDirective() {
 			return getRuleContext(GlslppNonDirectiveContext.class,0);
 		}
@@ -978,21 +1300,19 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppControlLineContext glslppControlLine() throws RecognitionException {
 		GlslppControlLineContext _localctx = new GlslppControlLineContext(_ctx, getState());
-		enterRule(_localctx, 18, RULE_glslppControlLine);
+		enterRule(_localctx, 20, RULE_glslppControlLine);
 		int _la;
 		try {
-			setState(300);
+			setState(264);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,16,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,14,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(222);
-				match(HASH);
 				setState(223);
-				match(INCLUDE);
+				match(PPINCLUDE);
 				setState(224);
-				glslppTokens();
+				glslppHeaderName();
 				setState(225);
 				match(CRLF);
 				}
@@ -1001,202 +1321,277 @@ public class GLSLPPParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(227);
-				match(HASH);
+				match(PPDEFINE);
 				setState(228);
-				match(DEFINE);
+				glslppMacro();
 				setState(229);
-				glslppIdentifier();
-				setState(230);
-				glslppReplacementList();
-				setState(231);
 				match(CRLF);
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
+				setState(231);
+				match(PPUNDEF);
+				setState(232);
+				glslppIdentifier();
 				setState(233);
-				match(HASH);
-				setState(234);
-				match(DEFINE);
-				setState(235);
-				match(IDENTIFIER_LEFT_PAREN);
-				setState(237);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				if (_la==IDENTIFIER) {
-					{
-					setState(236);
-					glslppIdentifierList();
-					}
-				}
-
-				setState(239);
-				match(RIGHT_PAREN);
-				setState(240);
-				glslppReplacementList();
-				setState(241);
 				match(CRLF);
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(243);
-				match(HASH);
-				setState(244);
-				match(DEFINE);
-				setState(245);
-				match(IDENTIFIER_LEFT_PAREN);
-				setState(246);
-				match(DOTS);
-				setState(247);
-				match(RIGHT_PAREN);
-				setState(248);
-				glslppReplacementList();
-				setState(249);
+				setState(235);
+				match(PPLINE);
+				setState(236);
+				glslppTokens();
+				setState(237);
 				match(CRLF);
 				}
 				break;
 			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(251);
-				match(HASH);
-				setState(252);
-				match(DEFINE);
-				setState(253);
-				match(IDENTIFIER_LEFT_PAREN);
-				setState(254);
-				glslppIdentifierList();
-				setState(255);
-				match(COMMA);
-				setState(256);
-				match(DOTS);
-				setState(257);
-				match(RIGHT_PAREN);
-				setState(258);
-				glslppReplacementList();
-				setState(259);
+				setState(239);
+				match(PPERROR);
+				setState(241);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE) | (1L << INVARIANT) | (1L << PRECISE) | (1L << DISCARD) | (1L << RETURN) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)) | (1L << (ENUM - 128)) | (1L << (TYPEDEF - 128)) | (1L << (TEMPLATE - 128)) | (1L << (THIS - 128)) | (1L << (RESOURCE - 128)) | (1L << (GOTO - 128)) | (1L << (INLINE - 128)) | (1L << (NOINLINE - 128)) | (1L << (PUBLIC - 128)) | (1L << (STATIC - 128)) | (1L << (EXTERN - 128)) | (1L << (EXTERNAL - 128)) | (1L << (INTERFACE - 128)) | (1L << (LONG - 128)) | (1L << (SHORT - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (PPOP_DEFINED - 192)) | (1L << (HIDDEN_CRLF - 192)) | (1L << (LINE_CONTINUATION - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (CHARACTER_CONSTANT - 192)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 192)) | (1L << (STRING_LITERAL - 192)) | (1L << (STD_HEADER_NAME - 192)) | (1L << (PREFIXED_STRING_LITERAL - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)) | (1L << (RIGHT_PAREN - 192)) | (1L << (LEFT_BRACKET - 192)) | (1L << (RIGHT_BRACKET - 192)) | (1L << (LEFT_BRACE - 192)) | (1L << (RIGHT_BRACE - 192)) | (1L << (DOT - 192)) | (1L << (COMMA - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOTS - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (IDENTIFIER - 256)) | (1L << (PPINCLUDE - 256)) | (1L << (PPDEFINE - 256)) | (1L << (PPUNDEF - 256)) | (1L << (PPIF - 256)) | (1L << (PPIFDEF - 256)) | (1L << (PPIFNDEF - 256)) | (1L << (PPELSE - 256)) | (1L << (PPELIF - 256)) | (1L << (PPENDIF - 256)) | (1L << (PPERROR - 256)) | (1L << (PPPRAGMA - 256)) | (1L << (PPEXTENSION - 256)) | (1L << (PPVERSION - 256)) | (1L << (PPLINE - 256)) | (1L << (PPBUILTIN_LINE - 256)) | (1L << (PPBUILTIN_FILE - 256)) | (1L << (PPBUILTIN_VERSION - 256)))) != 0)) {
+					{
+					setState(240);
+					glslppTokens();
+					}
+				}
+
+				setState(243);
 				match(CRLF);
 				}
 				break;
 			case 6:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(261);
-				match(HASH);
-				setState(262);
-				match(UNDEF);
-				setState(263);
-				glslppIdentifier();
-				setState(264);
+				setState(244);
+				match(PPPRAGMA);
+				setState(246);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE) | (1L << INVARIANT) | (1L << PRECISE) | (1L << DISCARD) | (1L << RETURN) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)) | (1L << (ENUM - 128)) | (1L << (TYPEDEF - 128)) | (1L << (TEMPLATE - 128)) | (1L << (THIS - 128)) | (1L << (RESOURCE - 128)) | (1L << (GOTO - 128)) | (1L << (INLINE - 128)) | (1L << (NOINLINE - 128)) | (1L << (PUBLIC - 128)) | (1L << (STATIC - 128)) | (1L << (EXTERN - 128)) | (1L << (EXTERNAL - 128)) | (1L << (INTERFACE - 128)) | (1L << (LONG - 128)) | (1L << (SHORT - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (PPOP_DEFINED - 192)) | (1L << (HIDDEN_CRLF - 192)) | (1L << (LINE_CONTINUATION - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (CHARACTER_CONSTANT - 192)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 192)) | (1L << (STRING_LITERAL - 192)) | (1L << (STD_HEADER_NAME - 192)) | (1L << (PREFIXED_STRING_LITERAL - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)) | (1L << (RIGHT_PAREN - 192)) | (1L << (LEFT_BRACKET - 192)) | (1L << (RIGHT_BRACKET - 192)) | (1L << (LEFT_BRACE - 192)) | (1L << (RIGHT_BRACE - 192)) | (1L << (DOT - 192)) | (1L << (COMMA - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOTS - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (IDENTIFIER - 256)) | (1L << (PPINCLUDE - 256)) | (1L << (PPDEFINE - 256)) | (1L << (PPUNDEF - 256)) | (1L << (PPIF - 256)) | (1L << (PPIFDEF - 256)) | (1L << (PPIFNDEF - 256)) | (1L << (PPELSE - 256)) | (1L << (PPELIF - 256)) | (1L << (PPENDIF - 256)) | (1L << (PPERROR - 256)) | (1L << (PPPRAGMA - 256)) | (1L << (PPEXTENSION - 256)) | (1L << (PPVERSION - 256)) | (1L << (PPLINE - 256)) | (1L << (PPBUILTIN_LINE - 256)) | (1L << (PPBUILTIN_FILE - 256)) | (1L << (PPBUILTIN_VERSION - 256)))) != 0)) {
+					{
+					setState(245);
+					glslppTokens();
+					}
+				}
+
+				setState(248);
 				match(CRLF);
 				}
 				break;
 			case 7:
 				enterOuterAlt(_localctx, 7);
 				{
-				setState(266);
-				match(HASH);
-				setState(267);
-				match(LINE);
-				setState(268);
-				glslppTokens();
-				setState(269);
+				setState(249);
+				match(PPEXTENSION);
+				setState(250);
+				glslppIdentifier();
+				setState(251);
+				match(COLON);
+				setState(252);
+				glslppExtensionBehaviour();
+				setState(253);
 				match(CRLF);
 				}
 				break;
 			case 8:
 				enterOuterAlt(_localctx, 8);
 				{
-				setState(271);
-				match(HASH);
-				setState(272);
-				match(ERROR);
-				setState(274);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << INCLUDE) | (1L << DEFINE) | (1L << UNDEF) | (1L << IFDEF) | (1L << IFNDEF) | (1L << ELIF) | (1L << ENDIF) | (1L << ERROR) | (1L << PRAGMA) | (1L << EXTENSION) | (1L << VERSION) | (1L << LINE) | (1L << PPOP_DEFINED) | (1L << PPBUILTIN_LINE) | (1L << PPBUILTIN_FILE) | (1L << PPBUILTIN_VERSION) | (1L << CORE) | (1L << COMPATIBILITY) | (1L << ES) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (INVARIANT - 64)) | (1L << (PRECISE - 64)) | (1L << (DISCARD - 64)) | (1L << (RETURN - 64)) | (1L << (MAT2 - 64)) | (1L << (MAT3 - 64)) | (1L << (MAT4 - 64)) | (1L << (DMAT2 - 64)) | (1L << (DMAT3 - 64)) | (1L << (DMAT4 - 64)) | (1L << (MAT2X2 - 64)) | (1L << (MAT2X3 - 64)) | (1L << (MAT2X4 - 64)) | (1L << (DMAT2X2 - 64)) | (1L << (DMAT2X3 - 64)) | (1L << (DMAT2X4 - 64)) | (1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (ISAMPLER2DARRAY - 128)) | (1L << (USAMPLER1D - 128)) | (1L << (USAMPLER2D - 128)) | (1L << (USAMPLER3D - 128)) | (1L << (USAMPLERCUBE - 128)) | (1L << (USAMPLER1DARRAY - 128)) | (1L << (USAMPLER2DARRAY - 128)) | (1L << (SAMPLER2DRECT - 128)) | (1L << (SAMPLER2DRECTSHADOW - 128)) | (1L << (ISAMPLER2DRECT - 128)) | (1L << (USAMPLER2DRECT - 128)) | (1L << (SAMPLERBUFFER - 128)) | (1L << (ISAMPLERBUFFER - 128)) | (1L << (USAMPLERBUFFER - 128)) | (1L << (SAMPLER2DMS - 128)) | (1L << (ISAMPLER2DMS - 128)) | (1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (ENUM - 192)) | (1L << (TYPEDEF - 192)) | (1L << (TEMPLATE - 192)) | (1L << (THIS - 192)) | (1L << (RESOURCE - 192)) | (1L << (GOTO - 192)) | (1L << (INLINE - 192)) | (1L << (NOINLINE - 192)) | (1L << (PUBLIC - 192)) | (1L << (STATIC - 192)) | (1L << (EXTERN - 192)) | (1L << (EXTERNAL - 192)) | (1L << (INTERFACE - 192)) | (1L << (LONG - 192)) | (1L << (SHORT - 192)) | (1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (SAMPLEREXTERNALOES - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (IDENTIFIER - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (RIGHT_PAREN - 256)) | (1L << (LEFT_BRACKET - 256)) | (1L << (RIGHT_BRACKET - 256)) | (1L << (LEFT_BRACE - 256)) | (1L << (RIGHT_BRACE - 256)) | (1L << (DOT - 256)) | (1L << (COMMA - 256)) | (1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (DOTS - 256)) | (1L << (IDENTIFIER_LEFT_PAREN - 256)) | (1L << (HIDDEN_CRLF - 256)) | (1L << (LINE_CONTINUATION - 256)) | (1L << (CHARACTER_CONSTANT - 256)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 256)) | (1L << (STRING_LITERAL - 256)) | (1L << (STD_HEADER_NAME - 256)) | (1L << (PREFIXED_STRING_LITERAL - 256)))) != 0)) {
-					{
-					setState(273);
-					glslppTokens();
-					}
-				}
-
-				setState(276);
+				setState(255);
+				match(PPVERSION);
+				setState(256);
+				match(INTCONSTANT);
+				setState(257);
+				glslppProfile();
+				setState(258);
 				match(CRLF);
 				}
 				break;
 			case 9:
 				enterOuterAlt(_localctx, 9);
 				{
-				setState(277);
+				setState(260);
 				match(HASH);
-				setState(278);
-				match(PRAGMA);
-				setState(280);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << INCLUDE) | (1L << DEFINE) | (1L << UNDEF) | (1L << IFDEF) | (1L << IFNDEF) | (1L << ELIF) | (1L << ENDIF) | (1L << ERROR) | (1L << PRAGMA) | (1L << EXTENSION) | (1L << VERSION) | (1L << LINE) | (1L << PPOP_DEFINED) | (1L << PPBUILTIN_LINE) | (1L << PPBUILTIN_FILE) | (1L << PPBUILTIN_VERSION) | (1L << CORE) | (1L << COMPATIBILITY) | (1L << ES) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (INVARIANT - 64)) | (1L << (PRECISE - 64)) | (1L << (DISCARD - 64)) | (1L << (RETURN - 64)) | (1L << (MAT2 - 64)) | (1L << (MAT3 - 64)) | (1L << (MAT4 - 64)) | (1L << (DMAT2 - 64)) | (1L << (DMAT3 - 64)) | (1L << (DMAT4 - 64)) | (1L << (MAT2X2 - 64)) | (1L << (MAT2X3 - 64)) | (1L << (MAT2X4 - 64)) | (1L << (DMAT2X2 - 64)) | (1L << (DMAT2X3 - 64)) | (1L << (DMAT2X4 - 64)) | (1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (ISAMPLER2DARRAY - 128)) | (1L << (USAMPLER1D - 128)) | (1L << (USAMPLER2D - 128)) | (1L << (USAMPLER3D - 128)) | (1L << (USAMPLERCUBE - 128)) | (1L << (USAMPLER1DARRAY - 128)) | (1L << (USAMPLER2DARRAY - 128)) | (1L << (SAMPLER2DRECT - 128)) | (1L << (SAMPLER2DRECTSHADOW - 128)) | (1L << (ISAMPLER2DRECT - 128)) | (1L << (USAMPLER2DRECT - 128)) | (1L << (SAMPLERBUFFER - 128)) | (1L << (ISAMPLERBUFFER - 128)) | (1L << (USAMPLERBUFFER - 128)) | (1L << (SAMPLER2DMS - 128)) | (1L << (ISAMPLER2DMS - 128)) | (1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (ENUM - 192)) | (1L << (TYPEDEF - 192)) | (1L << (TEMPLATE - 192)) | (1L << (THIS - 192)) | (1L << (RESOURCE - 192)) | (1L << (GOTO - 192)) | (1L << (INLINE - 192)) | (1L << (NOINLINE - 192)) | (1L << (PUBLIC - 192)) | (1L << (STATIC - 192)) | (1L << (EXTERN - 192)) | (1L << (EXTERNAL - 192)) | (1L << (INTERFACE - 192)) | (1L << (LONG - 192)) | (1L << (SHORT - 192)) | (1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (SAMPLEREXTERNALOES - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (IDENTIFIER - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (RIGHT_PAREN - 256)) | (1L << (LEFT_BRACKET - 256)) | (1L << (RIGHT_BRACKET - 256)) | (1L << (LEFT_BRACE - 256)) | (1L << (RIGHT_BRACE - 256)) | (1L << (DOT - 256)) | (1L << (COMMA - 256)) | (1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (DOTS - 256)) | (1L << (IDENTIFIER_LEFT_PAREN - 256)) | (1L << (HIDDEN_CRLF - 256)) | (1L << (LINE_CONTINUATION - 256)) | (1L << (CHARACTER_CONSTANT - 256)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 256)) | (1L << (STRING_LITERAL - 256)) | (1L << (STD_HEADER_NAME - 256)) | (1L << (PREFIXED_STRING_LITERAL - 256)))) != 0)) {
-					{
-					setState(279);
-					glslppTokens();
-					}
-				}
-
-				setState(282);
+				setState(261);
 				match(CRLF);
 				}
 				break;
 			case 10:
 				enterOuterAlt(_localctx, 10);
 				{
-				setState(283);
+				setState(262);
 				match(HASH);
-				setState(284);
-				match(EXTENSION);
-				setState(285);
-				glslppIdentifier();
-				setState(286);
-				match(COLON);
-				setState(287);
-				glslppExtensionBehaviour();
-				setState(288);
-				match(CRLF);
-				}
-				break;
-			case 11:
-				enterOuterAlt(_localctx, 11);
-				{
-				setState(290);
-				match(HASH);
-				setState(291);
-				match(VERSION);
-				setState(292);
-				match(INTCONSTANT);
-				setState(293);
-				glslppProfile();
-				setState(294);
-				match(CRLF);
-				}
-				break;
-			case 12:
-				enterOuterAlt(_localctx, 12);
-				{
-				setState(296);
-				match(HASH);
-				setState(297);
-				match(CRLF);
-				}
-				break;
-			case 13:
-				enterOuterAlt(_localctx, 13);
-				{
-				setState(298);
-				match(HASH);
-				setState(299);
+				setState(263);
 				glslppNonDirective();
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class GlslppMacroContext extends ParserRuleContext {
+		public TerminalNode IDENTIFIER() { return getToken(GLSLPPParser.IDENTIFIER, 0); }
+		public GlslppReplacementListContext glslppReplacementList() {
+			return getRuleContext(GlslppReplacementListContext.class,0);
+		}
+		public TerminalNode LEFT_PAREN() { return getToken(GLSLPPParser.LEFT_PAREN, 0); }
+		public GlslppMacroArgumentsContext glslppMacroArguments() {
+			return getRuleContext(GlslppMacroArgumentsContext.class,0);
+		}
+		public TerminalNode RIGHT_PAREN() { return getToken(GLSLPPParser.RIGHT_PAREN, 0); }
+		public GlslppMacroContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_glslppMacro; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof GLSLPPListener ) ((GLSLPPListener)listener).enterGlslppMacro(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof GLSLPPListener ) ((GLSLPPListener)listener).exitGlslppMacro(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof GLSLPPVisitor ) return ((GLSLPPVisitor<? extends T>)visitor).visitGlslppMacro(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final GlslppMacroContext glslppMacro() throws RecognitionException {
+		GlslppMacroContext _localctx = new GlslppMacroContext(_ctx, getState());
+		enterRule(_localctx, 22, RULE_glslppMacro);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(266);
+			match(IDENTIFIER);
+			setState(276);
+			_errHandler.sync(this);
+			switch ( getInterpreter().adaptivePredict(_input,15,_ctx) ) {
+			case 1:
+				{
+				setState(267);
+				if (!( hidden(WHITESPACE))) throw new FailedPredicateException(this, " hidden(WHITESPACE)");
+				setState(268);
+				glslppReplacementList();
+				}
+				break;
+			case 2:
+				{
+				setState(269);
+				if (!(!hidden(WHITESPACE))) throw new FailedPredicateException(this, "!hidden(WHITESPACE)");
+				setState(270);
+				match(LEFT_PAREN);
+				setState(271);
+				glslppMacroArguments();
+				setState(272);
+				match(RIGHT_PAREN);
+				setState(273);
+				glslppReplacementList();
+				}
+				break;
+			case 3:
+				{
+				}
+				break;
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class GlslppMacroArgumentsContext extends ParserRuleContext {
+		public GlslppIdentifierListContext glslppIdentifierList() {
+			return getRuleContext(GlslppIdentifierListContext.class,0);
+		}
+		public TerminalNode DOTS() { return getToken(GLSLPPParser.DOTS, 0); }
+		public TerminalNode COMMA() { return getToken(GLSLPPParser.COMMA, 0); }
+		public GlslppMacroArgumentsContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_glslppMacroArguments; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof GLSLPPListener ) ((GLSLPPListener)listener).enterGlslppMacroArguments(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof GLSLPPListener ) ((GLSLPPListener)listener).exitGlslppMacroArguments(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof GLSLPPVisitor ) return ((GLSLPPVisitor<? extends T>)visitor).visitGlslppMacroArguments(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final GlslppMacroArgumentsContext glslppMacroArguments() throws RecognitionException {
+		GlslppMacroArgumentsContext _localctx = new GlslppMacroArgumentsContext(_ctx, getState());
+		enterRule(_localctx, 24, RULE_glslppMacroArguments);
+		int _la;
+		try {
+			setState(287);
+			_errHandler.sync(this);
+			switch ( getInterpreter().adaptivePredict(_input,18,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(279);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la==IDENTIFIER) {
+					{
+					setState(278);
+					glslppIdentifierList();
+					}
+				}
+
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(284);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la==IDENTIFIER) {
+					{
+					setState(281);
+					glslppIdentifierList();
+					setState(282);
+					match(COMMA);
+					}
+				}
+
+				setState(286);
+				match(DOTS);
 				}
 				break;
 			}
@@ -1234,12 +1629,12 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppExtensionBehaviourContext glslppExtensionBehaviour() throws RecognitionException {
 		GlslppExtensionBehaviourContext _localctx = new GlslppExtensionBehaviourContext(_ctx, getState());
-		enterRule(_localctx, 20, RULE_glslppExtensionBehaviour);
+		enterRule(_localctx, 26, RULE_glslppExtensionBehaviour);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(302);
+			setState(289);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -1263,9 +1658,6 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public static class GlslppProfileContext extends ParserRuleContext {
-		public TerminalNode CORE() { return getToken(GLSLPPParser.CORE, 0); }
-		public TerminalNode COMPATIBILITY() { return getToken(GLSLPPParser.COMPATIBILITY, 0); }
-		public TerminalNode ES() { return getToken(GLSLPPParser.ES, 0); }
 		public GlslppProfileContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1287,14 +1679,14 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppProfileContext glslppProfile() throws RecognitionException {
 		GlslppProfileContext _localctx = new GlslppProfileContext(_ctx, getState());
-		enterRule(_localctx, 22, RULE_glslppProfile);
+		enterRule(_localctx, 28, RULE_glslppProfile);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(304);
+			setState(291);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CORE) | (1L << COMPATIBILITY) | (1L << ES))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__4) | (1L << T__5) | (1L << T__6))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -1316,11 +1708,9 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public static class GlslppIdentifierListContext extends ParserRuleContext {
-		public List<GlslppIdentifierContext> glslppIdentifier() {
-			return getRuleContexts(GlslppIdentifierContext.class);
-		}
-		public GlslppIdentifierContext glslppIdentifier(int i) {
-			return getRuleContext(GlslppIdentifierContext.class,i);
+		public List<TerminalNode> IDENTIFIER() { return getTokens(GLSLPPParser.IDENTIFIER); }
+		public TerminalNode IDENTIFIER(int i) {
+			return getToken(GLSLPPParser.IDENTIFIER, i);
 		}
 		public List<TerminalNode> COMMA() { return getTokens(GLSLPPParser.COMMA); }
 		public TerminalNode COMMA(int i) {
@@ -1347,30 +1737,30 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppIdentifierListContext glslppIdentifierList() throws RecognitionException {
 		GlslppIdentifierListContext _localctx = new GlslppIdentifierListContext(_ctx, getState());
-		enterRule(_localctx, 24, RULE_glslppIdentifierList);
+		enterRule(_localctx, 30, RULE_glslppIdentifierList);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(306);
-			glslppIdentifier();
-			setState(311);
+			setState(293);
+			match(IDENTIFIER);
+			setState(298);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,17,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,19,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
-					setState(307);
+					setState(294);
 					match(COMMA);
-					setState(308);
-					glslppIdentifier();
+					setState(295);
+					match(IDENTIFIER);
 					}
 					} 
 				}
-				setState(313);
+				setState(300);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,17,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,19,_ctx);
 			}
 			}
 		}
@@ -1391,6 +1781,20 @@ public class GLSLPPParser extends Parser {
 			return getToken(GLSLPPParser.CRLF, i);
 		}
 		public TerminalNode HASH() { return getToken(GLSLPPParser.HASH, 0); }
+		public TerminalNode PPIF() { return getToken(GLSLPPParser.PPIF, 0); }
+		public TerminalNode PPIFDEF() { return getToken(GLSLPPParser.PPIFDEF, 0); }
+		public TerminalNode PPIFNDEF() { return getToken(GLSLPPParser.PPIFNDEF, 0); }
+		public TerminalNode PPELIF() { return getToken(GLSLPPParser.PPELIF, 0); }
+		public TerminalNode PPELSE() { return getToken(GLSLPPParser.PPELSE, 0); }
+		public TerminalNode PPENDIF() { return getToken(GLSLPPParser.PPENDIF, 0); }
+		public TerminalNode PPINCLUDE() { return getToken(GLSLPPParser.PPINCLUDE, 0); }
+		public TerminalNode PPDEFINE() { return getToken(GLSLPPParser.PPDEFINE, 0); }
+		public TerminalNode PPUNDEF() { return getToken(GLSLPPParser.PPUNDEF, 0); }
+		public TerminalNode PPLINE() { return getToken(GLSLPPParser.PPLINE, 0); }
+		public TerminalNode PPERROR() { return getToken(GLSLPPParser.PPERROR, 0); }
+		public TerminalNode PPPRAGMA() { return getToken(GLSLPPParser.PPPRAGMA, 0); }
+		public TerminalNode PPEXTENSION() { return getToken(GLSLPPParser.PPEXTENSION, 0); }
+		public TerminalNode PPVERSION() { return getToken(GLSLPPParser.PPVERSION, 0); }
 		public GlslppTextLineContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1412,18 +1816,18 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppTextLineContext glslppTextLine() throws RecognitionException {
 		GlslppTextLineContext _localctx = new GlslppTextLineContext(_ctx, getState());
-		enterRule(_localctx, 26, RULE_glslppTextLine);
+		enterRule(_localctx, 32, RULE_glslppTextLine);
 		int _la;
 		try {
-			setState(323);
+			setState(310);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,19,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,21,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(314);
+				setState(301);
 				_la = _input.LA(1);
-				if ( _la <= 0 || (_la==HASH) ) {
+				if ( _la <= 0 || (((((_la - 272)) & ~0x3f) == 0 && ((1L << (_la - 272)) & ((1L << (HASH - 272)) | (1L << (PPINCLUDE - 272)) | (1L << (PPDEFINE - 272)) | (1L << (PPUNDEF - 272)) | (1L << (PPIF - 272)) | (1L << (PPIFDEF - 272)) | (1L << (PPIFNDEF - 272)) | (1L << (PPELSE - 272)) | (1L << (PPELIF - 272)) | (1L << (PPENDIF - 272)) | (1L << (PPERROR - 272)) | (1L << (PPPRAGMA - 272)) | (1L << (PPEXTENSION - 272)) | (1L << (PPVERSION - 272)) | (1L << (PPLINE - 272)))) != 0)) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
@@ -1431,13 +1835,13 @@ public class GLSLPPParser extends Parser {
 					_errHandler.reportMatch(this);
 					consume();
 				}
-				setState(318);
+				setState(305);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << INCLUDE) | (1L << DEFINE) | (1L << UNDEF) | (1L << IFDEF) | (1L << IFNDEF) | (1L << ELIF) | (1L << ENDIF) | (1L << ERROR) | (1L << PRAGMA) | (1L << EXTENSION) | (1L << VERSION) | (1L << LINE) | (1L << PPOP_DEFINED) | (1L << PPBUILTIN_LINE) | (1L << PPBUILTIN_FILE) | (1L << PPBUILTIN_VERSION) | (1L << CORE) | (1L << COMPATIBILITY) | (1L << ES) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (INVARIANT - 64)) | (1L << (PRECISE - 64)) | (1L << (DISCARD - 64)) | (1L << (RETURN - 64)) | (1L << (MAT2 - 64)) | (1L << (MAT3 - 64)) | (1L << (MAT4 - 64)) | (1L << (DMAT2 - 64)) | (1L << (DMAT3 - 64)) | (1L << (DMAT4 - 64)) | (1L << (MAT2X2 - 64)) | (1L << (MAT2X3 - 64)) | (1L << (MAT2X4 - 64)) | (1L << (DMAT2X2 - 64)) | (1L << (DMAT2X3 - 64)) | (1L << (DMAT2X4 - 64)) | (1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (ISAMPLER2DARRAY - 128)) | (1L << (USAMPLER1D - 128)) | (1L << (USAMPLER2D - 128)) | (1L << (USAMPLER3D - 128)) | (1L << (USAMPLERCUBE - 128)) | (1L << (USAMPLER1DARRAY - 128)) | (1L << (USAMPLER2DARRAY - 128)) | (1L << (SAMPLER2DRECT - 128)) | (1L << (SAMPLER2DRECTSHADOW - 128)) | (1L << (ISAMPLER2DRECT - 128)) | (1L << (USAMPLER2DRECT - 128)) | (1L << (SAMPLERBUFFER - 128)) | (1L << (ISAMPLERBUFFER - 128)) | (1L << (USAMPLERBUFFER - 128)) | (1L << (SAMPLER2DMS - 128)) | (1L << (ISAMPLER2DMS - 128)) | (1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (ENUM - 192)) | (1L << (TYPEDEF - 192)) | (1L << (TEMPLATE - 192)) | (1L << (THIS - 192)) | (1L << (RESOURCE - 192)) | (1L << (GOTO - 192)) | (1L << (INLINE - 192)) | (1L << (NOINLINE - 192)) | (1L << (PUBLIC - 192)) | (1L << (STATIC - 192)) | (1L << (EXTERN - 192)) | (1L << (EXTERNAL - 192)) | (1L << (INTERFACE - 192)) | (1L << (LONG - 192)) | (1L << (SHORT - 192)) | (1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (SAMPLEREXTERNALOES - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (IDENTIFIER - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (RIGHT_PAREN - 256)) | (1L << (LEFT_BRACKET - 256)) | (1L << (RIGHT_BRACKET - 256)) | (1L << (LEFT_BRACE - 256)) | (1L << (RIGHT_BRACE - 256)) | (1L << (DOT - 256)) | (1L << (COMMA - 256)) | (1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (DOTS - 256)) | (1L << (IDENTIFIER_LEFT_PAREN - 256)) | (1L << (HIDDEN_CRLF - 256)) | (1L << (WHITESPACE - 256)) | (1L << (LINE_CONTINUATION - 256)) | (1L << (CHARACTER_CONSTANT - 256)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 256)) | (1L << (STRING_LITERAL - 256)) | (1L << (STD_HEADER_NAME - 256)) | (1L << (PREFIXED_STRING_LITERAL - 256)))) != 0)) {
+				while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE) | (1L << INVARIANT) | (1L << PRECISE) | (1L << DISCARD) | (1L << RETURN) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)) | (1L << (ENUM - 128)) | (1L << (TYPEDEF - 128)) | (1L << (TEMPLATE - 128)) | (1L << (THIS - 128)) | (1L << (RESOURCE - 128)) | (1L << (GOTO - 128)) | (1L << (INLINE - 128)) | (1L << (NOINLINE - 128)) | (1L << (PUBLIC - 128)) | (1L << (STATIC - 128)) | (1L << (EXTERN - 128)) | (1L << (EXTERNAL - 128)) | (1L << (INTERFACE - 128)) | (1L << (LONG - 128)) | (1L << (SHORT - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (PPOP_DEFINED - 192)) | (1L << (WHITESPACE - 192)) | (1L << (HIDDEN_CRLF - 192)) | (1L << (LINE_CONTINUATION - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (CHARACTER_CONSTANT - 192)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 192)) | (1L << (STRING_LITERAL - 192)) | (1L << (STD_HEADER_NAME - 192)) | (1L << (PREFIXED_STRING_LITERAL - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)) | (1L << (RIGHT_PAREN - 192)) | (1L << (LEFT_BRACKET - 192)) | (1L << (RIGHT_BRACKET - 192)) | (1L << (LEFT_BRACE - 192)) | (1L << (RIGHT_BRACE - 192)) | (1L << (DOT - 192)) | (1L << (COMMA - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOTS - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (IDENTIFIER - 256)) | (1L << (PPINCLUDE - 256)) | (1L << (PPDEFINE - 256)) | (1L << (PPUNDEF - 256)) | (1L << (PPIF - 256)) | (1L << (PPIFDEF - 256)) | (1L << (PPIFNDEF - 256)) | (1L << (PPELSE - 256)) | (1L << (PPELIF - 256)) | (1L << (PPENDIF - 256)) | (1L << (PPERROR - 256)) | (1L << (PPPRAGMA - 256)) | (1L << (PPEXTENSION - 256)) | (1L << (PPVERSION - 256)) | (1L << (PPLINE - 256)) | (1L << (PPBUILTIN_LINE - 256)) | (1L << (PPBUILTIN_FILE - 256)) | (1L << (PPBUILTIN_VERSION - 256)))) != 0)) {
 					{
 					{
-					setState(315);
+					setState(302);
 					_la = _input.LA(1);
 					if ( _la <= 0 || (_la==CRLF) ) {
 					_errHandler.recoverInline(this);
@@ -1449,18 +1853,18 @@ public class GLSLPPParser extends Parser {
 					}
 					}
 					}
-					setState(320);
+					setState(307);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
-				setState(321);
+				setState(308);
 				match(CRLF);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(322);
+				setState(309);
 				match(CRLF);
 				}
 				break;
@@ -1479,14 +1883,6 @@ public class GLSLPPParser extends Parser {
 
 	public static class GlslppNonDirectiveContext extends ParserRuleContext {
 		public TerminalNode CRLF() { return getToken(GLSLPPParser.CRLF, 0); }
-		public TerminalNode INCLUDE() { return getToken(GLSLPPParser.INCLUDE, 0); }
-		public TerminalNode DEFINE() { return getToken(GLSLPPParser.DEFINE, 0); }
-		public TerminalNode UNDEF() { return getToken(GLSLPPParser.UNDEF, 0); }
-		public TerminalNode LINE() { return getToken(GLSLPPParser.LINE, 0); }
-		public TerminalNode ERROR() { return getToken(GLSLPPParser.ERROR, 0); }
-		public TerminalNode PRAGMA() { return getToken(GLSLPPParser.PRAGMA, 0); }
-		public TerminalNode EXTENSION() { return getToken(GLSLPPParser.EXTENSION, 0); }
-		public TerminalNode VERSION() { return getToken(GLSLPPParser.VERSION, 0); }
 		public GlslppTokensContext glslppTokens() {
 			return getRuleContext(GlslppTokensContext.class,0);
 		}
@@ -1511,32 +1907,22 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppNonDirectiveContext glslppNonDirective() throws RecognitionException {
 		GlslppNonDirectiveContext _localctx = new GlslppNonDirectiveContext(_ctx, getState());
-		enterRule(_localctx, 28, RULE_glslppNonDirective);
+		enterRule(_localctx, 34, RULE_glslppNonDirective);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(325);
-			_la = _input.LA(1);
-			if ( _la <= 0 || ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << INCLUDE) | (1L << DEFINE) | (1L << UNDEF) | (1L << ERROR) | (1L << PRAGMA) | (1L << EXTENSION) | (1L << VERSION) | (1L << LINE))) != 0)) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
-			setState(327);
+			setState(313);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << INCLUDE) | (1L << DEFINE) | (1L << UNDEF) | (1L << IFDEF) | (1L << IFNDEF) | (1L << ELIF) | (1L << ENDIF) | (1L << ERROR) | (1L << PRAGMA) | (1L << EXTENSION) | (1L << VERSION) | (1L << LINE) | (1L << PPOP_DEFINED) | (1L << PPBUILTIN_LINE) | (1L << PPBUILTIN_FILE) | (1L << PPBUILTIN_VERSION) | (1L << CORE) | (1L << COMPATIBILITY) | (1L << ES) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (INVARIANT - 64)) | (1L << (PRECISE - 64)) | (1L << (DISCARD - 64)) | (1L << (RETURN - 64)) | (1L << (MAT2 - 64)) | (1L << (MAT3 - 64)) | (1L << (MAT4 - 64)) | (1L << (DMAT2 - 64)) | (1L << (DMAT3 - 64)) | (1L << (DMAT4 - 64)) | (1L << (MAT2X2 - 64)) | (1L << (MAT2X3 - 64)) | (1L << (MAT2X4 - 64)) | (1L << (DMAT2X2 - 64)) | (1L << (DMAT2X3 - 64)) | (1L << (DMAT2X4 - 64)) | (1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (ISAMPLER2DARRAY - 128)) | (1L << (USAMPLER1D - 128)) | (1L << (USAMPLER2D - 128)) | (1L << (USAMPLER3D - 128)) | (1L << (USAMPLERCUBE - 128)) | (1L << (USAMPLER1DARRAY - 128)) | (1L << (USAMPLER2DARRAY - 128)) | (1L << (SAMPLER2DRECT - 128)) | (1L << (SAMPLER2DRECTSHADOW - 128)) | (1L << (ISAMPLER2DRECT - 128)) | (1L << (USAMPLER2DRECT - 128)) | (1L << (SAMPLERBUFFER - 128)) | (1L << (ISAMPLERBUFFER - 128)) | (1L << (USAMPLERBUFFER - 128)) | (1L << (SAMPLER2DMS - 128)) | (1L << (ISAMPLER2DMS - 128)) | (1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (ENUM - 192)) | (1L << (TYPEDEF - 192)) | (1L << (TEMPLATE - 192)) | (1L << (THIS - 192)) | (1L << (RESOURCE - 192)) | (1L << (GOTO - 192)) | (1L << (INLINE - 192)) | (1L << (NOINLINE - 192)) | (1L << (PUBLIC - 192)) | (1L << (STATIC - 192)) | (1L << (EXTERN - 192)) | (1L << (EXTERNAL - 192)) | (1L << (INTERFACE - 192)) | (1L << (LONG - 192)) | (1L << (SHORT - 192)) | (1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (SAMPLEREXTERNALOES - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (IDENTIFIER - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (RIGHT_PAREN - 256)) | (1L << (LEFT_BRACKET - 256)) | (1L << (RIGHT_BRACKET - 256)) | (1L << (LEFT_BRACE - 256)) | (1L << (RIGHT_BRACE - 256)) | (1L << (DOT - 256)) | (1L << (COMMA - 256)) | (1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (DOTS - 256)) | (1L << (IDENTIFIER_LEFT_PAREN - 256)) | (1L << (HIDDEN_CRLF - 256)) | (1L << (LINE_CONTINUATION - 256)) | (1L << (CHARACTER_CONSTANT - 256)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 256)) | (1L << (STRING_LITERAL - 256)) | (1L << (STD_HEADER_NAME - 256)) | (1L << (PREFIXED_STRING_LITERAL - 256)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE) | (1L << INVARIANT) | (1L << PRECISE) | (1L << DISCARD) | (1L << RETURN) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)) | (1L << (ENUM - 128)) | (1L << (TYPEDEF - 128)) | (1L << (TEMPLATE - 128)) | (1L << (THIS - 128)) | (1L << (RESOURCE - 128)) | (1L << (GOTO - 128)) | (1L << (INLINE - 128)) | (1L << (NOINLINE - 128)) | (1L << (PUBLIC - 128)) | (1L << (STATIC - 128)) | (1L << (EXTERN - 128)) | (1L << (EXTERNAL - 128)) | (1L << (INTERFACE - 128)) | (1L << (LONG - 128)) | (1L << (SHORT - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (PPOP_DEFINED - 192)) | (1L << (HIDDEN_CRLF - 192)) | (1L << (LINE_CONTINUATION - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (CHARACTER_CONSTANT - 192)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 192)) | (1L << (STRING_LITERAL - 192)) | (1L << (STD_HEADER_NAME - 192)) | (1L << (PREFIXED_STRING_LITERAL - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)) | (1L << (RIGHT_PAREN - 192)) | (1L << (LEFT_BRACKET - 192)) | (1L << (RIGHT_BRACKET - 192)) | (1L << (LEFT_BRACE - 192)) | (1L << (RIGHT_BRACE - 192)) | (1L << (DOT - 192)) | (1L << (COMMA - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOTS - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (IDENTIFIER - 256)) | (1L << (PPINCLUDE - 256)) | (1L << (PPDEFINE - 256)) | (1L << (PPUNDEF - 256)) | (1L << (PPIF - 256)) | (1L << (PPIFDEF - 256)) | (1L << (PPIFNDEF - 256)) | (1L << (PPELSE - 256)) | (1L << (PPELIF - 256)) | (1L << (PPENDIF - 256)) | (1L << (PPERROR - 256)) | (1L << (PPPRAGMA - 256)) | (1L << (PPEXTENSION - 256)) | (1L << (PPVERSION - 256)) | (1L << (PPLINE - 256)) | (1L << (PPBUILTIN_LINE - 256)) | (1L << (PPBUILTIN_FILE - 256)) | (1L << (PPBUILTIN_VERSION - 256)))) != 0)) {
 				{
-				setState(326);
+				setState(312);
 				glslppTokens();
 				}
 			}
 
-			setState(329);
+			setState(315);
 			match(CRLF);
 			}
 		}
@@ -1576,17 +1962,17 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppReplacementListContext glslppReplacementList() throws RecognitionException {
 		GlslppReplacementListContext _localctx = new GlslppReplacementListContext(_ctx, getState());
-		enterRule(_localctx, 30, RULE_glslppReplacementList);
+		enterRule(_localctx, 36, RULE_glslppReplacementList);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(332);
+			setState(318);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << INCLUDE) | (1L << DEFINE) | (1L << UNDEF) | (1L << IFDEF) | (1L << IFNDEF) | (1L << ELIF) | (1L << ENDIF) | (1L << ERROR) | (1L << PRAGMA) | (1L << EXTENSION) | (1L << VERSION) | (1L << LINE) | (1L << PPOP_DEFINED) | (1L << PPBUILTIN_LINE) | (1L << PPBUILTIN_FILE) | (1L << PPBUILTIN_VERSION) | (1L << CORE) | (1L << COMPATIBILITY) | (1L << ES) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (INVARIANT - 64)) | (1L << (PRECISE - 64)) | (1L << (DISCARD - 64)) | (1L << (RETURN - 64)) | (1L << (MAT2 - 64)) | (1L << (MAT3 - 64)) | (1L << (MAT4 - 64)) | (1L << (DMAT2 - 64)) | (1L << (DMAT3 - 64)) | (1L << (DMAT4 - 64)) | (1L << (MAT2X2 - 64)) | (1L << (MAT2X3 - 64)) | (1L << (MAT2X4 - 64)) | (1L << (DMAT2X2 - 64)) | (1L << (DMAT2X3 - 64)) | (1L << (DMAT2X4 - 64)) | (1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (ISAMPLER2DARRAY - 128)) | (1L << (USAMPLER1D - 128)) | (1L << (USAMPLER2D - 128)) | (1L << (USAMPLER3D - 128)) | (1L << (USAMPLERCUBE - 128)) | (1L << (USAMPLER1DARRAY - 128)) | (1L << (USAMPLER2DARRAY - 128)) | (1L << (SAMPLER2DRECT - 128)) | (1L << (SAMPLER2DRECTSHADOW - 128)) | (1L << (ISAMPLER2DRECT - 128)) | (1L << (USAMPLER2DRECT - 128)) | (1L << (SAMPLERBUFFER - 128)) | (1L << (ISAMPLERBUFFER - 128)) | (1L << (USAMPLERBUFFER - 128)) | (1L << (SAMPLER2DMS - 128)) | (1L << (ISAMPLER2DMS - 128)) | (1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (ENUM - 192)) | (1L << (TYPEDEF - 192)) | (1L << (TEMPLATE - 192)) | (1L << (THIS - 192)) | (1L << (RESOURCE - 192)) | (1L << (GOTO - 192)) | (1L << (INLINE - 192)) | (1L << (NOINLINE - 192)) | (1L << (PUBLIC - 192)) | (1L << (STATIC - 192)) | (1L << (EXTERN - 192)) | (1L << (EXTERNAL - 192)) | (1L << (INTERFACE - 192)) | (1L << (LONG - 192)) | (1L << (SHORT - 192)) | (1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (SAMPLEREXTERNALOES - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (IDENTIFIER - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (RIGHT_PAREN - 256)) | (1L << (LEFT_BRACKET - 256)) | (1L << (RIGHT_BRACKET - 256)) | (1L << (LEFT_BRACE - 256)) | (1L << (RIGHT_BRACE - 256)) | (1L << (DOT - 256)) | (1L << (COMMA - 256)) | (1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (DOTS - 256)) | (1L << (IDENTIFIER_LEFT_PAREN - 256)) | (1L << (HIDDEN_CRLF - 256)) | (1L << (LINE_CONTINUATION - 256)) | (1L << (CHARACTER_CONSTANT - 256)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 256)) | (1L << (STRING_LITERAL - 256)) | (1L << (STD_HEADER_NAME - 256)) | (1L << (PREFIXED_STRING_LITERAL - 256)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE) | (1L << INVARIANT) | (1L << PRECISE) | (1L << DISCARD) | (1L << RETURN) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)) | (1L << (ENUM - 128)) | (1L << (TYPEDEF - 128)) | (1L << (TEMPLATE - 128)) | (1L << (THIS - 128)) | (1L << (RESOURCE - 128)) | (1L << (GOTO - 128)) | (1L << (INLINE - 128)) | (1L << (NOINLINE - 128)) | (1L << (PUBLIC - 128)) | (1L << (STATIC - 128)) | (1L << (EXTERN - 128)) | (1L << (EXTERNAL - 128)) | (1L << (INTERFACE - 128)) | (1L << (LONG - 128)) | (1L << (SHORT - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (PPOP_DEFINED - 192)) | (1L << (HIDDEN_CRLF - 192)) | (1L << (LINE_CONTINUATION - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (CHARACTER_CONSTANT - 192)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 192)) | (1L << (STRING_LITERAL - 192)) | (1L << (STD_HEADER_NAME - 192)) | (1L << (PREFIXED_STRING_LITERAL - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)) | (1L << (RIGHT_PAREN - 192)) | (1L << (LEFT_BRACKET - 192)) | (1L << (RIGHT_BRACKET - 192)) | (1L << (LEFT_BRACE - 192)) | (1L << (RIGHT_BRACE - 192)) | (1L << (DOT - 192)) | (1L << (COMMA - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOTS - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (IDENTIFIER - 256)) | (1L << (PPINCLUDE - 256)) | (1L << (PPDEFINE - 256)) | (1L << (PPUNDEF - 256)) | (1L << (PPIF - 256)) | (1L << (PPIFDEF - 256)) | (1L << (PPIFNDEF - 256)) | (1L << (PPELSE - 256)) | (1L << (PPELIF - 256)) | (1L << (PPENDIF - 256)) | (1L << (PPERROR - 256)) | (1L << (PPPRAGMA - 256)) | (1L << (PPEXTENSION - 256)) | (1L << (PPVERSION - 256)) | (1L << (PPLINE - 256)) | (1L << (PPBUILTIN_LINE - 256)) | (1L << (PPBUILTIN_FILE - 256)) | (1L << (PPBUILTIN_VERSION - 256)))) != 0)) {
 				{
-				setState(331);
+				setState(317);
 				glslppTokens();
 				}
 			}
@@ -1632,25 +2018,25 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppTokensContext glslppTokens() throws RecognitionException {
 		GlslppTokensContext _localctx = new GlslppTokensContext(_ctx, getState());
-		enterRule(_localctx, 32, RULE_glslppTokens);
+		enterRule(_localctx, 38, RULE_glslppTokens);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(335); 
+			setState(321); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(334);
+				setState(320);
 				glslppPreprocessingToken();
 				}
 				}
-				setState(337); 
+				setState(323); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << INCLUDE) | (1L << DEFINE) | (1L << UNDEF) | (1L << IFDEF) | (1L << IFNDEF) | (1L << ELIF) | (1L << ENDIF) | (1L << ERROR) | (1L << PRAGMA) | (1L << EXTENSION) | (1L << VERSION) | (1L << LINE) | (1L << PPOP_DEFINED) | (1L << PPBUILTIN_LINE) | (1L << PPBUILTIN_FILE) | (1L << PPBUILTIN_VERSION) | (1L << CORE) | (1L << COMPATIBILITY) | (1L << ES) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (INVARIANT - 64)) | (1L << (PRECISE - 64)) | (1L << (DISCARD - 64)) | (1L << (RETURN - 64)) | (1L << (MAT2 - 64)) | (1L << (MAT3 - 64)) | (1L << (MAT4 - 64)) | (1L << (DMAT2 - 64)) | (1L << (DMAT3 - 64)) | (1L << (DMAT4 - 64)) | (1L << (MAT2X2 - 64)) | (1L << (MAT2X3 - 64)) | (1L << (MAT2X4 - 64)) | (1L << (DMAT2X2 - 64)) | (1L << (DMAT2X3 - 64)) | (1L << (DMAT2X4 - 64)) | (1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (ISAMPLER2DARRAY - 128)) | (1L << (USAMPLER1D - 128)) | (1L << (USAMPLER2D - 128)) | (1L << (USAMPLER3D - 128)) | (1L << (USAMPLERCUBE - 128)) | (1L << (USAMPLER1DARRAY - 128)) | (1L << (USAMPLER2DARRAY - 128)) | (1L << (SAMPLER2DRECT - 128)) | (1L << (SAMPLER2DRECTSHADOW - 128)) | (1L << (ISAMPLER2DRECT - 128)) | (1L << (USAMPLER2DRECT - 128)) | (1L << (SAMPLERBUFFER - 128)) | (1L << (ISAMPLERBUFFER - 128)) | (1L << (USAMPLERBUFFER - 128)) | (1L << (SAMPLER2DMS - 128)) | (1L << (ISAMPLER2DMS - 128)) | (1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (ENUM - 192)) | (1L << (TYPEDEF - 192)) | (1L << (TEMPLATE - 192)) | (1L << (THIS - 192)) | (1L << (RESOURCE - 192)) | (1L << (GOTO - 192)) | (1L << (INLINE - 192)) | (1L << (NOINLINE - 192)) | (1L << (PUBLIC - 192)) | (1L << (STATIC - 192)) | (1L << (EXTERN - 192)) | (1L << (EXTERNAL - 192)) | (1L << (INTERFACE - 192)) | (1L << (LONG - 192)) | (1L << (SHORT - 192)) | (1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (SAMPLEREXTERNALOES - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (IDENTIFIER - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (RIGHT_PAREN - 256)) | (1L << (LEFT_BRACKET - 256)) | (1L << (RIGHT_BRACKET - 256)) | (1L << (LEFT_BRACE - 256)) | (1L << (RIGHT_BRACE - 256)) | (1L << (DOT - 256)) | (1L << (COMMA - 256)) | (1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (DOTS - 256)) | (1L << (IDENTIFIER_LEFT_PAREN - 256)) | (1L << (HIDDEN_CRLF - 256)) | (1L << (LINE_CONTINUATION - 256)) | (1L << (CHARACTER_CONSTANT - 256)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 256)) | (1L << (STRING_LITERAL - 256)) | (1L << (STD_HEADER_NAME - 256)) | (1L << (PREFIXED_STRING_LITERAL - 256)))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << ELSE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << TRUE) | (1L << FALSE) | (1L << INVARIANT) | (1L << PRECISE) | (1L << DISCARD) | (1L << RETURN) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)) | (1L << (COMMON - 128)) | (1L << (PARTITION - 128)) | (1L << (ACTIVE - 128)) | (1L << (ASM - 128)) | (1L << (CLASS - 128)) | (1L << (UNION - 128)) | (1L << (ENUM - 128)) | (1L << (TYPEDEF - 128)) | (1L << (TEMPLATE - 128)) | (1L << (THIS - 128)) | (1L << (RESOURCE - 128)) | (1L << (GOTO - 128)) | (1L << (INLINE - 128)) | (1L << (NOINLINE - 128)) | (1L << (PUBLIC - 128)) | (1L << (STATIC - 128)) | (1L << (EXTERN - 128)) | (1L << (EXTERNAL - 128)) | (1L << (INTERFACE - 128)) | (1L << (LONG - 128)) | (1L << (SHORT - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (HALF - 192)) | (1L << (FIXED - 192)) | (1L << (UNSIGNED - 192)) | (1L << (SUPERP - 192)) | (1L << (INPUT - 192)) | (1L << (OUTPUT - 192)) | (1L << (HVEC2 - 192)) | (1L << (HVEC3 - 192)) | (1L << (HVEC4 - 192)) | (1L << (FVEC2 - 192)) | (1L << (FVEC3 - 192)) | (1L << (FVEC4 - 192)) | (1L << (SAMPLER3DRECT - 192)) | (1L << (FILTER - 192)) | (1L << (SIZEOF - 192)) | (1L << (CAST - 192)) | (1L << (NAMESPACE - 192)) | (1L << (USING - 192)) | (1L << (PPOP_DEFINED - 192)) | (1L << (HIDDEN_CRLF - 192)) | (1L << (LINE_CONTINUATION - 192)) | (1L << (MULTILINE_COMMENT - 192)) | (1L << (SINGLELINE_COMMENT - 192)) | (1L << (BOOLCONSTANT - 192)) | (1L << (FLOATCONSTANT - 192)) | (1L << (DOUBLECONSTANT - 192)) | (1L << (INTCONSTANT - 192)) | (1L << (UINTCONSTANT - 192)) | (1L << (CHARACTER_CONSTANT - 192)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 192)) | (1L << (STRING_LITERAL - 192)) | (1L << (STD_HEADER_NAME - 192)) | (1L << (PREFIXED_STRING_LITERAL - 192)) | (1L << (LEFT_OP - 192)) | (1L << (RIGHT_OP - 192)) | (1L << (INC_OP - 192)) | (1L << (DEC_OP - 192)) | (1L << (LE_OP - 192)) | (1L << (GE_OP - 192)) | (1L << (EQ_OP - 192)) | (1L << (NE_OP - 192)) | (1L << (AND_OP - 192)) | (1L << (OR_OP - 192)) | (1L << (XOR_OP - 192)) | (1L << (MUL_ASSIGN - 192)) | (1L << (DIV_ASSIGN - 192)) | (1L << (ADD_ASSIGN - 192)) | (1L << (MOD_ASSIGN - 192)) | (1L << (LEFT_ASSIGN - 192)) | (1L << (RIGHT_ASSIGN - 192)) | (1L << (AND_ASSIGN - 192)) | (1L << (XOR_ASSIGN - 192)) | (1L << (OR_ASSIGN - 192)) | (1L << (SUB_ASSIGN - 192)) | (1L << (LEFT_PAREN - 192)) | (1L << (RIGHT_PAREN - 192)) | (1L << (LEFT_BRACKET - 192)) | (1L << (RIGHT_BRACKET - 192)) | (1L << (LEFT_BRACE - 192)) | (1L << (RIGHT_BRACE - 192)) | (1L << (DOT - 192)) | (1L << (COMMA - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (COLON - 256)) | (1L << (EQUAL - 256)) | (1L << (SEMICOLON - 256)) | (1L << (BANG - 256)) | (1L << (DASH - 256)) | (1L << (TILDE - 256)) | (1L << (PLUS - 256)) | (1L << (STAR - 256)) | (1L << (SLASH - 256)) | (1L << (PERCENT - 256)) | (1L << (LEFT_ANGLE - 256)) | (1L << (RIGHT_ANGLE - 256)) | (1L << (VERTICAL_BAR - 256)) | (1L << (CARET - 256)) | (1L << (AMPERSAND - 256)) | (1L << (QUESTION - 256)) | (1L << (HASH - 256)) | (1L << (PPOP_CONCAT - 256)) | (1L << (DOTS - 256)) | (1L << (DOUBLE_QUOTE - 256)) | (1L << (SINGLE_QUOTE - 256)) | (1L << (IDENTIFIER - 256)) | (1L << (PPINCLUDE - 256)) | (1L << (PPDEFINE - 256)) | (1L << (PPUNDEF - 256)) | (1L << (PPIF - 256)) | (1L << (PPIFDEF - 256)) | (1L << (PPIFNDEF - 256)) | (1L << (PPELSE - 256)) | (1L << (PPELIF - 256)) | (1L << (PPENDIF - 256)) | (1L << (PPERROR - 256)) | (1L << (PPPRAGMA - 256)) | (1L << (PPEXTENSION - 256)) | (1L << (PPVERSION - 256)) | (1L << (PPLINE - 256)) | (1L << (PPBUILTIN_LINE - 256)) | (1L << (PPBUILTIN_FILE - 256)) | (1L << (PPBUILTIN_VERSION - 256)))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -1707,57 +2093,57 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppPreprocessingTokenContext glslppPreprocessingToken() throws RecognitionException {
 		GlslppPreprocessingTokenContext _localctx = new GlslppPreprocessingTokenContext(_ctx, getState());
-		enterRule(_localctx, 34, RULE_glslppPreprocessingToken);
+		enterRule(_localctx, 40, RULE_glslppPreprocessingToken);
 		try {
-			setState(346);
+			setState(332);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,23,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,25,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(339);
+				setState(325);
 				glslppHeaderName();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(340);
+				setState(326);
 				glslppIdentifier();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(341);
+				setState(327);
 				glslppNumber();
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(342);
+				setState(328);
 				glslppCharacterConstant();
 				}
 				break;
 			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(343);
+				setState(329);
 				glslppStringLiteral();
 				}
 				break;
 			case 6:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(344);
+				setState(330);
 				glslppPunctuator();
 				}
 				break;
 			case 7:
 				enterOuterAlt(_localctx, 7);
 				{
-				setState(345);
+				setState(331);
 				glslppUnspecifiedToken();
 				}
 				break;
@@ -1798,12 +2184,12 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppCharacterConstantContext glslppCharacterConstant() throws RecognitionException {
 		GlslppCharacterConstantContext _localctx = new GlslppCharacterConstantContext(_ctx, getState());
-		enterRule(_localctx, 36, RULE_glslppCharacterConstant);
+		enterRule(_localctx, 42, RULE_glslppCharacterConstant);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(348);
+			setState(334);
 			_la = _input.LA(1);
 			if ( !(_la==CHARACTER_CONSTANT || _la==PREFIXED_CHARACTER_CONSTANT) ) {
 			_errHandler.recoverInline(this);
@@ -1850,12 +2236,12 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppStringLiteralContext glslppStringLiteral() throws RecognitionException {
 		GlslppStringLiteralContext _localctx = new GlslppStringLiteralContext(_ctx, getState());
-		enterRule(_localctx, 38, RULE_glslppStringLiteral);
+		enterRule(_localctx, 44, RULE_glslppStringLiteral);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(350);
+			setState(336);
 			_la = _input.LA(1);
 			if ( !(_la==STRING_LITERAL || _la==PREFIXED_STRING_LITERAL) ) {
 			_errHandler.recoverInline(this);
@@ -1902,12 +2288,12 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppHeaderNameContext glslppHeaderName() throws RecognitionException {
 		GlslppHeaderNameContext _localctx = new GlslppHeaderNameContext(_ctx, getState());
-		enterRule(_localctx, 40, RULE_glslppHeaderName);
+		enterRule(_localctx, 46, RULE_glslppHeaderName);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(352);
+			setState(338);
 			_la = _input.LA(1);
 			if ( !(_la==STRING_LITERAL || _la==STD_HEADER_NAME) ) {
 			_errHandler.recoverInline(this);
@@ -1953,11 +2339,11 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppIdentifierContext glslppIdentifier() throws RecognitionException {
 		GlslppIdentifierContext _localctx = new GlslppIdentifierContext(_ctx, getState());
-		enterRule(_localctx, 42, RULE_glslppIdentifier);
+		enterRule(_localctx, 48, RULE_glslppIdentifier);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(354);
+			setState(340);
 			match(IDENTIFIER);
 			}
 		}
@@ -1998,14 +2384,14 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppNumberContext glslppNumber() throws RecognitionException {
 		GlslppNumberContext _localctx = new GlslppNumberContext(_ctx, getState());
-		enterRule(_localctx, 44, RULE_glslppNumber);
+		enterRule(_localctx, 50, RULE_glslppNumber);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(356);
+			setState(342);
 			_la = _input.LA(1);
-			if ( !(((((_la - 230)) & ~0x3f) == 0 && ((1L << (_la - 230)) & ((1L << (FLOATCONSTANT - 230)) | (1L << (DOUBLECONSTANT - 230)) | (1L << (INTCONSTANT - 230)) | (1L << (UINTCONSTANT - 230)))) != 0)) ) {
+			if ( !(((((_la - 218)) & ~0x3f) == 0 && ((1L << (_la - 218)) & ((1L << (FLOATCONSTANT - 218)) | (1L << (DOUBLECONSTANT - 218)) | (1L << (INTCONSTANT - 218)) | (1L << (UINTCONSTANT - 218)))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -2050,17 +2436,17 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppSignContext glslppSign() throws RecognitionException {
 		GlslppSignContext _localctx = new GlslppSignContext(_ctx, getState());
-		enterRule(_localctx, 46, RULE_glslppSign);
+		enterRule(_localctx, 52, RULE_glslppSign);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(359);
+			setState(345);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==DASH || _la==PLUS) {
 				{
-				setState(358);
+				setState(344);
 				_la = _input.LA(1);
 				if ( !(_la==DASH || _la==PLUS) ) {
 				_errHandler.recoverInline(this);
@@ -2087,8 +2473,6 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public static class GlslppPunctuatorContext extends ParserRuleContext {
-		public TerminalNode HASH() { return getToken(GLSLPPParser.HASH, 0); }
-		public TerminalNode PPOP_CONCAT() { return getToken(GLSLPPParser.PPOP_CONCAT, 0); }
 		public TerminalNode LEFT_BRACKET() { return getToken(GLSLPPParser.LEFT_BRACKET, 0); }
 		public TerminalNode RIGHT_BRACKET() { return getToken(GLSLPPParser.RIGHT_BRACKET, 0); }
 		public TerminalNode LEFT_PAREN() { return getToken(GLSLPPParser.LEFT_PAREN, 0); }
@@ -2134,6 +2518,8 @@ public class GLSLPPParser extends Parser {
 		public TerminalNode XOR_ASSIGN() { return getToken(GLSLPPParser.XOR_ASSIGN, 0); }
 		public TerminalNode OR_ASSIGN() { return getToken(GLSLPPParser.OR_ASSIGN, 0); }
 		public TerminalNode COMMA() { return getToken(GLSLPPParser.COMMA, 0); }
+		public TerminalNode HASH() { return getToken(GLSLPPParser.HASH, 0); }
+		public TerminalNode PPOP_CONCAT() { return getToken(GLSLPPParser.PPOP_CONCAT, 0); }
 		public GlslppPunctuatorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -2155,333 +2541,333 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppPunctuatorContext glslppPunctuator() throws RecognitionException {
 		GlslppPunctuatorContext _localctx = new GlslppPunctuatorContext(_ctx, getState());
-		enterRule(_localctx, 48, RULE_glslppPunctuator);
+		enterRule(_localctx, 54, RULE_glslppPunctuator);
 		try {
-			setState(408);
+			setState(394);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case HASH:
+			case LEFT_BRACKET:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(361);
-				match(HASH);
-				}
-				break;
-			case PPOP_CONCAT:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(362);
-				match(PPOP_CONCAT);
-				}
-				break;
-			case LEFT_BRACKET:
-				enterOuterAlt(_localctx, 3);
-				{
-				setState(363);
+				setState(347);
 				match(LEFT_BRACKET);
 				}
 				break;
 			case RIGHT_BRACKET:
-				enterOuterAlt(_localctx, 4);
+				enterOuterAlt(_localctx, 2);
 				{
-				setState(364);
+				setState(348);
 				match(RIGHT_BRACKET);
 				}
 				break;
 			case LEFT_PAREN:
-				enterOuterAlt(_localctx, 5);
+				enterOuterAlt(_localctx, 3);
 				{
-				setState(365);
+				setState(349);
 				match(LEFT_PAREN);
 				}
 				break;
 			case RIGHT_PAREN:
-				enterOuterAlt(_localctx, 6);
+				enterOuterAlt(_localctx, 4);
 				{
-				setState(366);
+				setState(350);
 				match(RIGHT_PAREN);
 				}
 				break;
 			case LEFT_BRACE:
-				enterOuterAlt(_localctx, 7);
+				enterOuterAlt(_localctx, 5);
 				{
-				setState(367);
+				setState(351);
 				match(LEFT_BRACE);
 				}
 				break;
 			case RIGHT_BRACE:
-				enterOuterAlt(_localctx, 8);
+				enterOuterAlt(_localctx, 6);
 				{
-				setState(368);
+				setState(352);
 				match(RIGHT_BRACE);
 				}
 				break;
 			case DOT:
-				enterOuterAlt(_localctx, 9);
+				enterOuterAlt(_localctx, 7);
 				{
-				setState(369);
+				setState(353);
 				match(DOT);
 				}
 				break;
 			case INC_OP:
-				enterOuterAlt(_localctx, 10);
+				enterOuterAlt(_localctx, 8);
 				{
-				setState(370);
+				setState(354);
 				match(INC_OP);
 				}
 				break;
 			case DEC_OP:
-				enterOuterAlt(_localctx, 11);
+				enterOuterAlt(_localctx, 9);
 				{
-				setState(371);
+				setState(355);
 				match(DEC_OP);
 				}
 				break;
 			case AMPERSAND:
-				enterOuterAlt(_localctx, 12);
+				enterOuterAlt(_localctx, 10);
 				{
-				setState(372);
+				setState(356);
 				match(AMPERSAND);
 				}
 				break;
 			case STAR:
-				enterOuterAlt(_localctx, 13);
+				enterOuterAlt(_localctx, 11);
 				{
-				setState(373);
+				setState(357);
 				match(STAR);
 				}
 				break;
 			case PLUS:
-				enterOuterAlt(_localctx, 14);
+				enterOuterAlt(_localctx, 12);
 				{
-				setState(374);
+				setState(358);
 				match(PLUS);
 				}
 				break;
 			case DASH:
-				enterOuterAlt(_localctx, 15);
+				enterOuterAlt(_localctx, 13);
 				{
-				setState(375);
+				setState(359);
 				match(DASH);
 				}
 				break;
 			case TILDE:
-				enterOuterAlt(_localctx, 16);
+				enterOuterAlt(_localctx, 14);
 				{
-				setState(376);
+				setState(360);
 				match(TILDE);
 				}
 				break;
 			case BANG:
-				enterOuterAlt(_localctx, 17);
+				enterOuterAlt(_localctx, 15);
 				{
-				setState(377);
+				setState(361);
 				match(BANG);
 				}
 				break;
 			case SLASH:
-				enterOuterAlt(_localctx, 18);
+				enterOuterAlt(_localctx, 16);
 				{
-				setState(378);
+				setState(362);
 				match(SLASH);
 				}
 				break;
 			case PERCENT:
-				enterOuterAlt(_localctx, 19);
+				enterOuterAlt(_localctx, 17);
 				{
-				setState(379);
+				setState(363);
 				match(PERCENT);
 				}
 				break;
 			case LEFT_OP:
-				enterOuterAlt(_localctx, 20);
+				enterOuterAlt(_localctx, 18);
 				{
-				setState(380);
+				setState(364);
 				match(LEFT_OP);
 				}
 				break;
 			case RIGHT_OP:
-				enterOuterAlt(_localctx, 21);
+				enterOuterAlt(_localctx, 19);
 				{
-				setState(381);
+				setState(365);
 				match(RIGHT_OP);
 				}
 				break;
 			case LEFT_ANGLE:
-				enterOuterAlt(_localctx, 22);
+				enterOuterAlt(_localctx, 20);
 				{
-				setState(382);
+				setState(366);
 				match(LEFT_ANGLE);
-				setState(383);
+				setState(367);
 				match(RIGHT_ANGLE);
 				}
 				break;
 			case LE_OP:
-				enterOuterAlt(_localctx, 23);
+				enterOuterAlt(_localctx, 21);
 				{
-				setState(384);
+				setState(368);
 				match(LE_OP);
 				}
 				break;
 			case GE_OP:
-				enterOuterAlt(_localctx, 24);
+				enterOuterAlt(_localctx, 22);
 				{
-				setState(385);
+				setState(369);
 				match(GE_OP);
 				}
 				break;
 			case EQ_OP:
-				enterOuterAlt(_localctx, 25);
+				enterOuterAlt(_localctx, 23);
 				{
-				setState(386);
+				setState(370);
 				match(EQ_OP);
 				}
 				break;
 			case NE_OP:
-				enterOuterAlt(_localctx, 26);
+				enterOuterAlt(_localctx, 24);
 				{
-				setState(387);
+				setState(371);
 				match(NE_OP);
 				}
 				break;
 			case CARET:
-				enterOuterAlt(_localctx, 27);
+				enterOuterAlt(_localctx, 25);
 				{
-				setState(388);
+				setState(372);
 				match(CARET);
 				}
 				break;
 			case VERTICAL_BAR:
-				enterOuterAlt(_localctx, 28);
+				enterOuterAlt(_localctx, 26);
 				{
-				setState(389);
+				setState(373);
 				match(VERTICAL_BAR);
 				}
 				break;
 			case AND_OP:
-				enterOuterAlt(_localctx, 29);
+				enterOuterAlt(_localctx, 27);
 				{
-				setState(390);
+				setState(374);
 				match(AND_OP);
 				}
 				break;
 			case OR_OP:
-				enterOuterAlt(_localctx, 30);
+				enterOuterAlt(_localctx, 28);
 				{
-				setState(391);
+				setState(375);
 				match(OR_OP);
 				}
 				break;
 			case QUESTION:
-				enterOuterAlt(_localctx, 31);
+				enterOuterAlt(_localctx, 29);
 				{
-				setState(392);
+				setState(376);
 				match(QUESTION);
 				}
 				break;
 			case COLON:
-				enterOuterAlt(_localctx, 32);
+				enterOuterAlt(_localctx, 30);
 				{
-				setState(393);
+				setState(377);
 				match(COLON);
 				}
 				break;
 			case SEMICOLON:
-				enterOuterAlt(_localctx, 33);
+				enterOuterAlt(_localctx, 31);
 				{
-				setState(394);
+				setState(378);
 				match(SEMICOLON);
 				}
 				break;
 			case DOTS:
-				enterOuterAlt(_localctx, 34);
+				enterOuterAlt(_localctx, 32);
 				{
-				setState(395);
+				setState(379);
 				match(DOTS);
 				}
 				break;
 			case EQUAL:
-				enterOuterAlt(_localctx, 35);
+				enterOuterAlt(_localctx, 33);
 				{
-				setState(396);
+				setState(380);
 				match(EQUAL);
 				}
 				break;
 			case MUL_ASSIGN:
-				enterOuterAlt(_localctx, 36);
+				enterOuterAlt(_localctx, 34);
 				{
-				setState(397);
+				setState(381);
 				match(MUL_ASSIGN);
 				}
 				break;
 			case DIV_ASSIGN:
-				enterOuterAlt(_localctx, 37);
+				enterOuterAlt(_localctx, 35);
 				{
-				setState(398);
+				setState(382);
 				match(DIV_ASSIGN);
 				}
 				break;
 			case MOD_ASSIGN:
-				enterOuterAlt(_localctx, 38);
+				enterOuterAlt(_localctx, 36);
 				{
-				setState(399);
+				setState(383);
 				match(MOD_ASSIGN);
 				}
 				break;
 			case ADD_ASSIGN:
-				enterOuterAlt(_localctx, 39);
+				enterOuterAlt(_localctx, 37);
 				{
-				setState(400);
+				setState(384);
 				match(ADD_ASSIGN);
 				}
 				break;
 			case SUB_ASSIGN:
-				enterOuterAlt(_localctx, 40);
+				enterOuterAlt(_localctx, 38);
 				{
-				setState(401);
+				setState(385);
 				match(SUB_ASSIGN);
 				}
 				break;
 			case LEFT_ASSIGN:
-				enterOuterAlt(_localctx, 41);
+				enterOuterAlt(_localctx, 39);
 				{
-				setState(402);
+				setState(386);
 				match(LEFT_ASSIGN);
 				}
 				break;
 			case RIGHT_ASSIGN:
-				enterOuterAlt(_localctx, 42);
+				enterOuterAlt(_localctx, 40);
 				{
-				setState(403);
+				setState(387);
 				match(RIGHT_ASSIGN);
 				}
 				break;
 			case AND_ASSIGN:
-				enterOuterAlt(_localctx, 43);
+				enterOuterAlt(_localctx, 41);
 				{
-				setState(404);
+				setState(388);
 				match(AND_ASSIGN);
 				}
 				break;
 			case XOR_ASSIGN:
-				enterOuterAlt(_localctx, 44);
+				enterOuterAlt(_localctx, 42);
 				{
-				setState(405);
+				setState(389);
 				match(XOR_ASSIGN);
 				}
 				break;
 			case OR_ASSIGN:
-				enterOuterAlt(_localctx, 45);
+				enterOuterAlt(_localctx, 43);
 				{
-				setState(406);
+				setState(390);
 				match(OR_ASSIGN);
 				}
 				break;
 			case COMMA:
+				enterOuterAlt(_localctx, 44);
+				{
+				setState(391);
+				match(COMMA);
+				}
+				break;
+			case HASH:
+				enterOuterAlt(_localctx, 45);
+				{
+				setState(392);
+				match(HASH);
+				}
+				break;
+			case PPOP_CONCAT:
 				enterOuterAlt(_localctx, 46);
 				{
-				setState(407);
-				match(COMMA);
+				setState(393);
+				match(PPOP_CONCAT);
 				}
 				break;
 			default:
@@ -2510,8 +2896,6 @@ public class GLSLPPParser extends Parser {
 		public TerminalNode CHARACTER_CONSTANT() { return getToken(GLSLPPParser.CHARACTER_CONSTANT, 0); }
 		public TerminalNode PREFIXED_CHARACTER_CONSTANT() { return getToken(GLSLPPParser.PREFIXED_CHARACTER_CONSTANT, 0); }
 		public TerminalNode PREFIXED_STRING_LITERAL() { return getToken(GLSLPPParser.PREFIXED_STRING_LITERAL, 0); }
-		public TerminalNode HASH() { return getToken(GLSLPPParser.HASH, 0); }
-		public TerminalNode PPOP_CONCAT() { return getToken(GLSLPPParser.PPOP_CONCAT, 0); }
 		public TerminalNode LEFT_BRACKET() { return getToken(GLSLPPParser.LEFT_BRACKET, 0); }
 		public TerminalNode RIGHT_BRACKET() { return getToken(GLSLPPParser.RIGHT_BRACKET, 0); }
 		public TerminalNode LEFT_PAREN() { return getToken(GLSLPPParser.LEFT_PAREN, 0); }
@@ -2558,6 +2942,8 @@ public class GLSLPPParser extends Parser {
 		public TerminalNode COMMA() { return getToken(GLSLPPParser.COMMA, 0); }
 		public TerminalNode WHITESPACE() { return getToken(GLSLPPParser.WHITESPACE, 0); }
 		public TerminalNode CRLF() { return getToken(GLSLPPParser.CRLF, 0); }
+		public TerminalNode HASH() { return getToken(GLSLPPParser.HASH, 0); }
+		public TerminalNode PPOP_CONCAT() { return getToken(GLSLPPParser.PPOP_CONCAT, 0); }
 		public GlslppUnspecifiedTokenContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -2579,14 +2965,14 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslppUnspecifiedTokenContext glslppUnspecifiedToken() throws RecognitionException {
 		GlslppUnspecifiedTokenContext _localctx = new GlslppUnspecifiedTokenContext(_ctx, getState());
-		enterRule(_localctx, 50, RULE_glslppUnspecifiedToken);
+		enterRule(_localctx, 56, RULE_glslppUnspecifiedToken);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(410);
+			setState(396);
 			_la = _input.LA(1);
-			if ( _la <= 0 || (((((_la - 229)) & ~0x3f) == 0 && ((1L << (_la - 229)) & ((1L << (IDENTIFIER - 229)) | (1L << (FLOATCONSTANT - 229)) | (1L << (DOUBLECONSTANT - 229)) | (1L << (INTCONSTANT - 229)) | (1L << (UINTCONSTANT - 229)) | (1L << (LEFT_OP - 229)) | (1L << (RIGHT_OP - 229)) | (1L << (INC_OP - 229)) | (1L << (DEC_OP - 229)) | (1L << (LE_OP - 229)) | (1L << (GE_OP - 229)) | (1L << (EQ_OP - 229)) | (1L << (NE_OP - 229)) | (1L << (AND_OP - 229)) | (1L << (OR_OP - 229)) | (1L << (MUL_ASSIGN - 229)) | (1L << (DIV_ASSIGN - 229)) | (1L << (ADD_ASSIGN - 229)) | (1L << (MOD_ASSIGN - 229)) | (1L << (LEFT_ASSIGN - 229)) | (1L << (RIGHT_ASSIGN - 229)) | (1L << (AND_ASSIGN - 229)) | (1L << (XOR_ASSIGN - 229)) | (1L << (OR_ASSIGN - 229)) | (1L << (SUB_ASSIGN - 229)) | (1L << (LEFT_PAREN - 229)) | (1L << (RIGHT_PAREN - 229)) | (1L << (LEFT_BRACKET - 229)) | (1L << (RIGHT_BRACKET - 229)) | (1L << (LEFT_BRACE - 229)) | (1L << (RIGHT_BRACE - 229)) | (1L << (DOT - 229)) | (1L << (COMMA - 229)) | (1L << (COLON - 229)) | (1L << (EQUAL - 229)) | (1L << (SEMICOLON - 229)) | (1L << (BANG - 229)) | (1L << (DASH - 229)) | (1L << (TILDE - 229)) | (1L << (PLUS - 229)) | (1L << (STAR - 229)) | (1L << (SLASH - 229)) | (1L << (PERCENT - 229)) | (1L << (LEFT_ANGLE - 229)) | (1L << (VERTICAL_BAR - 229)) | (1L << (CARET - 229)) | (1L << (AMPERSAND - 229)) | (1L << (QUESTION - 229)) | (1L << (HASH - 229)) | (1L << (PPOP_CONCAT - 229)) | (1L << (DOTS - 229)) | (1L << (CRLF - 229)) | (1L << (WHITESPACE - 229)) | (1L << (CHARACTER_CONSTANT - 229)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 229)) | (1L << (STRING_LITERAL - 229)) | (1L << (STD_HEADER_NAME - 229)))) != 0) || _la==PREFIXED_STRING_LITERAL) ) {
+			if ( _la <= 0 || (((((_la - 211)) & ~0x3f) == 0 && ((1L << (_la - 211)) & ((1L << (WHITESPACE - 211)) | (1L << (CRLF - 211)) | (1L << (FLOATCONSTANT - 211)) | (1L << (DOUBLECONSTANT - 211)) | (1L << (INTCONSTANT - 211)) | (1L << (UINTCONSTANT - 211)) | (1L << (CHARACTER_CONSTANT - 211)) | (1L << (PREFIXED_CHARACTER_CONSTANT - 211)) | (1L << (STRING_LITERAL - 211)) | (1L << (STD_HEADER_NAME - 211)) | (1L << (PREFIXED_STRING_LITERAL - 211)) | (1L << (LEFT_OP - 211)) | (1L << (RIGHT_OP - 211)) | (1L << (INC_OP - 211)) | (1L << (DEC_OP - 211)) | (1L << (LE_OP - 211)) | (1L << (GE_OP - 211)) | (1L << (EQ_OP - 211)) | (1L << (NE_OP - 211)) | (1L << (AND_OP - 211)) | (1L << (OR_OP - 211)) | (1L << (MUL_ASSIGN - 211)) | (1L << (DIV_ASSIGN - 211)) | (1L << (ADD_ASSIGN - 211)) | (1L << (MOD_ASSIGN - 211)) | (1L << (LEFT_ASSIGN - 211)) | (1L << (RIGHT_ASSIGN - 211)) | (1L << (AND_ASSIGN - 211)) | (1L << (XOR_ASSIGN - 211)) | (1L << (OR_ASSIGN - 211)) | (1L << (SUB_ASSIGN - 211)) | (1L << (LEFT_PAREN - 211)) | (1L << (RIGHT_PAREN - 211)) | (1L << (LEFT_BRACKET - 211)) | (1L << (RIGHT_BRACKET - 211)) | (1L << (LEFT_BRACE - 211)) | (1L << (RIGHT_BRACE - 211)) | (1L << (DOT - 211)) | (1L << (COMMA - 211)) | (1L << (COLON - 211)) | (1L << (EQUAL - 211)) | (1L << (SEMICOLON - 211)) | (1L << (BANG - 211)) | (1L << (DASH - 211)) | (1L << (TILDE - 211)) | (1L << (PLUS - 211)) | (1L << (STAR - 211)) | (1L << (SLASH - 211)) | (1L << (PERCENT - 211)) | (1L << (LEFT_ANGLE - 211)) | (1L << (VERTICAL_BAR - 211)) | (1L << (CARET - 211)) | (1L << (AMPERSAND - 211)) | (1L << (QUESTION - 211)) | (1L << (HASH - 211)) | (1L << (PPOP_CONCAT - 211)) | (1L << (DOTS - 211)))) != 0) || _la==IDENTIFIER) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -2630,11 +3016,11 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslFieldSelectionContext glslFieldSelection() throws RecognitionException {
 		GlslFieldSelectionContext _localctx = new GlslFieldSelectionContext(_ctx, getState());
-		enterRule(_localctx, 52, RULE_glslFieldSelection);
+		enterRule(_localctx, 58, RULE_glslFieldSelection);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(412);
+			setState(398);
 			match(IDENTIFIER);
 			}
 		}
@@ -2672,11 +3058,11 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslVariableIdentifierContext glslVariableIdentifier() throws RecognitionException {
 		GlslVariableIdentifierContext _localctx = new GlslVariableIdentifierContext(_ctx, getState());
-		enterRule(_localctx, 54, RULE_glslVariableIdentifier);
+		enterRule(_localctx, 60, RULE_glslVariableIdentifier);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(414);
+			setState(400);
 			match(IDENTIFIER);
 			}
 		}
@@ -2714,11 +3100,11 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslTypeNameContext glslTypeName() throws RecognitionException {
 		GlslTypeNameContext _localctx = new GlslTypeNameContext(_ctx, getState());
-		enterRule(_localctx, 56, RULE_glslTypeName);
+		enterRule(_localctx, 62, RULE_glslTypeName);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(416);
+			setState(402);
 			match(IDENTIFIER);
 			}
 		}
@@ -2776,61 +3162,61 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslPrimaryExpressionContext glslPrimaryExpression() throws RecognitionException {
 		GlslPrimaryExpressionContext _localctx = new GlslPrimaryExpressionContext(_ctx, getState());
-		enterRule(_localctx, 58, RULE_glslPrimaryExpression);
+		enterRule(_localctx, 64, RULE_glslPrimaryExpression);
 		try {
-			setState(428);
+			setState(414);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case IDENTIFIER:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(418);
+				setState(404);
 				glslVariableIdentifier();
 				}
 				break;
 			case INTCONSTANT:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(419);
+				setState(405);
 				glslIntegerConstant();
 				}
 				break;
 			case UINTCONSTANT:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(420);
+				setState(406);
 				glslUnsignedIntegerConstant();
 				}
 				break;
 			case FLOATCONSTANT:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(421);
+				setState(407);
 				glslFloatConstant();
 				}
 				break;
 			case DOUBLECONSTANT:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(422);
+				setState(408);
 				glslDoubleConstant();
 				}
 				break;
 			case BOOLCONSTANT:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(423);
+				setState(409);
 				match(BOOLCONSTANT);
 				}
 				break;
 			case LEFT_PAREN:
 				enterOuterAlt(_localctx, 7);
 				{
-				setState(424);
+				setState(410);
 				match(LEFT_PAREN);
-				setState(425);
+				setState(411);
 				glslExpression(0);
-				setState(426);
+				setState(412);
 				match(RIGHT_PAREN);
 				}
 				break;
@@ -2872,11 +3258,11 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslIntegerConstantContext glslIntegerConstant() throws RecognitionException {
 		GlslIntegerConstantContext _localctx = new GlslIntegerConstantContext(_ctx, getState());
-		enterRule(_localctx, 60, RULE_glslIntegerConstant);
+		enterRule(_localctx, 66, RULE_glslIntegerConstant);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(430);
+			setState(416);
 			match(INTCONSTANT);
 			}
 		}
@@ -2914,11 +3300,11 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslUnsignedIntegerConstantContext glslUnsignedIntegerConstant() throws RecognitionException {
 		GlslUnsignedIntegerConstantContext _localctx = new GlslUnsignedIntegerConstantContext(_ctx, getState());
-		enterRule(_localctx, 62, RULE_glslUnsignedIntegerConstant);
+		enterRule(_localctx, 68, RULE_glslUnsignedIntegerConstant);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(432);
+			setState(418);
 			match(UINTCONSTANT);
 			}
 		}
@@ -2956,11 +3342,11 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslFloatConstantContext glslFloatConstant() throws RecognitionException {
 		GlslFloatConstantContext _localctx = new GlslFloatConstantContext(_ctx, getState());
-		enterRule(_localctx, 64, RULE_glslFloatConstant);
+		enterRule(_localctx, 70, RULE_glslFloatConstant);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(434);
+			setState(420);
 			match(FLOATCONSTANT);
 			}
 		}
@@ -2998,11 +3384,11 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslDoubleConstantContext glslDoubleConstant() throws RecognitionException {
 		GlslDoubleConstantContext _localctx = new GlslDoubleConstantContext(_ctx, getState());
-		enterRule(_localctx, 66, RULE_glslDoubleConstant);
+		enterRule(_localctx, 72, RULE_glslDoubleConstant);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(436);
+			setState(422);
 			match(DOUBLECONSTANT);
 			}
 		}
@@ -3072,53 +3458,53 @@ public class GLSLPPParser extends Parser {
 		int _parentState = getState();
 		GlslPostfixExpressionContext _localctx = new GlslPostfixExpressionContext(_ctx, _parentState);
 		GlslPostfixExpressionContext _prevctx = _localctx;
-		int _startState = 68;
-		enterRecursionRule(_localctx, 68, RULE_glslPostfixExpression, _p);
+		int _startState = 74;
+		enterRecursionRule(_localctx, 74, RULE_glslPostfixExpression, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(443);
+			setState(429);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,27,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,29,_ctx) ) {
 			case 1:
 				{
-				setState(439);
+				setState(425);
 				glslPrimaryExpression();
 				}
 				break;
 			case 2:
 				{
-				setState(440);
+				setState(426);
 				glslTypeSpecifier();
-				setState(441);
+				setState(427);
 				glslConstructorCallArguments();
 				}
 				break;
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(461);
+			setState(447);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,29,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,31,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(459);
+					setState(445);
 					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,28,_ctx) ) {
+					switch ( getInterpreter().adaptivePredict(_input,30,_ctx) ) {
 					case 1:
 						{
 						_localctx = new GlslPostfixExpressionContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_glslPostfixExpression);
-						setState(445);
+						setState(431);
 						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
-						setState(446);
+						setState(432);
 						match(LEFT_BRACKET);
-						setState(447);
+						setState(433);
 						glslIntegerExpression();
-						setState(448);
+						setState(434);
 						match(RIGHT_BRACKET);
 						}
 						break;
@@ -3126,9 +3512,9 @@ public class GLSLPPParser extends Parser {
 						{
 						_localctx = new GlslPostfixExpressionContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_glslPostfixExpression);
-						setState(450);
+						setState(436);
 						if (!(precpred(_ctx, 5))) throw new FailedPredicateException(this, "precpred(_ctx, 5)");
-						setState(451);
+						setState(437);
 						glslFunctionCallArguments();
 						}
 						break;
@@ -3136,11 +3522,11 @@ public class GLSLPPParser extends Parser {
 						{
 						_localctx = new GlslPostfixExpressionContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_glslPostfixExpression);
-						setState(452);
+						setState(438);
 						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
-						setState(453);
+						setState(439);
 						match(DOT);
-						setState(454);
+						setState(440);
 						glslFieldSelection();
 						}
 						break;
@@ -3148,9 +3534,9 @@ public class GLSLPPParser extends Parser {
 						{
 						_localctx = new GlslPostfixExpressionContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_glslPostfixExpression);
-						setState(455);
+						setState(441);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(456);
+						setState(442);
 						match(INC_OP);
 						}
 						break;
@@ -3158,18 +3544,18 @@ public class GLSLPPParser extends Parser {
 						{
 						_localctx = new GlslPostfixExpressionContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_glslPostfixExpression);
-						setState(457);
+						setState(443);
 						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-						setState(458);
+						setState(444);
 						match(DEC_OP);
 						}
 						break;
 					}
 					} 
 				}
-				setState(463);
+				setState(449);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,29,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,31,_ctx);
 			}
 			}
 		}
@@ -3209,11 +3595,11 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslFunctionCallArgumentsContext glslFunctionCallArguments() throws RecognitionException {
 		GlslFunctionCallArgumentsContext _localctx = new GlslFunctionCallArgumentsContext(_ctx, getState());
-		enterRule(_localctx, 70, RULE_glslFunctionCallArguments);
+		enterRule(_localctx, 76, RULE_glslFunctionCallArguments);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(464);
+			setState(450);
 			glslCallArguments();
 			}
 		}
@@ -3253,11 +3639,11 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslConstructorCallArgumentsContext glslConstructorCallArguments() throws RecognitionException {
 		GlslConstructorCallArgumentsContext _localctx = new GlslConstructorCallArgumentsContext(_ctx, getState());
-		enterRule(_localctx, 72, RULE_glslConstructorCallArguments);
+		enterRule(_localctx, 78, RULE_glslConstructorCallArguments);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(466);
+			setState(452);
 			glslCallArguments();
 			}
 		}
@@ -3307,55 +3693,55 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslCallArgumentsContext glslCallArguments() throws RecognitionException {
 		GlslCallArgumentsContext _localctx = new GlslCallArgumentsContext(_ctx, getState());
-		enterRule(_localctx, 74, RULE_glslCallArguments);
+		enterRule(_localctx, 80, RULE_glslCallArguments);
 		int _la;
 		try {
-			setState(483);
+			setState(469);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,32,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,34,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(468);
+				setState(454);
 				match(LEFT_PAREN);
-				setState(469);
+				setState(455);
 				glslAssignmentExpression();
-				setState(472); 
+				setState(458); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				do {
 					{
 					{
-					setState(470);
+					setState(456);
 					match(COMMA);
-					setState(471);
+					setState(457);
 					glslAssignmentExpression();
 					}
 					}
-					setState(474); 
+					setState(460); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				} while ( _la==COMMA );
-				setState(476);
+				setState(462);
 				match(RIGHT_PAREN);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(478);
+				setState(464);
 				match(LEFT_PAREN);
-				setState(480);
+				setState(466);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==VOID) {
 					{
-					setState(479);
+					setState(465);
 					match(VOID);
 					}
 				}
 
-				setState(482);
+				setState(468);
 				match(RIGHT_PAREN);
 				}
 				break;
@@ -3397,11 +3783,11 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslIntegerExpressionContext glslIntegerExpression() throws RecognitionException {
 		GlslIntegerExpressionContext _localctx = new GlslIntegerExpressionContext(_ctx, getState());
-		enterRule(_localctx, 76, RULE_glslIntegerExpression);
+		enterRule(_localctx, 82, RULE_glslIntegerExpression);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(485);
+			setState(471);
 			glslExpression(0);
 			}
 		}
@@ -3428,6 +3814,10 @@ public class GLSLPPParser extends Parser {
 		public GlslUnaryOperatorContext glslUnaryOperator() {
 			return getRuleContext(GlslUnaryOperatorContext.class,0);
 		}
+		public TerminalNode PPOP_DEFINED() { return getToken(GLSLPPParser.PPOP_DEFINED, 0); }
+		public TerminalNode IDENTIFIER() { return getToken(GLSLPPParser.IDENTIFIER, 0); }
+		public TerminalNode LEFT_PAREN() { return getToken(GLSLPPParser.LEFT_PAREN, 0); }
+		public TerminalNode RIGHT_PAREN() { return getToken(GLSLPPParser.RIGHT_PAREN, 0); }
 		public GlslUnaryExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -3449,9 +3839,9 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslUnaryExpressionContext glslUnaryExpression() throws RecognitionException {
 		GlslUnaryExpressionContext _localctx = new GlslUnaryExpressionContext(_ctx, getState());
-		enterRule(_localctx, 78, RULE_glslUnaryExpression);
+		enterRule(_localctx, 84, RULE_glslUnaryExpression);
 		try {
-			setState(495);
+			setState(488);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case ATOMIC_UINT:
@@ -3573,36 +3963,36 @@ public class GLSLPPParser extends Parser {
 			case IMAGE2DMSARRAY:
 			case IIMAGE2DMSARRAY:
 			case UIMAGE2DMSARRAY:
-			case STRUCT:
 			case SAMPLEREXTERNALOES:
+			case STRUCT:
 			case BOOLCONSTANT:
-			case IDENTIFIER:
 			case FLOATCONSTANT:
 			case DOUBLECONSTANT:
 			case INTCONSTANT:
 			case UINTCONSTANT:
 			case LEFT_PAREN:
+			case IDENTIFIER:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(487);
+				setState(473);
 				glslPostfixExpression(0);
 				}
 				break;
 			case INC_OP:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(488);
+				setState(474);
 				match(INC_OP);
-				setState(489);
+				setState(475);
 				glslUnaryExpression();
 				}
 				break;
 			case DEC_OP:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(490);
+				setState(476);
 				match(DEC_OP);
-				setState(491);
+				setState(477);
 				glslUnaryExpression();
 				}
 				break;
@@ -3612,10 +4002,41 @@ public class GLSLPPParser extends Parser {
 			case PLUS:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(492);
+				setState(478);
 				glslUnaryOperator();
-				setState(493);
+				setState(479);
 				glslUnaryExpression();
+				}
+				break;
+			case PPOP_DEFINED:
+				enterOuterAlt(_localctx, 5);
+				{
+				setState(481);
+				match(PPOP_DEFINED);
+				setState(486);
+				_errHandler.sync(this);
+				switch (_input.LA(1)) {
+				case LEFT_PAREN:
+					{
+					{
+					setState(482);
+					match(LEFT_PAREN);
+					setState(483);
+					match(IDENTIFIER);
+					setState(484);
+					match(RIGHT_PAREN);
+					}
+					}
+					break;
+				case IDENTIFIER:
+					{
+					setState(485);
+					match(IDENTIFIER);
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
 				}
 				break;
 			default:
@@ -3659,14 +4080,14 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslUnaryOperatorContext glslUnaryOperator() throws RecognitionException {
 		GlslUnaryOperatorContext _localctx = new GlslUnaryOperatorContext(_ctx, getState());
-		enterRule(_localctx, 80, RULE_glslUnaryOperator);
+		enterRule(_localctx, 86, RULE_glslUnaryOperator);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(497);
+			setState(490);
 			_la = _input.LA(1);
-			if ( !(((((_la - 266)) & ~0x3f) == 0 && ((1L << (_la - 266)) & ((1L << (BANG - 266)) | (1L << (DASH - 266)) | (1L << (TILDE - 266)) | (1L << (PLUS - 266)))) != 0)) ) {
+			if ( !(((((_la - 259)) & ~0x3f) == 0 && ((1L << (_la - 259)) & ((1L << (BANG - 259)) | (1L << (DASH - 259)) | (1L << (TILDE - 259)) | (1L << (PLUS - 259)))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -3725,37 +4146,37 @@ public class GLSLPPParser extends Parser {
 		int _parentState = getState();
 		GlslMultiplicativeExpressionContext _localctx = new GlslMultiplicativeExpressionContext(_ctx, _parentState);
 		GlslMultiplicativeExpressionContext _prevctx = _localctx;
-		int _startState = 82;
-		enterRecursionRule(_localctx, 82, RULE_glslMultiplicativeExpression, _p);
+		int _startState = 88;
+		enterRecursionRule(_localctx, 88, RULE_glslMultiplicativeExpression, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(500);
+			setState(493);
 			glslUnaryExpression();
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(513);
+			setState(506);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,35,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,38,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(511);
+					setState(504);
 					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,34,_ctx) ) {
+					switch ( getInterpreter().adaptivePredict(_input,37,_ctx) ) {
 					case 1:
 						{
 						_localctx = new GlslMultiplicativeExpressionContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_glslMultiplicativeExpression);
-						setState(502);
+						setState(495);
 						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
-						setState(503);
+						setState(496);
 						match(STAR);
-						setState(504);
+						setState(497);
 						glslUnaryExpression();
 						}
 						break;
@@ -3763,11 +4184,11 @@ public class GLSLPPParser extends Parser {
 						{
 						_localctx = new GlslMultiplicativeExpressionContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_glslMultiplicativeExpression);
-						setState(505);
+						setState(498);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(506);
+						setState(499);
 						match(SLASH);
-						setState(507);
+						setState(500);
 						glslUnaryExpression();
 						}
 						break;
@@ -3775,20 +4196,20 @@ public class GLSLPPParser extends Parser {
 						{
 						_localctx = new GlslMultiplicativeExpressionContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_glslMultiplicativeExpression);
-						setState(508);
+						setState(501);
 						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-						setState(509);
+						setState(502);
 						match(PERCENT);
-						setState(510);
+						setState(503);
 						glslUnaryExpression();
 						}
 						break;
 					}
 					} 
 				}
-				setState(515);
+				setState(508);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,35,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,38,_ctx);
 			}
 			}
 		}
@@ -3840,37 +4261,37 @@ public class GLSLPPParser extends Parser {
 		int _parentState = getState();
 		GlslAdditiveExpressionContext _localctx = new GlslAdditiveExpressionContext(_ctx, _parentState);
 		GlslAdditiveExpressionContext _prevctx = _localctx;
-		int _startState = 84;
-		enterRecursionRule(_localctx, 84, RULE_glslAdditiveExpression, _p);
+		int _startState = 90;
+		enterRecursionRule(_localctx, 90, RULE_glslAdditiveExpression, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(517);
+			setState(510);
 			glslMultiplicativeExpression(0);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(527);
+			setState(520);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,37,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,40,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(525);
+					setState(518);
 					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,36,_ctx) ) {
+					switch ( getInterpreter().adaptivePredict(_input,39,_ctx) ) {
 					case 1:
 						{
 						_localctx = new GlslAdditiveExpressionContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_glslAdditiveExpression);
-						setState(519);
+						setState(512);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(520);
+						setState(513);
 						match(PLUS);
-						setState(521);
+						setState(514);
 						glslMultiplicativeExpression(0);
 						}
 						break;
@@ -3878,20 +4299,20 @@ public class GLSLPPParser extends Parser {
 						{
 						_localctx = new GlslAdditiveExpressionContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_glslAdditiveExpression);
-						setState(522);
+						setState(515);
 						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-						setState(523);
+						setState(516);
 						match(DASH);
-						setState(524);
+						setState(517);
 						glslMultiplicativeExpression(0);
 						}
 						break;
 					}
 					} 
 				}
-				setState(529);
+				setState(522);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,37,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,40,_ctx);
 			}
 			}
 		}
@@ -3943,37 +4364,37 @@ public class GLSLPPParser extends Parser {
 		int _parentState = getState();
 		GlslShiftExpressionContext _localctx = new GlslShiftExpressionContext(_ctx, _parentState);
 		GlslShiftExpressionContext _prevctx = _localctx;
-		int _startState = 86;
-		enterRecursionRule(_localctx, 86, RULE_glslShiftExpression, _p);
+		int _startState = 92;
+		enterRecursionRule(_localctx, 92, RULE_glslShiftExpression, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(531);
+			setState(524);
 			glslAdditiveExpression(0);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(541);
+			setState(534);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,39,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,42,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(539);
+					setState(532);
 					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,38,_ctx) ) {
+					switch ( getInterpreter().adaptivePredict(_input,41,_ctx) ) {
 					case 1:
 						{
 						_localctx = new GlslShiftExpressionContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_glslShiftExpression);
-						setState(533);
+						setState(526);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(534);
+						setState(527);
 						match(LEFT_OP);
-						setState(535);
+						setState(528);
 						glslAdditiveExpression(0);
 						}
 						break;
@@ -3981,20 +4402,20 @@ public class GLSLPPParser extends Parser {
 						{
 						_localctx = new GlslShiftExpressionContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_glslShiftExpression);
-						setState(536);
+						setState(529);
 						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-						setState(537);
+						setState(530);
 						match(RIGHT_OP);
-						setState(538);
+						setState(531);
 						glslAdditiveExpression(0);
 						}
 						break;
 					}
 					} 
 				}
-				setState(543);
+				setState(536);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,39,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,42,_ctx);
 			}
 			}
 		}
@@ -4048,37 +4469,37 @@ public class GLSLPPParser extends Parser {
 		int _parentState = getState();
 		GlslRelationalExpressionContext _localctx = new GlslRelationalExpressionContext(_ctx, _parentState);
 		GlslRelationalExpressionContext _prevctx = _localctx;
-		int _startState = 88;
-		enterRecursionRule(_localctx, 88, RULE_glslRelationalExpression, _p);
+		int _startState = 94;
+		enterRecursionRule(_localctx, 94, RULE_glslRelationalExpression, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(545);
+			setState(538);
 			glslShiftExpression(0);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(561);
+			setState(554);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,41,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,44,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(559);
+					setState(552);
 					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,40,_ctx) ) {
+					switch ( getInterpreter().adaptivePredict(_input,43,_ctx) ) {
 					case 1:
 						{
 						_localctx = new GlslRelationalExpressionContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_glslRelationalExpression);
-						setState(547);
+						setState(540);
 						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
-						setState(548);
+						setState(541);
 						match(LEFT_ANGLE);
-						setState(549);
+						setState(542);
 						glslShiftExpression(0);
 						}
 						break;
@@ -4086,11 +4507,11 @@ public class GLSLPPParser extends Parser {
 						{
 						_localctx = new GlslRelationalExpressionContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_glslRelationalExpression);
-						setState(550);
+						setState(543);
 						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
-						setState(551);
+						setState(544);
 						match(RIGHT_ANGLE);
-						setState(552);
+						setState(545);
 						glslShiftExpression(0);
 						}
 						break;
@@ -4098,11 +4519,11 @@ public class GLSLPPParser extends Parser {
 						{
 						_localctx = new GlslRelationalExpressionContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_glslRelationalExpression);
-						setState(553);
+						setState(546);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(554);
+						setState(547);
 						match(LE_OP);
-						setState(555);
+						setState(548);
 						glslShiftExpression(0);
 						}
 						break;
@@ -4110,20 +4531,20 @@ public class GLSLPPParser extends Parser {
 						{
 						_localctx = new GlslRelationalExpressionContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_glslRelationalExpression);
-						setState(556);
+						setState(549);
 						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-						setState(557);
+						setState(550);
 						match(GE_OP);
-						setState(558);
+						setState(551);
 						glslShiftExpression(0);
 						}
 						break;
 					}
 					} 
 				}
-				setState(563);
+				setState(556);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,41,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,44,_ctx);
 			}
 			}
 		}
@@ -4175,37 +4596,37 @@ public class GLSLPPParser extends Parser {
 		int _parentState = getState();
 		GlslEqualityExpressionContext _localctx = new GlslEqualityExpressionContext(_ctx, _parentState);
 		GlslEqualityExpressionContext _prevctx = _localctx;
-		int _startState = 90;
-		enterRecursionRule(_localctx, 90, RULE_glslEqualityExpression, _p);
+		int _startState = 96;
+		enterRecursionRule(_localctx, 96, RULE_glslEqualityExpression, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(565);
+			setState(558);
 			glslRelationalExpression(0);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(575);
+			setState(568);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,43,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,46,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(573);
+					setState(566);
 					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,42,_ctx) ) {
+					switch ( getInterpreter().adaptivePredict(_input,45,_ctx) ) {
 					case 1:
 						{
 						_localctx = new GlslEqualityExpressionContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_glslEqualityExpression);
-						setState(567);
+						setState(560);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(568);
+						setState(561);
 						match(EQ_OP);
-						setState(569);
+						setState(562);
 						glslRelationalExpression(0);
 						}
 						break;
@@ -4213,20 +4634,20 @@ public class GLSLPPParser extends Parser {
 						{
 						_localctx = new GlslEqualityExpressionContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_glslEqualityExpression);
-						setState(570);
+						setState(563);
 						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-						setState(571);
+						setState(564);
 						match(NE_OP);
-						setState(572);
+						setState(565);
 						glslRelationalExpression(0);
 						}
 						break;
 					}
 					} 
 				}
-				setState(577);
+				setState(570);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,43,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,46,_ctx);
 			}
 			}
 		}
@@ -4277,20 +4698,20 @@ public class GLSLPPParser extends Parser {
 		int _parentState = getState();
 		GlslAndExpressionContext _localctx = new GlslAndExpressionContext(_ctx, _parentState);
 		GlslAndExpressionContext _prevctx = _localctx;
-		int _startState = 92;
-		enterRecursionRule(_localctx, 92, RULE_glslAndExpression, _p);
+		int _startState = 98;
+		enterRecursionRule(_localctx, 98, RULE_glslAndExpression, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(579);
+			setState(572);
 			glslEqualityExpression(0);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(586);
+			setState(579);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,44,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,47,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
@@ -4299,18 +4720,18 @@ public class GLSLPPParser extends Parser {
 					{
 					_localctx = new GlslAndExpressionContext(_parentctx, _parentState);
 					pushNewRecursionContext(_localctx, _startState, RULE_glslAndExpression);
-					setState(581);
+					setState(574);
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(582);
+					setState(575);
 					match(AMPERSAND);
-					setState(583);
+					setState(576);
 					glslEqualityExpression(0);
 					}
 					} 
 				}
-				setState(588);
+				setState(581);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,44,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,47,_ctx);
 			}
 			}
 		}
@@ -4361,20 +4782,20 @@ public class GLSLPPParser extends Parser {
 		int _parentState = getState();
 		GlslExclusiveOrExpressionContext _localctx = new GlslExclusiveOrExpressionContext(_ctx, _parentState);
 		GlslExclusiveOrExpressionContext _prevctx = _localctx;
-		int _startState = 94;
-		enterRecursionRule(_localctx, 94, RULE_glslExclusiveOrExpression, _p);
+		int _startState = 100;
+		enterRecursionRule(_localctx, 100, RULE_glslExclusiveOrExpression, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(590);
+			setState(583);
 			glslAndExpression(0);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(597);
+			setState(590);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,45,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,48,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
@@ -4383,18 +4804,18 @@ public class GLSLPPParser extends Parser {
 					{
 					_localctx = new GlslExclusiveOrExpressionContext(_parentctx, _parentState);
 					pushNewRecursionContext(_localctx, _startState, RULE_glslExclusiveOrExpression);
-					setState(592);
+					setState(585);
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(593);
+					setState(586);
 					match(CARET);
-					setState(594);
+					setState(587);
 					glslAndExpression(0);
 					}
 					} 
 				}
-				setState(599);
+				setState(592);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,45,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,48,_ctx);
 			}
 			}
 		}
@@ -4445,20 +4866,20 @@ public class GLSLPPParser extends Parser {
 		int _parentState = getState();
 		GlslInclusiveOrExpressionContext _localctx = new GlslInclusiveOrExpressionContext(_ctx, _parentState);
 		GlslInclusiveOrExpressionContext _prevctx = _localctx;
-		int _startState = 96;
-		enterRecursionRule(_localctx, 96, RULE_glslInclusiveOrExpression, _p);
+		int _startState = 102;
+		enterRecursionRule(_localctx, 102, RULE_glslInclusiveOrExpression, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(601);
+			setState(594);
 			glslExclusiveOrExpression(0);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(608);
+			setState(601);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,46,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,49,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
@@ -4467,18 +4888,18 @@ public class GLSLPPParser extends Parser {
 					{
 					_localctx = new GlslInclusiveOrExpressionContext(_parentctx, _parentState);
 					pushNewRecursionContext(_localctx, _startState, RULE_glslInclusiveOrExpression);
-					setState(603);
+					setState(596);
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(604);
+					setState(597);
 					match(VERTICAL_BAR);
-					setState(605);
+					setState(598);
 					glslExclusiveOrExpression(0);
 					}
 					} 
 				}
-				setState(610);
+				setState(603);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,46,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,49,_ctx);
 			}
 			}
 		}
@@ -4529,20 +4950,20 @@ public class GLSLPPParser extends Parser {
 		int _parentState = getState();
 		GlslLogicalAndExpressionContext _localctx = new GlslLogicalAndExpressionContext(_ctx, _parentState);
 		GlslLogicalAndExpressionContext _prevctx = _localctx;
-		int _startState = 98;
-		enterRecursionRule(_localctx, 98, RULE_glslLogicalAndExpression, _p);
+		int _startState = 104;
+		enterRecursionRule(_localctx, 104, RULE_glslLogicalAndExpression, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(612);
+			setState(605);
 			glslInclusiveOrExpression(0);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(619);
+			setState(612);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,47,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,50,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
@@ -4551,18 +4972,18 @@ public class GLSLPPParser extends Parser {
 					{
 					_localctx = new GlslLogicalAndExpressionContext(_parentctx, _parentState);
 					pushNewRecursionContext(_localctx, _startState, RULE_glslLogicalAndExpression);
-					setState(614);
+					setState(607);
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(615);
+					setState(608);
 					match(AND_OP);
-					setState(616);
+					setState(609);
 					glslInclusiveOrExpression(0);
 					}
 					} 
 				}
-				setState(621);
+				setState(614);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,47,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,50,_ctx);
 			}
 			}
 		}
@@ -4613,20 +5034,20 @@ public class GLSLPPParser extends Parser {
 		int _parentState = getState();
 		GlslLogicalXorExpressionContext _localctx = new GlslLogicalXorExpressionContext(_ctx, _parentState);
 		GlslLogicalXorExpressionContext _prevctx = _localctx;
-		int _startState = 100;
-		enterRecursionRule(_localctx, 100, RULE_glslLogicalXorExpression, _p);
+		int _startState = 106;
+		enterRecursionRule(_localctx, 106, RULE_glslLogicalXorExpression, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(623);
+			setState(616);
 			glslLogicalAndExpression(0);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(630);
+			setState(623);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,48,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,51,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
@@ -4635,18 +5056,18 @@ public class GLSLPPParser extends Parser {
 					{
 					_localctx = new GlslLogicalXorExpressionContext(_parentctx, _parentState);
 					pushNewRecursionContext(_localctx, _startState, RULE_glslLogicalXorExpression);
-					setState(625);
+					setState(618);
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(626);
+					setState(619);
 					match(XOR_OP);
-					setState(627);
+					setState(620);
 					glslLogicalAndExpression(0);
 					}
 					} 
 				}
-				setState(632);
+				setState(625);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,48,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,51,_ctx);
 			}
 			}
 		}
@@ -4697,20 +5118,20 @@ public class GLSLPPParser extends Parser {
 		int _parentState = getState();
 		GlslLogicalOrExpressionContext _localctx = new GlslLogicalOrExpressionContext(_ctx, _parentState);
 		GlslLogicalOrExpressionContext _prevctx = _localctx;
-		int _startState = 102;
-		enterRecursionRule(_localctx, 102, RULE_glslLogicalOrExpression, _p);
+		int _startState = 108;
+		enterRecursionRule(_localctx, 108, RULE_glslLogicalOrExpression, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(634);
+			setState(627);
 			glslLogicalXorExpression(0);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(641);
+			setState(634);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,49,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,52,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
@@ -4719,18 +5140,18 @@ public class GLSLPPParser extends Parser {
 					{
 					_localctx = new GlslLogicalOrExpressionContext(_parentctx, _parentState);
 					pushNewRecursionContext(_localctx, _startState, RULE_glslLogicalOrExpression);
-					setState(636);
+					setState(629);
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(637);
+					setState(630);
 					match(OR_OP);
-					setState(638);
+					setState(631);
 					glslLogicalXorExpression(0);
 					}
 					} 
 				}
-				setState(643);
+				setState(636);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,49,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,52,_ctx);
 			}
 			}
 		}
@@ -4778,30 +5199,30 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslConditionalExpressionContext glslConditionalExpression() throws RecognitionException {
 		GlslConditionalExpressionContext _localctx = new GlslConditionalExpressionContext(_ctx, getState());
-		enterRule(_localctx, 104, RULE_glslConditionalExpression);
+		enterRule(_localctx, 110, RULE_glslConditionalExpression);
 		try {
-			setState(651);
+			setState(644);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,50,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,53,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(644);
+				setState(637);
 				glslLogicalOrExpression(0);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(645);
+				setState(638);
 				glslLogicalOrExpression(0);
-				setState(646);
+				setState(639);
 				match(QUESTION);
-				setState(647);
+				setState(640);
 				glslExpression(0);
-				setState(648);
+				setState(641);
 				match(COLON);
-				setState(649);
+				setState(642);
 				glslAssignmentExpression();
 				}
 				break;
@@ -4852,26 +5273,26 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslAssignmentExpressionContext glslAssignmentExpression() throws RecognitionException {
 		GlslAssignmentExpressionContext _localctx = new GlslAssignmentExpressionContext(_ctx, getState());
-		enterRule(_localctx, 106, RULE_glslAssignmentExpression);
+		enterRule(_localctx, 112, RULE_glslAssignmentExpression);
 		try {
-			setState(658);
+			setState(651);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,51,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,54,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(653);
+				setState(646);
 				glslConditionalExpression();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(654);
+				setState(647);
 				glslUnaryExpression();
-				setState(655);
+				setState(648);
 				glslAssignmentOperator();
-				setState(656);
+				setState(649);
 				glslAssignmentExpression();
 				}
 				break;
@@ -4921,14 +5342,14 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslAssignmentOperatorContext glslAssignmentOperator() throws RecognitionException {
 		GlslAssignmentOperatorContext _localctx = new GlslAssignmentOperatorContext(_ctx, getState());
-		enterRule(_localctx, 108, RULE_glslAssignmentOperator);
+		enterRule(_localctx, 114, RULE_glslAssignmentOperator);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(660);
+			setState(653);
 			_la = _input.LA(1);
-			if ( !(((((_la - 245)) & ~0x3f) == 0 && ((1L << (_la - 245)) & ((1L << (MUL_ASSIGN - 245)) | (1L << (DIV_ASSIGN - 245)) | (1L << (ADD_ASSIGN - 245)) | (1L << (MOD_ASSIGN - 245)) | (1L << (LEFT_ASSIGN - 245)) | (1L << (RIGHT_ASSIGN - 245)) | (1L << (AND_ASSIGN - 245)) | (1L << (XOR_ASSIGN - 245)) | (1L << (OR_ASSIGN - 245)) | (1L << (SUB_ASSIGN - 245)) | (1L << (EQUAL - 245)))) != 0)) ) {
+			if ( !(((((_la - 238)) & ~0x3f) == 0 && ((1L << (_la - 238)) & ((1L << (MUL_ASSIGN - 238)) | (1L << (DIV_ASSIGN - 238)) | (1L << (ADD_ASSIGN - 238)) | (1L << (MOD_ASSIGN - 238)) | (1L << (LEFT_ASSIGN - 238)) | (1L << (RIGHT_ASSIGN - 238)) | (1L << (AND_ASSIGN - 238)) | (1L << (XOR_ASSIGN - 238)) | (1L << (OR_ASSIGN - 238)) | (1L << (SUB_ASSIGN - 238)) | (1L << (EQUAL - 238)))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -4985,20 +5406,20 @@ public class GLSLPPParser extends Parser {
 		int _parentState = getState();
 		GlslExpressionContext _localctx = new GlslExpressionContext(_ctx, _parentState);
 		GlslExpressionContext _prevctx = _localctx;
-		int _startState = 110;
-		enterRecursionRule(_localctx, 110, RULE_glslExpression, _p);
+		int _startState = 116;
+		enterRecursionRule(_localctx, 116, RULE_glslExpression, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(663);
+			setState(656);
 			glslAssignmentExpression();
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(670);
+			setState(663);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,52,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,55,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
@@ -5007,18 +5428,18 @@ public class GLSLPPParser extends Parser {
 					{
 					_localctx = new GlslExpressionContext(_parentctx, _parentState);
 					pushNewRecursionContext(_localctx, _startState, RULE_glslExpression);
-					setState(665);
+					setState(658);
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(666);
+					setState(659);
 					match(COMMA);
-					setState(667);
+					setState(660);
 					glslAssignmentExpression();
 					}
 					} 
 				}
-				setState(672);
+				setState(665);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,52,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,55,_ctx);
 			}
 			}
 		}
@@ -5058,11 +5479,11 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslConstantExpressionContext glslConstantExpression() throws RecognitionException {
 		GlslConstantExpressionContext _localctx = new GlslConstantExpressionContext(_ctx, getState());
-		enterRule(_localctx, 112, RULE_glslConstantExpression);
+		enterRule(_localctx, 118, RULE_glslConstantExpression);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(673);
+			setState(666);
 			glslConditionalExpression();
 			}
 		}
@@ -5078,13 +5499,16 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public static class GlslTypeNameListContext extends ParserRuleContext {
-		public GlslTypeNameContext glslTypeName() {
-			return getRuleContext(GlslTypeNameContext.class,0);
+		public List<GlslTypeNameContext> glslTypeName() {
+			return getRuleContexts(GlslTypeNameContext.class);
 		}
-		public GlslTypeNameListContext glslTypeNameList() {
-			return getRuleContext(GlslTypeNameListContext.class,0);
+		public GlslTypeNameContext glslTypeName(int i) {
+			return getRuleContext(GlslTypeNameContext.class,i);
 		}
-		public TerminalNode COMMA() { return getToken(GLSLPPParser.COMMA, 0); }
+		public List<TerminalNode> COMMA() { return getTokens(GLSLPPParser.COMMA); }
+		public TerminalNode COMMA(int i) {
+			return getToken(GLSLPPParser.COMMA, i);
+		}
 		public GlslTypeNameListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -5105,48 +5529,29 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public final GlslTypeNameListContext glslTypeNameList() throws RecognitionException {
-		return glslTypeNameList(0);
-	}
-
-	private GlslTypeNameListContext glslTypeNameList(int _p) throws RecognitionException {
-		ParserRuleContext _parentctx = _ctx;
-		int _parentState = getState();
-		GlslTypeNameListContext _localctx = new GlslTypeNameListContext(_ctx, _parentState);
-		GlslTypeNameListContext _prevctx = _localctx;
-		int _startState = 114;
-		enterRecursionRule(_localctx, 114, RULE_glslTypeNameList, _p);
+		GlslTypeNameListContext _localctx = new GlslTypeNameListContext(_ctx, getState());
+		enterRule(_localctx, 120, RULE_glslTypeNameList);
+		int _la;
 		try {
-			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			{
-			setState(676);
+			setState(668);
 			glslTypeName();
-			}
-			_ctx.stop = _input.LT(-1);
-			setState(683);
+			setState(673);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,53,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
-				if ( _alt==1 ) {
-					if ( _parseListeners!=null ) triggerExitRuleEvent();
-					_prevctx = _localctx;
-					{
-					{
-					_localctx = new GlslTypeNameListContext(_parentctx, _parentState);
-					pushNewRecursionContext(_localctx, _startState, RULE_glslTypeNameList);
-					setState(678);
-					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(679);
-					match(COMMA);
-					setState(680);
-					glslTypeName();
-					}
-					} 
+			_la = _input.LA(1);
+			while (_la==COMMA) {
+				{
+				{
+				setState(669);
+				match(COMMA);
+				setState(670);
+				glslTypeName();
 				}
-				setState(685);
+				}
+				setState(675);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,53,_ctx);
+				_la = _input.LA(1);
 			}
 			}
 		}
@@ -5156,7 +5561,7 @@ public class GLSLPPParser extends Parser {
 			_errHandler.recover(this, re);
 		}
 		finally {
-			unrollRecursionContexts(_parentctx);
+			exitRule();
 		}
 		return _localctx;
 	}
@@ -5189,27 +5594,23 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslTypeSpecifierContext glslTypeSpecifier() throws RecognitionException {
 		GlslTypeSpecifierContext _localctx = new GlslTypeSpecifierContext(_ctx, getState());
-		enterRule(_localctx, 116, RULE_glslTypeSpecifier);
+		enterRule(_localctx, 122, RULE_glslTypeSpecifier);
+		int _la;
 		try {
-			setState(690);
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(676);
+			glslTypeSpecifierNonarray();
+			setState(678);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,54,_ctx) ) {
-			case 1:
-				enterOuterAlt(_localctx, 1);
+			_la = _input.LA(1);
+			if (_la==LEFT_BRACKET) {
 				{
-				setState(686);
-				glslTypeSpecifierNonarray();
+				setState(677);
+				glslArraySpecifier();
 				}
-				break;
-			case 2:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(687);
-				glslTypeSpecifierNonarray();
-				setState(688);
-				glslArraySpecifier(0);
-				}
-				break;
+			}
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -5224,13 +5625,19 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public static class GlslArraySpecifierContext extends ParserRuleContext {
-		public TerminalNode LEFT_BRACKET() { return getToken(GLSLPPParser.LEFT_BRACKET, 0); }
-		public TerminalNode RIGHT_BRACKET() { return getToken(GLSLPPParser.RIGHT_BRACKET, 0); }
-		public GlslConstantExpressionContext glslConstantExpression() {
-			return getRuleContext(GlslConstantExpressionContext.class,0);
+		public List<TerminalNode> LEFT_BRACKET() { return getTokens(GLSLPPParser.LEFT_BRACKET); }
+		public TerminalNode LEFT_BRACKET(int i) {
+			return getToken(GLSLPPParser.LEFT_BRACKET, i);
 		}
-		public GlslArraySpecifierContext glslArraySpecifier() {
-			return getRuleContext(GlslArraySpecifierContext.class,0);
+		public List<TerminalNode> RIGHT_BRACKET() { return getTokens(GLSLPPParser.RIGHT_BRACKET); }
+		public TerminalNode RIGHT_BRACKET(int i) {
+			return getToken(GLSLPPParser.RIGHT_BRACKET, i);
+		}
+		public List<GlslConstantExpressionContext> glslConstantExpression() {
+			return getRuleContexts(GlslConstantExpressionContext.class);
+		}
+		public GlslConstantExpressionContext glslConstantExpression(int i) {
+			return getRuleContext(GlslConstantExpressionContext.class,i);
 		}
 		public GlslArraySpecifierContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -5252,87 +5659,38 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public final GlslArraySpecifierContext glslArraySpecifier() throws RecognitionException {
-		return glslArraySpecifier(0);
-	}
-
-	private GlslArraySpecifierContext glslArraySpecifier(int _p) throws RecognitionException {
-		ParserRuleContext _parentctx = _ctx;
-		int _parentState = getState();
-		GlslArraySpecifierContext _localctx = new GlslArraySpecifierContext(_ctx, _parentState);
-		GlslArraySpecifierContext _prevctx = _localctx;
-		int _startState = 118;
-		enterRecursionRule(_localctx, 118, RULE_glslArraySpecifier, _p);
+		GlslArraySpecifierContext _localctx = new GlslArraySpecifierContext(_ctx, getState());
+		enterRule(_localctx, 124, RULE_glslArraySpecifier);
+		int _la;
 		try {
-			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(699);
+			setState(685); 
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,55,_ctx) ) {
-			case 1:
+			_la = _input.LA(1);
+			do {
 				{
-				setState(693);
-				match(LEFT_BRACKET);
-				setState(694);
-				match(RIGHT_BRACKET);
-				}
-				break;
-			case 2:
 				{
-				setState(695);
+				setState(680);
 				match(LEFT_BRACKET);
-				setState(696);
-				glslConstantExpression();
-				setState(697);
-				match(RIGHT_BRACKET);
-				}
-				break;
-			}
-			_ctx.stop = _input.LT(-1);
-			setState(711);
-			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,57,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
-				if ( _alt==1 ) {
-					if ( _parseListeners!=null ) triggerExitRuleEvent();
-					_prevctx = _localctx;
-					{
-					setState(709);
-					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,56,_ctx) ) {
-					case 1:
-						{
-						_localctx = new GlslArraySpecifierContext(_parentctx, _parentState);
-						pushNewRecursionContext(_localctx, _startState, RULE_glslArraySpecifier);
-						setState(701);
-						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(702);
-						match(LEFT_BRACKET);
-						setState(703);
-						match(RIGHT_BRACKET);
-						}
-						break;
-					case 2:
-						{
-						_localctx = new GlslArraySpecifierContext(_parentctx, _parentState);
-						pushNewRecursionContext(_localctx, _startState, RULE_glslArraySpecifier);
-						setState(704);
-						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-						setState(705);
-						match(LEFT_BRACKET);
-						setState(706);
-						glslConstantExpression();
-						setState(707);
-						match(RIGHT_BRACKET);
-						}
-						break;
-					}
-					} 
-				}
-				setState(713);
+				setState(682);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,57,_ctx);
-			}
+				_la = _input.LA(1);
+				if (((((_la - 19)) & ~0x3f) == 0 && ((1L << (_la - 19)) & ((1L << (ATOMIC_UINT - 19)) | (1L << (FLOAT - 19)) | (1L << (DOUBLE - 19)) | (1L << (INT - 19)) | (1L << (VOID - 19)) | (1L << (BOOL - 19)) | (1L << (MAT2 - 19)) | (1L << (MAT3 - 19)) | (1L << (MAT4 - 19)) | (1L << (DMAT2 - 19)) | (1L << (DMAT3 - 19)) | (1L << (DMAT4 - 19)) | (1L << (MAT2X2 - 19)) | (1L << (MAT2X3 - 19)) | (1L << (MAT2X4 - 19)) | (1L << (DMAT2X2 - 19)) | (1L << (DMAT2X3 - 19)) | (1L << (DMAT2X4 - 19)) | (1L << (MAT3X2 - 19)) | (1L << (MAT3X3 - 19)) | (1L << (MAT3X4 - 19)) | (1L << (DMAT3X2 - 19)) | (1L << (DMAT3X3 - 19)) | (1L << (DMAT3X4 - 19)) | (1L << (MAT4X2 - 19)) | (1L << (MAT4X3 - 19)) | (1L << (MAT4X4 - 19)) | (1L << (DMAT4X2 - 19)) | (1L << (DMAT4X3 - 19)) | (1L << (DMAT4X4 - 19)) | (1L << (VEC2 - 19)) | (1L << (VEC3 - 19)) | (1L << (VEC4 - 19)) | (1L << (IVEC2 - 19)) | (1L << (IVEC3 - 19)) | (1L << (IVEC4 - 19)) | (1L << (BVEC2 - 19)))) != 0) || ((((_la - 83)) & ~0x3f) == 0 && ((1L << (_la - 83)) & ((1L << (BVEC3 - 83)) | (1L << (BVEC4 - 83)) | (1L << (DVEC2 - 83)) | (1L << (DVEC3 - 83)) | (1L << (DVEC4 - 83)) | (1L << (UINT - 83)) | (1L << (UVEC2 - 83)) | (1L << (UVEC3 - 83)) | (1L << (UVEC4 - 83)) | (1L << (SAMPLER1D - 83)) | (1L << (SAMPLER2D - 83)) | (1L << (SAMPLER3D - 83)) | (1L << (SAMPLERCUBE - 83)) | (1L << (SAMPLER1DSHADOW - 83)) | (1L << (SAMPLER2DSHADOW - 83)) | (1L << (SAMPLERCUBESHADOW - 83)) | (1L << (SAMPLER1DARRAY - 83)) | (1L << (SAMPLER2DARRAY - 83)) | (1L << (SAMPLER1DARRAYSHADOW - 83)) | (1L << (SAMPLER2DARRAYSHADOW - 83)) | (1L << (ISAMPLER1D - 83)) | (1L << (ISAMPLER2D - 83)) | (1L << (ISAMPLER3D - 83)) | (1L << (ISAMPLERCUBE - 83)) | (1L << (ISAMPLER1DARRAY - 83)) | (1L << (ISAMPLER2DARRAY - 83)) | (1L << (USAMPLER1D - 83)) | (1L << (USAMPLER2D - 83)) | (1L << (USAMPLER3D - 83)) | (1L << (USAMPLERCUBE - 83)) | (1L << (USAMPLER1DARRAY - 83)) | (1L << (USAMPLER2DARRAY - 83)) | (1L << (SAMPLER2DRECT - 83)) | (1L << (SAMPLER2DRECTSHADOW - 83)) | (1L << (ISAMPLER2DRECT - 83)) | (1L << (USAMPLER2DRECT - 83)) | (1L << (SAMPLERBUFFER - 83)) | (1L << (ISAMPLERBUFFER - 83)) | (1L << (USAMPLERBUFFER - 83)) | (1L << (SAMPLER2DMS - 83)) | (1L << (ISAMPLER2DMS - 83)) | (1L << (USAMPLER2DMS - 83)) | (1L << (SAMPLER2DMSARRAY - 83)) | (1L << (ISAMPLER2DMSARRAY - 83)) | (1L << (USAMPLER2DMSARRAY - 83)) | (1L << (SAMPLERCUBEARRAY - 83)) | (1L << (SAMPLERCUBEARRAYSHADOW - 83)) | (1L << (ISAMPLERCUBEARRAY - 83)) | (1L << (USAMPLERCUBEARRAY - 83)) | (1L << (IMAGE1D - 83)) | (1L << (IIMAGE1D - 83)) | (1L << (UIMAGE1D - 83)) | (1L << (IMAGE2D - 83)) | (1L << (IIMAGE2D - 83)) | (1L << (UIMAGE2D - 83)) | (1L << (IMAGE3D - 83)) | (1L << (IIMAGE3D - 83)) | (1L << (UIMAGE3D - 83)) | (1L << (IMAGE2DRECT - 83)) | (1L << (IIMAGE2DRECT - 83)))) != 0) || ((((_la - 147)) & ~0x3f) == 0 && ((1L << (_la - 147)) & ((1L << (UIMAGE2DRECT - 147)) | (1L << (IMAGECUBE - 147)) | (1L << (IIMAGECUBE - 147)) | (1L << (UIMAGECUBE - 147)) | (1L << (IMAGEBUFFER - 147)) | (1L << (IIMAGEBUFFER - 147)) | (1L << (UIMAGEBUFFER - 147)) | (1L << (IMAGE1DARRAY - 147)) | (1L << (IIMAGE1DARRAY - 147)) | (1L << (UIMAGE1DARRAY - 147)) | (1L << (IMAGE2DARRAY - 147)) | (1L << (IIMAGE2DARRAY - 147)) | (1L << (UIMAGE2DARRAY - 147)) | (1L << (IMAGECUBEARRAY - 147)) | (1L << (IIMAGECUBEARRAY - 147)) | (1L << (UIMAGECUBEARRAY - 147)) | (1L << (IMAGE2DMS - 147)) | (1L << (IIMAGE2DMS - 147)) | (1L << (UIMAGE2DMS - 147)) | (1L << (IMAGE2DMSARRAY - 147)) | (1L << (IIMAGE2DMSARRAY - 147)) | (1L << (UIMAGE2DMSARRAY - 147)) | (1L << (SAMPLEREXTERNALOES - 147)) | (1L << (STRUCT - 147)) | (1L << (PPOP_DEFINED - 147)))) != 0) || ((((_la - 217)) & ~0x3f) == 0 && ((1L << (_la - 217)) & ((1L << (BOOLCONSTANT - 217)) | (1L << (FLOATCONSTANT - 217)) | (1L << (DOUBLECONSTANT - 217)) | (1L << (INTCONSTANT - 217)) | (1L << (UINTCONSTANT - 217)) | (1L << (INC_OP - 217)) | (1L << (DEC_OP - 217)) | (1L << (LEFT_PAREN - 217)) | (1L << (BANG - 217)) | (1L << (DASH - 217)) | (1L << (TILDE - 217)) | (1L << (PLUS - 217)) | (1L << (IDENTIFIER - 217)))) != 0)) {
+					{
+					setState(681);
+					glslConstantExpression();
+					}
+				}
+
+				setState(684);
+				match(RIGHT_BRACKET);
+				}
+				}
+				setState(687); 
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			} while ( _la==LEFT_BRACKET );
 			}
 		}
 		catch (RecognitionException re) {
@@ -5341,12 +5699,203 @@ public class GLSLPPParser extends Parser {
 			_errHandler.recover(this, re);
 		}
 		finally {
-			unrollRecursionContexts(_parentctx);
+			exitRule();
 		}
 		return _localctx;
 	}
 
 	public static class GlslTypeSpecifierNonarrayContext extends ParserRuleContext {
+		public GlslBuiltinTypeContext glslBuiltinType() {
+			return getRuleContext(GlslBuiltinTypeContext.class,0);
+		}
+		public GlslStructSpecifierContext glslStructSpecifier() {
+			return getRuleContext(GlslStructSpecifierContext.class,0);
+		}
+		public GlslTypeNameContext glslTypeName() {
+			return getRuleContext(GlslTypeNameContext.class,0);
+		}
+		public GlslTypeSpecifierNonarrayContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_glslTypeSpecifierNonarray; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof GLSLPPListener ) ((GLSLPPListener)listener).enterGlslTypeSpecifierNonarray(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof GLSLPPListener ) ((GLSLPPListener)listener).exitGlslTypeSpecifierNonarray(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof GLSLPPVisitor ) return ((GLSLPPVisitor<? extends T>)visitor).visitGlslTypeSpecifierNonarray(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final GlslTypeSpecifierNonarrayContext glslTypeSpecifierNonarray() throws RecognitionException {
+		GlslTypeSpecifierNonarrayContext _localctx = new GlslTypeSpecifierNonarrayContext(_ctx, getState());
+		enterRule(_localctx, 126, RULE_glslTypeSpecifierNonarray);
+		try {
+			setState(692);
+			_errHandler.sync(this);
+			switch (_input.LA(1)) {
+			case ATOMIC_UINT:
+			case FLOAT:
+			case DOUBLE:
+			case INT:
+			case VOID:
+			case BOOL:
+			case MAT2:
+			case MAT3:
+			case MAT4:
+			case DMAT2:
+			case DMAT3:
+			case DMAT4:
+			case MAT2X2:
+			case MAT2X3:
+			case MAT2X4:
+			case DMAT2X2:
+			case DMAT2X3:
+			case DMAT2X4:
+			case MAT3X2:
+			case MAT3X3:
+			case MAT3X4:
+			case DMAT3X2:
+			case DMAT3X3:
+			case DMAT3X4:
+			case MAT4X2:
+			case MAT4X3:
+			case MAT4X4:
+			case DMAT4X2:
+			case DMAT4X3:
+			case DMAT4X4:
+			case VEC2:
+			case VEC3:
+			case VEC4:
+			case IVEC2:
+			case IVEC3:
+			case IVEC4:
+			case BVEC2:
+			case BVEC3:
+			case BVEC4:
+			case DVEC2:
+			case DVEC3:
+			case DVEC4:
+			case UINT:
+			case UVEC2:
+			case UVEC3:
+			case UVEC4:
+			case SAMPLER1D:
+			case SAMPLER2D:
+			case SAMPLER3D:
+			case SAMPLERCUBE:
+			case SAMPLER1DSHADOW:
+			case SAMPLER2DSHADOW:
+			case SAMPLERCUBESHADOW:
+			case SAMPLER1DARRAY:
+			case SAMPLER2DARRAY:
+			case SAMPLER1DARRAYSHADOW:
+			case SAMPLER2DARRAYSHADOW:
+			case ISAMPLER1D:
+			case ISAMPLER2D:
+			case ISAMPLER3D:
+			case ISAMPLERCUBE:
+			case ISAMPLER1DARRAY:
+			case ISAMPLER2DARRAY:
+			case USAMPLER1D:
+			case USAMPLER2D:
+			case USAMPLER3D:
+			case USAMPLERCUBE:
+			case USAMPLER1DARRAY:
+			case USAMPLER2DARRAY:
+			case SAMPLER2DRECT:
+			case SAMPLER2DRECTSHADOW:
+			case ISAMPLER2DRECT:
+			case USAMPLER2DRECT:
+			case SAMPLERBUFFER:
+			case ISAMPLERBUFFER:
+			case USAMPLERBUFFER:
+			case SAMPLER2DMS:
+			case ISAMPLER2DMS:
+			case USAMPLER2DMS:
+			case SAMPLER2DMSARRAY:
+			case ISAMPLER2DMSARRAY:
+			case USAMPLER2DMSARRAY:
+			case SAMPLERCUBEARRAY:
+			case SAMPLERCUBEARRAYSHADOW:
+			case ISAMPLERCUBEARRAY:
+			case USAMPLERCUBEARRAY:
+			case IMAGE1D:
+			case IIMAGE1D:
+			case UIMAGE1D:
+			case IMAGE2D:
+			case IIMAGE2D:
+			case UIMAGE2D:
+			case IMAGE3D:
+			case IIMAGE3D:
+			case UIMAGE3D:
+			case IMAGE2DRECT:
+			case IIMAGE2DRECT:
+			case UIMAGE2DRECT:
+			case IMAGECUBE:
+			case IIMAGECUBE:
+			case UIMAGECUBE:
+			case IMAGEBUFFER:
+			case IIMAGEBUFFER:
+			case UIMAGEBUFFER:
+			case IMAGE1DARRAY:
+			case IIMAGE1DARRAY:
+			case UIMAGE1DARRAY:
+			case IMAGE2DARRAY:
+			case IIMAGE2DARRAY:
+			case UIMAGE2DARRAY:
+			case IMAGECUBEARRAY:
+			case IIMAGECUBEARRAY:
+			case UIMAGECUBEARRAY:
+			case IMAGE2DMS:
+			case IIMAGE2DMS:
+			case UIMAGE2DMS:
+			case IMAGE2DMSARRAY:
+			case IIMAGE2DMSARRAY:
+			case UIMAGE2DMSARRAY:
+			case SAMPLEREXTERNALOES:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(689);
+				glslBuiltinType();
+				}
+				break;
+			case STRUCT:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(690);
+				glslStructSpecifier();
+				}
+				break;
+			case IDENTIFIER:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(691);
+				glslTypeName();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class GlslBuiltinTypeContext extends ParserRuleContext {
 		public TerminalNode VOID() { return getToken(GLSLPPParser.VOID, 0); }
 		public TerminalNode FLOAT() { return getToken(GLSLPPParser.FLOAT, 0); }
 		public TerminalNode DOUBLE() { return getToken(GLSLPPParser.DOUBLE, 0); }
@@ -5467,894 +6016,42 @@ public class GLSLPPParser extends Parser {
 		public TerminalNode IIMAGE2DMSARRAY() { return getToken(GLSLPPParser.IIMAGE2DMSARRAY, 0); }
 		public TerminalNode UIMAGE2DMSARRAY() { return getToken(GLSLPPParser.UIMAGE2DMSARRAY, 0); }
 		public TerminalNode SAMPLEREXTERNALOES() { return getToken(GLSLPPParser.SAMPLEREXTERNALOES, 0); }
-		public GlslStructSpecifierContext glslStructSpecifier() {
-			return getRuleContext(GlslStructSpecifierContext.class,0);
-		}
-		public GlslTypeNameContext glslTypeName() {
-			return getRuleContext(GlslTypeNameContext.class,0);
-		}
-		public GlslTypeSpecifierNonarrayContext(ParserRuleContext parent, int invokingState) {
+		public GlslBuiltinTypeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_glslTypeSpecifierNonarray; }
+		@Override public int getRuleIndex() { return RULE_glslBuiltinType; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof GLSLPPListener ) ((GLSLPPListener)listener).enterGlslTypeSpecifierNonarray(this);
+			if ( listener instanceof GLSLPPListener ) ((GLSLPPListener)listener).enterGlslBuiltinType(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof GLSLPPListener ) ((GLSLPPListener)listener).exitGlslTypeSpecifierNonarray(this);
+			if ( listener instanceof GLSLPPListener ) ((GLSLPPListener)listener).exitGlslBuiltinType(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof GLSLPPVisitor ) return ((GLSLPPVisitor<? extends T>)visitor).visitGlslTypeSpecifierNonarray(this);
+			if ( visitor instanceof GLSLPPVisitor ) return ((GLSLPPVisitor<? extends T>)visitor).visitGlslBuiltinType(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final GlslTypeSpecifierNonarrayContext glslTypeSpecifierNonarray() throws RecognitionException {
-		GlslTypeSpecifierNonarrayContext _localctx = new GlslTypeSpecifierNonarrayContext(_ctx, getState());
-		enterRule(_localctx, 120, RULE_glslTypeSpecifierNonarray);
+	public final GlslBuiltinTypeContext glslBuiltinType() throws RecognitionException {
+		GlslBuiltinTypeContext _localctx = new GlslBuiltinTypeContext(_ctx, getState());
+		enterRule(_localctx, 128, RULE_glslBuiltinType);
+		int _la;
 		try {
-			setState(836);
-			_errHandler.sync(this);
-			switch (_input.LA(1)) {
-			case VOID:
-				enterOuterAlt(_localctx, 1);
-				{
-				setState(714);
-				match(VOID);
-				}
-				break;
-			case FLOAT:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(715);
-				match(FLOAT);
-				}
-				break;
-			case DOUBLE:
-				enterOuterAlt(_localctx, 3);
-				{
-				setState(716);
-				match(DOUBLE);
-				}
-				break;
-			case INT:
-				enterOuterAlt(_localctx, 4);
-				{
-				setState(717);
-				match(INT);
-				}
-				break;
-			case UINT:
-				enterOuterAlt(_localctx, 5);
-				{
-				setState(718);
-				match(UINT);
-				}
-				break;
-			case BOOL:
-				enterOuterAlt(_localctx, 6);
-				{
-				setState(719);
-				match(BOOL);
-				}
-				break;
-			case VEC2:
-				enterOuterAlt(_localctx, 7);
-				{
-				setState(720);
-				match(VEC2);
-				}
-				break;
-			case VEC3:
-				enterOuterAlt(_localctx, 8);
-				{
-				setState(721);
-				match(VEC3);
-				}
-				break;
-			case VEC4:
-				enterOuterAlt(_localctx, 9);
-				{
-				setState(722);
-				match(VEC4);
-				}
-				break;
-			case DVEC2:
-				enterOuterAlt(_localctx, 10);
-				{
-				setState(723);
-				match(DVEC2);
-				}
-				break;
-			case DVEC3:
-				enterOuterAlt(_localctx, 11);
-				{
-				setState(724);
-				match(DVEC3);
-				}
-				break;
-			case DVEC4:
-				enterOuterAlt(_localctx, 12);
-				{
-				setState(725);
-				match(DVEC4);
-				}
-				break;
-			case BVEC2:
-				enterOuterAlt(_localctx, 13);
-				{
-				setState(726);
-				match(BVEC2);
-				}
-				break;
-			case BVEC3:
-				enterOuterAlt(_localctx, 14);
-				{
-				setState(727);
-				match(BVEC3);
-				}
-				break;
-			case BVEC4:
-				enterOuterAlt(_localctx, 15);
-				{
-				setState(728);
-				match(BVEC4);
-				}
-				break;
-			case IVEC2:
-				enterOuterAlt(_localctx, 16);
-				{
-				setState(729);
-				match(IVEC2);
-				}
-				break;
-			case IVEC3:
-				enterOuterAlt(_localctx, 17);
-				{
-				setState(730);
-				match(IVEC3);
-				}
-				break;
-			case IVEC4:
-				enterOuterAlt(_localctx, 18);
-				{
-				setState(731);
-				match(IVEC4);
-				}
-				break;
-			case UVEC2:
-				enterOuterAlt(_localctx, 19);
-				{
-				setState(732);
-				match(UVEC2);
-				}
-				break;
-			case UVEC3:
-				enterOuterAlt(_localctx, 20);
-				{
-				setState(733);
-				match(UVEC3);
-				}
-				break;
-			case UVEC4:
-				enterOuterAlt(_localctx, 21);
-				{
-				setState(734);
-				match(UVEC4);
-				}
-				break;
-			case MAT2:
-				enterOuterAlt(_localctx, 22);
-				{
-				setState(735);
-				match(MAT2);
-				}
-				break;
-			case MAT3:
-				enterOuterAlt(_localctx, 23);
-				{
-				setState(736);
-				match(MAT3);
-				}
-				break;
-			case MAT4:
-				enterOuterAlt(_localctx, 24);
-				{
-				setState(737);
-				match(MAT4);
-				}
-				break;
-			case MAT2X2:
-				enterOuterAlt(_localctx, 25);
-				{
-				setState(738);
-				match(MAT2X2);
-				}
-				break;
-			case MAT2X3:
-				enterOuterAlt(_localctx, 26);
-				{
-				setState(739);
-				match(MAT2X3);
-				}
-				break;
-			case MAT2X4:
-				enterOuterAlt(_localctx, 27);
-				{
-				setState(740);
-				match(MAT2X4);
-				}
-				break;
-			case MAT3X2:
-				enterOuterAlt(_localctx, 28);
-				{
-				setState(741);
-				match(MAT3X2);
-				}
-				break;
-			case MAT3X3:
-				enterOuterAlt(_localctx, 29);
-				{
-				setState(742);
-				match(MAT3X3);
-				}
-				break;
-			case MAT3X4:
-				enterOuterAlt(_localctx, 30);
-				{
-				setState(743);
-				match(MAT3X4);
-				}
-				break;
-			case MAT4X2:
-				enterOuterAlt(_localctx, 31);
-				{
-				setState(744);
-				match(MAT4X2);
-				}
-				break;
-			case MAT4X3:
-				enterOuterAlt(_localctx, 32);
-				{
-				setState(745);
-				match(MAT4X3);
-				}
-				break;
-			case MAT4X4:
-				enterOuterAlt(_localctx, 33);
-				{
-				setState(746);
-				match(MAT4X4);
-				}
-				break;
-			case DMAT2:
-				enterOuterAlt(_localctx, 34);
-				{
-				setState(747);
-				match(DMAT2);
-				}
-				break;
-			case DMAT3:
-				enterOuterAlt(_localctx, 35);
-				{
-				setState(748);
-				match(DMAT3);
-				}
-				break;
-			case DMAT4:
-				enterOuterAlt(_localctx, 36);
-				{
-				setState(749);
-				match(DMAT4);
-				}
-				break;
-			case DMAT2X2:
-				enterOuterAlt(_localctx, 37);
-				{
-				setState(750);
-				match(DMAT2X2);
-				}
-				break;
-			case DMAT2X3:
-				enterOuterAlt(_localctx, 38);
-				{
-				setState(751);
-				match(DMAT2X3);
-				}
-				break;
-			case DMAT2X4:
-				enterOuterAlt(_localctx, 39);
-				{
-				setState(752);
-				match(DMAT2X4);
-				}
-				break;
-			case DMAT3X2:
-				enterOuterAlt(_localctx, 40);
-				{
-				setState(753);
-				match(DMAT3X2);
-				}
-				break;
-			case DMAT3X3:
-				enterOuterAlt(_localctx, 41);
-				{
-				setState(754);
-				match(DMAT3X3);
-				}
-				break;
-			case DMAT3X4:
-				enterOuterAlt(_localctx, 42);
-				{
-				setState(755);
-				match(DMAT3X4);
-				}
-				break;
-			case DMAT4X2:
-				enterOuterAlt(_localctx, 43);
-				{
-				setState(756);
-				match(DMAT4X2);
-				}
-				break;
-			case DMAT4X3:
-				enterOuterAlt(_localctx, 44);
-				{
-				setState(757);
-				match(DMAT4X3);
-				}
-				break;
-			case DMAT4X4:
-				enterOuterAlt(_localctx, 45);
-				{
-				setState(758);
-				match(DMAT4X4);
-				}
-				break;
-			case ATOMIC_UINT:
-				enterOuterAlt(_localctx, 46);
-				{
-				setState(759);
-				match(ATOMIC_UINT);
-				}
-				break;
-			case SAMPLER1D:
-				enterOuterAlt(_localctx, 47);
-				{
-				setState(760);
-				match(SAMPLER1D);
-				}
-				break;
-			case SAMPLER2D:
-				enterOuterAlt(_localctx, 48);
-				{
-				setState(761);
-				match(SAMPLER2D);
-				}
-				break;
-			case SAMPLER3D:
-				enterOuterAlt(_localctx, 49);
-				{
-				setState(762);
-				match(SAMPLER3D);
-				}
-				break;
-			case SAMPLERCUBE:
-				enterOuterAlt(_localctx, 50);
-				{
-				setState(763);
-				match(SAMPLERCUBE);
-				}
-				break;
-			case SAMPLER1DSHADOW:
-				enterOuterAlt(_localctx, 51);
-				{
-				setState(764);
-				match(SAMPLER1DSHADOW);
-				}
-				break;
-			case SAMPLER2DSHADOW:
-				enterOuterAlt(_localctx, 52);
-				{
-				setState(765);
-				match(SAMPLER2DSHADOW);
-				}
-				break;
-			case SAMPLERCUBESHADOW:
-				enterOuterAlt(_localctx, 53);
-				{
-				setState(766);
-				match(SAMPLERCUBESHADOW);
-				}
-				break;
-			case SAMPLER1DARRAY:
-				enterOuterAlt(_localctx, 54);
-				{
-				setState(767);
-				match(SAMPLER1DARRAY);
-				}
-				break;
-			case SAMPLER2DARRAY:
-				enterOuterAlt(_localctx, 55);
-				{
-				setState(768);
-				match(SAMPLER2DARRAY);
-				}
-				break;
-			case SAMPLER1DARRAYSHADOW:
-				enterOuterAlt(_localctx, 56);
-				{
-				setState(769);
-				match(SAMPLER1DARRAYSHADOW);
-				}
-				break;
-			case SAMPLER2DARRAYSHADOW:
-				enterOuterAlt(_localctx, 57);
-				{
-				setState(770);
-				match(SAMPLER2DARRAYSHADOW);
-				}
-				break;
-			case SAMPLERCUBEARRAY:
-				enterOuterAlt(_localctx, 58);
-				{
-				setState(771);
-				match(SAMPLERCUBEARRAY);
-				}
-				break;
-			case SAMPLERCUBEARRAYSHADOW:
-				enterOuterAlt(_localctx, 59);
-				{
-				setState(772);
-				match(SAMPLERCUBEARRAYSHADOW);
-				}
-				break;
-			case ISAMPLER1D:
-				enterOuterAlt(_localctx, 60);
-				{
-				setState(773);
-				match(ISAMPLER1D);
-				}
-				break;
-			case ISAMPLER2D:
-				enterOuterAlt(_localctx, 61);
-				{
-				setState(774);
-				match(ISAMPLER2D);
-				}
-				break;
-			case ISAMPLER3D:
-				enterOuterAlt(_localctx, 62);
-				{
-				setState(775);
-				match(ISAMPLER3D);
-				}
-				break;
-			case ISAMPLERCUBE:
-				enterOuterAlt(_localctx, 63);
-				{
-				setState(776);
-				match(ISAMPLERCUBE);
-				}
-				break;
-			case ISAMPLER1DARRAY:
-				enterOuterAlt(_localctx, 64);
-				{
-				setState(777);
-				match(ISAMPLER1DARRAY);
-				}
-				break;
-			case ISAMPLER2DARRAY:
-				enterOuterAlt(_localctx, 65);
-				{
-				setState(778);
-				match(ISAMPLER2DARRAY);
-				}
-				break;
-			case ISAMPLERCUBEARRAY:
-				enterOuterAlt(_localctx, 66);
-				{
-				setState(779);
-				match(ISAMPLERCUBEARRAY);
-				}
-				break;
-			case USAMPLER1D:
-				enterOuterAlt(_localctx, 67);
-				{
-				setState(780);
-				match(USAMPLER1D);
-				}
-				break;
-			case USAMPLER2D:
-				enterOuterAlt(_localctx, 68);
-				{
-				setState(781);
-				match(USAMPLER2D);
-				}
-				break;
-			case USAMPLER3D:
-				enterOuterAlt(_localctx, 69);
-				{
-				setState(782);
-				match(USAMPLER3D);
-				}
-				break;
-			case USAMPLERCUBE:
-				enterOuterAlt(_localctx, 70);
-				{
-				setState(783);
-				match(USAMPLERCUBE);
-				}
-				break;
-			case USAMPLER1DARRAY:
-				enterOuterAlt(_localctx, 71);
-				{
-				setState(784);
-				match(USAMPLER1DARRAY);
-				}
-				break;
-			case USAMPLER2DARRAY:
-				enterOuterAlt(_localctx, 72);
-				{
-				setState(785);
-				match(USAMPLER2DARRAY);
-				}
-				break;
-			case USAMPLERCUBEARRAY:
-				enterOuterAlt(_localctx, 73);
-				{
-				setState(786);
-				match(USAMPLERCUBEARRAY);
-				}
-				break;
-			case SAMPLER2DRECT:
-				enterOuterAlt(_localctx, 74);
-				{
-				setState(787);
-				match(SAMPLER2DRECT);
-				}
-				break;
-			case SAMPLER2DRECTSHADOW:
-				enterOuterAlt(_localctx, 75);
-				{
-				setState(788);
-				match(SAMPLER2DRECTSHADOW);
-				}
-				break;
-			case ISAMPLER2DRECT:
-				enterOuterAlt(_localctx, 76);
-				{
-				setState(789);
-				match(ISAMPLER2DRECT);
-				}
-				break;
-			case USAMPLER2DRECT:
-				enterOuterAlt(_localctx, 77);
-				{
-				setState(790);
-				match(USAMPLER2DRECT);
-				}
-				break;
-			case SAMPLERBUFFER:
-				enterOuterAlt(_localctx, 78);
-				{
-				setState(791);
-				match(SAMPLERBUFFER);
-				}
-				break;
-			case ISAMPLERBUFFER:
-				enterOuterAlt(_localctx, 79);
-				{
-				setState(792);
-				match(ISAMPLERBUFFER);
-				}
-				break;
-			case USAMPLERBUFFER:
-				enterOuterAlt(_localctx, 80);
-				{
-				setState(793);
-				match(USAMPLERBUFFER);
-				}
-				break;
-			case SAMPLER2DMS:
-				enterOuterAlt(_localctx, 81);
-				{
-				setState(794);
-				match(SAMPLER2DMS);
-				}
-				break;
-			case ISAMPLER2DMS:
-				enterOuterAlt(_localctx, 82);
-				{
-				setState(795);
-				match(ISAMPLER2DMS);
-				}
-				break;
-			case USAMPLER2DMS:
-				enterOuterAlt(_localctx, 83);
-				{
-				setState(796);
-				match(USAMPLER2DMS);
-				}
-				break;
-			case SAMPLER2DMSARRAY:
-				enterOuterAlt(_localctx, 84);
-				{
-				setState(797);
-				match(SAMPLER2DMSARRAY);
-				}
-				break;
-			case ISAMPLER2DMSARRAY:
-				enterOuterAlt(_localctx, 85);
-				{
-				setState(798);
-				match(ISAMPLER2DMSARRAY);
-				}
-				break;
-			case USAMPLER2DMSARRAY:
-				enterOuterAlt(_localctx, 86);
-				{
-				setState(799);
-				match(USAMPLER2DMSARRAY);
-				}
-				break;
-			case IMAGE1D:
-				enterOuterAlt(_localctx, 87);
-				{
-				setState(800);
-				match(IMAGE1D);
-				}
-				break;
-			case IIMAGE1D:
-				enterOuterAlt(_localctx, 88);
-				{
-				setState(801);
-				match(IIMAGE1D);
-				}
-				break;
-			case UIMAGE1D:
-				enterOuterAlt(_localctx, 89);
-				{
-				setState(802);
-				match(UIMAGE1D);
-				}
-				break;
-			case IMAGE2D:
-				enterOuterAlt(_localctx, 90);
-				{
-				setState(803);
-				match(IMAGE2D);
-				}
-				break;
-			case IIMAGE2D:
-				enterOuterAlt(_localctx, 91);
-				{
-				setState(804);
-				match(IIMAGE2D);
-				}
-				break;
-			case UIMAGE2D:
-				enterOuterAlt(_localctx, 92);
-				{
-				setState(805);
-				match(UIMAGE2D);
-				}
-				break;
-			case IMAGE3D:
-				enterOuterAlt(_localctx, 93);
-				{
-				setState(806);
-				match(IMAGE3D);
-				}
-				break;
-			case IIMAGE3D:
-				enterOuterAlt(_localctx, 94);
-				{
-				setState(807);
-				match(IIMAGE3D);
-				}
-				break;
-			case UIMAGE3D:
-				enterOuterAlt(_localctx, 95);
-				{
-				setState(808);
-				match(UIMAGE3D);
-				}
-				break;
-			case IMAGE2DRECT:
-				enterOuterAlt(_localctx, 96);
-				{
-				setState(809);
-				match(IMAGE2DRECT);
-				}
-				break;
-			case IIMAGE2DRECT:
-				enterOuterAlt(_localctx, 97);
-				{
-				setState(810);
-				match(IIMAGE2DRECT);
-				}
-				break;
-			case UIMAGE2DRECT:
-				enterOuterAlt(_localctx, 98);
-				{
-				setState(811);
-				match(UIMAGE2DRECT);
-				}
-				break;
-			case IMAGECUBE:
-				enterOuterAlt(_localctx, 99);
-				{
-				setState(812);
-				match(IMAGECUBE);
-				}
-				break;
-			case IIMAGECUBE:
-				enterOuterAlt(_localctx, 100);
-				{
-				setState(813);
-				match(IIMAGECUBE);
-				}
-				break;
-			case UIMAGECUBE:
-				enterOuterAlt(_localctx, 101);
-				{
-				setState(814);
-				match(UIMAGECUBE);
-				}
-				break;
-			case IMAGEBUFFER:
-				enterOuterAlt(_localctx, 102);
-				{
-				setState(815);
-				match(IMAGEBUFFER);
-				}
-				break;
-			case IIMAGEBUFFER:
-				enterOuterAlt(_localctx, 103);
-				{
-				setState(816);
-				match(IIMAGEBUFFER);
-				}
-				break;
-			case UIMAGEBUFFER:
-				enterOuterAlt(_localctx, 104);
-				{
-				setState(817);
-				match(UIMAGEBUFFER);
-				}
-				break;
-			case IMAGE1DARRAY:
-				enterOuterAlt(_localctx, 105);
-				{
-				setState(818);
-				match(IMAGE1DARRAY);
-				}
-				break;
-			case IIMAGE1DARRAY:
-				enterOuterAlt(_localctx, 106);
-				{
-				setState(819);
-				match(IIMAGE1DARRAY);
-				}
-				break;
-			case UIMAGE1DARRAY:
-				enterOuterAlt(_localctx, 107);
-				{
-				setState(820);
-				match(UIMAGE1DARRAY);
-				}
-				break;
-			case IMAGE2DARRAY:
-				enterOuterAlt(_localctx, 108);
-				{
-				setState(821);
-				match(IMAGE2DARRAY);
-				}
-				break;
-			case IIMAGE2DARRAY:
-				enterOuterAlt(_localctx, 109);
-				{
-				setState(822);
-				match(IIMAGE2DARRAY);
-				}
-				break;
-			case UIMAGE2DARRAY:
-				enterOuterAlt(_localctx, 110);
-				{
-				setState(823);
-				match(UIMAGE2DARRAY);
-				}
-				break;
-			case IMAGECUBEARRAY:
-				enterOuterAlt(_localctx, 111);
-				{
-				setState(824);
-				match(IMAGECUBEARRAY);
-				}
-				break;
-			case IIMAGECUBEARRAY:
-				enterOuterAlt(_localctx, 112);
-				{
-				setState(825);
-				match(IIMAGECUBEARRAY);
-				}
-				break;
-			case UIMAGECUBEARRAY:
-				enterOuterAlt(_localctx, 113);
-				{
-				setState(826);
-				match(UIMAGECUBEARRAY);
-				}
-				break;
-			case IMAGE2DMS:
-				enterOuterAlt(_localctx, 114);
-				{
-				setState(827);
-				match(IMAGE2DMS);
-				}
-				break;
-			case IIMAGE2DMS:
-				enterOuterAlt(_localctx, 115);
-				{
-				setState(828);
-				match(IIMAGE2DMS);
-				}
-				break;
-			case UIMAGE2DMS:
-				enterOuterAlt(_localctx, 116);
-				{
-				setState(829);
-				match(UIMAGE2DMS);
-				}
-				break;
-			case IMAGE2DMSARRAY:
-				enterOuterAlt(_localctx, 117);
-				{
-				setState(830);
-				match(IMAGE2DMSARRAY);
-				}
-				break;
-			case IIMAGE2DMSARRAY:
-				enterOuterAlt(_localctx, 118);
-				{
-				setState(831);
-				match(IIMAGE2DMSARRAY);
-				}
-				break;
-			case UIMAGE2DMSARRAY:
-				enterOuterAlt(_localctx, 119);
-				{
-				setState(832);
-				match(UIMAGE2DMSARRAY);
-				}
-				break;
-			case SAMPLEREXTERNALOES:
-				enterOuterAlt(_localctx, 120);
-				{
-				setState(833);
-				match(SAMPLEREXTERNALOES);
-				}
-				break;
-			case STRUCT:
-				enterOuterAlt(_localctx, 121);
-				{
-				setState(834);
-				glslStructSpecifier();
-				}
-				break;
-			case IDENTIFIER:
-				enterOuterAlt(_localctx, 122);
-				{
-				setState(835);
-				glslTypeName();
-				}
-				break;
-			default:
-				throw new NoViableAltException(this);
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(694);
+			_la = _input.LA(1);
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATOMIC_UINT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)))) != 0)) ) {
+			_errHandler.recoverInline(this);
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
+				consume();
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -6370,12 +6067,12 @@ public class GLSLPPParser extends Parser {
 
 	public static class GlslStructSpecifierContext extends ParserRuleContext {
 		public TerminalNode STRUCT() { return getToken(GLSLPPParser.STRUCT, 0); }
-		public TerminalNode IDENTIFIER() { return getToken(GLSLPPParser.IDENTIFIER, 0); }
 		public TerminalNode LEFT_BRACE() { return getToken(GLSLPPParser.LEFT_BRACE, 0); }
 		public GlslStructDeclarationListContext glslStructDeclarationList() {
 			return getRuleContext(GlslStructDeclarationListContext.class,0);
 		}
 		public TerminalNode RIGHT_BRACE() { return getToken(GLSLPPParser.RIGHT_BRACE, 0); }
+		public TerminalNode IDENTIFIER() { return getToken(GLSLPPParser.IDENTIFIER, 0); }
 		public GlslStructSpecifierContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -6397,39 +6094,29 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslStructSpecifierContext glslStructSpecifier() throws RecognitionException {
 		GlslStructSpecifierContext _localctx = new GlslStructSpecifierContext(_ctx, getState());
-		enterRule(_localctx, 122, RULE_glslStructSpecifier);
+		enterRule(_localctx, 130, RULE_glslStructSpecifier);
+		int _la;
 		try {
-			setState(849);
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(696);
+			match(STRUCT);
+			setState(698);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,59,_ctx) ) {
-			case 1:
-				enterOuterAlt(_localctx, 1);
+			_la = _input.LA(1);
+			if (_la==IDENTIFIER) {
 				{
-				setState(838);
-				match(STRUCT);
-				setState(839);
+				setState(697);
 				match(IDENTIFIER);
-				setState(840);
-				match(LEFT_BRACE);
-				setState(841);
-				glslStructDeclarationList(0);
-				setState(842);
-				match(RIGHT_BRACE);
 				}
-				break;
-			case 2:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(844);
-				match(STRUCT);
-				setState(845);
-				match(LEFT_BRACE);
-				setState(846);
-				glslStructDeclarationList(0);
-				setState(847);
-				match(RIGHT_BRACE);
-				}
-				break;
+			}
+
+			setState(700);
+			match(LEFT_BRACE);
+			setState(701);
+			glslStructDeclarationList();
+			setState(702);
+			match(RIGHT_BRACE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -6444,11 +6131,11 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public static class GlslStructDeclarationListContext extends ParserRuleContext {
-		public GlslStructDeclarationContext glslStructDeclaration() {
-			return getRuleContext(GlslStructDeclarationContext.class,0);
+		public List<GlslStructDeclarationContext> glslStructDeclaration() {
+			return getRuleContexts(GlslStructDeclarationContext.class);
 		}
-		public GlslStructDeclarationListContext glslStructDeclarationList() {
-			return getRuleContext(GlslStructDeclarationListContext.class,0);
+		public GlslStructDeclarationContext glslStructDeclaration(int i) {
+			return getRuleContext(GlslStructDeclarationContext.class,i);
 		}
 		public GlslStructDeclarationListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -6470,47 +6157,26 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public final GlslStructDeclarationListContext glslStructDeclarationList() throws RecognitionException {
-		return glslStructDeclarationList(0);
-	}
-
-	private GlslStructDeclarationListContext glslStructDeclarationList(int _p) throws RecognitionException {
-		ParserRuleContext _parentctx = _ctx;
-		int _parentState = getState();
-		GlslStructDeclarationListContext _localctx = new GlslStructDeclarationListContext(_ctx, _parentState);
-		GlslStructDeclarationListContext _prevctx = _localctx;
-		int _startState = 124;
-		enterRecursionRule(_localctx, 124, RULE_glslStructDeclarationList, _p);
+		GlslStructDeclarationListContext _localctx = new GlslStructDeclarationListContext(_ctx, getState());
+		enterRule(_localctx, 132, RULE_glslStructDeclarationList);
+		int _la;
 		try {
-			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			{
-			setState(852);
-			glslStructDeclaration();
-			}
-			_ctx.stop = _input.LT(-1);
-			setState(858);
+			setState(705); 
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,60,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
-				if ( _alt==1 ) {
-					if ( _parseListeners!=null ) triggerExitRuleEvent();
-					_prevctx = _localctx;
-					{
-					{
-					_localctx = new GlslStructDeclarationListContext(_parentctx, _parentState);
-					pushNewRecursionContext(_localctx, _startState, RULE_glslStructDeclarationList);
-					setState(854);
-					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(855);
-					glslStructDeclaration();
-					}
-					} 
+			_la = _input.LA(1);
+			do {
+				{
+				{
+				setState(704);
+				glslStructDeclaration();
 				}
-				setState(860);
+				}
+				setState(707); 
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,60,_ctx);
-			}
+				_la = _input.LA(1);
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << INVARIANT) | (1L << PRECISE) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (MAT3X2 - 64)) | (1L << (MAT3X3 - 64)) | (1L << (MAT3X4 - 64)) | (1L << (DMAT3X2 - 64)) | (1L << (DMAT3X3 - 64)) | (1L << (DMAT3X4 - 64)) | (1L << (MAT4X2 - 64)) | (1L << (MAT4X3 - 64)) | (1L << (MAT4X4 - 64)) | (1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (USAMPLER2DMS - 128)) | (1L << (SAMPLER2DMSARRAY - 128)) | (1L << (ISAMPLER2DMSARRAY - 128)) | (1L << (USAMPLER2DMSARRAY - 128)) | (1L << (SAMPLERCUBEARRAY - 128)) | (1L << (SAMPLERCUBEARRAYSHADOW - 128)) | (1L << (ISAMPLERCUBEARRAY - 128)) | (1L << (USAMPLERCUBEARRAY - 128)) | (1L << (IMAGE1D - 128)) | (1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)))) != 0) || _la==IDENTIFIER );
 			}
 		}
 		catch (RecognitionException re) {
@@ -6519,7 +6185,7 @@ public class GLSLPPParser extends Parser {
 			_errHandler.recover(this, re);
 		}
 		finally {
-			unrollRecursionContexts(_parentctx);
+			exitRule();
 		}
 		return _localctx;
 	}
@@ -6556,184 +6222,27 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslStructDeclarationContext glslStructDeclaration() throws RecognitionException {
 		GlslStructDeclarationContext _localctx = new GlslStructDeclarationContext(_ctx, getState());
-		enterRule(_localctx, 126, RULE_glslStructDeclaration);
+		enterRule(_localctx, 134, RULE_glslStructDeclaration);
+		int _la;
 		try {
-			setState(870);
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(710);
 			_errHandler.sync(this);
-			switch (_input.LA(1)) {
-			case ATOMIC_UINT:
-			case FLOAT:
-			case DOUBLE:
-			case INT:
-			case VOID:
-			case BOOL:
-			case MAT2:
-			case MAT3:
-			case MAT4:
-			case DMAT2:
-			case DMAT3:
-			case DMAT4:
-			case MAT2X2:
-			case MAT2X3:
-			case MAT2X4:
-			case DMAT2X2:
-			case DMAT2X3:
-			case DMAT2X4:
-			case MAT3X2:
-			case MAT3X3:
-			case MAT3X4:
-			case DMAT3X2:
-			case DMAT3X3:
-			case DMAT3X4:
-			case MAT4X2:
-			case MAT4X3:
-			case MAT4X4:
-			case DMAT4X2:
-			case DMAT4X3:
-			case DMAT4X4:
-			case VEC2:
-			case VEC3:
-			case VEC4:
-			case IVEC2:
-			case IVEC3:
-			case IVEC4:
-			case BVEC2:
-			case BVEC3:
-			case BVEC4:
-			case DVEC2:
-			case DVEC3:
-			case DVEC4:
-			case UINT:
-			case UVEC2:
-			case UVEC3:
-			case UVEC4:
-			case SAMPLER1D:
-			case SAMPLER2D:
-			case SAMPLER3D:
-			case SAMPLERCUBE:
-			case SAMPLER1DSHADOW:
-			case SAMPLER2DSHADOW:
-			case SAMPLERCUBESHADOW:
-			case SAMPLER1DARRAY:
-			case SAMPLER2DARRAY:
-			case SAMPLER1DARRAYSHADOW:
-			case SAMPLER2DARRAYSHADOW:
-			case ISAMPLER1D:
-			case ISAMPLER2D:
-			case ISAMPLER3D:
-			case ISAMPLERCUBE:
-			case ISAMPLER1DARRAY:
-			case ISAMPLER2DARRAY:
-			case USAMPLER1D:
-			case USAMPLER2D:
-			case USAMPLER3D:
-			case USAMPLERCUBE:
-			case USAMPLER1DARRAY:
-			case USAMPLER2DARRAY:
-			case SAMPLER2DRECT:
-			case SAMPLER2DRECTSHADOW:
-			case ISAMPLER2DRECT:
-			case USAMPLER2DRECT:
-			case SAMPLERBUFFER:
-			case ISAMPLERBUFFER:
-			case USAMPLERBUFFER:
-			case SAMPLER2DMS:
-			case ISAMPLER2DMS:
-			case USAMPLER2DMS:
-			case SAMPLER2DMSARRAY:
-			case ISAMPLER2DMSARRAY:
-			case USAMPLER2DMSARRAY:
-			case SAMPLERCUBEARRAY:
-			case SAMPLERCUBEARRAYSHADOW:
-			case ISAMPLERCUBEARRAY:
-			case USAMPLERCUBEARRAY:
-			case IMAGE1D:
-			case IIMAGE1D:
-			case UIMAGE1D:
-			case IMAGE2D:
-			case IIMAGE2D:
-			case UIMAGE2D:
-			case IMAGE3D:
-			case IIMAGE3D:
-			case UIMAGE3D:
-			case IMAGE2DRECT:
-			case IIMAGE2DRECT:
-			case UIMAGE2DRECT:
-			case IMAGECUBE:
-			case IIMAGECUBE:
-			case UIMAGECUBE:
-			case IMAGEBUFFER:
-			case IIMAGEBUFFER:
-			case UIMAGEBUFFER:
-			case IMAGE1DARRAY:
-			case IIMAGE1DARRAY:
-			case UIMAGE1DARRAY:
-			case IMAGE2DARRAY:
-			case IIMAGE2DARRAY:
-			case UIMAGE2DARRAY:
-			case IMAGECUBEARRAY:
-			case IIMAGECUBEARRAY:
-			case UIMAGECUBEARRAY:
-			case IMAGE2DMS:
-			case IIMAGE2DMS:
-			case UIMAGE2DMS:
-			case IMAGE2DMSARRAY:
-			case IIMAGE2DMSARRAY:
-			case UIMAGE2DMSARRAY:
-			case STRUCT:
-			case SAMPLEREXTERNALOES:
-			case IDENTIFIER:
-				enterOuterAlt(_localctx, 1);
+			_la = _input.LA(1);
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << INVARIANT) | (1L << PRECISE))) != 0) || ((((_la - 92)) & ~0x3f) == 0 && ((1L << (_la - 92)) & ((1L << (LOW_PRECISION - 92)) | (1L << (MEDIUM_PRECISION - 92)) | (1L << (HIGH_PRECISION - 92)))) != 0)) {
 				{
-				setState(861);
-				glslTypeSpecifier();
-				setState(862);
-				glslStructDeclaratorList(0);
-				setState(863);
-				match(SEMICOLON);
+				setState(709);
+				glslTypeQualifier();
 				}
-				break;
-			case ATTRIBUTE:
-			case CONST:
-			case UNIFORM:
-			case VARYING:
-			case BUFFER:
-			case SHARED:
-			case COHERENT:
-			case VOLATILE:
-			case RESTRICT:
-			case READONLY:
-			case WRITEONLY:
-			case LAYOUT:
-			case CENTROID:
-			case FLAT:
-			case SMOOTH:
-			case NOPERSPECTIVE:
-			case PATCH:
-			case SAMPLE:
-			case SUBROUTINE:
-			case IN:
-			case OUT:
-			case INOUT:
-			case INVARIANT:
-			case PRECISE:
-			case LOW_PRECISION:
-			case MEDIUM_PRECISION:
-			case HIGH_PRECISION:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(865);
-				glslTypeQualifier(0);
-				setState(866);
-				glslTypeSpecifier();
-				setState(867);
-				glslStructDeclaratorList(0);
-				setState(868);
-				match(SEMICOLON);
-				}
-				break;
-			default:
-				throw new NoViableAltException(this);
+			}
+
+			setState(712);
+			glslTypeSpecifier();
+			setState(713);
+			glslStructDeclaratorList();
+			setState(714);
+			match(SEMICOLON);
 			}
 		}
 		catch (RecognitionException re) {
@@ -6748,13 +6257,16 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public static class GlslStructDeclaratorListContext extends ParserRuleContext {
-		public GlslStructDeclaratorContext glslStructDeclarator() {
-			return getRuleContext(GlslStructDeclaratorContext.class,0);
+		public List<GlslStructDeclaratorContext> glslStructDeclarator() {
+			return getRuleContexts(GlslStructDeclaratorContext.class);
 		}
-		public GlslStructDeclaratorListContext glslStructDeclaratorList() {
-			return getRuleContext(GlslStructDeclaratorListContext.class,0);
+		public GlslStructDeclaratorContext glslStructDeclarator(int i) {
+			return getRuleContext(GlslStructDeclaratorContext.class,i);
 		}
-		public TerminalNode COMMA() { return getToken(GLSLPPParser.COMMA, 0); }
+		public List<TerminalNode> COMMA() { return getTokens(GLSLPPParser.COMMA); }
+		public TerminalNode COMMA(int i) {
+			return getToken(GLSLPPParser.COMMA, i);
+		}
 		public GlslStructDeclaratorListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -6775,48 +6287,29 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public final GlslStructDeclaratorListContext glslStructDeclaratorList() throws RecognitionException {
-		return glslStructDeclaratorList(0);
-	}
-
-	private GlslStructDeclaratorListContext glslStructDeclaratorList(int _p) throws RecognitionException {
-		ParserRuleContext _parentctx = _ctx;
-		int _parentState = getState();
-		GlslStructDeclaratorListContext _localctx = new GlslStructDeclaratorListContext(_ctx, _parentState);
-		GlslStructDeclaratorListContext _prevctx = _localctx;
-		int _startState = 128;
-		enterRecursionRule(_localctx, 128, RULE_glslStructDeclaratorList, _p);
+		GlslStructDeclaratorListContext _localctx = new GlslStructDeclaratorListContext(_ctx, getState());
+		enterRule(_localctx, 136, RULE_glslStructDeclaratorList);
+		int _la;
 		try {
-			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			{
-			setState(873);
+			setState(716);
 			glslStructDeclarator();
-			}
-			_ctx.stop = _input.LT(-1);
-			setState(880);
+			setState(721);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,62,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
-				if ( _alt==1 ) {
-					if ( _parseListeners!=null ) triggerExitRuleEvent();
-					_prevctx = _localctx;
-					{
-					{
-					_localctx = new GlslStructDeclaratorListContext(_parentctx, _parentState);
-					pushNewRecursionContext(_localctx, _startState, RULE_glslStructDeclaratorList);
-					setState(875);
-					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(876);
-					match(COMMA);
-					setState(877);
-					glslStructDeclarator();
-					}
-					} 
+			_la = _input.LA(1);
+			while (_la==COMMA) {
+				{
+				{
+				setState(717);
+				match(COMMA);
+				setState(718);
+				glslStructDeclarator();
 				}
-				setState(882);
+				}
+				setState(723);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,62,_ctx);
+				_la = _input.LA(1);
 			}
 			}
 		}
@@ -6826,7 +6319,7 @@ public class GLSLPPParser extends Parser {
 			_errHandler.recover(this, re);
 		}
 		finally {
-			unrollRecursionContexts(_parentctx);
+			exitRule();
 		}
 		return _localctx;
 	}
@@ -6857,27 +6350,23 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslStructDeclaratorContext glslStructDeclarator() throws RecognitionException {
 		GlslStructDeclaratorContext _localctx = new GlslStructDeclaratorContext(_ctx, getState());
-		enterRule(_localctx, 130, RULE_glslStructDeclarator);
+		enterRule(_localctx, 138, RULE_glslStructDeclarator);
+		int _la;
 		try {
-			setState(886);
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(724);
+			match(IDENTIFIER);
+			setState(726);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,63,_ctx) ) {
-			case 1:
-				enterOuterAlt(_localctx, 1);
+			_la = _input.LA(1);
+			if (_la==LEFT_BRACKET) {
 				{
-				setState(883);
-				match(IDENTIFIER);
+				setState(725);
+				glslArraySpecifier();
 				}
-				break;
-			case 2:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(884);
-				match(IDENTIFIER);
-				setState(885);
-				glslArraySpecifier(0);
-				}
-				break;
+			}
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -6914,11 +6403,11 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslInvariantQualifierContext glslInvariantQualifier() throws RecognitionException {
 		GlslInvariantQualifierContext _localctx = new GlslInvariantQualifierContext(_ctx, getState());
-		enterRule(_localctx, 132, RULE_glslInvariantQualifier);
+		enterRule(_localctx, 140, RULE_glslInvariantQualifier);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(888);
+			setState(728);
 			match(INVARIANT);
 			}
 		}
@@ -6958,12 +6447,12 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslInterpolationQualifierContext glslInterpolationQualifier() throws RecognitionException {
 		GlslInterpolationQualifierContext _localctx = new GlslInterpolationQualifierContext(_ctx, getState());
-		enterRule(_localctx, 134, RULE_glslInterpolationQualifier);
+		enterRule(_localctx, 142, RULE_glslInterpolationQualifier);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(890);
+			setState(730);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -7014,17 +6503,17 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslLayoutQualifierContext glslLayoutQualifier() throws RecognitionException {
 		GlslLayoutQualifierContext _localctx = new GlslLayoutQualifierContext(_ctx, getState());
-		enterRule(_localctx, 136, RULE_glslLayoutQualifier);
+		enterRule(_localctx, 144, RULE_glslLayoutQualifier);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(892);
+			setState(732);
 			match(LAYOUT);
-			setState(893);
+			setState(733);
 			match(LEFT_PAREN);
-			setState(894);
-			glslLayoutQualifierIdList(0);
-			setState(895);
+			setState(734);
+			glslLayoutQualifierIdList();
+			setState(735);
 			match(RIGHT_PAREN);
 			}
 		}
@@ -7040,13 +6529,16 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public static class GlslLayoutQualifierIdListContext extends ParserRuleContext {
-		public GlslLayoutQualifierIdContext glslLayoutQualifierId() {
-			return getRuleContext(GlslLayoutQualifierIdContext.class,0);
+		public List<GlslLayoutQualifierIdContext> glslLayoutQualifierId() {
+			return getRuleContexts(GlslLayoutQualifierIdContext.class);
 		}
-		public GlslLayoutQualifierIdListContext glslLayoutQualifierIdList() {
-			return getRuleContext(GlslLayoutQualifierIdListContext.class,0);
+		public GlslLayoutQualifierIdContext glslLayoutQualifierId(int i) {
+			return getRuleContext(GlslLayoutQualifierIdContext.class,i);
 		}
-		public TerminalNode COMMA() { return getToken(GLSLPPParser.COMMA, 0); }
+		public List<TerminalNode> COMMA() { return getTokens(GLSLPPParser.COMMA); }
+		public TerminalNode COMMA(int i) {
+			return getToken(GLSLPPParser.COMMA, i);
+		}
 		public GlslLayoutQualifierIdListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -7067,48 +6559,29 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public final GlslLayoutQualifierIdListContext glslLayoutQualifierIdList() throws RecognitionException {
-		return glslLayoutQualifierIdList(0);
-	}
-
-	private GlslLayoutQualifierIdListContext glslLayoutQualifierIdList(int _p) throws RecognitionException {
-		ParserRuleContext _parentctx = _ctx;
-		int _parentState = getState();
-		GlslLayoutQualifierIdListContext _localctx = new GlslLayoutQualifierIdListContext(_ctx, _parentState);
-		GlslLayoutQualifierIdListContext _prevctx = _localctx;
-		int _startState = 138;
-		enterRecursionRule(_localctx, 138, RULE_glslLayoutQualifierIdList, _p);
+		GlslLayoutQualifierIdListContext _localctx = new GlslLayoutQualifierIdListContext(_ctx, getState());
+		enterRule(_localctx, 146, RULE_glslLayoutQualifierIdList);
+		int _la;
 		try {
-			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			{
-			setState(898);
+			setState(737);
 			glslLayoutQualifierId();
-			}
-			_ctx.stop = _input.LT(-1);
-			setState(905);
+			setState(742);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,64,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
-				if ( _alt==1 ) {
-					if ( _parseListeners!=null ) triggerExitRuleEvent();
-					_prevctx = _localctx;
-					{
-					{
-					_localctx = new GlslLayoutQualifierIdListContext(_parentctx, _parentState);
-					pushNewRecursionContext(_localctx, _startState, RULE_glslLayoutQualifierIdList);
-					setState(900);
-					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(901);
-					match(COMMA);
-					setState(902);
-					glslLayoutQualifierId();
-					}
-					} 
+			_la = _input.LA(1);
+			while (_la==COMMA) {
+				{
+				{
+				setState(738);
+				match(COMMA);
+				setState(739);
+				glslLayoutQualifierId();
 				}
-				setState(907);
+				}
+				setState(744);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,64,_ctx);
+				_la = _input.LA(1);
 			}
 			}
 		}
@@ -7118,7 +6591,7 @@ public class GLSLPPParser extends Parser {
 			_errHandler.recover(this, re);
 		}
 		finally {
-			unrollRecursionContexts(_parentctx);
+			exitRule();
 		}
 		return _localctx;
 	}
@@ -7151,33 +6624,33 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslLayoutQualifierIdContext glslLayoutQualifierId() throws RecognitionException {
 		GlslLayoutQualifierIdContext _localctx = new GlslLayoutQualifierIdContext(_ctx, getState());
-		enterRule(_localctx, 140, RULE_glslLayoutQualifierId);
+		enterRule(_localctx, 148, RULE_glslLayoutQualifierId);
 		try {
-			setState(913);
+			setState(750);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,65,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,67,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(908);
+				setState(745);
 				match(IDENTIFIER);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(909);
+				setState(746);
 				match(IDENTIFIER);
-				setState(910);
+				setState(747);
 				match(EQUAL);
-				setState(911);
+				setState(748);
 				glslConstantExpression();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(912);
+				setState(749);
 				match(SHARED);
 				}
 				break;
@@ -7217,11 +6690,11 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslPreciseQualifierContext glslPreciseQualifier() throws RecognitionException {
 		GlslPreciseQualifierContext _localctx = new GlslPreciseQualifierContext(_ctx, getState());
-		enterRule(_localctx, 142, RULE_glslPreciseQualifier);
+		enterRule(_localctx, 150, RULE_glslPreciseQualifier);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(915);
+			setState(752);
 			match(PRECISE);
 			}
 		}
@@ -7237,11 +6710,11 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public static class GlslTypeQualifierContext extends ParserRuleContext {
-		public GlslSingleTypeQualifierContext glslSingleTypeQualifier() {
-			return getRuleContext(GlslSingleTypeQualifierContext.class,0);
+		public List<GlslSingleTypeQualifierContext> glslSingleTypeQualifier() {
+			return getRuleContexts(GlslSingleTypeQualifierContext.class);
 		}
-		public GlslTypeQualifierContext glslTypeQualifier() {
-			return getRuleContext(GlslTypeQualifierContext.class,0);
+		public GlslSingleTypeQualifierContext glslSingleTypeQualifier(int i) {
+			return getRuleContext(GlslSingleTypeQualifierContext.class,i);
 		}
 		public GlslTypeQualifierContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -7263,47 +6736,26 @@ public class GLSLPPParser extends Parser {
 	}
 
 	public final GlslTypeQualifierContext glslTypeQualifier() throws RecognitionException {
-		return glslTypeQualifier(0);
-	}
-
-	private GlslTypeQualifierContext glslTypeQualifier(int _p) throws RecognitionException {
-		ParserRuleContext _parentctx = _ctx;
-		int _parentState = getState();
-		GlslTypeQualifierContext _localctx = new GlslTypeQualifierContext(_ctx, _parentState);
-		GlslTypeQualifierContext _prevctx = _localctx;
-		int _startState = 144;
-		enterRecursionRule(_localctx, 144, RULE_glslTypeQualifier, _p);
+		GlslTypeQualifierContext _localctx = new GlslTypeQualifierContext(_ctx, getState());
+		enterRule(_localctx, 152, RULE_glslTypeQualifier);
+		int _la;
 		try {
-			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			{
-			setState(918);
-			glslSingleTypeQualifier();
-			}
-			_ctx.stop = _input.LT(-1);
-			setState(924);
+			setState(755); 
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,66,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
-				if ( _alt==1 ) {
-					if ( _parseListeners!=null ) triggerExitRuleEvent();
-					_prevctx = _localctx;
-					{
-					{
-					_localctx = new GlslTypeQualifierContext(_parentctx, _parentState);
-					pushNewRecursionContext(_localctx, _startState, RULE_glslTypeQualifier);
-					setState(920);
-					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(921);
-					glslSingleTypeQualifier();
-					}
-					} 
+			_la = _input.LA(1);
+			do {
+				{
+				{
+				setState(754);
+				glslSingleTypeQualifier();
 				}
-				setState(926);
+				}
+				setState(757); 
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,66,_ctx);
-			}
+				_la = _input.LA(1);
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << INVARIANT) | (1L << PRECISE))) != 0) || ((((_la - 92)) & ~0x3f) == 0 && ((1L << (_la - 92)) & ((1L << (LOW_PRECISION - 92)) | (1L << (MEDIUM_PRECISION - 92)) | (1L << (HIGH_PRECISION - 92)))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -7312,7 +6764,7 @@ public class GLSLPPParser extends Parser {
 			_errHandler.recover(this, re);
 		}
 		finally {
-			unrollRecursionContexts(_parentctx);
+			exitRule();
 		}
 		return _localctx;
 	}
@@ -7357,9 +6809,9 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslSingleTypeQualifierContext glslSingleTypeQualifier() throws RecognitionException {
 		GlslSingleTypeQualifierContext _localctx = new GlslSingleTypeQualifierContext(_ctx, getState());
-		enterRule(_localctx, 146, RULE_glslSingleTypeQualifier);
+		enterRule(_localctx, 154, RULE_glslSingleTypeQualifier);
 		try {
-			setState(933);
+			setState(765);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case ATTRIBUTE:
@@ -7382,14 +6834,14 @@ public class GLSLPPParser extends Parser {
 			case INOUT:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(927);
+				setState(759);
 				glslStorageQualifier();
 				}
 				break;
 			case LAYOUT:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(928);
+				setState(760);
 				glslLayoutQualifier();
 				}
 				break;
@@ -7398,7 +6850,7 @@ public class GLSLPPParser extends Parser {
 			case HIGH_PRECISION:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(929);
+				setState(761);
 				glslPrecisionQualifier();
 				}
 				break;
@@ -7407,21 +6859,21 @@ public class GLSLPPParser extends Parser {
 			case NOPERSPECTIVE:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(930);
+				setState(762);
 				glslInterpolationQualifier();
 				}
 				break;
 			case INVARIANT:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(931);
+				setState(763);
 				glslInvariantQualifier();
 				}
 				break;
 			case PRECISE:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(932);
+				setState(764);
 				glslPreciseQualifier();
 				}
 				break;
@@ -7485,147 +6937,147 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslStorageQualifierContext glslStorageQualifier() throws RecognitionException {
 		GlslStorageQualifierContext _localctx = new GlslStorageQualifierContext(_ctx, getState());
-		enterRule(_localctx, 148, RULE_glslStorageQualifier);
+		enterRule(_localctx, 156, RULE_glslStorageQualifier);
 		try {
-			setState(958);
+			setState(790);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,68,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,70,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(935);
+				setState(767);
 				match(CONST);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(936);
+				setState(768);
 				match(ATTRIBUTE);
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(937);
+				setState(769);
 				match(VARYING);
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(938);
+				setState(770);
 				match(INOUT);
 				}
 				break;
 			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(939);
+				setState(771);
 				match(IN);
 				}
 				break;
 			case 6:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(940);
+				setState(772);
 				match(OUT);
 				}
 				break;
 			case 7:
 				enterOuterAlt(_localctx, 7);
 				{
-				setState(941);
+				setState(773);
 				match(CENTROID);
 				}
 				break;
 			case 8:
 				enterOuterAlt(_localctx, 8);
 				{
-				setState(942);
+				setState(774);
 				match(PATCH);
 				}
 				break;
 			case 9:
 				enterOuterAlt(_localctx, 9);
 				{
-				setState(943);
+				setState(775);
 				match(SAMPLE);
 				}
 				break;
 			case 10:
 				enterOuterAlt(_localctx, 10);
 				{
-				setState(944);
+				setState(776);
 				match(UNIFORM);
 				}
 				break;
 			case 11:
 				enterOuterAlt(_localctx, 11);
 				{
-				setState(945);
+				setState(777);
 				match(BUFFER);
 				}
 				break;
 			case 12:
 				enterOuterAlt(_localctx, 12);
 				{
-				setState(946);
+				setState(778);
 				match(SHARED);
 				}
 				break;
 			case 13:
 				enterOuterAlt(_localctx, 13);
 				{
-				setState(947);
+				setState(779);
 				match(COHERENT);
 				}
 				break;
 			case 14:
 				enterOuterAlt(_localctx, 14);
 				{
-				setState(948);
+				setState(780);
 				match(VOLATILE);
 				}
 				break;
 			case 15:
 				enterOuterAlt(_localctx, 15);
 				{
-				setState(949);
+				setState(781);
 				match(RESTRICT);
 				}
 				break;
 			case 16:
 				enterOuterAlt(_localctx, 16);
 				{
-				setState(950);
+				setState(782);
 				match(READONLY);
 				}
 				break;
 			case 17:
 				enterOuterAlt(_localctx, 17);
 				{
-				setState(951);
+				setState(783);
 				match(WRITEONLY);
 				}
 				break;
 			case 18:
 				enterOuterAlt(_localctx, 18);
 				{
-				setState(952);
+				setState(784);
 				match(SUBROUTINE);
 				}
 				break;
 			case 19:
 				enterOuterAlt(_localctx, 19);
 				{
-				setState(953);
+				setState(785);
 				match(SUBROUTINE);
-				setState(954);
+				setState(786);
 				match(LEFT_PAREN);
-				setState(955);
-				glslTypeNameList(0);
-				setState(956);
+				setState(787);
+				glslTypeNameList();
+				setState(788);
 				match(RIGHT_PAREN);
 				}
 				break;
@@ -7667,14 +7119,14 @@ public class GLSLPPParser extends Parser {
 
 	public final GlslPrecisionQualifierContext glslPrecisionQualifier() throws RecognitionException {
 		GlslPrecisionQualifierContext _localctx = new GlslPrecisionQualifierContext(_ctx, getState());
-		enterRule(_localctx, 150, RULE_glslPrecisionQualifier);
+		enterRule(_localctx, 158, RULE_glslPrecisionQualifier);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(960);
+			setState(792);
 			_la = _input.LA(1);
-			if ( !(((((_la - 108)) & ~0x3f) == 0 && ((1L << (_la - 108)) & ((1L << (LOW_PRECISION - 108)) | (1L << (MEDIUM_PRECISION - 108)) | (1L << (HIGH_PRECISION - 108)))) != 0)) ) {
+			if ( !(((((_la - 92)) & ~0x3f) == 0 && ((1L << (_la - 92)) & ((1L << (LOW_PRECISION - 92)) | (1L << (MEDIUM_PRECISION - 92)) | (1L << (HIGH_PRECISION - 92)))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -7697,75 +7149,65 @@ public class GLSLPPParser extends Parser {
 
 	public boolean sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
 		switch (ruleIndex) {
-		case 34:
+		case 11:
+			return glslppMacro_sempred((GlslppMacroContext)_localctx, predIndex);
+		case 37:
 			return glslPostfixExpression_sempred((GlslPostfixExpressionContext)_localctx, predIndex);
-		case 41:
-			return glslMultiplicativeExpression_sempred((GlslMultiplicativeExpressionContext)_localctx, predIndex);
-		case 42:
-			return glslAdditiveExpression_sempred((GlslAdditiveExpressionContext)_localctx, predIndex);
-		case 43:
-			return glslShiftExpression_sempred((GlslShiftExpressionContext)_localctx, predIndex);
 		case 44:
-			return glslRelationalExpression_sempred((GlslRelationalExpressionContext)_localctx, predIndex);
+			return glslMultiplicativeExpression_sempred((GlslMultiplicativeExpressionContext)_localctx, predIndex);
 		case 45:
-			return glslEqualityExpression_sempred((GlslEqualityExpressionContext)_localctx, predIndex);
+			return glslAdditiveExpression_sempred((GlslAdditiveExpressionContext)_localctx, predIndex);
 		case 46:
-			return glslAndExpression_sempred((GlslAndExpressionContext)_localctx, predIndex);
+			return glslShiftExpression_sempred((GlslShiftExpressionContext)_localctx, predIndex);
 		case 47:
-			return glslExclusiveOrExpression_sempred((GlslExclusiveOrExpressionContext)_localctx, predIndex);
+			return glslRelationalExpression_sempred((GlslRelationalExpressionContext)_localctx, predIndex);
 		case 48:
-			return glslInclusiveOrExpression_sempred((GlslInclusiveOrExpressionContext)_localctx, predIndex);
+			return glslEqualityExpression_sempred((GlslEqualityExpressionContext)_localctx, predIndex);
 		case 49:
-			return glslLogicalAndExpression_sempred((GlslLogicalAndExpressionContext)_localctx, predIndex);
+			return glslAndExpression_sempred((GlslAndExpressionContext)_localctx, predIndex);
 		case 50:
-			return glslLogicalXorExpression_sempred((GlslLogicalXorExpressionContext)_localctx, predIndex);
+			return glslExclusiveOrExpression_sempred((GlslExclusiveOrExpressionContext)_localctx, predIndex);
 		case 51:
+			return glslInclusiveOrExpression_sempred((GlslInclusiveOrExpressionContext)_localctx, predIndex);
+		case 52:
+			return glslLogicalAndExpression_sempred((GlslLogicalAndExpressionContext)_localctx, predIndex);
+		case 53:
+			return glslLogicalXorExpression_sempred((GlslLogicalXorExpressionContext)_localctx, predIndex);
+		case 54:
 			return glslLogicalOrExpression_sempred((GlslLogicalOrExpressionContext)_localctx, predIndex);
-		case 55:
+		case 58:
 			return glslExpression_sempred((GlslExpressionContext)_localctx, predIndex);
-		case 57:
-			return glslTypeNameList_sempred((GlslTypeNameListContext)_localctx, predIndex);
-		case 59:
-			return glslArraySpecifier_sempred((GlslArraySpecifierContext)_localctx, predIndex);
-		case 62:
-			return glslStructDeclarationList_sempred((GlslStructDeclarationListContext)_localctx, predIndex);
-		case 64:
-			return glslStructDeclaratorList_sempred((GlslStructDeclaratorListContext)_localctx, predIndex);
-		case 69:
-			return glslLayoutQualifierIdList_sempred((GlslLayoutQualifierIdListContext)_localctx, predIndex);
-		case 72:
-			return glslTypeQualifier_sempred((GlslTypeQualifierContext)_localctx, predIndex);
+		}
+		return true;
+	}
+	private boolean glslppMacro_sempred(GlslppMacroContext _localctx, int predIndex) {
+		switch (predIndex) {
+		case 0:
+			return  hidden(WHITESPACE);
+		case 1:
+			return !hidden(WHITESPACE);
 		}
 		return true;
 	}
 	private boolean glslPostfixExpression_sempred(GlslPostfixExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
-		case 0:
-			return precpred(_ctx, 6);
-		case 1:
-			return precpred(_ctx, 5);
 		case 2:
-			return precpred(_ctx, 3);
+			return precpred(_ctx, 6);
 		case 3:
-			return precpred(_ctx, 2);
+			return precpred(_ctx, 5);
 		case 4:
+			return precpred(_ctx, 3);
+		case 5:
+			return precpred(_ctx, 2);
+		case 6:
 			return precpred(_ctx, 1);
 		}
 		return true;
 	}
 	private boolean glslMultiplicativeExpression_sempred(GlslMultiplicativeExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
-		case 5:
-			return precpred(_ctx, 3);
-		case 6:
-			return precpred(_ctx, 2);
 		case 7:
-			return precpred(_ctx, 1);
-		}
-		return true;
-	}
-	private boolean glslAdditiveExpression_sempred(GlslAdditiveExpressionContext _localctx, int predIndex) {
-		switch (predIndex) {
+			return precpred(_ctx, 3);
 		case 8:
 			return precpred(_ctx, 2);
 		case 9:
@@ -7773,7 +7215,7 @@ public class GLSLPPParser extends Parser {
 		}
 		return true;
 	}
-	private boolean glslShiftExpression_sempred(GlslShiftExpressionContext _localctx, int predIndex) {
+	private boolean glslAdditiveExpression_sempred(GlslAdditiveExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 10:
 			return precpred(_ctx, 2);
@@ -7782,21 +7224,21 @@ public class GLSLPPParser extends Parser {
 		}
 		return true;
 	}
-	private boolean glslRelationalExpression_sempred(GlslRelationalExpressionContext _localctx, int predIndex) {
+	private boolean glslShiftExpression_sempred(GlslShiftExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 12:
-			return precpred(_ctx, 4);
-		case 13:
-			return precpred(_ctx, 3);
-		case 14:
 			return precpred(_ctx, 2);
-		case 15:
+		case 13:
 			return precpred(_ctx, 1);
 		}
 		return true;
 	}
-	private boolean glslEqualityExpression_sempred(GlslEqualityExpressionContext _localctx, int predIndex) {
+	private boolean glslRelationalExpression_sempred(GlslRelationalExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
+		case 14:
+			return precpred(_ctx, 4);
+		case 15:
+			return precpred(_ctx, 3);
 		case 16:
 			return precpred(_ctx, 2);
 		case 17:
@@ -7804,102 +7246,67 @@ public class GLSLPPParser extends Parser {
 		}
 		return true;
 	}
-	private boolean glslAndExpression_sempred(GlslAndExpressionContext _localctx, int predIndex) {
+	private boolean glslEqualityExpression_sempred(GlslEqualityExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 18:
-			return precpred(_ctx, 1);
-		}
-		return true;
-	}
-	private boolean glslExclusiveOrExpression_sempred(GlslExclusiveOrExpressionContext _localctx, int predIndex) {
-		switch (predIndex) {
+			return precpred(_ctx, 2);
 		case 19:
 			return precpred(_ctx, 1);
 		}
 		return true;
 	}
-	private boolean glslInclusiveOrExpression_sempred(GlslInclusiveOrExpressionContext _localctx, int predIndex) {
+	private boolean glslAndExpression_sempred(GlslAndExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 20:
 			return precpred(_ctx, 1);
 		}
 		return true;
 	}
-	private boolean glslLogicalAndExpression_sempred(GlslLogicalAndExpressionContext _localctx, int predIndex) {
+	private boolean glslExclusiveOrExpression_sempred(GlslExclusiveOrExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 21:
 			return precpred(_ctx, 1);
 		}
 		return true;
 	}
-	private boolean glslLogicalXorExpression_sempred(GlslLogicalXorExpressionContext _localctx, int predIndex) {
+	private boolean glslInclusiveOrExpression_sempred(GlslInclusiveOrExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 22:
 			return precpred(_ctx, 1);
 		}
 		return true;
 	}
-	private boolean glslLogicalOrExpression_sempred(GlslLogicalOrExpressionContext _localctx, int predIndex) {
+	private boolean glslLogicalAndExpression_sempred(GlslLogicalAndExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 23:
 			return precpred(_ctx, 1);
 		}
 		return true;
 	}
-	private boolean glslExpression_sempred(GlslExpressionContext _localctx, int predIndex) {
+	private boolean glslLogicalXorExpression_sempred(GlslLogicalXorExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 24:
 			return precpred(_ctx, 1);
 		}
 		return true;
 	}
-	private boolean glslTypeNameList_sempred(GlslTypeNameListContext _localctx, int predIndex) {
+	private boolean glslLogicalOrExpression_sempred(GlslLogicalOrExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 25:
 			return precpred(_ctx, 1);
 		}
 		return true;
 	}
-	private boolean glslArraySpecifier_sempred(GlslArraySpecifierContext _localctx, int predIndex) {
+	private boolean glslExpression_sempred(GlslExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 26:
-			return precpred(_ctx, 2);
-		case 27:
-			return precpred(_ctx, 1);
-		}
-		return true;
-	}
-	private boolean glslStructDeclarationList_sempred(GlslStructDeclarationListContext _localctx, int predIndex) {
-		switch (predIndex) {
-		case 28:
-			return precpred(_ctx, 1);
-		}
-		return true;
-	}
-	private boolean glslStructDeclaratorList_sempred(GlslStructDeclaratorListContext _localctx, int predIndex) {
-		switch (predIndex) {
-		case 29:
-			return precpred(_ctx, 1);
-		}
-		return true;
-	}
-	private boolean glslLayoutQualifierIdList_sempred(GlslLayoutQualifierIdListContext _localctx, int predIndex) {
-		switch (predIndex) {
-		case 30:
-			return precpred(_ctx, 1);
-		}
-		return true;
-	}
-	private boolean glslTypeQualifier_sempred(GlslTypeQualifierContext _localctx, int predIndex) {
-		switch (predIndex) {
-		case 31:
 			return precpred(_ctx, 1);
 		}
 		return true;
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\u0127\u03c5\4\2\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\u0128\u031d\4\2\t"+
 		"\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
 		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -7908,408 +7315,315 @@ public class GLSLPPParser extends Parser {
 		",\t,\4-\t-\4.\t.\4/\t/\4\60\t\60\4\61\t\61\4\62\t\62\4\63\t\63\4\64\t"+
 		"\64\4\65\t\65\4\66\t\66\4\67\t\67\48\t8\49\t9\4:\t:\4;\t;\4<\t<\4=\t="+
 		"\4>\t>\4?\t?\4@\t@\4A\tA\4B\tB\4C\tC\4D\tD\4E\tE\4F\tF\4G\tG\4H\tH\4I"+
-		"\tI\4J\tJ\4K\tK\4L\tL\4M\tM\3\2\5\2\u009c\n\2\3\2\5\2\u009f\n\2\3\3\6"+
-		"\3\u00a2\n\3\r\3\16\3\u00a3\3\4\3\4\3\4\5\4\u00a9\n\4\3\5\3\5\5\5\u00ad"+
-		"\n\5\3\5\5\5\u00b0\n\5\3\5\3\5\3\6\3\6\3\6\3\6\3\6\5\6\u00b9\n\6\3\6\3"+
-		"\6\3\6\3\6\3\6\5\6\u00c0\n\6\3\6\3\6\3\6\3\6\3\6\5\6\u00c7\n\6\5\6\u00c9"+
-		"\n\6\3\7\6\7\u00cc\n\7\r\7\16\7\u00cd\3\b\3\b\3\b\3\b\3\b\5\b\u00d5\n"+
-		"\b\3\t\3\t\3\t\3\t\5\t\u00db\n\t\3\n\3\n\3\n\3\n\3\13\3\13\3\13\3\13\3"+
-		"\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\5\13\u00f0\n\13"+
-		"\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13"+
-		"\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13"+
-		"\3\13\3\13\3\13\3\13\3\13\3\13\3\13\5\13\u0115\n\13\3\13\3\13\3\13\3\13"+
-		"\5\13\u011b\n\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13"+
-		"\3\13\3\13\3\13\3\13\3\13\3\13\3\13\5\13\u012f\n\13\3\f\3\f\3\r\3\r\3"+
-		"\16\3\16\3\16\7\16\u0138\n\16\f\16\16\16\u013b\13\16\3\17\3\17\7\17\u013f"+
-		"\n\17\f\17\16\17\u0142\13\17\3\17\3\17\5\17\u0146\n\17\3\20\3\20\5\20"+
-		"\u014a\n\20\3\20\3\20\3\21\5\21\u014f\n\21\3\22\6\22\u0152\n\22\r\22\16"+
-		"\22\u0153\3\23\3\23\3\23\3\23\3\23\3\23\3\23\5\23\u015d\n\23\3\24\3\24"+
-		"\3\25\3\25\3\26\3\26\3\27\3\27\3\30\3\30\3\31\5\31\u016a\n\31\3\32\3\32"+
-		"\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32"+
-		"\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32"+
-		"\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32"+
-		"\3\32\3\32\3\32\5\32\u019b\n\32\3\33\3\33\3\34\3\34\3\35\3\35\3\36\3\36"+
-		"\3\37\3\37\3\37\3\37\3\37\3\37\3\37\3\37\3\37\3\37\5\37\u01af\n\37\3 "+
-		"\3 \3!\3!\3\"\3\"\3#\3#\3$\3$\3$\3$\3$\5$\u01be\n$\3$\3$\3$\3$\3$\3$\3"+
-		"$\3$\3$\3$\3$\3$\3$\3$\7$\u01ce\n$\f$\16$\u01d1\13$\3%\3%\3&\3&\3\'\3"+
-		"\'\3\'\3\'\6\'\u01db\n\'\r\'\16\'\u01dc\3\'\3\'\3\'\3\'\5\'\u01e3\n\'"+
-		"\3\'\5\'\u01e6\n\'\3(\3(\3)\3)\3)\3)\3)\3)\3)\3)\5)\u01f2\n)\3*\3*\3+"+
-		"\3+\3+\3+\3+\3+\3+\3+\3+\3+\3+\3+\7+\u0202\n+\f+\16+\u0205\13+\3,\3,\3"+
-		",\3,\3,\3,\3,\3,\3,\7,\u0210\n,\f,\16,\u0213\13,\3-\3-\3-\3-\3-\3-\3-"+
-		"\3-\3-\7-\u021e\n-\f-\16-\u0221\13-\3.\3.\3.\3.\3.\3.\3.\3.\3.\3.\3.\3"+
-		".\3.\3.\3.\7.\u0232\n.\f.\16.\u0235\13.\3/\3/\3/\3/\3/\3/\3/\3/\3/\7/"+
-		"\u0240\n/\f/\16/\u0243\13/\3\60\3\60\3\60\3\60\3\60\3\60\7\60\u024b\n"+
-		"\60\f\60\16\60\u024e\13\60\3\61\3\61\3\61\3\61\3\61\3\61\7\61\u0256\n"+
-		"\61\f\61\16\61\u0259\13\61\3\62\3\62\3\62\3\62\3\62\3\62\7\62\u0261\n"+
-		"\62\f\62\16\62\u0264\13\62\3\63\3\63\3\63\3\63\3\63\3\63\7\63\u026c\n"+
-		"\63\f\63\16\63\u026f\13\63\3\64\3\64\3\64\3\64\3\64\3\64\7\64\u0277\n"+
-		"\64\f\64\16\64\u027a\13\64\3\65\3\65\3\65\3\65\3\65\3\65\7\65\u0282\n"+
-		"\65\f\65\16\65\u0285\13\65\3\66\3\66\3\66\3\66\3\66\3\66\3\66\5\66\u028e"+
-		"\n\66\3\67\3\67\3\67\3\67\3\67\5\67\u0295\n\67\38\38\39\39\39\39\39\3"+
-		"9\79\u029f\n9\f9\169\u02a2\139\3:\3:\3;\3;\3;\3;\3;\3;\7;\u02ac\n;\f;"+
-		"\16;\u02af\13;\3<\3<\3<\3<\5<\u02b5\n<\3=\3=\3=\3=\3=\3=\3=\5=\u02be\n"+
-		"=\3=\3=\3=\3=\3=\3=\3=\3=\7=\u02c8\n=\f=\16=\u02cb\13=\3>\3>\3>\3>\3>"+
-		"\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>"+
-		"\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>"+
-		"\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>"+
-		"\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>"+
-		"\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>"+
-		"\3>\3>\5>\u0347\n>\3?\3?\3?\3?\3?\3?\3?\3?\3?\3?\3?\5?\u0354\n?\3@\3@"+
-		"\3@\3@\3@\7@\u035b\n@\f@\16@\u035e\13@\3A\3A\3A\3A\3A\3A\3A\3A\3A\5A\u0369"+
-		"\nA\3B\3B\3B\3B\3B\3B\7B\u0371\nB\fB\16B\u0374\13B\3C\3C\3C\5C\u0379\n"+
-		"C\3D\3D\3E\3E\3F\3F\3F\3F\3F\3G\3G\3G\3G\3G\3G\7G\u038a\nG\fG\16G\u038d"+
-		"\13G\3H\3H\3H\3H\3H\5H\u0394\nH\3I\3I\3J\3J\3J\3J\3J\7J\u039d\nJ\fJ\16"+
-		"J\u03a0\13J\3K\3K\3K\3K\3K\3K\5K\u03a8\nK\3L\3L\3L\3L\3L\3L\3L\3L\3L\3"+
-		"L\3L\3L\3L\3L\3L\3L\3L\3L\3L\3L\3L\3L\3L\5L\u03c1\nL\3M\3M\3M\2\25FTV"+
-		"XZ\\^`bdfhptx~\u0082\u008c\u0092N\2\4\6\b\n\f\16\20\22\24\26\30\32\34"+
-		"\36 \"$&(*,.\60\62\64\668:<>@BDFHJLNPRTVXZ\\^`bdfhjlnprtvxz|~\u0080\u0082"+
-		"\u0084\u0086\u0088\u008a\u008c\u008e\u0090\u0092\u0094\u0096\u0098\2\21"+
-		"\3\2\3\6\3\2\27\31\3\2\u0119\u0119\3\2\u011f\u011f\4\2\7\t\16\22\3\2\u0123"+
-		"\u0124\4\2\u0125\u0125\u0127\u0127\3\2\u0125\u0126\3\2\u00e8\u00eb\4\2"+
-		"\u010d\u010d\u010f\u010f\t\2\u00e7\u00f5\u00f7\u0113\u0115\u011a\u011d"+
-		"\u011d\u011f\u011f\u0121\u0121\u0123\u0127\3\2\u010c\u010f\4\2\u00f7\u0100"+
-		"\u010a\u010a\3\2(*\3\2np\2\u0496\2\u009e\3\2\2\2\4\u00a1\3\2\2\2\6\u00a8"+
-		"\3\2\2\2\b\u00aa\3\2\2\2\n\u00c8\3\2\2\2\f\u00cb\3\2\2\2\16\u00cf\3\2"+
-		"\2\2\20\u00d6\3\2\2\2\22\u00dc\3\2\2\2\24\u012e\3\2\2\2\26\u0130\3\2\2"+
-		"\2\30\u0132\3\2\2\2\32\u0134\3\2\2\2\34\u0145\3\2\2\2\36\u0147\3\2\2\2"+
-		" \u014e\3\2\2\2\"\u0151\3\2\2\2$\u015c\3\2\2\2&\u015e\3\2\2\2(\u0160\3"+
-		"\2\2\2*\u0162\3\2\2\2,\u0164\3\2\2\2.\u0166\3\2\2\2\60\u0169\3\2\2\2\62"+
-		"\u019a\3\2\2\2\64\u019c\3\2\2\2\66\u019e\3\2\2\28\u01a0\3\2\2\2:\u01a2"+
-		"\3\2\2\2<\u01ae\3\2\2\2>\u01b0\3\2\2\2@\u01b2\3\2\2\2B\u01b4\3\2\2\2D"+
-		"\u01b6\3\2\2\2F\u01bd\3\2\2\2H\u01d2\3\2\2\2J\u01d4\3\2\2\2L\u01e5\3\2"+
-		"\2\2N\u01e7\3\2\2\2P\u01f1\3\2\2\2R\u01f3\3\2\2\2T\u01f5\3\2\2\2V\u0206"+
-		"\3\2\2\2X\u0214\3\2\2\2Z\u0222\3\2\2\2\\\u0236\3\2\2\2^\u0244\3\2\2\2"+
-		"`\u024f\3\2\2\2b\u025a\3\2\2\2d\u0265\3\2\2\2f\u0270\3\2\2\2h\u027b\3"+
-		"\2\2\2j\u028d\3\2\2\2l\u0294\3\2\2\2n\u0296\3\2\2\2p\u0298\3\2\2\2r\u02a3"+
-		"\3\2\2\2t\u02a5\3\2\2\2v\u02b4\3\2\2\2x\u02bd\3\2\2\2z\u0346\3\2\2\2|"+
-		"\u0353\3\2\2\2~\u0355\3\2\2\2\u0080\u0368\3\2\2\2\u0082\u036a\3\2\2\2"+
-		"\u0084\u0378\3\2\2\2\u0086\u037a\3\2\2\2\u0088\u037c\3\2\2\2\u008a\u037e"+
-		"\3\2\2\2\u008c\u0383\3\2\2\2\u008e\u0393\3\2\2\2\u0090\u0395\3\2\2\2\u0092"+
-		"\u0397\3\2\2\2\u0094\u03a7\3\2\2\2\u0096\u03c0\3\2\2\2\u0098\u03c2\3\2"+
-		"\2\2\u009a\u009c\5\4\3\2\u009b\u009a\3\2\2\2\u009b\u009c\3\2\2\2\u009c"+
-		"\u009f\3\2\2\2\u009d\u009f\7\2\2\3\u009e\u009b\3\2\2\2\u009e\u009d\3\2"+
-		"\2\2\u009f\3\3\2\2\2\u00a0\u00a2\5\6\4\2\u00a1\u00a0\3\2\2\2\u00a2\u00a3"+
-		"\3\2\2\2\u00a3\u00a1\3\2\2\2\u00a3\u00a4\3\2\2\2\u00a4\5\3\2\2\2\u00a5"+
-		"\u00a9\5\b\5\2\u00a6\u00a9\5\24\13\2\u00a7\u00a9\5\34\17\2\u00a8\u00a5"+
-		"\3\2\2\2\u00a8\u00a6\3\2\2\2\u00a8\u00a7\3\2\2\2\u00a9\7\3\2\2\2\u00aa"+
-		"\u00ac\5\n\6\2\u00ab\u00ad\5\f\7\2\u00ac\u00ab\3\2\2\2\u00ac\u00ad\3\2"+
-		"\2\2\u00ad\u00af\3\2\2\2\u00ae\u00b0\5\20\t\2\u00af\u00ae\3\2\2\2\u00af"+
-		"\u00b0\3\2\2\2\u00b0\u00b1\3\2\2\2\u00b1\u00b2\5\22\n\2\u00b2\t\3\2\2"+
-		"\2\u00b3\u00b4\7\u0119\2\2\u00b4\u00b5\7\65\2\2\u00b5\u00b6\5r:\2\u00b6"+
-		"\u00b8\7\u011f\2\2\u00b7\u00b9\5\4\3\2\u00b8\u00b7\3\2\2\2\u00b8\u00b9"+
-		"\3\2\2\2\u00b9\u00c9\3\2\2\2\u00ba\u00bb\7\u0119\2\2\u00bb\u00bc\7\n\2"+
-		"\2\u00bc\u00bd\5,\27\2\u00bd\u00bf\7\u011f\2\2\u00be\u00c0\5\4\3\2\u00bf"+
-		"\u00be\3\2\2\2\u00bf\u00c0\3\2\2\2\u00c0\u00c9\3\2\2\2\u00c1\u00c2\7\u0119"+
-		"\2\2\u00c2\u00c3\7\13\2\2\u00c3\u00c4\5,\27\2\u00c4\u00c6\7\u011f\2\2"+
-		"\u00c5\u00c7\5\4\3\2\u00c6\u00c5\3\2\2\2\u00c6\u00c7\3\2\2\2\u00c7\u00c9"+
-		"\3\2\2\2\u00c8\u00b3\3\2\2\2\u00c8\u00ba\3\2\2\2\u00c8\u00c1\3\2\2\2\u00c9"+
-		"\13\3\2\2\2\u00ca\u00cc\5\16\b\2\u00cb\u00ca\3\2\2\2\u00cc\u00cd\3\2\2"+
-		"\2\u00cd\u00cb\3\2\2\2\u00cd\u00ce\3\2\2\2\u00ce\r\3\2\2\2\u00cf\u00d0"+
-		"\7\u0119\2\2\u00d0\u00d1\7\f\2\2\u00d1\u00d2\5r:\2\u00d2\u00d4\7\u011f"+
-		"\2\2\u00d3\u00d5\5\4\3\2\u00d4\u00d3\3\2\2\2\u00d4\u00d5\3\2\2\2\u00d5"+
-		"\17\3\2\2\2\u00d6\u00d7\7\u0119\2\2\u00d7\u00d8\7\66\2\2\u00d8\u00da\7"+
-		"\u011f\2\2\u00d9\u00db\5\4\3\2\u00da\u00d9\3\2\2\2\u00da\u00db\3\2\2\2"+
-		"\u00db\21\3\2\2\2\u00dc\u00dd\7\u0119\2\2\u00dd\u00de\7\r\2\2\u00de\u00df"+
-		"\7\u011f\2\2\u00df\23\3\2\2\2\u00e0\u00e1\7\u0119\2\2\u00e1\u00e2\7\7"+
-		"\2\2\u00e2\u00e3\5\"\22\2\u00e3\u00e4\7\u011f\2\2\u00e4\u012f\3\2\2\2"+
-		"\u00e5\u00e6\7\u0119\2\2\u00e6\u00e7\7\b\2\2\u00e7\u00e8\5,\27\2\u00e8"+
-		"\u00e9\5 \21\2\u00e9\u00ea\7\u011f\2\2\u00ea\u012f\3\2\2\2\u00eb\u00ec"+
-		"\7\u0119\2\2\u00ec\u00ed\7\b\2\2\u00ed\u00ef\7\u011e\2\2\u00ee\u00f0\5"+
-		"\32\16\2\u00ef\u00ee\3\2\2\2\u00ef\u00f0\3\2\2\2\u00f0\u00f1\3\2\2\2\u00f1"+
-		"\u00f2\7\u0102\2\2\u00f2\u00f3\5 \21\2\u00f3\u00f4\7\u011f\2\2\u00f4\u012f"+
-		"\3\2\2\2\u00f5\u00f6\7\u0119\2\2\u00f6\u00f7\7\b\2\2\u00f7\u00f8\7\u011e"+
-		"\2\2\u00f8\u00f9\7\u011d\2\2\u00f9\u00fa\7\u0102\2\2\u00fa\u00fb\5 \21"+
-		"\2\u00fb\u00fc\7\u011f\2\2\u00fc\u012f\3\2\2\2\u00fd\u00fe\7\u0119\2\2"+
-		"\u00fe\u00ff\7\b\2\2\u00ff\u0100\7\u011e\2\2\u0100\u0101\5\32\16\2\u0101"+
-		"\u0102\7\u0108\2\2\u0102\u0103\7\u011d\2\2\u0103\u0104\7\u0102\2\2\u0104"+
-		"\u0105\5 \21\2\u0105\u0106\7\u011f\2\2\u0106\u012f\3\2\2\2\u0107\u0108"+
-		"\7\u0119\2\2\u0108\u0109\7\t\2\2\u0109\u010a\5,\27\2\u010a\u010b\7\u011f"+
-		"\2\2\u010b\u012f\3\2\2\2\u010c\u010d\7\u0119\2\2\u010d\u010e\7\22\2\2"+
-		"\u010e\u010f\5\"\22\2\u010f\u0110\7\u011f\2\2\u0110\u012f\3\2\2\2\u0111"+
-		"\u0112\7\u0119\2\2\u0112\u0114\7\16\2\2\u0113\u0115\5\"\22\2\u0114\u0113"+
-		"\3\2\2\2\u0114\u0115\3\2\2\2\u0115\u0116\3\2\2\2\u0116\u012f\7\u011f\2"+
-		"\2\u0117\u0118\7\u0119\2\2\u0118\u011a\7\17\2\2\u0119\u011b\5\"\22\2\u011a"+
-		"\u0119\3\2\2\2\u011a\u011b\3\2\2\2\u011b\u011c\3\2\2\2\u011c\u012f\7\u011f"+
-		"\2\2\u011d\u011e\7\u0119\2\2\u011e\u011f\7\20\2\2\u011f\u0120\5,\27\2"+
-		"\u0120\u0121\7\u0109\2\2\u0121\u0122\5\26\f\2\u0122\u0123\7\u011f\2\2"+
-		"\u0123\u012f\3\2\2\2\u0124\u0125\7\u0119\2\2\u0125\u0126\7\21\2\2\u0126"+
-		"\u0127\7\u00ea\2\2\u0127\u0128\5\30\r\2\u0128\u0129\7\u011f\2\2\u0129"+
-		"\u012f\3\2\2\2\u012a\u012b\7\u0119\2\2\u012b\u012f\7\u011f\2\2\u012c\u012d"+
-		"\7\u0119\2\2\u012d\u012f\5\36\20\2\u012e\u00e0\3\2\2\2\u012e\u00e5\3\2"+
-		"\2\2\u012e\u00eb\3\2\2\2\u012e\u00f5\3\2\2\2\u012e\u00fd\3\2\2\2\u012e"+
-		"\u0107\3\2\2\2\u012e\u010c\3\2\2\2\u012e\u0111\3\2\2\2\u012e\u0117\3\2"+
-		"\2\2\u012e\u011d\3\2\2\2\u012e\u0124\3\2\2\2\u012e\u012a\3\2\2\2\u012e"+
-		"\u012c\3\2\2\2\u012f\25\3\2\2\2\u0130\u0131\t\2\2\2\u0131\27\3\2\2\2\u0132"+
-		"\u0133\t\3\2\2\u0133\31\3\2\2\2\u0134\u0139\5,\27\2\u0135\u0136\7\u0108"+
-		"\2\2\u0136\u0138\5,\27\2\u0137\u0135\3\2\2\2\u0138\u013b\3\2\2\2\u0139"+
-		"\u0137\3\2\2\2\u0139\u013a\3\2\2\2\u013a\33\3\2\2\2\u013b\u0139\3\2\2"+
-		"\2\u013c\u0140\n\4\2\2\u013d\u013f\n\5\2\2\u013e\u013d\3\2\2\2\u013f\u0142"+
-		"\3\2\2\2\u0140\u013e\3\2\2\2\u0140\u0141\3\2\2\2\u0141\u0143\3\2\2\2\u0142"+
-		"\u0140\3\2\2\2\u0143\u0146\7\u011f\2\2\u0144\u0146\7\u011f\2\2\u0145\u013c"+
-		"\3\2\2\2\u0145\u0144\3\2\2\2\u0146\35\3\2\2\2\u0147\u0149\n\6\2\2\u0148"+
-		"\u014a\5\"\22\2\u0149\u0148\3\2\2\2\u0149\u014a\3\2\2\2\u014a\u014b\3"+
-		"\2\2\2\u014b\u014c\7\u011f\2\2\u014c\37\3\2\2\2\u014d\u014f\5\"\22\2\u014e"+
-		"\u014d\3\2\2\2\u014e\u014f\3\2\2\2\u014f!\3\2\2\2\u0150\u0152\5$\23\2"+
-		"\u0151\u0150\3\2\2\2\u0152\u0153\3\2\2\2\u0153\u0151\3\2\2\2\u0153\u0154"+
-		"\3\2\2\2\u0154#\3\2\2\2\u0155\u015d\5*\26\2\u0156\u015d\5,\27\2\u0157"+
-		"\u015d\5.\30\2\u0158\u015d\5&\24\2\u0159\u015d\5(\25\2\u015a\u015d\5\62"+
-		"\32\2\u015b\u015d\5\64\33\2\u015c\u0155\3\2\2\2\u015c\u0156\3\2\2\2\u015c"+
-		"\u0157\3\2\2\2\u015c\u0158\3\2\2\2\u015c\u0159\3\2\2\2\u015c\u015a\3\2"+
-		"\2\2\u015c\u015b\3\2\2\2\u015d%\3\2\2\2\u015e\u015f\t\7\2\2\u015f\'\3"+
-		"\2\2\2\u0160\u0161\t\b\2\2\u0161)\3\2\2\2\u0162\u0163\t\t\2\2\u0163+\3"+
-		"\2\2\2\u0164\u0165\7\u00e7\2\2\u0165-\3\2\2\2\u0166\u0167\t\n\2\2\u0167"+
-		"/\3\2\2\2\u0168\u016a\t\13\2\2\u0169\u0168\3\2\2\2\u0169\u016a\3\2\2\2"+
-		"\u016a\61\3\2\2\2\u016b\u019b\7\u0119\2\2\u016c\u019b\7\u011a\2\2\u016d"+
-		"\u019b\7\u0103\2\2\u016e\u019b\7\u0104\2\2\u016f\u019b\7\u0101\2\2\u0170"+
-		"\u019b\7\u0102\2\2\u0171\u019b\7\u0105\2\2\u0172\u019b\7\u0106\2\2\u0173"+
-		"\u019b\7\u0107\2\2\u0174\u019b\7\u00ee\2\2\u0175\u019b\7\u00ef\2\2\u0176"+
-		"\u019b\7\u0117\2\2\u0177\u019b\7\u0110\2\2\u0178\u019b\7\u010f\2\2\u0179"+
-		"\u019b\7\u010d\2\2\u017a\u019b\7\u010e\2\2\u017b\u019b\7\u010c\2\2\u017c"+
-		"\u019b\7\u0111\2\2\u017d\u019b\7\u0112\2\2\u017e\u019b\7\u00ec\2\2\u017f"+
-		"\u019b\7\u00ed\2\2\u0180\u0181\7\u0113\2\2\u0181\u019b\7\u0114\2\2\u0182"+
-		"\u019b\7\u00f0\2\2\u0183\u019b\7\u00f1\2\2\u0184\u019b\7\u00f2\2\2\u0185"+
-		"\u019b\7\u00f3\2\2\u0186\u019b\7\u0116\2\2\u0187\u019b\7\u0115\2\2\u0188"+
-		"\u019b\7\u00f4\2\2\u0189\u019b\7\u00f5\2\2\u018a\u019b\7\u0118\2\2\u018b"+
-		"\u019b\7\u0109\2\2\u018c\u019b\7\u010b\2\2\u018d\u019b\7\u011d\2\2\u018e"+
-		"\u019b\7\u010a\2\2\u018f\u019b\7\u00f7\2\2\u0190\u019b\7\u00f8\2\2\u0191"+
-		"\u019b\7\u00fa\2\2\u0192\u019b\7\u00f9\2\2\u0193\u019b\7\u0100\2\2\u0194"+
-		"\u019b\7\u00fb\2\2\u0195\u019b\7\u00fc\2\2\u0196\u019b\7\u00fd\2\2\u0197"+
-		"\u019b\7\u00fe\2\2\u0198\u019b\7\u00ff\2\2\u0199\u019b\7\u0108\2\2\u019a"+
-		"\u016b\3\2\2\2\u019a\u016c\3\2\2\2\u019a\u016d\3\2\2\2\u019a\u016e\3\2"+
-		"\2\2\u019a\u016f\3\2\2\2\u019a\u0170\3\2\2\2\u019a\u0171\3\2\2\2\u019a"+
-		"\u0172\3\2\2\2\u019a\u0173\3\2\2\2\u019a\u0174\3\2\2\2\u019a\u0175\3\2"+
-		"\2\2\u019a\u0176\3\2\2\2\u019a\u0177\3\2\2\2\u019a\u0178\3\2\2\2\u019a"+
-		"\u0179\3\2\2\2\u019a\u017a\3\2\2\2\u019a\u017b\3\2\2\2\u019a\u017c\3\2"+
-		"\2\2\u019a\u017d\3\2\2\2\u019a\u017e\3\2\2\2\u019a\u017f\3\2\2\2\u019a"+
-		"\u0180\3\2\2\2\u019a\u0182\3\2\2\2\u019a\u0183\3\2\2\2\u019a\u0184\3\2"+
-		"\2\2\u019a\u0185\3\2\2\2\u019a\u0186\3\2\2\2\u019a\u0187\3\2\2\2\u019a"+
-		"\u0188\3\2\2\2\u019a\u0189\3\2\2\2\u019a\u018a\3\2\2\2\u019a\u018b\3\2"+
-		"\2\2\u019a\u018c\3\2\2\2\u019a\u018d\3\2\2\2\u019a\u018e\3\2\2\2\u019a"+
-		"\u018f\3\2\2\2\u019a\u0190\3\2\2\2\u019a\u0191\3\2\2\2\u019a\u0192\3\2"+
-		"\2\2\u019a\u0193\3\2\2\2\u019a\u0194\3\2\2\2\u019a\u0195\3\2\2\2\u019a"+
-		"\u0196\3\2\2\2\u019a\u0197\3\2\2\2\u019a\u0198\3\2\2\2\u019a\u0199\3\2"+
-		"\2\2\u019b\63\3\2\2\2\u019c\u019d\n\f\2\2\u019d\65\3\2\2\2\u019e\u019f"+
-		"\7\u00e7\2\2\u019f\67\3\2\2\2\u01a0\u01a1\7\u00e7\2\2\u01a19\3\2\2\2\u01a2"+
-		"\u01a3\7\u00e7\2\2\u01a3;\3\2\2\2\u01a4\u01af\58\35\2\u01a5\u01af\5> "+
-		"\2\u01a6\u01af\5@!\2\u01a7\u01af\5B\"\2\u01a8\u01af\5D#\2\u01a9\u01af"+
-		"\7\u00e6\2\2\u01aa\u01ab\7\u0101\2\2\u01ab\u01ac\5p9\2\u01ac\u01ad\7\u0102"+
-		"\2\2\u01ad\u01af\3\2\2\2\u01ae\u01a4\3\2\2\2\u01ae\u01a5\3\2\2\2\u01ae"+
-		"\u01a6\3\2\2\2\u01ae\u01a7\3\2\2\2\u01ae\u01a8\3\2\2\2\u01ae\u01a9\3\2"+
-		"\2\2\u01ae\u01aa\3\2\2\2\u01af=\3\2\2\2\u01b0\u01b1\7\u00ea\2\2\u01b1"+
-		"?\3\2\2\2\u01b2\u01b3\7\u00eb\2\2\u01b3A\3\2\2\2\u01b4\u01b5\7\u00e8\2"+
-		"\2\u01b5C\3\2\2\2\u01b6\u01b7\7\u00e9\2\2\u01b7E\3\2\2\2\u01b8\u01b9\b"+
-		"$\1\2\u01b9\u01be\5<\37\2\u01ba\u01bb\5v<\2\u01bb\u01bc\5J&\2\u01bc\u01be"+
-		"\3\2\2\2\u01bd\u01b8\3\2\2\2\u01bd\u01ba\3\2\2\2\u01be\u01cf\3\2\2\2\u01bf"+
-		"\u01c0\f\b\2\2\u01c0\u01c1\7\u0103\2\2\u01c1\u01c2\5N(\2\u01c2\u01c3\7"+
-		"\u0104\2\2\u01c3\u01ce\3\2\2\2\u01c4\u01c5\f\7\2\2\u01c5\u01ce\5H%\2\u01c6"+
-		"\u01c7\f\5\2\2\u01c7\u01c8\7\u0107\2\2\u01c8\u01ce\5\66\34\2\u01c9\u01ca"+
-		"\f\4\2\2\u01ca\u01ce\7\u00ee\2\2\u01cb\u01cc\f\3\2\2\u01cc\u01ce\7\u00ef"+
-		"\2\2\u01cd\u01bf\3\2\2\2\u01cd\u01c4\3\2\2\2\u01cd\u01c6\3\2\2\2\u01cd"+
-		"\u01c9\3\2\2\2\u01cd\u01cb\3\2\2\2\u01ce\u01d1\3\2\2\2\u01cf\u01cd\3\2"+
-		"\2\2\u01cf\u01d0\3\2\2\2\u01d0G\3\2\2\2\u01d1\u01cf\3\2\2\2\u01d2\u01d3"+
-		"\5L\'\2\u01d3I\3\2\2\2\u01d4\u01d5\5L\'\2\u01d5K\3\2\2\2\u01d6\u01d7\7"+
-		"\u0101\2\2\u01d7\u01da\5l\67\2\u01d8\u01d9\7\u0108\2\2\u01d9\u01db\5l"+
-		"\67\2\u01da\u01d8\3\2\2\2\u01db\u01dc\3\2\2\2\u01dc\u01da\3\2\2\2\u01dc"+
-		"\u01dd\3\2\2\2\u01dd\u01de\3\2\2\2\u01de\u01df\7\u0102\2\2\u01df\u01e6"+
-		"\3\2\2\2\u01e0\u01e2\7\u0101\2\2\u01e1\u01e3\7>\2\2\u01e2\u01e1\3\2\2"+
-		"\2\u01e2\u01e3\3\2\2\2\u01e3\u01e4\3\2\2\2\u01e4\u01e6\7\u0102\2\2\u01e5"+
-		"\u01d6\3\2\2\2\u01e5\u01e0\3\2\2\2\u01e6M\3\2\2\2\u01e7\u01e8\5p9\2\u01e8"+
-		"O\3\2\2\2\u01e9\u01f2\5F$\2\u01ea\u01eb\7\u00ee\2\2\u01eb\u01f2\5P)\2"+
-		"\u01ec\u01ed\7\u00ef\2\2\u01ed\u01f2\5P)\2\u01ee\u01ef\5R*\2\u01ef\u01f0"+
-		"\5P)\2\u01f0\u01f2\3\2\2\2\u01f1\u01e9\3\2\2\2\u01f1\u01ea\3\2\2\2\u01f1"+
-		"\u01ec\3\2\2\2\u01f1\u01ee\3\2\2\2\u01f2Q\3\2\2\2\u01f3\u01f4\t\r\2\2"+
-		"\u01f4S\3\2\2\2\u01f5\u01f6\b+\1\2\u01f6\u01f7\5P)\2\u01f7\u0203\3\2\2"+
-		"\2\u01f8\u01f9\f\5\2\2\u01f9\u01fa\7\u0110\2\2\u01fa\u0202\5P)\2\u01fb"+
-		"\u01fc\f\4\2\2\u01fc\u01fd\7\u0111\2\2\u01fd\u0202\5P)\2\u01fe\u01ff\f"+
-		"\3\2\2\u01ff\u0200\7\u0112\2\2\u0200\u0202\5P)\2\u0201\u01f8\3\2\2\2\u0201"+
-		"\u01fb\3\2\2\2\u0201\u01fe\3\2\2\2\u0202\u0205\3\2\2\2\u0203\u0201\3\2"+
-		"\2\2\u0203\u0204\3\2\2\2\u0204U\3\2\2\2\u0205\u0203\3\2\2\2\u0206\u0207"+
-		"\b,\1\2\u0207\u0208\5T+\2\u0208\u0211\3\2\2\2\u0209\u020a\f\4\2\2\u020a"+
-		"\u020b\7\u010f\2\2\u020b\u0210\5T+\2\u020c\u020d\f\3\2\2\u020d\u020e\7"+
-		"\u010d\2\2\u020e\u0210\5T+\2\u020f\u0209\3\2\2\2\u020f\u020c\3\2\2\2\u0210"+
-		"\u0213\3\2\2\2\u0211\u020f\3\2\2\2\u0211\u0212\3\2\2\2\u0212W\3\2\2\2"+
-		"\u0213\u0211\3\2\2\2\u0214\u0215\b-\1\2\u0215\u0216\5V,\2\u0216\u021f"+
-		"\3\2\2\2\u0217\u0218\f\4\2\2\u0218\u0219\7\u00ec\2\2\u0219\u021e\5V,\2"+
-		"\u021a\u021b\f\3\2\2\u021b\u021c\7\u00ed\2\2\u021c\u021e\5V,\2\u021d\u0217"+
-		"\3\2\2\2\u021d\u021a\3\2\2\2\u021e\u0221\3\2\2\2\u021f\u021d\3\2\2\2\u021f"+
-		"\u0220\3\2\2\2\u0220Y\3\2\2\2\u0221\u021f\3\2\2\2\u0222\u0223\b.\1\2\u0223"+
-		"\u0224\5X-\2\u0224\u0233\3\2\2\2\u0225\u0226\f\6\2\2\u0226\u0227\7\u0113"+
-		"\2\2\u0227\u0232\5X-\2\u0228\u0229\f\5\2\2\u0229\u022a\7\u0114\2\2\u022a"+
-		"\u0232\5X-\2\u022b\u022c\f\4\2\2\u022c\u022d\7\u00f0\2\2\u022d\u0232\5"+
-		"X-\2\u022e\u022f\f\3\2\2\u022f\u0230\7\u00f1\2\2\u0230\u0232\5X-\2\u0231"+
-		"\u0225\3\2\2\2\u0231\u0228\3\2\2\2\u0231\u022b\3\2\2\2\u0231\u022e\3\2"+
-		"\2\2\u0232\u0235\3\2\2\2\u0233\u0231\3\2\2\2\u0233\u0234\3\2\2\2\u0234"+
-		"[\3\2\2\2\u0235\u0233\3\2\2\2\u0236\u0237\b/\1\2\u0237\u0238\5Z.\2\u0238"+
-		"\u0241\3\2\2\2\u0239\u023a\f\4\2\2\u023a\u023b\7\u00f2\2\2\u023b\u0240"+
-		"\5Z.\2\u023c\u023d\f\3\2\2\u023d\u023e\7\u00f3\2\2\u023e\u0240\5Z.\2\u023f"+
-		"\u0239\3\2\2\2\u023f\u023c\3\2\2\2\u0240\u0243\3\2\2\2\u0241\u023f\3\2"+
-		"\2\2\u0241\u0242\3\2\2\2\u0242]\3\2\2\2\u0243\u0241\3\2\2\2\u0244\u0245"+
-		"\b\60\1\2\u0245\u0246\5\\/\2\u0246\u024c\3\2\2\2\u0247\u0248\f\3\2\2\u0248"+
-		"\u0249\7\u0117\2\2\u0249\u024b\5\\/\2\u024a\u0247\3\2\2\2\u024b\u024e"+
-		"\3\2\2\2\u024c\u024a\3\2\2\2\u024c\u024d\3\2\2\2\u024d_\3\2\2\2\u024e"+
-		"\u024c\3\2\2\2\u024f\u0250\b\61\1\2\u0250\u0251\5^\60\2\u0251\u0257\3"+
-		"\2\2\2\u0252\u0253\f\3\2\2\u0253\u0254\7\u0116\2\2\u0254\u0256\5^\60\2"+
-		"\u0255\u0252\3\2\2\2\u0256\u0259\3\2\2\2\u0257\u0255\3\2\2\2\u0257\u0258"+
-		"\3\2\2\2\u0258a\3\2\2\2\u0259\u0257\3\2\2\2\u025a\u025b\b\62\1\2\u025b"+
-		"\u025c\5`\61\2\u025c\u0262\3\2\2\2\u025d\u025e\f\3\2\2\u025e\u025f\7\u0115"+
-		"\2\2\u025f\u0261\5`\61\2\u0260\u025d\3\2\2\2\u0261\u0264\3\2\2\2\u0262"+
-		"\u0260\3\2\2\2\u0262\u0263\3\2\2\2\u0263c\3\2\2\2\u0264\u0262\3\2\2\2"+
-		"\u0265\u0266\b\63\1\2\u0266\u0267\5b\62\2\u0267\u026d\3\2\2\2\u0268\u0269"+
-		"\f\3\2\2\u0269\u026a\7\u00f4\2\2\u026a\u026c\5b\62\2\u026b\u0268\3\2\2"+
-		"\2\u026c\u026f\3\2\2\2\u026d\u026b\3\2\2\2\u026d\u026e\3\2\2\2\u026ee"+
-		"\3\2\2\2\u026f\u026d\3\2\2\2\u0270\u0271\b\64\1\2\u0271\u0272\5d\63\2"+
-		"\u0272\u0278\3\2\2\2\u0273\u0274\f\3\2\2\u0274\u0275\7\u00f6\2\2\u0275"+
-		"\u0277\5d\63\2\u0276\u0273\3\2\2\2\u0277\u027a\3\2\2\2\u0278\u0276\3\2"+
-		"\2\2\u0278\u0279\3\2\2\2\u0279g\3\2\2\2\u027a\u0278\3\2\2\2\u027b\u027c"+
-		"\b\65\1\2\u027c\u027d\5f\64\2\u027d\u0283\3\2\2\2\u027e\u027f\f\3\2\2"+
-		"\u027f\u0280\7\u00f5\2\2\u0280\u0282\5f\64\2\u0281\u027e\3\2\2\2\u0282"+
-		"\u0285\3\2\2\2\u0283\u0281\3\2\2\2\u0283\u0284\3\2\2\2\u0284i\3\2\2\2"+
-		"\u0285\u0283\3\2\2\2\u0286\u028e\5h\65\2\u0287\u0288\5h\65\2\u0288\u0289"+
-		"\7\u0118\2\2\u0289\u028a\5p9\2\u028a\u028b\7\u0109\2\2\u028b\u028c\5l"+
-		"\67\2\u028c\u028e\3\2\2\2\u028d\u0286\3\2\2\2\u028d\u0287\3\2\2\2\u028e"+
-		"k\3\2\2\2\u028f\u0295\5j\66\2\u0290\u0291\5P)\2\u0291\u0292\5n8\2\u0292"+
-		"\u0293\5l\67\2\u0293\u0295\3\2\2\2\u0294\u028f\3\2\2\2\u0294\u0290\3\2"+
-		"\2\2\u0295m\3\2\2\2\u0296\u0297\t\16\2\2\u0297o\3\2\2\2\u0298\u0299\b"+
-		"9\1\2\u0299\u029a\5l\67\2\u029a\u02a0\3\2\2\2\u029b\u029c\f\3\2\2\u029c"+
-		"\u029d\7\u0108\2\2\u029d\u029f\5l\67\2\u029e\u029b\3\2\2\2\u029f\u02a2"+
-		"\3\2\2\2\u02a0\u029e\3\2\2\2\u02a0\u02a1\3\2\2\2\u02a1q\3\2\2\2\u02a2"+
-		"\u02a0\3\2\2\2\u02a3\u02a4\5j\66\2\u02a4s\3\2\2\2\u02a5\u02a6\b;\1\2\u02a6"+
-		"\u02a7\5:\36\2\u02a7\u02ad\3\2\2\2\u02a8\u02a9\f\3\2\2\u02a9\u02aa\7\u0108"+
-		"\2\2\u02aa\u02ac\5:\36\2\u02ab\u02a8\3\2\2\2\u02ac\u02af\3\2\2\2\u02ad"+
-		"\u02ab\3\2\2\2\u02ad\u02ae\3\2\2\2\u02aeu\3\2\2\2\u02af\u02ad\3\2\2\2"+
-		"\u02b0\u02b5\5z>\2\u02b1\u02b2\5z>\2\u02b2\u02b3\5x=\2\u02b3\u02b5\3\2"+
-		"\2\2\u02b4\u02b0\3\2\2\2\u02b4\u02b1\3\2\2\2\u02b5w\3\2\2\2\u02b6\u02b7"+
-		"\b=\1\2\u02b7\u02b8\7\u0103\2\2\u02b8\u02be\7\u0104\2\2\u02b9\u02ba\7"+
-		"\u0103\2\2\u02ba\u02bb\5r:\2\u02bb\u02bc\7\u0104\2\2\u02bc\u02be\3\2\2"+
-		"\2\u02bd\u02b6\3\2\2\2\u02bd\u02b9\3\2\2\2\u02be\u02c9\3\2\2\2\u02bf\u02c0"+
-		"\f\4\2\2\u02c0\u02c1\7\u0103\2\2\u02c1\u02c8\7\u0104\2\2\u02c2\u02c3\f"+
-		"\3\2\2\u02c3\u02c4\7\u0103\2\2\u02c4\u02c5\5r:\2\u02c5\u02c6\7\u0104\2"+
-		"\2\u02c6\u02c8\3\2\2\2\u02c7\u02bf\3\2\2\2\u02c7\u02c2\3\2\2\2\u02c8\u02cb"+
-		"\3\2\2\2\u02c9\u02c7\3\2\2\2\u02c9\u02ca\3\2\2\2\u02cay\3\2\2\2\u02cb"+
-		"\u02c9\3\2\2\2\u02cc\u0347\7>\2\2\u02cd\u0347\7;\2\2\u02ce\u0347\7<\2"+
-		"\2\u02cf\u0347\7=\2\2\u02d0\u0347\7j\2\2\u02d1\u0347\7?\2\2\u02d2\u0347"+
-		"\7^\2\2\u02d3\u0347\7_\2\2\u02d4\u0347\7`\2\2\u02d5\u0347\7g\2\2\u02d6"+
-		"\u0347\7h\2\2\u02d7\u0347\7i\2\2\u02d8\u0347\7d\2\2\u02d9\u0347\7e\2\2"+
-		"\u02da\u0347\7f\2\2\u02db\u0347\7a\2\2\u02dc\u0347\7b\2\2\u02dd\u0347"+
-		"\7c\2\2\u02de\u0347\7k\2\2\u02df\u0347\7l\2\2\u02e0\u0347\7m\2\2\u02e1"+
-		"\u0347\7F\2\2\u02e2\u0347\7G\2\2\u02e3\u0347\7H\2\2\u02e4\u0347\7L\2\2"+
-		"\u02e5\u0347\7M\2\2\u02e6\u0347\7N\2\2\u02e7\u0347\7R\2\2\u02e8\u0347"+
-		"\7S\2\2\u02e9\u0347\7T\2\2\u02ea\u0347\7X\2\2\u02eb\u0347\7Y\2\2\u02ec"+
-		"\u0347\7Z\2\2\u02ed\u0347\7I\2\2\u02ee\u0347\7J\2\2\u02ef\u0347\7K\2\2"+
-		"\u02f0\u0347\7O\2\2\u02f1\u0347\7P\2\2\u02f2\u0347\7Q\2\2\u02f3\u0347"+
-		"\7U\2\2\u02f4\u0347\7V\2\2\u02f5\u0347\7W\2\2\u02f6\u0347\7[\2\2\u02f7"+
-		"\u0347\7\\\2\2\u02f8\u0347\7]\2\2\u02f9\u0347\7%\2\2\u02fa\u0347\7r\2"+
-		"\2\u02fb\u0347\7s\2\2\u02fc\u0347\7t\2\2\u02fd\u0347\7u\2\2\u02fe\u0347"+
-		"\7v\2\2\u02ff\u0347\7w\2\2\u0300\u0347\7x\2\2\u0301\u0347\7y\2\2\u0302"+
-		"\u0347\7z\2\2\u0303\u0347\7{\2\2\u0304\u0347\7|\2\2\u0305\u0347\7\u0096"+
-		"\2\2\u0306\u0347\7\u0097\2\2\u0307\u0347\7}\2\2\u0308\u0347\7~\2\2\u0309"+
-		"\u0347\7\177\2\2\u030a\u0347\7\u0080\2\2\u030b\u0347\7\u0081\2\2\u030c"+
-		"\u0347\7\u0082\2\2\u030d\u0347\7\u0098\2\2\u030e\u0347\7\u0083\2\2\u030f"+
-		"\u0347\7\u0084\2\2\u0310\u0347\7\u0085\2\2\u0311\u0347\7\u0086\2\2\u0312"+
-		"\u0347\7\u0087\2\2\u0313\u0347\7\u0088\2\2\u0314\u0347\7\u0099\2\2\u0315"+
-		"\u0347\7\u0089\2\2\u0316\u0347\7\u008a\2\2\u0317\u0347\7\u008b\2\2\u0318"+
-		"\u0347\7\u008c\2\2\u0319\u0347\7\u008d\2\2\u031a\u0347\7\u008e\2\2\u031b"+
-		"\u0347\7\u008f\2\2\u031c\u0347\7\u0090\2\2\u031d\u0347\7\u0091\2\2\u031e"+
-		"\u0347\7\u0092\2\2\u031f\u0347\7\u0093\2\2\u0320\u0347\7\u0094\2\2\u0321"+
-		"\u0347\7\u0095\2\2\u0322\u0347\7\u009a\2\2\u0323\u0347\7\u009b\2\2\u0324"+
-		"\u0347\7\u009c\2\2\u0325\u0347\7\u009d\2\2\u0326\u0347\7\u009e\2\2\u0327"+
-		"\u0347\7\u009f\2\2\u0328\u0347\7\u00a0\2\2\u0329\u0347\7\u00a1\2\2\u032a"+
-		"\u0347\7\u00a2\2\2\u032b\u0347\7\u00a3\2\2\u032c\u0347\7\u00a4\2\2\u032d"+
-		"\u0347\7\u00a5\2\2\u032e\u0347\7\u00a6\2\2\u032f\u0347\7\u00a7\2\2\u0330"+
-		"\u0347\7\u00a8\2\2\u0331\u0347\7\u00a9\2\2\u0332\u0347\7\u00aa\2\2\u0333"+
-		"\u0347\7\u00ab\2\2\u0334\u0347\7\u00ac\2\2\u0335\u0347\7\u00ad\2\2\u0336"+
-		"\u0347\7\u00ae\2\2\u0337\u0347\7\u00af\2\2\u0338\u0347\7\u00b0\2\2\u0339"+
-		"\u0347\7\u00b1\2\2\u033a\u0347\7\u00b2\2\2\u033b\u0347\7\u00b3\2\2\u033c"+
-		"\u0347\7\u00b4\2\2\u033d\u0347\7\u00b5\2\2\u033e\u0347\7\u00b6\2\2\u033f"+
-		"\u0347\7\u00b7\2\2\u0340\u0347\7\u00b8\2\2\u0341\u0347\7\u00b9\2\2\u0342"+
-		"\u0347\7\u00ba\2\2\u0343\u0347\7\u00e3\2\2\u0344\u0347\5|?\2\u0345\u0347"+
-		"\5:\36\2\u0346\u02cc\3\2\2\2\u0346\u02cd\3\2\2\2\u0346\u02ce\3\2\2\2\u0346"+
-		"\u02cf\3\2\2\2\u0346\u02d0\3\2\2\2\u0346\u02d1\3\2\2\2\u0346\u02d2\3\2"+
-		"\2\2\u0346\u02d3\3\2\2\2\u0346\u02d4\3\2\2\2\u0346\u02d5\3\2\2\2\u0346"+
-		"\u02d6\3\2\2\2\u0346\u02d7\3\2\2\2\u0346\u02d8\3\2\2\2\u0346\u02d9\3\2"+
-		"\2\2\u0346\u02da\3\2\2\2\u0346\u02db\3\2\2\2\u0346\u02dc\3\2\2\2\u0346"+
-		"\u02dd\3\2\2\2\u0346\u02de\3\2\2\2\u0346\u02df\3\2\2\2\u0346\u02e0\3\2"+
-		"\2\2\u0346\u02e1\3\2\2\2\u0346\u02e2\3\2\2\2\u0346\u02e3\3\2\2\2\u0346"+
-		"\u02e4\3\2\2\2\u0346\u02e5\3\2\2\2\u0346\u02e6\3\2\2\2\u0346\u02e7\3\2"+
-		"\2\2\u0346\u02e8\3\2\2\2\u0346\u02e9\3\2\2\2\u0346\u02ea\3\2\2\2\u0346"+
-		"\u02eb\3\2\2\2\u0346\u02ec\3\2\2\2\u0346\u02ed\3\2\2\2\u0346\u02ee\3\2"+
-		"\2\2\u0346\u02ef\3\2\2\2\u0346\u02f0\3\2\2\2\u0346\u02f1\3\2\2\2\u0346"+
-		"\u02f2\3\2\2\2\u0346\u02f3\3\2\2\2\u0346\u02f4\3\2\2\2\u0346\u02f5\3\2"+
-		"\2\2\u0346\u02f6\3\2\2\2\u0346\u02f7\3\2\2\2\u0346\u02f8\3\2\2\2\u0346"+
-		"\u02f9\3\2\2\2\u0346\u02fa\3\2\2\2\u0346\u02fb\3\2\2\2\u0346\u02fc\3\2"+
-		"\2\2\u0346\u02fd\3\2\2\2\u0346\u02fe\3\2\2\2\u0346\u02ff\3\2\2\2\u0346"+
-		"\u0300\3\2\2\2\u0346\u0301\3\2\2\2\u0346\u0302\3\2\2\2\u0346\u0303\3\2"+
-		"\2\2\u0346\u0304\3\2\2\2\u0346\u0305\3\2\2\2\u0346\u0306\3\2\2\2\u0346"+
-		"\u0307\3\2\2\2\u0346\u0308\3\2\2\2\u0346\u0309\3\2\2\2\u0346\u030a\3\2"+
-		"\2\2\u0346\u030b\3\2\2\2\u0346\u030c\3\2\2\2\u0346\u030d\3\2\2\2\u0346"+
-		"\u030e\3\2\2\2\u0346\u030f\3\2\2\2\u0346\u0310\3\2\2\2\u0346\u0311\3\2"+
-		"\2\2\u0346\u0312\3\2\2\2\u0346\u0313\3\2\2\2\u0346\u0314\3\2\2\2\u0346"+
-		"\u0315\3\2\2\2\u0346\u0316\3\2\2\2\u0346\u0317\3\2\2\2\u0346\u0318\3\2"+
-		"\2\2\u0346\u0319\3\2\2\2\u0346\u031a\3\2\2\2\u0346\u031b\3\2\2\2\u0346"+
-		"\u031c\3\2\2\2\u0346\u031d\3\2\2\2\u0346\u031e\3\2\2\2\u0346\u031f\3\2"+
-		"\2\2\u0346\u0320\3\2\2\2\u0346\u0321\3\2\2\2\u0346\u0322\3\2\2\2\u0346"+
-		"\u0323\3\2\2\2\u0346\u0324\3\2\2\2\u0346\u0325\3\2\2\2\u0346\u0326\3\2"+
-		"\2\2\u0346\u0327\3\2\2\2\u0346\u0328\3\2\2\2\u0346\u0329\3\2\2\2\u0346"+
-		"\u032a\3\2\2\2\u0346\u032b\3\2\2\2\u0346\u032c\3\2\2\2\u0346\u032d\3\2"+
-		"\2\2\u0346\u032e\3\2\2\2\u0346\u032f\3\2\2\2\u0346\u0330\3\2\2\2\u0346"+
-		"\u0331\3\2\2\2\u0346\u0332\3\2\2\2\u0346\u0333\3\2\2\2\u0346\u0334\3\2"+
-		"\2\2\u0346\u0335\3\2\2\2\u0346\u0336\3\2\2\2\u0346\u0337\3\2\2\2\u0346"+
-		"\u0338\3\2\2\2\u0346\u0339\3\2\2\2\u0346\u033a\3\2\2\2\u0346\u033b\3\2"+
-		"\2\2\u0346\u033c\3\2\2\2\u0346\u033d\3\2\2\2\u0346\u033e\3\2\2\2\u0346"+
-		"\u033f\3\2\2\2\u0346\u0340\3\2\2\2\u0346\u0341\3\2\2\2\u0346\u0342\3\2"+
-		"\2\2\u0346\u0343\3\2\2\2\u0346\u0344\3\2\2\2\u0346\u0345\3\2\2\2\u0347"+
-		"{\3\2\2\2\u0348\u0349\7\u00bb\2\2\u0349\u034a\7\u00e7\2\2\u034a\u034b"+
-		"\7\u0105\2\2\u034b\u034c\5~@\2\u034c\u034d\7\u0106\2\2\u034d\u0354\3\2"+
-		"\2\2\u034e\u034f\7\u00bb\2\2\u034f\u0350\7\u0105\2\2\u0350\u0351\5~@\2"+
-		"\u0351\u0352\7\u0106\2\2\u0352\u0354\3\2\2\2\u0353\u0348\3\2\2\2\u0353"+
-		"\u034e\3\2\2\2\u0354}\3\2\2\2\u0355\u0356\b@\1\2\u0356\u0357\5\u0080A"+
-		"\2\u0357\u035c\3\2\2\2\u0358\u0359\f\3\2\2\u0359\u035b\5\u0080A\2\u035a"+
-		"\u0358\3\2\2\2\u035b\u035e\3\2\2\2\u035c\u035a\3\2\2\2\u035c\u035d\3\2"+
-		"\2\2\u035d\177\3\2\2\2\u035e\u035c\3\2\2\2\u035f\u0360\5v<\2\u0360\u0361"+
-		"\5\u0082B\2\u0361\u0362\7\u010b\2\2\u0362\u0369\3\2\2\2\u0363\u0364\5"+
-		"\u0092J\2\u0364\u0365\5v<\2\u0365\u0366\5\u0082B\2\u0366\u0367\7\u010b"+
-		"\2\2\u0367\u0369\3\2\2\2\u0368\u035f\3\2\2\2\u0368\u0363\3\2\2\2\u0369"+
-		"\u0081\3\2\2\2\u036a\u036b\bB\1\2\u036b\u036c\5\u0084C\2\u036c\u0372\3"+
-		"\2\2\2\u036d\u036e\f\3\2\2\u036e\u036f\7\u0108\2\2\u036f\u0371\5\u0084"+
-		"C\2\u0370\u036d\3\2\2\2\u0371\u0374\3\2\2\2\u0372\u0370\3\2\2\2\u0372"+
-		"\u0373\3\2\2\2\u0373\u0083\3\2\2\2\u0374\u0372\3\2\2\2\u0375\u0379\7\u00e7"+
-		"\2\2\u0376\u0377\7\u00e7\2\2\u0377\u0379\5x=\2\u0378\u0375\3\2\2\2\u0378"+
-		"\u0376\3\2\2\2\u0379\u0085\3\2\2\2\u037a\u037b\7B\2\2\u037b\u0087\3\2"+
-		"\2\2\u037c\u037d\t\17\2\2\u037d\u0089\3\2\2\2\u037e\u037f\7&\2\2\u037f"+
-		"\u0380\7\u0101\2\2\u0380\u0381\5\u008cG\2\u0381\u0382\7\u0102\2\2\u0382"+
-		"\u008b\3\2\2\2\u0383\u0384\bG\1\2\u0384\u0385\5\u008eH\2\u0385\u038b\3"+
-		"\2\2\2\u0386\u0387\f\3\2\2\u0387\u0388\7\u0108\2\2\u0388\u038a\5\u008e"+
-		"H\2\u0389\u0386\3\2\2\2\u038a\u038d\3\2\2\2\u038b\u0389\3\2\2\2\u038b"+
-		"\u038c\3\2\2\2\u038c\u008d\3\2\2\2\u038d\u038b\3\2\2\2\u038e\u0394\7\u00e7"+
-		"\2\2\u038f\u0390\7\u00e7\2\2\u0390\u0391\7\u010a\2\2\u0391\u0394\5r:\2"+
-		"\u0392\u0394\7\37\2\2\u0393\u038e\3\2\2\2\u0393\u038f\3\2\2\2\u0393\u0392"+
-		"\3\2\2\2\u0394\u008f\3\2\2\2\u0395\u0396\7C\2\2\u0396\u0091\3\2\2\2\u0397"+
-		"\u0398\bJ\1\2\u0398\u0399\5\u0094K\2\u0399\u039e\3\2\2\2\u039a\u039b\f"+
-		"\3\2\2\u039b\u039d\5\u0094K\2\u039c\u039a\3\2\2\2\u039d\u03a0\3\2\2\2"+
-		"\u039e\u039c\3\2\2\2\u039e\u039f\3\2\2\2\u039f\u0093\3\2\2\2\u03a0\u039e"+
-		"\3\2\2\2\u03a1\u03a8\5\u0096L\2\u03a2\u03a8\5\u008aF\2\u03a3\u03a8\5\u0098"+
-		"M\2\u03a4\u03a8\5\u0088E\2\u03a5\u03a8\5\u0086D\2\u03a6\u03a8\5\u0090"+
-		"I\2\u03a7\u03a1\3\2\2\2\u03a7\u03a2\3\2\2\2\u03a7\u03a3\3\2\2\2\u03a7"+
-		"\u03a4\3\2\2\2\u03a7\u03a5\3\2\2\2\u03a7\u03a6\3\2\2\2\u03a8\u0095\3\2"+
-		"\2\2\u03a9\u03c1\7\33\2\2\u03aa\u03c1\7\32\2\2\u03ab\u03c1\7\35\2\2\u03ac"+
-		"\u03c1\7:\2\2\u03ad\u03c1\78\2\2\u03ae\u03c1\79\2\2\u03af\u03c1\7\'\2"+
-		"\2\u03b0\u03c1\7+\2\2\u03b1\u03c1\7,\2\2\u03b2\u03c1\7\34\2\2\u03b3\u03c1"+
-		"\7\36\2\2\u03b4\u03c1\7\37\2\2\u03b5\u03c1\7 \2\2\u03b6\u03c1\7!\2\2\u03b7"+
-		"\u03c1\7\"\2\2\u03b8\u03c1\7#\2\2\u03b9\u03c1\7$\2\2\u03ba\u03c1\7\67"+
-		"\2\2\u03bb\u03bc\7\67\2\2\u03bc\u03bd\7\u0101\2\2\u03bd\u03be\5t;\2\u03be"+
-		"\u03bf\7\u0102\2\2\u03bf\u03c1\3\2\2\2\u03c0\u03a9\3\2\2\2\u03c0\u03aa"+
-		"\3\2\2\2\u03c0\u03ab\3\2\2\2\u03c0\u03ac\3\2\2\2\u03c0\u03ad\3\2\2\2\u03c0"+
-		"\u03ae\3\2\2\2\u03c0\u03af\3\2\2\2\u03c0\u03b0\3\2\2\2\u03c0\u03b1\3\2"+
-		"\2\2\u03c0\u03b2\3\2\2\2\u03c0\u03b3\3\2\2\2\u03c0\u03b4\3\2\2\2\u03c0"+
-		"\u03b5\3\2\2\2\u03c0\u03b6\3\2\2\2\u03c0\u03b7\3\2\2\2\u03c0\u03b8\3\2"+
-		"\2\2\u03c0\u03b9\3\2\2\2\u03c0\u03ba\3\2\2\2\u03c0\u03bb\3\2\2\2\u03c1"+
-		"\u0097\3\2\2\2\u03c2\u03c3\t\20\2\2\u03c3\u0099\3\2\2\2G\u009b\u009e\u00a3"+
-		"\u00a8\u00ac\u00af\u00b8\u00bf\u00c6\u00c8\u00cd\u00d4\u00da\u00ef\u0114"+
-		"\u011a\u012e\u0139\u0140\u0145\u0149\u014e\u0153\u015c\u0169\u019a\u01ae"+
-		"\u01bd\u01cd\u01cf\u01dc\u01e2\u01e5\u01f1\u0201\u0203\u020f\u0211\u021d"+
-		"\u021f\u0231\u0233\u023f\u0241\u024c\u0257\u0262\u026d\u0278\u0283\u028d"+
-		"\u0294\u02a0\u02ad\u02b4\u02bd\u02c7\u02c9\u0346\u0353\u035c\u0368\u0372"+
-		"\u0378\u038b\u0393\u039e\u03a7\u03c0";
+		"\tI\4J\tJ\4K\tK\4L\tL\4M\tM\4N\tN\4O\tO\4P\tP\4Q\tQ\3\2\3\2\3\3\5\3\u00a6"+
+		"\n\3\3\4\6\4\u00a9\n\4\r\4\16\4\u00aa\3\5\3\5\3\5\5\5\u00b0\n\5\3\6\3"+
+		"\6\5\6\u00b4\n\6\3\6\5\6\u00b7\n\6\3\6\3\6\3\7\3\7\3\7\3\7\5\7\u00bf\n"+
+		"\7\3\7\3\7\3\7\3\7\5\7\u00c5\n\7\3\7\3\7\3\7\3\7\5\7\u00cb\n\7\5\7\u00cd"+
+		"\n\7\3\b\6\b\u00d0\n\b\r\b\16\b\u00d1\3\t\3\t\3\t\3\t\5\t\u00d8\n\t\3"+
+		"\n\3\n\3\n\5\n\u00dd\n\n\3\13\3\13\3\13\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3"+
+		"\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\5\f\u00f4\n\f\3\f\3\f\3\f\5"+
+		"\f\u00f9\n\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3"+
+		"\f\3\f\5\f\u010b\n\f\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\5\r\u0117"+
+		"\n\r\3\16\5\16\u011a\n\16\3\16\3\16\3\16\5\16\u011f\n\16\3\16\5\16\u0122"+
+		"\n\16\3\17\3\17\3\20\3\20\3\21\3\21\3\21\7\21\u012b\n\21\f\21\16\21\u012e"+
+		"\13\21\3\22\3\22\7\22\u0132\n\22\f\22\16\22\u0135\13\22\3\22\3\22\5\22"+
+		"\u0139\n\22\3\23\5\23\u013c\n\23\3\23\3\23\3\24\5\24\u0141\n\24\3\25\6"+
+		"\25\u0144\n\25\r\25\16\25\u0145\3\26\3\26\3\26\3\26\3\26\3\26\3\26\5\26"+
+		"\u014f\n\26\3\27\3\27\3\30\3\30\3\31\3\31\3\32\3\32\3\33\3\33\3\34\5\34"+
+		"\u015c\n\34\3\35\3\35\3\35\3\35\3\35\3\35\3\35\3\35\3\35\3\35\3\35\3\35"+
+		"\3\35\3\35\3\35\3\35\3\35\3\35\3\35\3\35\3\35\3\35\3\35\3\35\3\35\3\35"+
+		"\3\35\3\35\3\35\3\35\3\35\3\35\3\35\3\35\3\35\3\35\3\35\3\35\3\35\3\35"+
+		"\3\35\3\35\3\35\3\35\3\35\3\35\3\35\5\35\u018d\n\35\3\36\3\36\3\37\3\37"+
+		"\3 \3 \3!\3!\3\"\3\"\3\"\3\"\3\"\3\"\3\"\3\"\3\"\3\"\5\"\u01a1\n\"\3#"+
+		"\3#\3$\3$\3%\3%\3&\3&\3\'\3\'\3\'\3\'\3\'\5\'\u01b0\n\'\3\'\3\'\3\'\3"+
+		"\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\7\'\u01c0\n\'\f\'\16\'\u01c3"+
+		"\13\'\3(\3(\3)\3)\3*\3*\3*\3*\6*\u01cd\n*\r*\16*\u01ce\3*\3*\3*\3*\5*"+
+		"\u01d5\n*\3*\5*\u01d8\n*\3+\3+\3,\3,\3,\3,\3,\3,\3,\3,\3,\3,\3,\3,\3,"+
+		"\5,\u01e9\n,\5,\u01eb\n,\3-\3-\3.\3.\3.\3.\3.\3.\3.\3.\3.\3.\3.\3.\7."+
+		"\u01fb\n.\f.\16.\u01fe\13.\3/\3/\3/\3/\3/\3/\3/\3/\3/\7/\u0209\n/\f/\16"+
+		"/\u020c\13/\3\60\3\60\3\60\3\60\3\60\3\60\3\60\3\60\3\60\7\60\u0217\n"+
+		"\60\f\60\16\60\u021a\13\60\3\61\3\61\3\61\3\61\3\61\3\61\3\61\3\61\3\61"+
+		"\3\61\3\61\3\61\3\61\3\61\3\61\7\61\u022b\n\61\f\61\16\61\u022e\13\61"+
+		"\3\62\3\62\3\62\3\62\3\62\3\62\3\62\3\62\3\62\7\62\u0239\n\62\f\62\16"+
+		"\62\u023c\13\62\3\63\3\63\3\63\3\63\3\63\3\63\7\63\u0244\n\63\f\63\16"+
+		"\63\u0247\13\63\3\64\3\64\3\64\3\64\3\64\3\64\7\64\u024f\n\64\f\64\16"+
+		"\64\u0252\13\64\3\65\3\65\3\65\3\65\3\65\3\65\7\65\u025a\n\65\f\65\16"+
+		"\65\u025d\13\65\3\66\3\66\3\66\3\66\3\66\3\66\7\66\u0265\n\66\f\66\16"+
+		"\66\u0268\13\66\3\67\3\67\3\67\3\67\3\67\3\67\7\67\u0270\n\67\f\67\16"+
+		"\67\u0273\13\67\38\38\38\38\38\38\78\u027b\n8\f8\168\u027e\138\39\39\3"+
+		"9\39\39\39\39\59\u0287\n9\3:\3:\3:\3:\3:\5:\u028e\n:\3;\3;\3<\3<\3<\3"+
+		"<\3<\3<\7<\u0298\n<\f<\16<\u029b\13<\3=\3=\3>\3>\3>\7>\u02a2\n>\f>\16"+
+		">\u02a5\13>\3?\3?\5?\u02a9\n?\3@\3@\5@\u02ad\n@\3@\6@\u02b0\n@\r@\16@"+
+		"\u02b1\3A\3A\3A\5A\u02b7\nA\3B\3B\3C\3C\5C\u02bd\nC\3C\3C\3C\3C\3D\6D"+
+		"\u02c4\nD\rD\16D\u02c5\3E\5E\u02c9\nE\3E\3E\3E\3E\3F\3F\3F\7F\u02d2\n"+
+		"F\fF\16F\u02d5\13F\3G\3G\5G\u02d9\nG\3H\3H\3I\3I\3J\3J\3J\3J\3J\3K\3K"+
+		"\3K\7K\u02e7\nK\fK\16K\u02ea\13K\3L\3L\3L\3L\3L\5L\u02f1\nL\3M\3M\3N\6"+
+		"N\u02f6\nN\rN\16N\u02f7\3O\3O\3O\3O\3O\3O\5O\u0300\nO\3P\3P\3P\3P\3P\3"+
+		"P\3P\3P\3P\3P\3P\3P\3P\3P\3P\3P\3P\3P\3P\3P\3P\3P\3P\5P\u0319\nP\3Q\3"+
+		"Q\3Q\2\17LZ\\^`bdfhjlnvR\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&("+
+		"*,.\60\62\64\668:<>@BDFHJLNPRTVXZ\\^`bdfhjlnprtvxz|~\u0080\u0082\u0084"+
+		"\u0086\u0088\u008a\u008c\u008e\u0090\u0092\u0094\u0096\u0098\u009a\u009c"+
+		"\u009e\u00a0\2\21\3\2\3\6\3\2\7\t\4\2\u0112\u0112\u0118\u0125\3\2\u00d6"+
+		"\u00d6\3\2\u00e0\u00e1\4\2\u00e2\u00e2\u00e4\u00e4\3\2\u00e2\u00e3\3\2"+
+		"\u00dc\u00df\4\2\u0106\u0106\u0108\u0108\7\2\u00d5\u00d6\u00dc\u00ee\u00f0"+
+		"\u010c\u010e\u0114\u0117\u0117\3\2\u0105\u0108\4\2\u00f0\u00f9\u0103\u0103"+
+		"\6\2\25\25+/\66]b\u00ab\3\2\30\32\3\2^`\2\u0374\2\u00a2\3\2\2\2\4\u00a5"+
+		"\3\2\2\2\6\u00a8\3\2\2\2\b\u00af\3\2\2\2\n\u00b1\3\2\2\2\f\u00cc\3\2\2"+
+		"\2\16\u00cf\3\2\2\2\20\u00d3\3\2\2\2\22\u00d9\3\2\2\2\24\u00de\3\2\2\2"+
+		"\26\u010a\3\2\2\2\30\u010c\3\2\2\2\32\u0121\3\2\2\2\34\u0123\3\2\2\2\36"+
+		"\u0125\3\2\2\2 \u0127\3\2\2\2\"\u0138\3\2\2\2$\u013b\3\2\2\2&\u0140\3"+
+		"\2\2\2(\u0143\3\2\2\2*\u014e\3\2\2\2,\u0150\3\2\2\2.\u0152\3\2\2\2\60"+
+		"\u0154\3\2\2\2\62\u0156\3\2\2\2\64\u0158\3\2\2\2\66\u015b\3\2\2\28\u018c"+
+		"\3\2\2\2:\u018e\3\2\2\2<\u0190\3\2\2\2>\u0192\3\2\2\2@\u0194\3\2\2\2B"+
+		"\u01a0\3\2\2\2D\u01a2\3\2\2\2F\u01a4\3\2\2\2H\u01a6\3\2\2\2J\u01a8\3\2"+
+		"\2\2L\u01af\3\2\2\2N\u01c4\3\2\2\2P\u01c6\3\2\2\2R\u01d7\3\2\2\2T\u01d9"+
+		"\3\2\2\2V\u01ea\3\2\2\2X\u01ec\3\2\2\2Z\u01ee\3\2\2\2\\\u01ff\3\2\2\2"+
+		"^\u020d\3\2\2\2`\u021b\3\2\2\2b\u022f\3\2\2\2d\u023d\3\2\2\2f\u0248\3"+
+		"\2\2\2h\u0253\3\2\2\2j\u025e\3\2\2\2l\u0269\3\2\2\2n\u0274\3\2\2\2p\u0286"+
+		"\3\2\2\2r\u028d\3\2\2\2t\u028f\3\2\2\2v\u0291\3\2\2\2x\u029c\3\2\2\2z"+
+		"\u029e\3\2\2\2|\u02a6\3\2\2\2~\u02af\3\2\2\2\u0080\u02b6\3\2\2\2\u0082"+
+		"\u02b8\3\2\2\2\u0084\u02ba\3\2\2\2\u0086\u02c3\3\2\2\2\u0088\u02c8\3\2"+
+		"\2\2\u008a\u02ce\3\2\2\2\u008c\u02d6\3\2\2\2\u008e\u02da\3\2\2\2\u0090"+
+		"\u02dc\3\2\2\2\u0092\u02de\3\2\2\2\u0094\u02e3\3\2\2\2\u0096\u02f0\3\2"+
+		"\2\2\u0098\u02f2\3\2\2\2\u009a\u02f5\3\2\2\2\u009c\u02ff\3\2\2\2\u009e"+
+		"\u0318\3\2\2\2\u00a0\u031a\3\2\2\2\u00a2\u00a3\5\4\3\2\u00a3\3\3\2\2\2"+
+		"\u00a4\u00a6\5\6\4\2\u00a5\u00a4\3\2\2\2\u00a5\u00a6\3\2\2\2\u00a6\5\3"+
+		"\2\2\2\u00a7\u00a9\5\b\5\2\u00a8\u00a7\3\2\2\2\u00a9\u00aa\3\2\2\2\u00aa"+
+		"\u00a8\3\2\2\2\u00aa\u00ab\3\2\2\2\u00ab\7\3\2\2\2\u00ac\u00b0\5\n\6\2"+
+		"\u00ad\u00b0\5\26\f\2\u00ae\u00b0\5\"\22\2\u00af\u00ac\3\2\2\2\u00af\u00ad"+
+		"\3\2\2\2\u00af\u00ae\3\2\2\2\u00b0\t\3\2\2\2\u00b1\u00b3\5\f\7\2\u00b2"+
+		"\u00b4\5\16\b\2\u00b3\u00b2\3\2\2\2\u00b3\u00b4\3\2\2\2\u00b4\u00b6\3"+
+		"\2\2\2\u00b5\u00b7\5\22\n\2\u00b6\u00b5\3\2\2\2\u00b6\u00b7\3\2\2\2\u00b7"+
+		"\u00b8\3\2\2\2\u00b8\u00b9\5\24\13\2\u00b9\13\3\2\2\2\u00ba\u00bb\7\u011b"+
+		"\2\2\u00bb\u00bc\5x=\2\u00bc\u00be\7\u00d6\2\2\u00bd\u00bf\5\6\4\2\u00be"+
+		"\u00bd\3\2\2\2\u00be\u00bf\3\2\2\2\u00bf\u00cd\3\2\2\2\u00c0\u00c1\7\u011c"+
+		"\2\2\u00c1\u00c2\5\62\32\2\u00c2\u00c4\7\u00d6\2\2\u00c3\u00c5\5\6\4\2"+
+		"\u00c4\u00c3\3\2\2\2\u00c4\u00c5\3\2\2\2\u00c5\u00cd\3\2\2\2\u00c6\u00c7"+
+		"\7\u011d\2\2\u00c7\u00c8\5\62\32\2\u00c8\u00ca\7\u00d6\2\2\u00c9\u00cb"+
+		"\5\6\4\2\u00ca\u00c9\3\2\2\2\u00ca\u00cb\3\2\2\2\u00cb\u00cd\3\2\2\2\u00cc"+
+		"\u00ba\3\2\2\2\u00cc\u00c0\3\2\2\2\u00cc\u00c6\3\2\2\2\u00cd\r\3\2\2\2"+
+		"\u00ce\u00d0\5\20\t\2\u00cf\u00ce\3\2\2\2\u00d0\u00d1\3\2\2\2\u00d1\u00cf"+
+		"\3\2\2\2\u00d1\u00d2\3\2\2\2\u00d2\17\3\2\2\2\u00d3\u00d4\7\u011f\2\2"+
+		"\u00d4\u00d5\5x=\2\u00d5\u00d7\7\u00d6\2\2\u00d6\u00d8\5\6\4\2\u00d7\u00d6"+
+		"\3\2\2\2\u00d7\u00d8\3\2\2\2\u00d8\21\3\2\2\2\u00d9\u00da\7\u011e\2\2"+
+		"\u00da\u00dc\7\u00d6\2\2\u00db\u00dd\5\6\4\2\u00dc\u00db\3\2\2\2\u00dc"+
+		"\u00dd\3\2\2\2\u00dd\23\3\2\2\2\u00de\u00df\7\u0120\2\2\u00df\u00e0\7"+
+		"\u00d6\2\2\u00e0\25\3\2\2\2\u00e1\u00e2\7\u0118\2\2\u00e2\u00e3\5\60\31"+
+		"\2\u00e3\u00e4\7\u00d6\2\2\u00e4\u010b\3\2\2\2\u00e5\u00e6\7\u0119\2\2"+
+		"\u00e6\u00e7\5\30\r\2\u00e7\u00e8\7\u00d6\2\2\u00e8\u010b\3\2\2\2\u00e9"+
+		"\u00ea\7\u011a\2\2\u00ea\u00eb\5\62\32\2\u00eb\u00ec\7\u00d6\2\2\u00ec"+
+		"\u010b\3\2\2\2\u00ed\u00ee\7\u0125\2\2\u00ee\u00ef\5(\25\2\u00ef\u00f0"+
+		"\7\u00d6\2\2\u00f0\u010b\3\2\2\2\u00f1\u00f3\7\u0121\2\2\u00f2\u00f4\5"+
+		"(\25\2\u00f3\u00f2\3\2\2\2\u00f3\u00f4\3\2\2\2\u00f4\u00f5\3\2\2\2\u00f5"+
+		"\u010b\7\u00d6\2\2\u00f6\u00f8\7\u0122\2\2\u00f7\u00f9\5(\25\2\u00f8\u00f7"+
+		"\3\2\2\2\u00f8\u00f9\3\2\2\2\u00f9\u00fa\3\2\2\2\u00fa\u010b\7\u00d6\2"+
+		"\2\u00fb\u00fc\7\u0123\2\2\u00fc\u00fd\5\62\32\2\u00fd\u00fe\7\u0102\2"+
+		"\2\u00fe\u00ff\5\34\17\2\u00ff\u0100\7\u00d6\2\2\u0100\u010b\3\2\2\2\u0101"+
+		"\u0102\7\u0124\2\2\u0102\u0103\7\u00de\2\2\u0103\u0104\5\36\20\2\u0104"+
+		"\u0105\7\u00d6\2\2\u0105\u010b\3\2\2\2\u0106\u0107\7\u0112\2\2\u0107\u010b"+
+		"\7\u00d6\2\2\u0108\u0109\7\u0112\2\2\u0109\u010b\5$\23\2\u010a\u00e1\3"+
+		"\2\2\2\u010a\u00e5\3\2\2\2\u010a\u00e9\3\2\2\2\u010a\u00ed\3\2\2\2\u010a"+
+		"\u00f1\3\2\2\2\u010a\u00f6\3\2\2\2\u010a\u00fb\3\2\2\2\u010a\u0101\3\2"+
+		"\2\2\u010a\u0106\3\2\2\2\u010a\u0108\3\2\2\2\u010b\27\3\2\2\2\u010c\u0116"+
+		"\7\u0117\2\2\u010d\u010e\6\r\2\2\u010e\u0117\5&\24\2\u010f\u0110\6\r\3"+
+		"\2\u0110\u0111\7\u00fa\2\2\u0111\u0112\5\32\16\2\u0112\u0113\7\u00fb\2"+
+		"\2\u0113\u0114\5&\24\2\u0114\u0117\3\2\2\2\u0115\u0117\3\2\2\2\u0116\u010d"+
+		"\3\2\2\2\u0116\u010f\3\2\2\2\u0116\u0115\3\2\2\2\u0117\31\3\2\2\2\u0118"+
+		"\u011a\5 \21\2\u0119\u0118\3\2\2\2\u0119\u011a\3\2\2\2\u011a\u0122\3\2"+
+		"\2\2\u011b\u011c\5 \21\2\u011c\u011d\7\u0101\2\2\u011d\u011f\3\2\2\2\u011e"+
+		"\u011b\3\2\2\2\u011e\u011f\3\2\2\2\u011f\u0120\3\2\2\2\u0120\u0122\7\u0114"+
+		"\2\2\u0121\u0119\3\2\2\2\u0121\u011e\3\2\2\2\u0122\33\3\2\2\2\u0123\u0124"+
+		"\t\2\2\2\u0124\35\3\2\2\2\u0125\u0126\t\3\2\2\u0126\37\3\2\2\2\u0127\u012c"+
+		"\7\u0117\2\2\u0128\u0129\7\u0101\2\2\u0129\u012b\7\u0117\2\2\u012a\u0128"+
+		"\3\2\2\2\u012b\u012e\3\2\2\2\u012c\u012a\3\2\2\2\u012c\u012d\3\2\2\2\u012d"+
+		"!\3\2\2\2\u012e\u012c\3\2\2\2\u012f\u0133\n\4\2\2\u0130\u0132\n\5\2\2"+
+		"\u0131\u0130\3\2\2\2\u0132\u0135\3\2\2\2\u0133\u0131\3\2\2\2\u0133\u0134"+
+		"\3\2\2\2\u0134\u0136\3\2\2\2\u0135\u0133\3\2\2\2\u0136\u0139\7\u00d6\2"+
+		"\2\u0137\u0139\7\u00d6\2\2\u0138\u012f\3\2\2\2\u0138\u0137\3\2\2\2\u0139"+
+		"#\3\2\2\2\u013a\u013c\5(\25\2\u013b\u013a\3\2\2\2\u013b\u013c\3\2\2\2"+
+		"\u013c\u013d\3\2\2\2\u013d\u013e\7\u00d6\2\2\u013e%\3\2\2\2\u013f\u0141"+
+		"\5(\25\2\u0140\u013f\3\2\2\2\u0140\u0141\3\2\2\2\u0141\'\3\2\2\2\u0142"+
+		"\u0144\5*\26\2\u0143\u0142\3\2\2\2\u0144\u0145\3\2\2\2\u0145\u0143\3\2"+
+		"\2\2\u0145\u0146\3\2\2\2\u0146)\3\2\2\2\u0147\u014f\5\60\31\2\u0148\u014f"+
+		"\5\62\32\2\u0149\u014f\5\64\33\2\u014a\u014f\5,\27\2\u014b\u014f\5.\30"+
+		"\2\u014c\u014f\58\35\2\u014d\u014f\5:\36\2\u014e\u0147\3\2\2\2\u014e\u0148"+
+		"\3\2\2\2\u014e\u0149\3\2\2\2\u014e\u014a\3\2\2\2\u014e\u014b\3\2\2\2\u014e"+
+		"\u014c\3\2\2\2\u014e\u014d\3\2\2\2\u014f+\3\2\2\2\u0150\u0151\t\6\2\2"+
+		"\u0151-\3\2\2\2\u0152\u0153\t\7\2\2\u0153/\3\2\2\2\u0154\u0155\t\b\2\2"+
+		"\u0155\61\3\2\2\2\u0156\u0157\7\u0117\2\2\u0157\63\3\2\2\2\u0158\u0159"+
+		"\t\t\2\2\u0159\65\3\2\2\2\u015a\u015c\t\n\2\2\u015b\u015a\3\2\2\2\u015b"+
+		"\u015c\3\2\2\2\u015c\67\3\2\2\2\u015d\u018d\7\u00fc\2\2\u015e\u018d\7"+
+		"\u00fd\2\2\u015f\u018d\7\u00fa\2\2\u0160\u018d\7\u00fb\2\2\u0161\u018d"+
+		"\7\u00fe\2\2\u0162\u018d\7\u00ff\2\2\u0163\u018d\7\u0100\2\2\u0164\u018d"+
+		"\7\u00e7\2\2\u0165\u018d\7\u00e8\2\2\u0166\u018d\7\u0110\2\2\u0167\u018d"+
+		"\7\u0109\2\2\u0168\u018d\7\u0108\2\2\u0169\u018d\7\u0106\2\2\u016a\u018d"+
+		"\7\u0107\2\2\u016b\u018d\7\u0105\2\2\u016c\u018d\7\u010a\2\2\u016d\u018d"+
+		"\7\u010b\2\2\u016e\u018d\7\u00e5\2\2\u016f\u018d\7\u00e6\2\2\u0170\u0171"+
+		"\7\u010c\2\2\u0171\u018d\7\u010d\2\2\u0172\u018d\7\u00e9\2\2\u0173\u018d"+
+		"\7\u00ea\2\2\u0174\u018d\7\u00eb\2\2\u0175\u018d\7\u00ec\2\2\u0176\u018d"+
+		"\7\u010f\2\2\u0177\u018d\7\u010e\2\2\u0178\u018d\7\u00ed\2\2\u0179\u018d"+
+		"\7\u00ee\2\2\u017a\u018d\7\u0111\2\2\u017b\u018d\7\u0102\2\2\u017c\u018d"+
+		"\7\u0104\2\2\u017d\u018d\7\u0114\2\2\u017e\u018d\7\u0103\2\2\u017f\u018d"+
+		"\7\u00f0\2\2\u0180\u018d\7\u00f1\2\2\u0181\u018d\7\u00f3\2\2\u0182\u018d"+
+		"\7\u00f2\2\2\u0183\u018d\7\u00f9\2\2\u0184\u018d\7\u00f4\2\2\u0185\u018d"+
+		"\7\u00f5\2\2\u0186\u018d\7\u00f6\2\2\u0187\u018d\7\u00f7\2\2\u0188\u018d"+
+		"\7\u00f8\2\2\u0189\u018d\7\u0101\2\2\u018a\u018d\7\u0112\2\2\u018b\u018d"+
+		"\7\u0113\2\2\u018c\u015d\3\2\2\2\u018c\u015e\3\2\2\2\u018c\u015f\3\2\2"+
+		"\2\u018c\u0160\3\2\2\2\u018c\u0161\3\2\2\2\u018c\u0162\3\2\2\2\u018c\u0163"+
+		"\3\2\2\2\u018c\u0164\3\2\2\2\u018c\u0165\3\2\2\2\u018c\u0166\3\2\2\2\u018c"+
+		"\u0167\3\2\2\2\u018c\u0168\3\2\2\2\u018c\u0169\3\2\2\2\u018c\u016a\3\2"+
+		"\2\2\u018c\u016b\3\2\2\2\u018c\u016c\3\2\2\2\u018c\u016d\3\2\2\2\u018c"+
+		"\u016e\3\2\2\2\u018c\u016f\3\2\2\2\u018c\u0170\3\2\2\2\u018c\u0172\3\2"+
+		"\2\2\u018c\u0173\3\2\2\2\u018c\u0174\3\2\2\2\u018c\u0175\3\2\2\2\u018c"+
+		"\u0176\3\2\2\2\u018c\u0177\3\2\2\2\u018c\u0178\3\2\2\2\u018c\u0179\3\2"+
+		"\2\2\u018c\u017a\3\2\2\2\u018c\u017b\3\2\2\2\u018c\u017c\3\2\2\2\u018c"+
+		"\u017d\3\2\2\2\u018c\u017e\3\2\2\2\u018c\u017f\3\2\2\2\u018c\u0180\3\2"+
+		"\2\2\u018c\u0181\3\2\2\2\u018c\u0182\3\2\2\2\u018c\u0183\3\2\2\2\u018c"+
+		"\u0184\3\2\2\2\u018c\u0185\3\2\2\2\u018c\u0186\3\2\2\2\u018c\u0187\3\2"+
+		"\2\2\u018c\u0188\3\2\2\2\u018c\u0189\3\2\2\2\u018c\u018a\3\2\2\2\u018c"+
+		"\u018b\3\2\2\2\u018d9\3\2\2\2\u018e\u018f\n\13\2\2\u018f;\3\2\2\2\u0190"+
+		"\u0191\7\u0117\2\2\u0191=\3\2\2\2\u0192\u0193\7\u0117\2\2\u0193?\3\2\2"+
+		"\2\u0194\u0195\7\u0117\2\2\u0195A\3\2\2\2\u0196\u01a1\5> \2\u0197\u01a1"+
+		"\5D#\2\u0198\u01a1\5F$\2\u0199\u01a1\5H%\2\u019a\u01a1\5J&\2\u019b\u01a1"+
+		"\7\u00db\2\2\u019c\u019d\7\u00fa\2\2\u019d\u019e\5v<\2\u019e\u019f\7\u00fb"+
+		"\2\2\u019f\u01a1\3\2\2\2\u01a0\u0196\3\2\2\2\u01a0\u0197\3\2\2\2\u01a0"+
+		"\u0198\3\2\2\2\u01a0\u0199\3\2\2\2\u01a0\u019a\3\2\2\2\u01a0\u019b\3\2"+
+		"\2\2\u01a0\u019c\3\2\2\2\u01a1C\3\2\2\2\u01a2\u01a3\7\u00de\2\2\u01a3"+
+		"E\3\2\2\2\u01a4\u01a5\7\u00df\2\2\u01a5G\3\2\2\2\u01a6\u01a7\7\u00dc\2"+
+		"\2\u01a7I\3\2\2\2\u01a8\u01a9\7\u00dd\2\2\u01a9K\3\2\2\2\u01aa\u01ab\b"+
+		"\'\1\2\u01ab\u01b0\5B\"\2\u01ac\u01ad\5|?\2\u01ad\u01ae\5P)\2\u01ae\u01b0"+
+		"\3\2\2\2\u01af\u01aa\3\2\2\2\u01af\u01ac\3\2\2\2\u01b0\u01c1\3\2\2\2\u01b1"+
+		"\u01b2\f\b\2\2\u01b2\u01b3\7\u00fc\2\2\u01b3\u01b4\5T+\2\u01b4\u01b5\7"+
+		"\u00fd\2\2\u01b5\u01c0\3\2\2\2\u01b6\u01b7\f\7\2\2\u01b7\u01c0\5N(\2\u01b8"+
+		"\u01b9\f\5\2\2\u01b9\u01ba\7\u0100\2\2\u01ba\u01c0\5<\37\2\u01bb\u01bc"+
+		"\f\4\2\2\u01bc\u01c0\7\u00e7\2\2\u01bd\u01be\f\3\2\2\u01be\u01c0\7\u00e8"+
+		"\2\2\u01bf\u01b1\3\2\2\2\u01bf\u01b6\3\2\2\2\u01bf\u01b8\3\2\2\2\u01bf"+
+		"\u01bb\3\2\2\2\u01bf\u01bd\3\2\2\2\u01c0\u01c3\3\2\2\2\u01c1\u01bf\3\2"+
+		"\2\2\u01c1\u01c2\3\2\2\2\u01c2M\3\2\2\2\u01c3\u01c1\3\2\2\2\u01c4\u01c5"+
+		"\5R*\2\u01c5O\3\2\2\2\u01c6\u01c7\5R*\2\u01c7Q\3\2\2\2\u01c8\u01c9\7\u00fa"+
+		"\2\2\u01c9\u01cc\5r:\2\u01ca\u01cb\7\u0101\2\2\u01cb\u01cd\5r:\2\u01cc"+
+		"\u01ca\3\2\2\2\u01cd\u01ce\3\2\2\2\u01ce\u01cc\3\2\2\2\u01ce\u01cf\3\2"+
+		"\2\2\u01cf\u01d0\3\2\2\2\u01d0\u01d1\7\u00fb\2\2\u01d1\u01d8\3\2\2\2\u01d2"+
+		"\u01d4\7\u00fa\2\2\u01d3\u01d5\7.\2\2\u01d4\u01d3\3\2\2\2\u01d4\u01d5"+
+		"\3\2\2\2\u01d5\u01d6\3\2\2\2\u01d6\u01d8\7\u00fb\2\2\u01d7\u01c8\3\2\2"+
+		"\2\u01d7\u01d2\3\2\2\2\u01d8S\3\2\2\2\u01d9\u01da\5v<\2\u01daU\3\2\2\2"+
+		"\u01db\u01eb\5L\'\2\u01dc\u01dd\7\u00e7\2\2\u01dd\u01eb\5V,\2\u01de\u01df"+
+		"\7\u00e8\2\2\u01df\u01eb\5V,\2\u01e0\u01e1\5X-\2\u01e1\u01e2\5V,\2\u01e2"+
+		"\u01eb\3\2\2\2\u01e3\u01e8\7\u00d4\2\2\u01e4\u01e5\7\u00fa\2\2\u01e5\u01e6"+
+		"\7\u0117\2\2\u01e6\u01e9\7\u00fb\2\2\u01e7\u01e9\7\u0117\2\2\u01e8\u01e4"+
+		"\3\2\2\2\u01e8\u01e7\3\2\2\2\u01e9\u01eb\3\2\2\2\u01ea\u01db\3\2\2\2\u01ea"+
+		"\u01dc\3\2\2\2\u01ea\u01de\3\2\2\2\u01ea\u01e0\3\2\2\2\u01ea\u01e3\3\2"+
+		"\2\2\u01ebW\3\2\2\2\u01ec\u01ed\t\f\2\2\u01edY\3\2\2\2\u01ee\u01ef\b."+
+		"\1\2\u01ef\u01f0\5V,\2\u01f0\u01fc\3\2\2\2\u01f1\u01f2\f\5\2\2\u01f2\u01f3"+
+		"\7\u0109\2\2\u01f3\u01fb\5V,\2\u01f4\u01f5\f\4\2\2\u01f5\u01f6\7\u010a"+
+		"\2\2\u01f6\u01fb\5V,\2\u01f7\u01f8\f\3\2\2\u01f8\u01f9\7\u010b\2\2\u01f9"+
+		"\u01fb\5V,\2\u01fa\u01f1\3\2\2\2\u01fa\u01f4\3\2\2\2\u01fa\u01f7\3\2\2"+
+		"\2\u01fb\u01fe\3\2\2\2\u01fc\u01fa\3\2\2\2\u01fc\u01fd\3\2\2\2\u01fd["+
+		"\3\2\2\2\u01fe\u01fc\3\2\2\2\u01ff\u0200\b/\1\2\u0200\u0201\5Z.\2\u0201"+
+		"\u020a\3\2\2\2\u0202\u0203\f\4\2\2\u0203\u0204\7\u0108\2\2\u0204\u0209"+
+		"\5Z.\2\u0205\u0206\f\3\2\2\u0206\u0207\7\u0106\2\2\u0207\u0209\5Z.\2\u0208"+
+		"\u0202\3\2\2\2\u0208\u0205\3\2\2\2\u0209\u020c\3\2\2\2\u020a\u0208\3\2"+
+		"\2\2\u020a\u020b\3\2\2\2\u020b]\3\2\2\2\u020c\u020a\3\2\2\2\u020d\u020e"+
+		"\b\60\1\2\u020e\u020f\5\\/\2\u020f\u0218\3\2\2\2\u0210\u0211\f\4\2\2\u0211"+
+		"\u0212\7\u00e5\2\2\u0212\u0217\5\\/\2\u0213\u0214\f\3\2\2\u0214\u0215"+
+		"\7\u00e6\2\2\u0215\u0217\5\\/\2\u0216\u0210\3\2\2\2\u0216\u0213\3\2\2"+
+		"\2\u0217\u021a\3\2\2\2\u0218\u0216\3\2\2\2\u0218\u0219\3\2\2\2\u0219_"+
+		"\3\2\2\2\u021a\u0218\3\2\2\2\u021b\u021c\b\61\1\2\u021c\u021d\5^\60\2"+
+		"\u021d\u022c\3\2\2\2\u021e\u021f\f\6\2\2\u021f\u0220\7\u010c\2\2\u0220"+
+		"\u022b\5^\60\2\u0221\u0222\f\5\2\2\u0222\u0223\7\u010d\2\2\u0223\u022b"+
+		"\5^\60\2\u0224\u0225\f\4\2\2\u0225\u0226\7\u00e9\2\2\u0226\u022b\5^\60"+
+		"\2\u0227\u0228\f\3\2\2\u0228\u0229\7\u00ea\2\2\u0229\u022b\5^\60\2\u022a"+
+		"\u021e\3\2\2\2\u022a\u0221\3\2\2\2\u022a\u0224\3\2\2\2\u022a\u0227\3\2"+
+		"\2\2\u022b\u022e\3\2\2\2\u022c\u022a\3\2\2\2\u022c\u022d\3\2\2\2\u022d"+
+		"a\3\2\2\2\u022e\u022c\3\2\2\2\u022f\u0230\b\62\1\2\u0230\u0231\5`\61\2"+
+		"\u0231\u023a\3\2\2\2\u0232\u0233\f\4\2\2\u0233\u0234\7\u00eb\2\2\u0234"+
+		"\u0239\5`\61\2\u0235\u0236\f\3\2\2\u0236\u0237\7\u00ec\2\2\u0237\u0239"+
+		"\5`\61\2\u0238\u0232\3\2\2\2\u0238\u0235\3\2\2\2\u0239\u023c\3\2\2\2\u023a"+
+		"\u0238\3\2\2\2\u023a\u023b\3\2\2\2\u023bc\3\2\2\2\u023c\u023a\3\2\2\2"+
+		"\u023d\u023e\b\63\1\2\u023e\u023f\5b\62\2\u023f\u0245\3\2\2\2\u0240\u0241"+
+		"\f\3\2\2\u0241\u0242\7\u0110\2\2\u0242\u0244\5b\62\2\u0243\u0240\3\2\2"+
+		"\2\u0244\u0247\3\2\2\2\u0245\u0243\3\2\2\2\u0245\u0246\3\2\2\2\u0246e"+
+		"\3\2\2\2\u0247\u0245\3\2\2\2\u0248\u0249\b\64\1\2\u0249\u024a\5d\63\2"+
+		"\u024a\u0250\3\2\2\2\u024b\u024c\f\3\2\2\u024c\u024d\7\u010f\2\2\u024d"+
+		"\u024f\5d\63\2\u024e\u024b\3\2\2\2\u024f\u0252\3\2\2\2\u0250\u024e\3\2"+
+		"\2\2\u0250\u0251\3\2\2\2\u0251g\3\2\2\2\u0252\u0250\3\2\2\2\u0253\u0254"+
+		"\b\65\1\2\u0254\u0255\5f\64\2\u0255\u025b\3\2\2\2\u0256\u0257\f\3\2\2"+
+		"\u0257\u0258\7\u010e\2\2\u0258\u025a\5f\64\2\u0259\u0256\3\2\2\2\u025a"+
+		"\u025d\3\2\2\2\u025b\u0259\3\2\2\2\u025b\u025c\3\2\2\2\u025ci\3\2\2\2"+
+		"\u025d\u025b\3\2\2\2\u025e\u025f\b\66\1\2\u025f\u0260\5h\65\2\u0260\u0266"+
+		"\3\2\2\2\u0261\u0262\f\3\2\2\u0262\u0263\7\u00ed\2\2\u0263\u0265\5h\65"+
+		"\2\u0264\u0261\3\2\2\2\u0265\u0268\3\2\2\2\u0266\u0264\3\2\2\2\u0266\u0267"+
+		"\3\2\2\2\u0267k\3\2\2\2\u0268\u0266\3\2\2\2\u0269\u026a\b\67\1\2\u026a"+
+		"\u026b\5j\66\2\u026b\u0271\3\2\2\2\u026c\u026d\f\3\2\2\u026d\u026e\7\u00ef"+
+		"\2\2\u026e\u0270\5j\66\2\u026f\u026c\3\2\2\2\u0270\u0273\3\2\2\2\u0271"+
+		"\u026f\3\2\2\2\u0271\u0272\3\2\2\2\u0272m\3\2\2\2\u0273\u0271\3\2\2\2"+
+		"\u0274\u0275\b8\1\2\u0275\u0276\5l\67\2\u0276\u027c\3\2\2\2\u0277\u0278"+
+		"\f\3\2\2\u0278\u0279\7\u00ee\2\2\u0279\u027b\5l\67\2\u027a\u0277\3\2\2"+
+		"\2\u027b\u027e\3\2\2\2\u027c\u027a\3\2\2\2\u027c\u027d\3\2\2\2\u027do"+
+		"\3\2\2\2\u027e\u027c\3\2\2\2\u027f\u0287\5n8\2\u0280\u0281\5n8\2\u0281"+
+		"\u0282\7\u0111\2\2\u0282\u0283\5v<\2\u0283\u0284\7\u0102\2\2\u0284\u0285"+
+		"\5r:\2\u0285\u0287\3\2\2\2\u0286\u027f\3\2\2\2\u0286\u0280\3\2\2\2\u0287"+
+		"q\3\2\2\2\u0288\u028e\5p9\2\u0289\u028a\5V,\2\u028a\u028b\5t;\2\u028b"+
+		"\u028c\5r:\2\u028c\u028e\3\2\2\2\u028d\u0288\3\2\2\2\u028d\u0289\3\2\2"+
+		"\2\u028es\3\2\2\2\u028f\u0290\t\r\2\2\u0290u\3\2\2\2\u0291\u0292\b<\1"+
+		"\2\u0292\u0293\5r:\2\u0293\u0299\3\2\2\2\u0294\u0295\f\3\2\2\u0295\u0296"+
+		"\7\u0101\2\2\u0296\u0298\5r:\2\u0297\u0294\3\2\2\2\u0298\u029b\3\2\2\2"+
+		"\u0299\u0297\3\2\2\2\u0299\u029a\3\2\2\2\u029aw\3\2\2\2\u029b\u0299\3"+
+		"\2\2\2\u029c\u029d\5p9\2\u029dy\3\2\2\2\u029e\u02a3\5@!\2\u029f\u02a0"+
+		"\7\u0101\2\2\u02a0\u02a2\5@!\2\u02a1\u029f\3\2\2\2\u02a2\u02a5\3\2\2\2"+
+		"\u02a3\u02a1\3\2\2\2\u02a3\u02a4\3\2\2\2\u02a4{\3\2\2\2\u02a5\u02a3\3"+
+		"\2\2\2\u02a6\u02a8\5\u0080A\2\u02a7\u02a9\5~@\2\u02a8\u02a7\3\2\2\2\u02a8"+
+		"\u02a9\3\2\2\2\u02a9}\3\2\2\2\u02aa\u02ac\7\u00fc\2\2\u02ab\u02ad\5x="+
+		"\2\u02ac\u02ab\3\2\2\2\u02ac\u02ad\3\2\2\2\u02ad\u02ae\3\2\2\2\u02ae\u02b0"+
+		"\7\u00fd\2\2\u02af\u02aa\3\2\2\2\u02b0\u02b1\3\2\2\2\u02b1\u02af\3\2\2"+
+		"\2\u02b1\u02b2\3\2\2\2\u02b2\177\3\2\2\2\u02b3\u02b7\5\u0082B\2\u02b4"+
+		"\u02b7\5\u0084C\2\u02b5\u02b7\5@!\2\u02b6\u02b3\3\2\2\2\u02b6\u02b4\3"+
+		"\2\2\2\u02b6\u02b5\3\2\2\2\u02b7\u0081\3\2\2\2\u02b8\u02b9\t\16\2\2\u02b9"+
+		"\u0083\3\2\2\2\u02ba\u02bc\7\u00ac\2\2\u02bb\u02bd\7\u0117\2\2\u02bc\u02bb"+
+		"\3\2\2\2\u02bc\u02bd\3\2\2\2\u02bd\u02be\3\2\2\2\u02be\u02bf\7\u00fe\2"+
+		"\2\u02bf\u02c0\5\u0086D\2\u02c0\u02c1\7\u00ff\2\2\u02c1\u0085\3\2\2\2"+
+		"\u02c2\u02c4\5\u0088E\2\u02c3\u02c2\3\2\2\2\u02c4\u02c5\3\2\2\2\u02c5"+
+		"\u02c3\3\2\2\2\u02c5\u02c6\3\2\2\2\u02c6\u0087\3\2\2\2\u02c7\u02c9\5\u009a"+
+		"N\2\u02c8\u02c7\3\2\2\2\u02c8\u02c9\3\2\2\2\u02c9\u02ca\3\2\2\2\u02ca"+
+		"\u02cb\5|?\2\u02cb\u02cc\5\u008aF\2\u02cc\u02cd\7\u0104\2\2\u02cd\u0089"+
+		"\3\2\2\2\u02ce\u02d3\5\u008cG\2\u02cf\u02d0\7\u0101\2\2\u02d0\u02d2\5"+
+		"\u008cG\2\u02d1\u02cf\3\2\2\2\u02d2\u02d5\3\2\2\2\u02d3\u02d1\3\2\2\2"+
+		"\u02d3\u02d4\3\2\2\2\u02d4\u008b\3\2\2\2\u02d5\u02d3\3\2\2\2\u02d6\u02d8"+
+		"\7\u0117\2\2\u02d7\u02d9\5~@\2\u02d8\u02d7\3\2\2\2\u02d8\u02d9\3\2\2\2"+
+		"\u02d9\u008d\3\2\2\2\u02da\u02db\7\62\2\2\u02db\u008f\3\2\2\2\u02dc\u02dd"+
+		"\t\17\2\2\u02dd\u0091\3\2\2\2\u02de\u02df\7\26\2\2\u02df\u02e0\7\u00fa"+
+		"\2\2\u02e0\u02e1\5\u0094K\2\u02e1\u02e2\7\u00fb\2\2\u02e2\u0093\3\2\2"+
+		"\2\u02e3\u02e8\5\u0096L\2\u02e4\u02e5\7\u0101\2\2\u02e5\u02e7\5\u0096"+
+		"L\2\u02e6\u02e4\3\2\2\2\u02e7\u02ea\3\2\2\2\u02e8\u02e6\3\2\2\2\u02e8"+
+		"\u02e9\3\2\2\2\u02e9\u0095\3\2\2\2\u02ea\u02e8\3\2\2\2\u02eb\u02f1\7\u0117"+
+		"\2\2\u02ec\u02ed\7\u0117\2\2\u02ed\u02ee\7\u0103\2\2\u02ee\u02f1\5x=\2"+
+		"\u02ef\u02f1\7\17\2\2\u02f0\u02eb\3\2\2\2\u02f0\u02ec\3\2\2\2\u02f0\u02ef"+
+		"\3\2\2\2\u02f1\u0097\3\2\2\2\u02f2\u02f3\7\63\2\2\u02f3\u0099\3\2\2\2"+
+		"\u02f4\u02f6\5\u009cO\2\u02f5\u02f4\3\2\2\2\u02f6\u02f7\3\2\2\2\u02f7"+
+		"\u02f5\3\2\2\2\u02f7\u02f8\3\2\2\2\u02f8\u009b\3\2\2\2\u02f9\u0300\5\u009e"+
+		"P\2\u02fa\u0300\5\u0092J\2\u02fb\u0300\5\u00a0Q\2\u02fc\u0300\5\u0090"+
+		"I\2\u02fd\u0300\5\u008eH\2\u02fe\u0300\5\u0098M\2\u02ff\u02f9\3\2\2\2"+
+		"\u02ff\u02fa\3\2\2\2\u02ff\u02fb\3\2\2\2\u02ff\u02fc\3\2\2\2\u02ff\u02fd"+
+		"\3\2\2\2\u02ff\u02fe\3\2\2\2\u0300\u009d\3\2\2\2\u0301\u0319\7\13\2\2"+
+		"\u0302\u0319\7\n\2\2\u0303\u0319\7\r\2\2\u0304\u0319\7*\2\2\u0305\u0319"+
+		"\7(\2\2\u0306\u0319\7)\2\2\u0307\u0319\7\27\2\2\u0308\u0319\7\33\2\2\u0309"+
+		"\u0319\7\34\2\2\u030a\u0319\7\f\2\2\u030b\u0319\7\16\2\2\u030c\u0319\7"+
+		"\17\2\2\u030d\u0319\7\20\2\2\u030e\u0319\7\21\2\2\u030f\u0319\7\22\2\2"+
+		"\u0310\u0319\7\23\2\2\u0311\u0319\7\24\2\2\u0312\u0319\7\'\2\2\u0313\u0314"+
+		"\7\'\2\2\u0314\u0315\7\u00fa\2\2\u0315\u0316\5z>\2\u0316\u0317\7\u00fb"+
+		"\2\2\u0317\u0319\3\2\2\2\u0318\u0301\3\2\2\2\u0318\u0302\3\2\2\2\u0318"+
+		"\u0303\3\2\2\2\u0318\u0304\3\2\2\2\u0318\u0305\3\2\2\2\u0318\u0306\3\2"+
+		"\2\2\u0318\u0307\3\2\2\2\u0318\u0308\3\2\2\2\u0318\u0309\3\2\2\2\u0318"+
+		"\u030a\3\2\2\2\u0318\u030b\3\2\2\2\u0318\u030c\3\2\2\2\u0318\u030d\3\2"+
+		"\2\2\u0318\u030e\3\2\2\2\u0318\u030f\3\2\2\2\u0318\u0310\3\2\2\2\u0318"+
+		"\u0311\3\2\2\2\u0318\u0312\3\2\2\2\u0318\u0313\3\2\2\2\u0319\u009f\3\2"+
+		"\2\2\u031a\u031b\t\20\2\2\u031b\u00a1\3\2\2\2I\u00a5\u00aa\u00af\u00b3"+
+		"\u00b6\u00be\u00c4\u00ca\u00cc\u00d1\u00d7\u00dc\u00f3\u00f8\u010a\u0116"+
+		"\u0119\u011e\u0121\u012c\u0133\u0138\u013b\u0140\u0145\u014e\u015b\u018c"+
+		"\u01a0\u01af\u01bf\u01c1\u01ce\u01d4\u01d7\u01e8\u01ea\u01fa\u01fc\u0208"+
+		"\u020a\u0216\u0218\u022a\u022c\u0238\u023a\u0245\u0250\u025b\u0266\u0271"+
+		"\u027c\u0286\u028d\u0299\u02a3\u02a8\u02ac\u02b1\u02b6\u02bc\u02c5\u02c8"+
+		"\u02d3\u02d8\u02e8\u02f0\u02f7\u02ff\u0318";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

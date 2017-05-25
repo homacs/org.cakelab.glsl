@@ -11,6 +11,12 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface GLSLPPVisitor<T> extends ParseTreeVisitor<T> {
 	/**
+	 * Visit a parse tree produced by {@link GLSLPPParser#glslpp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGlslpp(GLSLPPParser.GlslppContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link GLSLPPParser#glslppPreprocessingFile}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -70,6 +76,18 @@ public interface GLSLPPVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitGlslppControlLine(GLSLPPParser.GlslppControlLineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GLSLPPParser#glslppMacro}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGlslppMacro(GLSLPPParser.GlslppMacroContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GLSLPPParser#glslppMacroArguments}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGlslppMacroArguments(GLSLPPParser.GlslppMacroArgumentsContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GLSLPPParser#glslppExtensionBehaviour}.
 	 * @param ctx the parse tree
@@ -376,6 +394,12 @@ public interface GLSLPPVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitGlslTypeSpecifierNonarray(GLSLPPParser.GlslTypeSpecifierNonarrayContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GLSLPPParser#glslBuiltinType}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGlslBuiltinType(GLSLPPParser.GlslBuiltinTypeContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GLSLPPParser#glslStructSpecifier}.
 	 * @param ctx the parse tree

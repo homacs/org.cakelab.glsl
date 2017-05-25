@@ -16,6 +16,18 @@ public class GLSLPPBaseListener implements GLSLPPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterGlslpp(GLSLPPParser.GlslppContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslpp(GLSLPPParser.GlslppContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterGlslppPreprocessingFile(GLSLPPParser.GlslppPreprocessingFileContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -131,6 +143,30 @@ public class GLSLPPBaseListener implements GLSLPPListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitGlslppControlLine(GLSLPPParser.GlslppControlLineContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGlslppMacro(GLSLPPParser.GlslppMacroContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslppMacro(GLSLPPParser.GlslppMacroContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGlslppMacroArguments(GLSLPPParser.GlslppMacroArgumentsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslppMacroArguments(GLSLPPParser.GlslppMacroArgumentsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -743,6 +779,18 @@ public class GLSLPPBaseListener implements GLSLPPListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitGlslTypeSpecifierNonarray(GLSLPPParser.GlslTypeSpecifierNonarrayContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGlslBuiltinType(GLSLPPParser.GlslBuiltinTypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslBuiltinType(GLSLPPParser.GlslBuiltinTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

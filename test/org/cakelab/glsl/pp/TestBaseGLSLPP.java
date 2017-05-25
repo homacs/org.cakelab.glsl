@@ -14,6 +14,7 @@ public class TestBaseGLSLPP extends TestBaseCommon {
 	public static GLSLPPParser p(String source) {
 		CharStream input = CharStreams.fromString(source);
 		GLSLPPLexer lexer = new GLSLPPLexer(input);
+		lexer.preprocessing(true);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		parser = new GLSLPPParser(tokens);
 		error.listenTo(parser, lexer);
@@ -24,7 +25,7 @@ public class TestBaseGLSLPP extends TestBaseCommon {
 	public static void assertValid(String source, Class<? extends ParseTree> ... types) {
 		ParseTree ast;
 		
-		ast = p(source).glslppPreprocessingFile();
+		ast = p(source).glslpp();
 		assertValid(ast, types);
 	}
 
@@ -32,7 +33,7 @@ public class TestBaseGLSLPP extends TestBaseCommon {
 	public static void assertInvalid(String source, Class<? extends ParseTree> ... types) {
 		ParseTree ast;
 		GLSLPPParser parser = p(source);
-		ast = parser.glslppPreprocessingFile();
+		ast = parser.glslpp();
 
 		assertInvalid(ast, types);
 	}

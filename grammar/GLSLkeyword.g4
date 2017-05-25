@@ -1,7 +1,5 @@
 lexer grammar GLSLkeyword;
 
-import GLSLtoken_base;
-
 
 
 //
@@ -169,6 +167,10 @@ UIMAGE2DMS: 'uimage2DMS';
 IMAGE2DMSARRAY: 'image2DMSArray';
 IIMAGE2DMSARRAY: 'iimage2DMSArray';
 UIMAGE2DMSARRAY: 'uimage2DMSArray';
+
+SAMPLEREXTERNALOES: 'samplerExternalOES';
+
+
 STRUCT: 'struct';
 
 // Grammar Note: Following is a set of keywords reserved for future purposes
@@ -211,9 +213,4 @@ SIZEOF: 'sizeof';
 CAST: 'cast';
 NAMESPACE: 'namespace';
 USING: 'using';
-
-//
-//    MANUALLY ADDED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//
-SAMPLEREXTERNALOES: 'samplerExternalOES';
 

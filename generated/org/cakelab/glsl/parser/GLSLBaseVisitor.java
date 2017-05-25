@@ -535,6 +535,13 @@ public class GLSLBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements G
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitGlslBuiltinType(GLSLParser.GlslBuiltinTypeContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitGlslStructSpecifier(GLSLParser.GlslStructSpecifierContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

@@ -7,8 +7,6 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
-import org.cakelab.glsl.parser.GLSLLexer;
-import org.cakelab.glsl.pp.GLSLPPParser;
 
 public class GLSLPreprocessor extends GLSLPPParser {
 
@@ -19,7 +17,8 @@ public class GLSLPreprocessor extends GLSLPPParser {
 	public static void main(String[] args) throws IOException {
 		File f = new File("test_files/100.frag");
 		CharStream input = CharStreams.fromPath(f.toPath());
-		GLSLLexer lexer = new GLSLLexer(input);
+		GLSLPPLexer lexer = new GLSLPPLexer(input);
+		lexer.preprocessing(true);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		GLSLPreprocessor pp = new GLSLPreprocessor(tokens);
 		pp.glslppPreprocessingFile();

@@ -8,6 +8,16 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface GLSLPPListener extends ParseTreeListener {
 	/**
+	 * Enter a parse tree produced by {@link GLSLPPParser#glslpp}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslpp(GLSLPPParser.GlslppContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLPPParser#glslpp}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslpp(GLSLPPParser.GlslppContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link GLSLPPParser#glslppPreprocessingFile}.
 	 * @param ctx the parse tree
 	 */
@@ -107,6 +117,26 @@ public interface GLSLPPListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitGlslppControlLine(GLSLPPParser.GlslppControlLineContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLPPParser#glslppMacro}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslppMacro(GLSLPPParser.GlslppMacroContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLPPParser#glslppMacro}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslppMacro(GLSLPPParser.GlslppMacroContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLPPParser#glslppMacroArguments}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslppMacroArguments(GLSLPPParser.GlslppMacroArgumentsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLPPParser#glslppMacroArguments}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslppMacroArguments(GLSLPPParser.GlslppMacroArgumentsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GLSLPPParser#glslppExtensionBehaviour}.
 	 * @param ctx the parse tree
@@ -617,6 +647,16 @@ public interface GLSLPPListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitGlslTypeSpecifierNonarray(GLSLPPParser.GlslTypeSpecifierNonarrayContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLPPParser#glslBuiltinType}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslBuiltinType(GLSLPPParser.GlslBuiltinTypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLPPParser#glslBuiltinType}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslBuiltinType(GLSLPPParser.GlslBuiltinTypeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GLSLPPParser#glslStructSpecifier}.
 	 * @param ctx the parse tree

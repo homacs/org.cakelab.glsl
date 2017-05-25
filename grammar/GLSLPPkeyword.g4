@@ -18,9 +18,7 @@ import GLSLkeyword;
 //     N O N    G L S L   E X T E N T!
 //////////////////////////////////////
 
-INCLUDE: 'include' ;
-
-
+PPINCLUDE:  PP_START 'include' ;
 
 //////////////////////////////////////
 // S T A N D A R D   D I R E C T I V E
@@ -28,24 +26,23 @@ INCLUDE: 'include' ;
 
 
 
-DEFINE: 'define';
-UNDEF: 'undef';
+PPDEFINE: 		PP_START 'define';
+PPUNDEF: 		PP_START 'undef';
 
-// IF: 'if'; --> glsl token
-IFDEF: 'ifdef';
-IFNDEF: 'ifndef';
-// ELSE: 'else'; --> glsl token
-ELIF: 'elif';
-ENDIF: 'endif';
+PPIF: 			PP_START 'if';
+PPIFDEF: 		PP_START 'ifdef';
+PPIFNDEF: 		PP_START 'ifndef';
+PPELSE: 		PP_START 'else';
+PPELIF: 		PP_START 'elif';
+PPENDIF: 		PP_START 'endif';
 
-ERROR: 'error';
-PRAGMA: 'pragma';
+PPERROR: 		PP_START 'error';
+PPPRAGMA: 		PP_START 'pragma';
 
-EXTENSION: 'extension';
-VERSION: 'version';
-LINE: 'line';
+PPEXTENSION: 	PP_START 'extension';
+PPVERSION: 		PP_START 'version';
+PPLINE: 		PP_START 'line';
 
-PPOP_DEFINED: 'defined';
 
 
 PPBUILTIN_LINE:    '__LINE__';
@@ -53,9 +50,6 @@ PPBUILTIN_FILE:    '__FILE__';
 PPBUILTIN_VERSION: '__VERSION__';
 
 
-CORE: 'core';
-COMPATIBILITY: 'compatibility';
-ES: 'es';
-
+fragment PP_START: '#' [ \t]*;
 
 
