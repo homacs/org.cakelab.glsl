@@ -185,7 +185,19 @@ SINGLE_QUOTE: '\'';
 //       I D E N T I F I E R S
 //////////////////////////////////////
 
+/**
+ * IDENTIFIER which have been used in a type declaration (e.g. a struct name).
+ */
+TYPE_NAME: IDENTIFIER {validator.istype(getText())}?;
 
+/**
+ * IDENTIFIER which has been used in a function declaration or prototype or builtin functions.
+ */
+FUNCTION_NAME: IDENTIFIER {validator.isfunc(getText())}?;
+
+/**
+ * Every IDENTIFIER which is non of the above.
+ */
 IDENTIFIER: NONDIGIT (DIGIT | NONDIGIT)*;
 
 

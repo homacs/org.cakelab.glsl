@@ -3,8 +3,7 @@ package org.cakelab.glsl.parser;
 import java.util.HashMap;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.RuleContext;
-import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cakelab.glsl.ast.Function;
 import org.cakelab.glsl.ast.Type;
@@ -42,9 +41,10 @@ public class Validator {
 		return declaredTypes.containsKey(name);
 	}
 
-	public void addDeclaredStruct(org.cakelab.glsl.parser.GLSLParser.GlslStructSpecifierContext context) {
+	public void addDeclaredStruct(org.cakelab.glsl.parser.GLSLParser.GlslStructSpecifierContext context) throws RecognitionException {
 		// STRUCT IDENTIFIER
 		String name = context.getChild(1).getText();
+		if (istype(name)) throw new Error("type '" + name + "' already exists.");
 		addDeclaredType(name, null);
 	}
 	
@@ -52,14 +52,18 @@ public class Validator {
 		// qualifiers IDENTIFIER ..
 		// (second position)
 		String name = context.getChild(1).getText();
+		if (istype(name)) throw new Error("type '" + name + "' already exists.");
 		addDeclaredType(name, null);
 	}
 	
 	public void addDeclaredFunction(GlslFunctionHeaderContext context) {
 		// typeSpecifier IDENTIFIER ..
 		// (second position)
-		String name = context.getChild(1).getText();
-		declaredFunctions.put(name, null);
+		addDeclaredFunction(context.getChild(1).getText(), null);
+	}
+	
+	public void addDeclaredFunction(String name, Function func) {
+		declaredFunctions.put(name, func);
 	}
 	
 	
@@ -73,20 +77,14 @@ public class Validator {
 	 * @return
 	 */
 	public boolean istype(ParserRuleContext _ctx) {
-		String name = _ctx.getStart().getText();
-		boolean result = 
-				declaredTypes.containsKey(name)
-			||
-				builtinTypes.containsKey(name);
-		return result;
+		return istype(_ctx.getStart().getText());
 	}
 
-	public boolean istype(Token token) {
-		String name = token.getText();
+	public boolean istype(String identifier) {
 		boolean result = 
-				declaredTypes.containsKey(name)
+				declaredTypes.containsKey(identifier)
 			||
-				builtinTypes.containsKey(name);
+				builtinTypes.containsKey(identifier);
 		return result;
 	}
 
@@ -96,9 +94,8 @@ public class Validator {
 	 * @param _ctx
 	 * @return
 	 */
-	public boolean isfunc(ParserRuleContext _ctx) {
-		String name = _ctx.getStart().getText();
-		boolean result = declaredFunctions.containsKey(name);
+	public boolean isfunc(String identifier) {
+		boolean result = declaredFunctions.containsKey(identifier);
 		return result;
 	}
 

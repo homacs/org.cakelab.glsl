@@ -20,10 +20,12 @@ public class TestStruct extends TestBaseGLSL {
 		// glsl: struct must have at least one member
 		source = "struct boo{};";
 		assertInvalid(source, expected);
+		tearDown();
 		
 		// glsl: struct prototyping not supported
 		source = "struct boo;";
 		assertInvalid(source, expected);
+		tearDown();
 		
 		source = "struct boo{"
 				+ "int a;"
@@ -31,7 +33,9 @@ public class TestStruct extends TestBaseGLSL {
 				+ "bool c;"
 				+ "};";
 		assertValid(source, expected);
-		
+
+		tearDown();
+
 		source = ""
 				+ "struct myType {"
 				+ "	bool exist;"
@@ -45,6 +49,7 @@ public class TestStruct extends TestBaseGLSL {
 				+ " } d[2];"
 				+ "};";
 		assertValid(source, expected);
+		tearDown();
 	}
 
 	private static void testStructType() {
@@ -57,14 +62,14 @@ public class TestStruct extends TestBaseGLSL {
 				+ "  bool c;"
 				+ "} x";
 		assertValid(p(source).glslSingleDeclaration(), expected);
-		
+
 		source = "struct boo {"
 				+ "  int a;"
 				+ "  float b;"
 				+ "  bool c;"
 				+ "} x[4]";
 		assertValid(p(source).glslSingleDeclaration(), expected);
-		
+
 	}
 
 	private static void testStructPrototype() {
@@ -74,7 +79,7 @@ public class TestStruct extends TestBaseGLSL {
 		// apparently not allowed in glsl
 		source = "struct boo";
 		assertInvalid(p(source).glslSingleDeclaration(), expected);
-		
+
 	}
 
 

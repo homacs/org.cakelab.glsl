@@ -203,12 +203,6 @@ public interface GLSLPPVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGlslTypeName(GLSLPPParser.GlslTypeNameContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GLSLPPParser#glslFunctionIdentifier}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGlslFunctionIdentifier(GLSLPPParser.GlslFunctionIdentifierContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link GLSLPPParser#glslPrimaryExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -244,18 +238,6 @@ public interface GLSLPPVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitGlslPostfixExpression(GLSLPPParser.GlslPostfixExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link GLSLPPParser#glslFunctionCallArguments}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGlslFunctionCallArguments(GLSLPPParser.GlslFunctionCallArgumentsContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link GLSLPPParser#glslConstructorCallArguments}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGlslConstructorCallArguments(GLSLPPParser.GlslConstructorCallArgumentsContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GLSLPPParser#glslCallArguments}.
 	 * @param ctx the parse tree

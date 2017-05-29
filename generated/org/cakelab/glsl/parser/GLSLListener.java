@@ -438,16 +438,6 @@ public interface GLSLListener extends ParseTreeListener {
 	 */
 	void exitGlslTypeName(GLSLParser.GlslTypeNameContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslFunctionIdentifier}.
-	 * @param ctx the parse tree
-	 */
-	void enterGlslFunctionIdentifier(GLSLParser.GlslFunctionIdentifierContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslFunctionIdentifier}.
-	 * @param ctx the parse tree
-	 */
-	void exitGlslFunctionIdentifier(GLSLParser.GlslFunctionIdentifierContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link GLSLParser#glslPrimaryExpression}.
 	 * @param ctx the parse tree
 	 */
@@ -507,26 +497,6 @@ public interface GLSLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitGlslPostfixExpression(GLSLParser.GlslPostfixExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslFunctionCallArguments}.
-	 * @param ctx the parse tree
-	 */
-	void enterGlslFunctionCallArguments(GLSLParser.GlslFunctionCallArgumentsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslFunctionCallArguments}.
-	 * @param ctx the parse tree
-	 */
-	void exitGlslFunctionCallArguments(GLSLParser.GlslFunctionCallArgumentsContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslConstructorCallArguments}.
-	 * @param ctx the parse tree
-	 */
-	void enterGlslConstructorCallArguments(GLSLParser.GlslConstructorCallArgumentsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslConstructorCallArguments}.
-	 * @param ctx the parse tree
-	 */
-	void exitGlslConstructorCallArguments(GLSLParser.GlslConstructorCallArgumentsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GLSLParser#glslCallArguments}.
 	 * @param ctx the parse tree

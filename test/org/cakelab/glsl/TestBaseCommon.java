@@ -9,13 +9,16 @@ import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.tree.ErrorNodeImpl;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
+import org.cakelab.glsl.parser.GLSLLexer;
 import org.cakelab.glsl.parser.GLSLParser;
 import org.cakelab.glsl.parser.Validator;
+import org.cakelab.glsl.pp.GLSLPPLexer;
 import org.cakelab.glsl.pp.GLSLPPParser;
 
 public class TestBaseCommon {
@@ -23,6 +26,8 @@ public class TestBaseCommon {
 	protected static Parser parser;
 
 	protected static Validator validator = new Validator();
+
+	protected static boolean autoTearDown = true;
 
 	private static final boolean DEBUG = false;
 	
@@ -48,8 +53,8 @@ public class TestBaseCommon {
 		public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, boolean exact,
 				BitSet ambigAlts, ATNConfigSet configs) {
 
-//			if (hasError()) return;
-//			this.message = "reported ambiguity";
+			if (hasError()) return;
+			this.message = "reported ambiguity";
 		}
 
 		@Override
@@ -61,8 +66,8 @@ public class TestBaseCommon {
 			//       Most of the time, if this report comes in, it will be followed 
 			//       by a reported ambiguity. Disable it temporary to find out.
 			
-//			if (hasError()) return;
-//			this.message = "attempting full context";
+			if (hasError()) return;
+			this.message = "attempting full context";
 		}
 
 		@Override
@@ -115,19 +120,18 @@ public class TestBaseCommon {
 			containsTypes = contains(ast, types);
 		}
 		
-		if (!assertEOF()) {
-			errmsg = "parser did not reach EOF";
-		} else if (error.hasError()) {
+		if (error.hasError()) {
 			errmsg = error.getMessage();
 		} else if (!containsTypes) {
 			errmsg = "expected context " + contextToString(types) + "' not found!";
 		} else if (contains(ast, ErrorNodeImpl.class)) {
 			errmsg = "error node detected!";
+		} else if (!assertEOF()) {
+			errmsg = "parser did not reach EOF. remaining: \"" + remainingText() + "\"";
 		}
 		
 		evaluateError(errmsg, ast);
 	}
-
 
 
 	@SafeVarargs
@@ -159,6 +163,7 @@ public class TestBaseCommon {
 		} else if (DEBUG) {
 			dump(System.out, ast, 0);
 		}
+		if (autoTearDown)tearDown();
 	}
 
 	private static boolean assertEOF() {
@@ -174,6 +179,17 @@ public class TestBaseCommon {
 		}
 	}
 
+
+	private static String remainingText() {
+		TokenStream tokens = parser.getTokenStream();
+		Token token;
+		StringBuffer result = new StringBuffer();
+		for (int i = tokens.index(); Token.EOF != (token = tokens.get(i)).getType(); i++,tokens.seek(i)) {
+			result.append(token.getText());
+		}
+		return result.toString();
+	}
+	
 	private static String contextToString(Class<? extends ParseTree>[] types) {
 		StringBuffer s = new StringBuffer();
 		for (Class<? extends ParseTree> type : types) {
@@ -238,8 +254,13 @@ public class TestBaseCommon {
 	public static void setup(Parser parser, Lexer lexer) {
 		error.listenTo(parser, lexer);
 		if (validator != null) {
-			if (parser instanceof GLSLParser) ((GLSLParser)parser).setValidator(validator);
-			else ((GLSLPPParser)parser).setValidator(validator);
+			if (parser instanceof GLSLParser) {
+				((GLSLParser)parser).setValidator(validator);
+				((GLSLLexer)lexer).setValidator(validator);
+			} else {
+				((GLSLPPParser)parser).setValidator(validator);
+				((GLSLPPLexer)lexer).setValidator(validator);
+			}
 		}
 	}
 

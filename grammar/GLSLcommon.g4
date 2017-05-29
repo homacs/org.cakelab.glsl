@@ -40,18 +40,15 @@ glslVariableIdentifier
 //
 
 glslTypeName
-	: IDENTIFIER
+	: TYPE_NAME
 	;
 	
-
-glslFunctionIdentifier
-	: IDENTIFIER
-	;
 
 
 
 glslPrimaryExpression
-    : IDENTIFIER
+    : glslVariableIdentifier
+    | glslFunctionName
     | glslFloatConstant
     | glslDoubleConstant
     | glslIntegerConstant
@@ -80,27 +77,21 @@ glslDoubleConstant
 // rules had to be replaced to resolve mutually left recursion.
 //
 // The new rules are:
-// + Function call:    'postfix_expression function_call_arguments'
-// + Constructor call: 'type_specifier     constructor_call_arguments'
+// + Function call:    'postfix_expression call_arguments'
+// + Constructor call: 'type_specifier     call_arguments'
+//
+// Semantic analysis has to decide whether a postfix_expression 
+// evaluates to a constructor or function call.
 //
 glslPostfixExpression
     : glslPrimaryExpression 
-    | glslTypeSpecifier     glslConstructorCallArguments
-    | glslPostfixExpression glslFunctionCallArguments
+    | glslTypeSpecifier glslCallArguments
+    | glslPostfixExpression glslCallArguments
     | glslPostfixExpression LEFT_BRACKET glslIntegerExpression RIGHT_BRACKET
     | glslPostfixExpression DOT glslFieldSelection
     | glslPostfixExpression INC_OP
     | glslPostfixExpression DEC_OP
     ;
-
-    
-glslFunctionCallArguments
-	: glslCallArguments
-;
-
-glslConstructorCallArguments
-	: glslCallArguments
-;
 
 glslCallArguments 
 	: LEFT_PAREN glslAssignmentExpression (COMMA glslAssignmentExpression)* RIGHT_PAREN 
@@ -237,7 +228,7 @@ glslFunctionNameList
     ;
     
 glslFunctionName
-	: {validator.isfunc(_ctx)}? IDENTIFIER
+	: FUNCTION_NAME
 	;
 
 glslTypeSpecifier

@@ -1,8 +1,9 @@
 package org.cakelab.glsl.parser;
 
-import org.antlr.v4.runtime.atn.PredictionMode;
+import org.cakelab.glsl.TestBaseCommon;
 import org.cakelab.glsl.parser.GLSLParser.GlslArrayDimensionContext;
 import org.cakelab.glsl.parser.GLSLParser.GlslBuiltinTypeContext;
+import org.cakelab.glsl.parser.GLSLParser.GlslCallArgumentsContext;
 
 public class TestExpression extends TestBaseGLSL {
 	static String[] PRIMARY_EXPRESSION_EXAMPLES = new String[]{
@@ -15,11 +16,13 @@ public class TestExpression extends TestBaseGLSL {
 	};
 	
 	static String[] POSTFIX_EXPRESSION_EXAMPLES = new String[]{
-		"MyStruct[3]",
+		"MyStruct[3](1,2,3)",
 		"MyStruct(8,4)",
 		"float(4f)",
 		"float[](4f)",
+		"float[1](4f)",
 		"var.x",
+		"var.x.y",
 		"var++",
 		"var--"
 	};
@@ -31,47 +34,51 @@ public class TestExpression extends TestBaseGLSL {
 	}
 
 	
-	public static void setup() {
+	public static void setupMultiTest() {
+		autoTearDown = false;
 		validator.addDeclaredType("MyStruct", null);
 		validator.addDeclaredVariable("var", null);
+		validator.addDeclaredFunction("func", null);
 	}
 	
+	public static void tearDownMultiTest() {
+		TestBaseCommon.tearDown();
+		autoTearDown = true;
+	}
+	
+	
 	private static void testPrimaryExpression() {
-		setup();
+		setupMultiTest();
 		for (String primary : PRIMARY_EXPRESSION_EXAMPLES) {
 			assertValid(p(primary).glslPrimaryExpression());
 		}
-		tearDown();
+		tearDownMultiTest();
 	}
 
 	private static void testPostfixExpression() {
 		assertValid(p("float[](8.0f)").glslPostfixExpression(), GlslBuiltinTypeContext.class, GlslArrayDimensionContext.class);
 		assertValid(p("float[](8.0f)").glslAssignmentExpression(), GlslBuiltinTypeContext.class, GlslArrayDimensionContext.class);
-		tearDown();
 		assertValid("int light(bool exists, int times); int lightvar = light(true, 1);");
+		
+		setupMultiTest();
+		assertValid(p("(func)()").glslPostfixExpression(), GlslCallArgumentsContext.class);
+		assertValid(p("a.b()").glslPostfixExpression(), GlslCallArgumentsContext.class);
+		assertValid(p("a.b[3](1,2)").glslPostfixExpression(), GlslCallArgumentsContext.class);
 		tearDown();
 		
-		setup();
-		GLSLParser parser = p("MyStruct(8,4)");
-//		parser.getInterpreter().setPredictionMode(PredictionMode.SLL);
-		assertValid(parser.glslPostfixExpression());
-//		assertValid("MyStruct lightvar = MyStruct(1);");
-//		assertValid("struct light{bool exists; int times;}; light lightvar = light(true, 1);");
-		
-		tearDown();
-		setup();
+		setupMultiTest();
 		for (String primary : PRIMARY_EXPRESSION_EXAMPLES) {
 			assertValid(p(primary).glslPostfixExpression());
 		}
-		tearDown();
+		tearDownMultiTest();
 		
 		for (String postfix : POSTFIX_EXPRESSION_EXAMPLES) {
-			System.out.println(postfix);
-			setup();
+			System.out.println(postfix + ":");
+			System.out.flush();
+			setupMultiTest();
 			assertValid(p(postfix).glslPostfixExpression());
-			tearDown();
+			tearDownMultiTest();
 		}
-		tearDown();
 	}
 
 
