@@ -10,9 +10,15 @@
 
 grammar GLSLPP;
 
+//
+// Order of imported rules equals order of grammars in import statement!
+// GLSLtoken must be last!
+// 
 import GLSLcommon, GLSLPPkeyword, GLSLkeyword, GLSLtoken;
 
 @members {
+	
+	
 	/**
 	 * This method checks whether the previous token on hidden channel
 	 * equals tokenType.
@@ -31,6 +37,7 @@ import GLSLcommon, GLSLPPkeyword, GLSLkeyword, GLSLtoken;
 			return false;
 		}
 	}
+	
 	
 }
 
@@ -94,7 +101,7 @@ glslppControlLine
 	| PPERROR glslppTokens? CRLF
 	| PPPRAGMA glslppTokens? CRLF
 	| PPEXTENSION glslppIdentifier COLON glslppExtensionBehaviour CRLF
-	| PPVERSION INTCONSTANT glslppProfile CRLF
+	| PPVERSION glslIntegerConstant glslppProfile CRLF
 	| HASH CRLF                 /* empty directive */
 	| HASH glslppNonDirective   /* ignored directive */
 	;
@@ -213,10 +220,10 @@ glslppIdentifier
 	;
 
 glslppNumber
-	: INTCONSTANT
-	| UINTCONSTANT
-	| DOUBLECONSTANT
-	| FLOATCONSTANT
+	: glslIntegerConstant
+	| glslUnsignedIntegerConstant
+	| glslDoubleConstant
+	| glslFloatConstant
 	;
 
 glslppSign

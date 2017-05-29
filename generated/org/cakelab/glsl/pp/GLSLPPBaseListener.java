@@ -400,6 +400,18 @@ public class GLSLPPBaseListener implements GLSLPPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterGlslFunctionIdentifier(GLSLPPParser.GlslFunctionIdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslFunctionIdentifier(GLSLPPParser.GlslFunctionIdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterGlslPrimaryExpression(GLSLPPParser.GlslPrimaryExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -736,13 +748,25 @@ public class GLSLPPBaseListener implements GLSLPPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslTypeNameList(GLSLPPParser.GlslTypeNameListContext ctx) { }
+	@Override public void enterGlslFunctionNameList(GLSLPPParser.GlslFunctionNameListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGlslTypeNameList(GLSLPPParser.GlslTypeNameListContext ctx) { }
+	@Override public void exitGlslFunctionNameList(GLSLPPParser.GlslFunctionNameListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGlslFunctionName(GLSLPPParser.GlslFunctionNameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslFunctionName(GLSLPPParser.GlslFunctionNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -760,13 +784,25 @@ public class GLSLPPBaseListener implements GLSLPPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslArraySpecifier(GLSLPPParser.GlslArraySpecifierContext ctx) { }
+	@Override public void enterGlslArrayDimensionsList(GLSLPPParser.GlslArrayDimensionsListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGlslArraySpecifier(GLSLPPParser.GlslArraySpecifierContext ctx) { }
+	@Override public void exitGlslArrayDimensionsList(GLSLPPParser.GlslArrayDimensionsListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGlslArrayDimension(GLSLPPParser.GlslArrayDimensionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslArrayDimension(GLSLPPParser.GlslArrayDimensionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -808,49 +844,73 @@ public class GLSLPPBaseListener implements GLSLPPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslStructDeclarationList(GLSLPPParser.GlslStructDeclarationListContext ctx) { }
+	@Override public void enterGlslStructMemberList(GLSLPPParser.GlslStructMemberListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGlslStructDeclarationList(GLSLPPParser.GlslStructDeclarationListContext ctx) { }
+	@Override public void exitGlslStructMemberList(GLSLPPParser.GlslStructMemberListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslStructDeclaration(GLSLPPParser.GlslStructDeclarationContext ctx) { }
+	@Override public void enterGlslStructMemberGroup(GLSLPPParser.GlslStructMemberGroupContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGlslStructDeclaration(GLSLPPParser.GlslStructDeclarationContext ctx) { }
+	@Override public void exitGlslStructMemberGroup(GLSLPPParser.GlslStructMemberGroupContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslStructDeclaratorList(GLSLPPParser.GlslStructDeclaratorListContext ctx) { }
+	@Override public void enterGlslStructMemberDeclaratorList(GLSLPPParser.GlslStructMemberDeclaratorListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGlslStructDeclaratorList(GLSLPPParser.GlslStructDeclaratorListContext ctx) { }
+	@Override public void exitGlslStructMemberDeclaratorList(GLSLPPParser.GlslStructMemberDeclaratorListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslStructDeclarator(GLSLPPParser.GlslStructDeclaratorContext ctx) { }
+	@Override public void enterGlslStructMemberDeclarator(GLSLPPParser.GlslStructMemberDeclaratorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGlslStructDeclarator(GLSLPPParser.GlslStructDeclaratorContext ctx) { }
+	@Override public void exitGlslStructMemberDeclarator(GLSLPPParser.GlslStructMemberDeclaratorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGlslTypeQualifier(GLSLPPParser.GlslTypeQualifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslTypeQualifier(GLSLPPParser.GlslTypeQualifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGlslSingleTypeQualifier(GLSLPPParser.GlslSingleTypeQualifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslSingleTypeQualifier(GLSLPPParser.GlslSingleTypeQualifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -923,30 +983,6 @@ public class GLSLPPBaseListener implements GLSLPPListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitGlslPreciseQualifier(GLSLPPParser.GlslPreciseQualifierContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterGlslTypeQualifier(GLSLPPParser.GlslTypeQualifierContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGlslTypeQualifier(GLSLPPParser.GlslTypeQualifierContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterGlslSingleTypeQualifier(GLSLPPParser.GlslSingleTypeQualifierContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGlslSingleTypeQualifier(GLSLPPParser.GlslSingleTypeQualifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

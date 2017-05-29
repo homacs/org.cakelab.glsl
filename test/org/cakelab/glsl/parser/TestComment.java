@@ -62,10 +62,10 @@ public class TestComment extends TestBaseGLSL {
 		
 		// MIXED COMMENT
 		
-		source = "/* i had a dream // that this is working!*/";
+		source = "/* i had a dream // that this is working */";
 		assertValid(p(source).glsl());
 		
-		source = "// i had a dream /* that this is working!*/";
+		source = "// i had a dream /* that this is working */";
 		assertValid(p(source).glsl());
 		
 	}

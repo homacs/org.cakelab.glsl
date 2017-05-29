@@ -10,9 +10,14 @@
 
 grammar GLSLcommon;
 
+
+
+
+//
+// Order of imported rules equals order of grammars in import statement!
+// GLSLtoken must be last!
+// 
 import GLSLkeyword, GLSLtoken;
-
-
 
 
 //
@@ -39,27 +44,33 @@ glslTypeName
 	;
 	
 
+glslFunctionIdentifier
+	: IDENTIFIER
+	;
+
+
+
 glslPrimaryExpression
-    : glslVariableIdentifier
-    | glslIntegerConstant
-    | glslUnsignedIntegerConstant
+    : IDENTIFIER
     | glslFloatConstant
     | glslDoubleConstant
+    | glslIntegerConstant
+    | glslUnsignedIntegerConstant
     | BOOLCONSTANT 
     | LEFT_PAREN glslExpression RIGHT_PAREN 
     ;
 
 glslIntegerConstant
-	: INTCONSTANT
+	: (PLUS|DASH)? INTCONSTANT
 ;  
 glslUnsignedIntegerConstant
-	: UINTCONSTANT
+	: PLUS? UINTCONSTANT
 ;  
 glslFloatConstant
-	: FLOATCONSTANT
+	: (PLUS|DASH)? FLOATCONSTANT
 ;  
 glslDoubleConstant
-	: DOUBLECONSTANT
+	: (PLUS|DASH)? DOUBLECONSTANT
 ;  
 
 //
@@ -74,13 +85,14 @@ glslDoubleConstant
 //
 glslPostfixExpression
     : glslPrimaryExpression 
-    | glslPostfixExpression LEFT_BRACKET glslIntegerExpression RIGHT_BRACKET 
-	| glslPostfixExpression glslFunctionCallArguments
     | glslTypeSpecifier     glslConstructorCallArguments
-    | glslPostfixExpression DOT glslFieldSelection 
-    | glslPostfixExpression INC_OP 
-    | glslPostfixExpression DEC_OP 
+    | glslPostfixExpression glslFunctionCallArguments
+    | glslPostfixExpression LEFT_BRACKET glslIntegerExpression RIGHT_BRACKET
+    | glslPostfixExpression DOT glslFieldSelection
+    | glslPostfixExpression INC_OP
+    | glslPostfixExpression DEC_OP
     ;
+
     
 glslFunctionCallArguments
 	: glslCallArguments
@@ -91,7 +103,7 @@ glslConstructorCallArguments
 ;
 
 glslCallArguments 
-	: LEFT_PAREN glslAssignmentExpression (COMMA glslAssignmentExpression)+ RIGHT_PAREN 
+	: LEFT_PAREN glslAssignmentExpression (COMMA glslAssignmentExpression)* RIGHT_PAREN 
     | LEFT_PAREN VOID? RIGHT_PAREN 
 ;
 
@@ -105,6 +117,7 @@ glslUnaryExpression
     | INC_OP glslUnaryExpression 
     | DEC_OP glslUnaryExpression 
     | glslUnaryOperator glslUnaryExpression 
+    
     | PPOP_DEFINED ((LEFT_PAREN IDENTIFIER RIGHT_PAREN)|IDENTIFIER) // only available in preprocessor
     ;
 // Grammar Note:  No traditional style type casts.
@@ -219,17 +232,27 @@ glslConstantExpression
 ////////////////////////////////////////////////////////////////////////////////////
 
 
-glslTypeNameList
-    : glslTypeName (COMMA glslTypeName)*
+glslFunctionNameList
+    : glslFunctionName (COMMA glslFunctionName)*
     ;
+    
+glslFunctionName
+	: {validator.isfunc(_ctx)}? IDENTIFIER
+	;
 
 glslTypeSpecifier
-    : glslTypeSpecifierNonarray glslArraySpecifier?
+    : glslTypeSpecifierNonarray glslArrayDimensionsList?
     ;
 
-glslArraySpecifier
-    : (LEFT_BRACKET glslConstantExpression? RIGHT_BRACKET)+
+glslArrayDimensionsList
+    : glslArrayDimension+
     ;
+
+glslArrayDimension
+	: LEFT_BRACKET glslConstantExpression? RIGHT_BRACKET
+	;
+
+
 
 glslTypeSpecifierNonarray
     : glslBuiltinType 
@@ -363,25 +386,45 @@ glslBuiltinType
 
 
 glslStructSpecifier
-    : STRUCT IDENTIFIER? LEFT_BRACE  glslStructDeclarationList RIGHT_BRACE 
+    : STRUCT            LEFT_BRACE  glslStructMemberList RIGHT_BRACE 
+    | STRUCT IDENTIFIER LEFT_BRACE  glslStructMemberList RIGHT_BRACE {validator.addDeclaredStruct(_localctx);}
     ;
 
-glslStructDeclarationList
-    : glslStructDeclaration+
+glslStructMemberList
+    : glslStructMemberGroup+
     ;
 
-glslStructDeclaration
-    : glslTypeQualifier? glslTypeSpecifier glslStructDeclaratorList SEMICOLON 
+/**
+ * A line like
+ * int a,b,c;
+ * with type(int) and members a, b and c.
+ */
+glslStructMemberGroup
+    : glslTypeQualifier? glslTypeSpecifier glslStructMemberDeclaratorList SEMICOLON 
     ;
 
-glslStructDeclaratorList
-    : glslStructDeclarator (COMMA glslStructDeclarator)*
+glslStructMemberDeclaratorList
+    : glslStructMemberDeclarator (COMMA glslStructMemberDeclarator)*
     ;
 
-glslStructDeclarator
-    : IDENTIFIER glslArraySpecifier?
+glslStructMemberDeclarator
+    : IDENTIFIER glslArrayDimensionsList?
     ;
 
+
+
+glslTypeQualifier
+    : glslSingleTypeQualifier+
+    ;
+
+glslSingleTypeQualifier
+    : glslStorageQualifier 
+    | glslLayoutQualifier 
+    | glslPrecisionQualifier 
+    | glslInterpolationQualifier 
+    | glslInvariantQualifier 
+    | glslPreciseQualifier 
+    ;
 
 glslInvariantQualifier
     : INVARIANT 
@@ -411,19 +454,6 @@ glslPreciseQualifier
     : PRECISE 
     ;
 
-glslTypeQualifier
-    : glslSingleTypeQualifier+
-    ;
-
-glslSingleTypeQualifier
-    : glslStorageQualifier 
-    | glslLayoutQualifier 
-    | glslPrecisionQualifier 
-    | glslInterpolationQualifier 
-    | glslInvariantQualifier 
-    | glslPreciseQualifier 
-    ;
-
 glslStorageQualifier
     : CONST 
     | ATTRIBUTE 
@@ -442,8 +472,8 @@ glslStorageQualifier
     | RESTRICT 
     | READONLY 
     | WRITEONLY 
+    | SUBROUTINE LEFT_PAREN glslFunctionNameList RIGHT_PAREN 
     | SUBROUTINE 
-    | SUBROUTINE LEFT_PAREN glslTypeNameList RIGHT_PAREN 
     ;
 
 glslPrecisionQualifier
@@ -451,7 +481,5 @@ glslPrecisionQualifier
     | MEDIUM_PRECISION 
     | LOW_PRECISION 
     ;
-
-
 
 

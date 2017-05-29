@@ -5,7 +5,9 @@ public class TestGLSL {
 		TestNumber.test();
 		TestComment.test();
 		TestArray.test();
-		TestFunction.test();
 		TestStruct.test();
+		TestVariable.test();
+		TestFunction.test();
+		TestExpression.test();
 	}
 }

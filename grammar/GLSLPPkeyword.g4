@@ -10,7 +10,6 @@
 
 lexer grammar GLSLPPkeyword;
 
-import GLSLkeyword;
 
 
 

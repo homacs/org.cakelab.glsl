@@ -108,6 +108,13 @@ public class GLSLBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements G
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitGlslVariableDeclarator(GLSLParser.GlslVariableDeclaratorContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitGlslFullySpecifiedType(GLSLParser.GlslFullySpecifiedTypeContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -311,6 +318,13 @@ public class GLSLBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements G
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitGlslFunctionIdentifier(GLSLParser.GlslFunctionIdentifierContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitGlslPrimaryExpression(GLSLParser.GlslPrimaryExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -507,7 +521,14 @@ public class GLSLBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements G
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitGlslTypeNameList(GLSLParser.GlslTypeNameListContext ctx) { return visitChildren(ctx); }
+	@Override public T visitGlslFunctionNameList(GLSLParser.GlslFunctionNameListContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitGlslFunctionName(GLSLParser.GlslFunctionNameContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -521,7 +542,14 @@ public class GLSLBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements G
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitGlslArraySpecifier(GLSLParser.GlslArraySpecifierContext ctx) { return visitChildren(ctx); }
+	@Override public T visitGlslArrayDimensionsList(GLSLParser.GlslArrayDimensionsListContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitGlslArrayDimension(GLSLParser.GlslArrayDimensionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -549,28 +577,42 @@ public class GLSLBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements G
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitGlslStructDeclarationList(GLSLParser.GlslStructDeclarationListContext ctx) { return visitChildren(ctx); }
+	@Override public T visitGlslStructMemberList(GLSLParser.GlslStructMemberListContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitGlslStructDeclaration(GLSLParser.GlslStructDeclarationContext ctx) { return visitChildren(ctx); }
+	@Override public T visitGlslStructMemberGroup(GLSLParser.GlslStructMemberGroupContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitGlslStructDeclaratorList(GLSLParser.GlslStructDeclaratorListContext ctx) { return visitChildren(ctx); }
+	@Override public T visitGlslStructMemberDeclaratorList(GLSLParser.GlslStructMemberDeclaratorListContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitGlslStructDeclarator(GLSLParser.GlslStructDeclaratorContext ctx) { return visitChildren(ctx); }
+	@Override public T visitGlslStructMemberDeclarator(GLSLParser.GlslStructMemberDeclaratorContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitGlslTypeQualifier(GLSLParser.GlslTypeQualifierContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitGlslSingleTypeQualifier(GLSLParser.GlslSingleTypeQualifierContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -613,20 +655,6 @@ public class GLSLBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements G
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitGlslPreciseQualifier(GLSLParser.GlslPreciseQualifierContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitGlslTypeQualifier(GLSLParser.GlslTypeQualifierContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitGlslSingleTypeQualifier(GLSLParser.GlslSingleTypeQualifierContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

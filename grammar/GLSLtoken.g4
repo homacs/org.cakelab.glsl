@@ -3,10 +3,14 @@ lexer grammar GLSLtoken;
 
 @members{
 	public boolean preprocessing = false;
-	
 	public void preprocessing(boolean enable) {
 		preprocessing = enable;
 	}
+	private org.cakelab.glsl.parser.Validator validator = new org.cakelab.glsl.parser.Validator();
+	public void setValidator(org.cakelab.glsl.parser.Validator validator) {
+		this.validator = validator;
+	}
+	
 }
 
 
@@ -58,16 +62,20 @@ BOOLCONSTANT: 'true' | 'false';
 
 
 
-FLOATCONSTANT: 
-	SIGN? (
+FLOATCONSTANT
+	: (
 			(FLOATRAW EXPONENT?)
 			|(HEXFLOATRAW BINARY_EXPONENT?)
-	) [fF];
-DOUBLECONSTANT: SIGN? (
+			| NUMBER
+	) [fF]
+	;
+
+DOUBLECONSTANT
+	: (
 		 (FLOATRAW    EXPONENT?)
 		|(HEXFLOATRAW BINARY_EXPONENT?)
 	) [lL]?
-;
+	;
 
 fragment FLOATRAW: (DIGIT+ '.' DIGIT*) | (DIGIT* '.' DIGIT+);
 fragment HEXFLOATRAW: '0'[xX] 
@@ -80,8 +88,8 @@ fragment HEXFLOATRAW: '0'[xX]
 fragment EXPONENT: [eE] SIGN? DECIMAL;
 fragment BINARY_EXPONENT: [pP] SIGN? DECIMAL;
 
-INTCONSTANT: SIGN? NUMBER [lL]?;
-UINTCONSTANT: PLUS? NUMBER [uU][lL]?;
+INTCONSTANT: NUMBER [lL]?;
+UINTCONSTANT: NUMBER [uU][lL]?;
 
 
 
@@ -177,16 +185,8 @@ SINGLE_QUOTE: '\'';
 //       I D E N T I F I E R S
 //////////////////////////////////////
 
-IDENTIFIER: NONDIGIT (DIGIT | NONDIGIT)*;
 
-/** 
- * Identifier immediately (i.e. without whitespace) followed by left parenthesis.
- * Required to differentiate macros with parameters from macros without 
- * parameters followed by a term in parentheses.
- * 
- * Active during preprocessing only.
- */
-// IDENTIFIER_LEFT_PAREN: IDENTIFIER LEFT_PAREN {preprocessing}?;
+IDENTIFIER: NONDIGIT (DIGIT | NONDIGIT)*;
 
 
 

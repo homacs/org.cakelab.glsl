@@ -328,6 +328,16 @@ public interface GLSLPPListener extends ParseTreeListener {
 	 */
 	void exitGlslTypeName(GLSLPPParser.GlslTypeNameContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link GLSLPPParser#glslFunctionIdentifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslFunctionIdentifier(GLSLPPParser.GlslFunctionIdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLPPParser#glslFunctionIdentifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslFunctionIdentifier(GLSLPPParser.GlslFunctionIdentifierContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link GLSLPPParser#glslPrimaryExpression}.
 	 * @param ctx the parse tree
 	 */
@@ -608,15 +618,25 @@ public interface GLSLPPListener extends ParseTreeListener {
 	 */
 	void exitGlslConstantExpression(GLSLPPParser.GlslConstantExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLPPParser#glslTypeNameList}.
+	 * Enter a parse tree produced by {@link GLSLPPParser#glslFunctionNameList}.
 	 * @param ctx the parse tree
 	 */
-	void enterGlslTypeNameList(GLSLPPParser.GlslTypeNameListContext ctx);
+	void enterGlslFunctionNameList(GLSLPPParser.GlslFunctionNameListContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GLSLPPParser#glslTypeNameList}.
+	 * Exit a parse tree produced by {@link GLSLPPParser#glslFunctionNameList}.
 	 * @param ctx the parse tree
 	 */
-	void exitGlslTypeNameList(GLSLPPParser.GlslTypeNameListContext ctx);
+	void exitGlslFunctionNameList(GLSLPPParser.GlslFunctionNameListContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLPPParser#glslFunctionName}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslFunctionName(GLSLPPParser.GlslFunctionNameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLPPParser#glslFunctionName}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslFunctionName(GLSLPPParser.GlslFunctionNameContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GLSLPPParser#glslTypeSpecifier}.
 	 * @param ctx the parse tree
@@ -628,15 +648,25 @@ public interface GLSLPPListener extends ParseTreeListener {
 	 */
 	void exitGlslTypeSpecifier(GLSLPPParser.GlslTypeSpecifierContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLPPParser#glslArraySpecifier}.
+	 * Enter a parse tree produced by {@link GLSLPPParser#glslArrayDimensionsList}.
 	 * @param ctx the parse tree
 	 */
-	void enterGlslArraySpecifier(GLSLPPParser.GlslArraySpecifierContext ctx);
+	void enterGlslArrayDimensionsList(GLSLPPParser.GlslArrayDimensionsListContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GLSLPPParser#glslArraySpecifier}.
+	 * Exit a parse tree produced by {@link GLSLPPParser#glslArrayDimensionsList}.
 	 * @param ctx the parse tree
 	 */
-	void exitGlslArraySpecifier(GLSLPPParser.GlslArraySpecifierContext ctx);
+	void exitGlslArrayDimensionsList(GLSLPPParser.GlslArrayDimensionsListContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLPPParser#glslArrayDimension}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslArrayDimension(GLSLPPParser.GlslArrayDimensionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLPPParser#glslArrayDimension}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslArrayDimension(GLSLPPParser.GlslArrayDimensionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GLSLPPParser#glslTypeSpecifierNonarray}.
 	 * @param ctx the parse tree
@@ -668,45 +698,65 @@ public interface GLSLPPListener extends ParseTreeListener {
 	 */
 	void exitGlslStructSpecifier(GLSLPPParser.GlslStructSpecifierContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLPPParser#glslStructDeclarationList}.
+	 * Enter a parse tree produced by {@link GLSLPPParser#glslStructMemberList}.
 	 * @param ctx the parse tree
 	 */
-	void enterGlslStructDeclarationList(GLSLPPParser.GlslStructDeclarationListContext ctx);
+	void enterGlslStructMemberList(GLSLPPParser.GlslStructMemberListContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GLSLPPParser#glslStructDeclarationList}.
+	 * Exit a parse tree produced by {@link GLSLPPParser#glslStructMemberList}.
 	 * @param ctx the parse tree
 	 */
-	void exitGlslStructDeclarationList(GLSLPPParser.GlslStructDeclarationListContext ctx);
+	void exitGlslStructMemberList(GLSLPPParser.GlslStructMemberListContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLPPParser#glslStructDeclaration}.
+	 * Enter a parse tree produced by {@link GLSLPPParser#glslStructMemberGroup}.
 	 * @param ctx the parse tree
 	 */
-	void enterGlslStructDeclaration(GLSLPPParser.GlslStructDeclarationContext ctx);
+	void enterGlslStructMemberGroup(GLSLPPParser.GlslStructMemberGroupContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GLSLPPParser#glslStructDeclaration}.
+	 * Exit a parse tree produced by {@link GLSLPPParser#glslStructMemberGroup}.
 	 * @param ctx the parse tree
 	 */
-	void exitGlslStructDeclaration(GLSLPPParser.GlslStructDeclarationContext ctx);
+	void exitGlslStructMemberGroup(GLSLPPParser.GlslStructMemberGroupContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLPPParser#glslStructDeclaratorList}.
+	 * Enter a parse tree produced by {@link GLSLPPParser#glslStructMemberDeclaratorList}.
 	 * @param ctx the parse tree
 	 */
-	void enterGlslStructDeclaratorList(GLSLPPParser.GlslStructDeclaratorListContext ctx);
+	void enterGlslStructMemberDeclaratorList(GLSLPPParser.GlslStructMemberDeclaratorListContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GLSLPPParser#glslStructDeclaratorList}.
+	 * Exit a parse tree produced by {@link GLSLPPParser#glslStructMemberDeclaratorList}.
 	 * @param ctx the parse tree
 	 */
-	void exitGlslStructDeclaratorList(GLSLPPParser.GlslStructDeclaratorListContext ctx);
+	void exitGlslStructMemberDeclaratorList(GLSLPPParser.GlslStructMemberDeclaratorListContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLPPParser#glslStructDeclarator}.
+	 * Enter a parse tree produced by {@link GLSLPPParser#glslStructMemberDeclarator}.
 	 * @param ctx the parse tree
 	 */
-	void enterGlslStructDeclarator(GLSLPPParser.GlslStructDeclaratorContext ctx);
+	void enterGlslStructMemberDeclarator(GLSLPPParser.GlslStructMemberDeclaratorContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GLSLPPParser#glslStructDeclarator}.
+	 * Exit a parse tree produced by {@link GLSLPPParser#glslStructMemberDeclarator}.
 	 * @param ctx the parse tree
 	 */
-	void exitGlslStructDeclarator(GLSLPPParser.GlslStructDeclaratorContext ctx);
+	void exitGlslStructMemberDeclarator(GLSLPPParser.GlslStructMemberDeclaratorContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLPPParser#glslTypeQualifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslTypeQualifier(GLSLPPParser.GlslTypeQualifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLPPParser#glslTypeQualifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslTypeQualifier(GLSLPPParser.GlslTypeQualifierContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLPPParser#glslSingleTypeQualifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslSingleTypeQualifier(GLSLPPParser.GlslSingleTypeQualifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLPPParser#glslSingleTypeQualifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslSingleTypeQualifier(GLSLPPParser.GlslSingleTypeQualifierContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GLSLPPParser#glslInvariantQualifier}.
 	 * @param ctx the parse tree
@@ -767,26 +817,6 @@ public interface GLSLPPListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitGlslPreciseQualifier(GLSLPPParser.GlslPreciseQualifierContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GLSLPPParser#glslTypeQualifier}.
-	 * @param ctx the parse tree
-	 */
-	void enterGlslTypeQualifier(GLSLPPParser.GlslTypeQualifierContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GLSLPPParser#glslTypeQualifier}.
-	 * @param ctx the parse tree
-	 */
-	void exitGlslTypeQualifier(GLSLPPParser.GlslTypeQualifierContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GLSLPPParser#glslSingleTypeQualifier}.
-	 * @param ctx the parse tree
-	 */
-	void enterGlslSingleTypeQualifier(GLSLPPParser.GlslSingleTypeQualifierContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GLSLPPParser#glslSingleTypeQualifier}.
-	 * @param ctx the parse tree
-	 */
-	void exitGlslSingleTypeQualifier(GLSLPPParser.GlslSingleTypeQualifierContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GLSLPPParser#glslStorageQualifier}.
 	 * @param ctx the parse tree

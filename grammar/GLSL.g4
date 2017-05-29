@@ -58,7 +58,13 @@
 //
 grammar GLSL;
 
+//
+// Order of imported rules equals order of grammars in import statement!
+// GLSLtoken must be last!
+// 
 import GLSLcommon, GLSLkeyword, GLSLtoken;
+
+
 
 //
 // Added as main entry point
@@ -77,14 +83,14 @@ glslDeclaration
     | PRECISION glslPrecisionQualifier glslTypeSpecifier SEMICOLON 
     | glslBlockStructure SEMICOLON 
     | glslBlockStructure IDENTIFIER SEMICOLON 
-    | glslBlockStructure IDENTIFIER glslArraySpecifier SEMICOLON 
+    | glslBlockStructure IDENTIFIER glslArrayDimensionsList SEMICOLON 
     | glslTypeQualifier SEMICOLON 
     | glslTypeQualifier IDENTIFIER SEMICOLON 
     | glslTypeQualifier IDENTIFIER glslIdentifierList SEMICOLON 
     ;
 
 glslBlockStructure
-    : glslTypeQualifier IDENTIFIER LEFT_BRACE  glslStructDeclarationList RIGHT_BRACE 
+    : glslTypeQualifier IDENTIFIER LEFT_BRACE  glslStructMemberList RIGHT_BRACE {validator.addDeclaredInterfaceBlock(_localctx);}
     ;
 
 glslIdentifierList
@@ -108,13 +114,13 @@ glslFunctionHeaderWithParameters
     ;
 
 glslFunctionHeader
-    : glslFullySpecifiedType IDENTIFIER LEFT_PAREN 
+    : glslFullySpecifiedType IDENTIFIER LEFT_PAREN {validator.addDeclaredFunction(_localctx);}
     ;
 
 glslParameterDeclarator
     // Type + name
     : glslTypeSpecifier IDENTIFIER 
-    | glslTypeSpecifier IDENTIFIER glslArraySpecifier 
+    | glslTypeSpecifier IDENTIFIER glslArrayDimensionsList 
     ;
 
 glslParameterDeclaration
@@ -136,27 +142,37 @@ glslParameterTypeSpecifier
 
 glslInitDeclaratorList
     : glslSingleDeclaration 
-    | glslInitDeclaratorList COMMA IDENTIFIER 
-    | glslInitDeclaratorList COMMA IDENTIFIER glslArraySpecifier 
-    | glslInitDeclaratorList COMMA IDENTIFIER glslArraySpecifier EQUAL glslInitializer 
-    | glslInitDeclaratorList COMMA IDENTIFIER EQUAL glslInitializer 
+    
+    | glslInitDeclaratorList COMMA glslVariableDeclarator 
+    | glslInitDeclaratorList COMMA glslVariableDeclarator EQUAL glslInitializer
+    
+    | glslInitDeclaratorList COMMA glslVariableDeclarator glslArrayDimensionsList 
+    | glslInitDeclaratorList COMMA glslVariableDeclarator glslArrayDimensionsList EQUAL glslInitializer 
     ;
 
 glslSingleDeclaration
     : glslFullySpecifiedType 
-    | glslFullySpecifiedType IDENTIFIER 
-    | glslFullySpecifiedType IDENTIFIER glslArraySpecifier 
-    | glslFullySpecifiedType IDENTIFIER glslArraySpecifier EQUAL glslInitializer 
-    | glslFullySpecifiedType IDENTIFIER EQUAL glslInitializer 
+    
+    | glslFullySpecifiedType glslVariableDeclarator 
+    | glslFullySpecifiedType glslVariableDeclarator EQUAL glslInitializer 
+    
+    | glslFullySpecifiedType glslVariableDeclarator glslArrayDimensionsList 
+    | glslFullySpecifiedType glslVariableDeclarator glslArrayDimensionsList EQUAL glslInitializer 
 	;
+	
+glslVariableDeclarator
+	: IDENTIFIER {validator.addDeclaredVariable(_ctx);}
+	;
+
+
+
+
 	
 // Grammar Note:  No 'enum', or 'typedef'.
 
 glslFullySpecifiedType
-    : glslTypeSpecifier 
-    | glslTypeQualifier glslTypeSpecifier  
+    : glslTypeQualifier? glslTypeSpecifier  
     ;
-
 
 glslInitializer
     : glslAssignmentExpression 

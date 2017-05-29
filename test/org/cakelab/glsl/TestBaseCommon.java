@@ -14,10 +14,15 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.tree.ErrorNodeImpl;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
+import org.cakelab.glsl.parser.GLSLParser;
+import org.cakelab.glsl.parser.Validator;
+import org.cakelab.glsl.pp.GLSLPPParser;
 
 public class TestBaseCommon {
 
 	protected static Parser parser;
+
+	protected static Validator validator = new Validator();
 
 	private static final boolean DEBUG = false;
 	
@@ -43,15 +48,21 @@ public class TestBaseCommon {
 		public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, boolean exact,
 				BitSet ambigAlts, ATNConfigSet configs) {
 
-			if (hasError()) return;
-			this.message = "reported ambiguity";
+//			if (hasError()) return;
+//			this.message = "reported ambiguity";
 		}
 
 		@Override
 		public void reportAttemptingFullContext(Parser recognizer, DFA dfa, int startIndex, int stopIndex,
 				BitSet conflictingAlts, ATNConfigSet configs) {
-			if (hasError()) return;
-			this.message = "attempting full context";
+			
+			// Note: This notification just tells, that the 
+			//       parser switched to another (slower) parsing strategy.
+			//       Most of the time, if this report comes in, it will be followed 
+			//       by a reported ambiguity. Disable it temporary to find out.
+			
+//			if (hasError()) return;
+//			this.message = "attempting full context";
 		}
 
 		@Override
@@ -139,7 +150,6 @@ public class TestBaseCommon {
 		}
 		
 		evaluateError(errmsg, ast);
-		
 	}
 
 	private static void evaluateError(String errmsg, ParseTree ast) {
@@ -224,6 +234,19 @@ public class TestBaseCommon {
 		}
 		
 	}
+
+	public static void setup(Parser parser, Lexer lexer) {
+		error.listenTo(parser, lexer);
+		if (validator != null) {
+			if (parser instanceof GLSLParser) ((GLSLParser)parser).setValidator(validator);
+			else ((GLSLPPParser)parser).setValidator(validator);
+		}
+	}
+
+	public static void tearDown() {
+		validator.reset();
+	}
+
 
 
 }

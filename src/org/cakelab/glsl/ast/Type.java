@@ -1,40 +1,6 @@
-package org.cakelab.glsl.parser;
+package org.cakelab.glsl.ast;
 
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.cakelab.glsl.TestBaseCommon;
-import org.cakelab.glsl.parser.GLSLParser.GlslContext;
-
-public class TestBaseGLSL extends TestBaseCommon {
-
-	public static GLSLParser p(String source) {
-		CharStream input = CharStreams.fromString(source);
-		GLSLLexer lexer = new GLSLLexer(input);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		parser = new GLSLParser(tokens);
-		TestBaseCommon.setup(parser, lexer);
-		return (GLSLParser)parser;
-	}
-
-
-	@SafeVarargs
-	public static void assertValid(String source, Class<? extends ParseTree> ... types) {
-		ParseTree ast;
-		ast = p(source).glsl();
-		assertValid(ast, types);
-	}
-
-	@SafeVarargs
-	public static void assertInvalid(String source, Class<? extends ParseTree> ... types) {
-		GlslContext ast;
-		GLSLParser parser = p(source);
-		ast = parser.glsl();
-
-		assertInvalid(ast, types);
-	}
-
+public class Type {
 
 	public static String[] BUILTIN_TYPES = new String[]{
 			"atomic_uint",
@@ -182,50 +148,4 @@ public class TestBaseGLSL extends TestBaseCommon {
 			"samplerExternalOES",
 
 	};
-	
-	public static String[] TYPE_QUALIFIER_EXAMPLES = {
-			
-			"invariant",
-			
-			// interpolation
-			"smooth",
-			"flat",
-			"noperspective",
-			
-			// layout(id, id=value, shared)
-			"layout(id, id=5, shared)",
-			"layout(shared)",
-			
-			// precise
-			"precise",
-			
-			// precision
-			"highp",
-			"mediump",
-			"lowp",
-			
-			// storage
-			"const",
-		    "attribute",
-		    "varying",
-		    "inout",
-		    "in",
-		    "out",
-		    "centroid",
-		    "patch",
-		    "sample",
-		    "uniform", 
-		    "buffer",
-		    "shared",
-		    "coherent",
-		    "volatile",
-		    "restrict",
-		    "readonly",
-		    "writeonly", 
-		    "subroutine",
-//		    "subroutine(f1,f2,f3)" does not work without declared functions
-		    
-		    
-	};
-	
 }

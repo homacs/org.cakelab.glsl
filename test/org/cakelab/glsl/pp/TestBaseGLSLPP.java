@@ -10,13 +10,13 @@ import org.cakelab.glsl.pp.GLSLPPParser;
 
 public class TestBaseGLSLPP extends TestBaseCommon {
 
-
 	public static GLSLPPParser p(String source) {
 		CharStream input = CharStreams.fromString(source);
 		GLSLPPLexer lexer = new GLSLPPLexer(input);
 		lexer.preprocessing(true);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		parser = new GLSLPPParser(tokens);
+		setup(parser,lexer);
 		error.listenTo(parser, lexer);
 		return (GLSLPPParser) parser;
 	}

@@ -9,21 +9,20 @@ public class TestArray extends TestBaseGLSL {
 	}
 
 	private static void testArrayVariableDeclaration() {
-		String source;
 		
-		source = "int[] boo";
-		assertValid(p(source).glslSingleDeclaration());
+		assertValid(p("int[] boo").glslSingleDeclaration());
 		
-		source = "int x[] boo";
-		assertInvalid(p(source).glslSingleDeclaration());
+		assertInvalid(p("int x[] boo").glslSingleDeclaration());
 		
-		source = "int boo[]";
-		assertValid(p(source).glslSingleDeclaration());
+		assertValid(p("int boo[]").glslSingleDeclaration());
 		
-		source = "int boo[3]";
-		assertValid(p(source).glslSingleDeclaration());
-		
-	}
+		assertValid(p("int boo[3]").glslSingleDeclaration());
 
+		// common static initialisation
+		assertValid(p("float b[] = { 3.4, 4.2, 5.0, 5.2, 1.1 }").glslSingleDeclaration());
+		
+		// constructor call style initialisation
+		assertValid(p("float a[] = float[](3.4, 4.2, 5.0, 5.2, 1.1)").glslSingleDeclaration());
+	}
 
 }

@@ -21,6 +21,10 @@ public class TestStruct extends TestBaseGLSL {
 		source = "struct boo{};";
 		assertInvalid(source, expected);
 		
+		// glsl: struct prototyping not supported
+		source = "struct boo;";
+		assertInvalid(source, expected);
+		
 		source = "struct boo{"
 				+ "int a;"
 				+ "float b;"
@@ -28,13 +32,17 @@ public class TestStruct extends TestBaseGLSL {
 				+ "};";
 		assertValid(source, expected);
 		
-		source = "struct boo{"
+		source = ""
+				+ "struct myType {"
+				+ "	bool exist;"
+				+ "};"
+				+ "struct boo {"
 				+ " int a;"
 				+ " float b;"
 				+ " bool c;"
 				+ " struct {"
 				+ "  myType c;"
-				+ " } d;"
+				+ " } d[2];"
 				+ "};";
 		assertValid(source, expected);
 	}
@@ -48,6 +56,13 @@ public class TestStruct extends TestBaseGLSL {
 				+ "  float b;"
 				+ "  bool c;"
 				+ "} x";
+		assertValid(p(source).glslSingleDeclaration(), expected);
+		
+		source = "struct boo {"
+				+ "  int a;"
+				+ "  float b;"
+				+ "  bool c;"
+				+ "} x[4]";
 		assertValid(p(source).glslSingleDeclaration(), expected);
 		
 	}

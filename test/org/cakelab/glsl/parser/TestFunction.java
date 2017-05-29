@@ -68,13 +68,13 @@ public class TestFunction extends TestBaseGLSL {
 		
 		source = "void block(int b){\n"
 				+ "int a;\n"
-				+ "return a+b;\n"
+				+ "return a+1;\n"
 				+ "}";
 		assertValid(source, expected);
 		
 		source = "void block(int b){\n"
 				+ "int a;\n"
-				+ "return a+b;\n"
+				+ "return a+2;\n"
 				+ "";
 		assertInvalid(source, expected);
 	}
