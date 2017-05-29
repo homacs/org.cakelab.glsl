@@ -532,13 +532,25 @@ public class GLSLBaseListener implements GLSLListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslPrimaryExpression(GLSLParser.GlslPrimaryExpressionContext ctx) { }
+	@Override public void enterGlslFunctionName(GLSLParser.GlslFunctionNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGlslPrimaryExpression(GLSLParser.GlslPrimaryExpressionContext ctx) { }
+	@Override public void exitGlslFunctionName(GLSLParser.GlslFunctionNameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGlslBoolConstant(GLSLParser.GlslBoolConstantContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslBoolConstant(GLSLParser.GlslBoolConstantContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -592,6 +604,18 @@ public class GLSLBaseListener implements GLSLListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterGlslPrimaryExpression(GLSLParser.GlslPrimaryExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslPrimaryExpression(GLSLParser.GlslPrimaryExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterGlslPostfixExpression(GLSLParser.GlslPostfixExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -599,6 +623,30 @@ public class GLSLBaseListener implements GLSLListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitGlslPostfixExpression(GLSLParser.GlslPostfixExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGlslConstructorCallArguments(GLSLParser.GlslConstructorCallArgumentsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslConstructorCallArguments(GLSLParser.GlslConstructorCallArgumentsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGlslFunctionCallArguments(GLSLParser.GlslFunctionCallArgumentsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslFunctionCallArguments(GLSLParser.GlslFunctionCallArgumentsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -851,18 +899,6 @@ public class GLSLBaseListener implements GLSLListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitGlslFunctionNameList(GLSLParser.GlslFunctionNameListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterGlslFunctionName(GLSLParser.GlslFunctionNameContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGlslFunctionName(GLSLParser.GlslFunctionNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

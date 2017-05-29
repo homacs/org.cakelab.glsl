@@ -62,6 +62,7 @@ public class TestExpression extends TestBaseGLSL {
 		
 		setupMultiTest();
 		assertValid(p("(func)()").glslPostfixExpression(), GlslCallArgumentsContext.class);
+		assertValid(p("((func))()").glslPostfixExpression(), GlslCallArgumentsContext.class);
 		assertValid(p("a.b()").glslPostfixExpression(), GlslCallArgumentsContext.class);
 		assertValid(p("a.b[3](1,2)").glslPostfixExpression(), GlslCallArgumentsContext.class);
 		tearDown();

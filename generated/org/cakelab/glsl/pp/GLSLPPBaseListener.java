@@ -400,13 +400,25 @@ public class GLSLPPBaseListener implements GLSLPPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslPrimaryExpression(GLSLPPParser.GlslPrimaryExpressionContext ctx) { }
+	@Override public void enterGlslFunctionName(GLSLPPParser.GlslFunctionNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGlslPrimaryExpression(GLSLPPParser.GlslPrimaryExpressionContext ctx) { }
+	@Override public void exitGlslFunctionName(GLSLPPParser.GlslFunctionNameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGlslBoolConstant(GLSLPPParser.GlslBoolConstantContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslBoolConstant(GLSLPPParser.GlslBoolConstantContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -460,6 +472,18 @@ public class GLSLPPBaseListener implements GLSLPPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterGlslPrimaryExpression(GLSLPPParser.GlslPrimaryExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslPrimaryExpression(GLSLPPParser.GlslPrimaryExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterGlslPostfixExpression(GLSLPPParser.GlslPostfixExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -467,6 +491,30 @@ public class GLSLPPBaseListener implements GLSLPPListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitGlslPostfixExpression(GLSLPPParser.GlslPostfixExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGlslConstructorCallArguments(GLSLPPParser.GlslConstructorCallArgumentsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslConstructorCallArguments(GLSLPPParser.GlslConstructorCallArgumentsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGlslFunctionCallArguments(GLSLPPParser.GlslFunctionCallArgumentsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslFunctionCallArguments(GLSLPPParser.GlslFunctionCallArgumentsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -719,18 +767,6 @@ public class GLSLPPBaseListener implements GLSLPPListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitGlslFunctionNameList(GLSLPPParser.GlslFunctionNameListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterGlslFunctionName(GLSLPPParser.GlslFunctionNameContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGlslFunctionName(GLSLPPParser.GlslFunctionNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

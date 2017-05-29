@@ -19,32 +19,52 @@ grammar GLSLcommon;
 // 
 import GLSLkeyword, GLSLtoken;
 
-
-//
-// Added to resolve conflicts.
-// Note: In glslang, field selectors are the user 
-// given names of members of a struct. Thus, IDENTIFIERs.
-//
+/** Identifier following a swizzle ('.') */
 glslFieldSelection
 	: IDENTIFIER
 	;
 
+/** any unknown identifier is considered to be a variable id. 
+ * Note: Calls to unknown functions will result in calls on 
+ * a variable id. For example, any new builtin functions 
+ * which have not been registered, will be considered as 
+ * variables. Thus, any such case should be reported as 
+ * warning and not an error. */
 glslVariableIdentifier
     : IDENTIFIER
     ;
-
-//
-// Added to resolve conflicts.
-// Note: In glslang, type names are user given type names. 
-// Thus, IDENTIFIERs.
-//
-
+    
+/** Identifier, known to be a user defined type. */
 glslTypeName
 	: TYPE_NAME
 	;
-	
 
+/** Any identifier known to be a function. 
+ * Note: Unknown function id will be considered as variable. */
+glslFunctionName
+	: FUNCTION_NAME
+	;
 
+glslBoolConstant
+	: BOOLCONSTANT
+	;
+
+glslIntegerConstant
+	: INTCONSTANT
+	;
+
+/** any positive integer postponed by [uU] */
+glslUnsignedIntegerConstant
+	: UINTCONSTANT
+	;
+
+glslFloatConstant
+	: FLOATCONSTANT
+	;
+
+glslDoubleConstant
+	: DOUBLECONSTANT
+	;
 
 glslPrimaryExpression
     : glslVariableIdentifier
@@ -53,22 +73,10 @@ glslPrimaryExpression
     | glslDoubleConstant
     | glslIntegerConstant
     | glslUnsignedIntegerConstant
-    | BOOLCONSTANT 
+    | glslBoolConstant 
     | LEFT_PAREN glslExpression RIGHT_PAREN 
     ;
-
-glslIntegerConstant
-	: (PLUS|DASH)? INTCONSTANT
-;  
-glslUnsignedIntegerConstant
-	: PLUS? UINTCONSTANT
-;  
-glslFloatConstant
-	: (PLUS|DASH)? FLOATCONSTANT
-;  
-glslDoubleConstant
-	: (PLUS|DASH)? DOUBLECONSTANT
-;  
+    
 
 //
 // Grammar Translation:
@@ -76,29 +84,39 @@ glslDoubleConstant
 // Rules function and constructor calls and all referenced 
 // rules had to be replaced to resolve mutually left recursion.
 //
-// The new rules are:
+// The new rules are basically:
 // + Function call:    'postfix_expression call_arguments'
 // + Constructor call: 'type_specifier     call_arguments'
 //
-// Semantic analysis has to decide whether a postfix_expression 
-// evaluates to a constructor or function call.
-//
 glslPostfixExpression
     : glslPrimaryExpression 
-    | glslTypeSpecifier glslCallArguments
-    | glslPostfixExpression glslCallArguments
+    | glslTypeSpecifier glslConstructorCallArguments
+    | glslPostfixExpression glslFunctionCallArguments
     | glslPostfixExpression LEFT_BRACKET glslIntegerExpression RIGHT_BRACKET
     | glslPostfixExpression DOT glslFieldSelection
     | glslPostfixExpression INC_OP
     | glslPostfixExpression DEC_OP
     ;
+    
+glslConstructorCallArguments
+	: glslCallArguments
+	;
 
+glslFunctionCallArguments
+	: glslCallArguments
+	;
+    
+/**
+ * Arguments to function or constructor call.
+ */
 glslCallArguments 
 	: LEFT_PAREN glslAssignmentExpression (COMMA glslAssignmentExpression)* RIGHT_PAREN 
     | LEFT_PAREN VOID? RIGHT_PAREN 
-;
+	;
 
-
+/**
+ * Expression which has to evaluate to an integer.
+ */
 glslIntegerExpression
     : glslExpression 
     ;
@@ -109,7 +127,7 @@ glslUnaryExpression
     | DEC_OP glslUnaryExpression 
     | glslUnaryOperator glslUnaryExpression 
     
-    | PPOP_DEFINED ((LEFT_PAREN IDENTIFIER RIGHT_PAREN)|IDENTIFIER) // only available in preprocessor
+    | PPOP_DEFINED ((LEFT_PAREN IDENTIFIER RIGHT_PAREN)|IDENTIFIER) // only available in preprocessor, PPOP_DEFINED will occur in preprocessor only
     ;
 // Grammar Note:  No traditional style type casts.
 
@@ -186,8 +204,7 @@ glslLogicalOrExpression
 
 glslConditionalExpression
     : glslLogicalOrExpression 
-    | glslLogicalOrExpression QUESTION 
-      glslExpression COLON glslAssignmentExpression 
+    | glslLogicalOrExpression QUESTION glslExpression COLON glslAssignmentExpression 
     ;
 
 glslAssignmentExpression
@@ -227,10 +244,6 @@ glslFunctionNameList
     : glslFunctionName (COMMA glslFunctionName)*
     ;
     
-glslFunctionName
-	: FUNCTION_NAME
-	;
-
 glslTypeSpecifier
     : glslTypeSpecifierNonarray glslArrayDimensionsList?
     ;
@@ -242,8 +255,6 @@ glslArrayDimensionsList
 glslArrayDimension
 	: LEFT_BRACKET glslConstantExpression? RIGHT_BRACKET
 	;
-
-
 
 glslTypeSpecifierNonarray
     : glslBuiltinType 
@@ -377,8 +388,9 @@ glslBuiltinType
 
 
 glslStructSpecifier
-    : STRUCT            LEFT_BRACE  glslStructMemberList RIGHT_BRACE 
+    : STRUCT            LEFT_BRACE  glslStructMemberList RIGHT_BRACE /* Note: anonymous structs are actually disallowed */
     | STRUCT IDENTIFIER LEFT_BRACE  glslStructMemberList RIGHT_BRACE {validator.addDeclaredStruct(_localctx);}
+    | STRUCT TYPE_NAME  LEFT_BRACE  glslStructMemberList RIGHT_BRACE {validator.addDeclaredStruct(_localctx);} // redefinition of a user defined struct is allowed
     ;
 
 glslStructMemberList

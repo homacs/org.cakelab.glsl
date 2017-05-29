@@ -186,14 +186,16 @@ SINGLE_QUOTE: '\'';
 //////////////////////////////////////
 
 /**
- * IDENTIFIER which have been used in a type declaration (e.g. a struct name).
+ * IDENTIFIER which has been used in a type declaration (e.g. a struct name).
+ * Type name have to be registered in validator to make things work.
  */
-TYPE_NAME: IDENTIFIER {validator.istype(getText())}?;
+TYPE_NAME: IDENTIFIER {!preprocessing && validator.istype(getText())}?;
 
 /**
  * IDENTIFIER which has been used in a function declaration or prototype or builtin functions.
+ * Function names have to be registered in validator to make things work.
  */
-FUNCTION_NAME: IDENTIFIER {validator.isfunc(getText())}?;
+FUNCTION_NAME: IDENTIFIER {!preprocessing && validator.isfunc(getText())}?;
 
 /**
  * Every IDENTIFIER which is non of the above.

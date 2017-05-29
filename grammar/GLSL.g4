@@ -89,8 +89,12 @@ glslDeclaration
     | glslTypeQualifier IDENTIFIER glslIdentifierList SEMICOLON 
     ;
 
+/**
+ * Interface block.
+ */
 glslBlockStructure
     : glslTypeQualifier IDENTIFIER LEFT_BRACE  glslStructMemberList RIGHT_BRACE {validator.addDeclaredInterfaceBlock(_localctx);}
+    | glslTypeQualifier TYPE_NAME LEFT_BRACE  glslStructMemberList RIGHT_BRACE {validator.addDeclaredInterfaceBlock(_localctx);}
     ;
 
 glslIdentifierList
@@ -115,6 +119,7 @@ glslFunctionHeaderWithParameters
 
 glslFunctionHeader
     : glslFullySpecifiedType IDENTIFIER LEFT_PAREN {validator.addDeclaredFunction(_localctx);}
+    | glslFullySpecifiedType FUNCTION_NAME LEFT_PAREN {validator.addDeclaredFunction(_localctx);} // overriding
     ;
 
 glslParameterDeclarator
@@ -208,9 +213,9 @@ glslSimpleStatement
 
 glslCompoundStatement
     : LEFT_BRACE RIGHT_BRACE 
-    | LEFT_BRACE 
+    | LEFT_BRACE
       glslStatementList 
-      RIGHT_BRACE 
+      RIGHT_BRACE
     ;
 
 glslStatementNoNewScope

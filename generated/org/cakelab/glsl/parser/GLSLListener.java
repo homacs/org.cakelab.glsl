@@ -438,15 +438,25 @@ public interface GLSLListener extends ParseTreeListener {
 	 */
 	void exitGlslTypeName(GLSLParser.GlslTypeNameContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslPrimaryExpression}.
+	 * Enter a parse tree produced by {@link GLSLParser#glslFunctionName}.
 	 * @param ctx the parse tree
 	 */
-	void enterGlslPrimaryExpression(GLSLParser.GlslPrimaryExpressionContext ctx);
+	void enterGlslFunctionName(GLSLParser.GlslFunctionNameContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslPrimaryExpression}.
+	 * Exit a parse tree produced by {@link GLSLParser#glslFunctionName}.
 	 * @param ctx the parse tree
 	 */
-	void exitGlslPrimaryExpression(GLSLParser.GlslPrimaryExpressionContext ctx);
+	void exitGlslFunctionName(GLSLParser.GlslFunctionNameContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLParser#glslBoolConstant}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslBoolConstant(GLSLParser.GlslBoolConstantContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLParser#glslBoolConstant}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslBoolConstant(GLSLParser.GlslBoolConstantContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GLSLParser#glslIntegerConstant}.
 	 * @param ctx the parse tree
@@ -488,6 +498,16 @@ public interface GLSLListener extends ParseTreeListener {
 	 */
 	void exitGlslDoubleConstant(GLSLParser.GlslDoubleConstantContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link GLSLParser#glslPrimaryExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslPrimaryExpression(GLSLParser.GlslPrimaryExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLParser#glslPrimaryExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslPrimaryExpression(GLSLParser.GlslPrimaryExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link GLSLParser#glslPostfixExpression}.
 	 * @param ctx the parse tree
 	 */
@@ -497,6 +517,26 @@ public interface GLSLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitGlslPostfixExpression(GLSLParser.GlslPostfixExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLParser#glslConstructorCallArguments}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslConstructorCallArguments(GLSLParser.GlslConstructorCallArgumentsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLParser#glslConstructorCallArguments}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslConstructorCallArguments(GLSLParser.GlslConstructorCallArgumentsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLParser#glslFunctionCallArguments}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslFunctionCallArguments(GLSLParser.GlslFunctionCallArgumentsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLParser#glslFunctionCallArguments}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslFunctionCallArguments(GLSLParser.GlslFunctionCallArgumentsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GLSLParser#glslCallArguments}.
 	 * @param ctx the parse tree
@@ -707,16 +747,6 @@ public interface GLSLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitGlslFunctionNameList(GLSLParser.GlslFunctionNameListContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslFunctionName}.
-	 * @param ctx the parse tree
-	 */
-	void enterGlslFunctionName(GLSLParser.GlslFunctionNameContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslFunctionName}.
-	 * @param ctx the parse tree
-	 */
-	void exitGlslFunctionName(GLSLParser.GlslFunctionNameContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GLSLParser#glslTypeSpecifier}.
 	 * @param ctx the parse tree

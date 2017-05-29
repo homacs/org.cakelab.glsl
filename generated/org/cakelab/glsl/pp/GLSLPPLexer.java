@@ -369,14 +369,14 @@ public class GLSLPPLexer extends Lexer {
 	private boolean TYPE_NAME_sempred(RuleContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 3:
-			return validator.istype(getText());
+			return !preprocessing && validator.istype(getText());
 		}
 		return true;
 	}
 	private boolean FUNCTION_NAME_sempred(RuleContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 4:
-			return validator.isfunc(getText());
+			return !preprocessing && validator.isfunc(getText());
 		}
 		return true;
 	}

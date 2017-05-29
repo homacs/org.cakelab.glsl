@@ -1,44 +1,35 @@
 package org.cakelab.glsl.parser;
 
-import java.util.HashMap;
-
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.cakelab.glsl.ast.Function;
+import org.cakelab.glsl.ast.Scope;
 import org.cakelab.glsl.ast.Type;
+import org.cakelab.glsl.ast.Variable;
 import org.cakelab.glsl.parser.GLSLParser.GlslBlockStructureContext;
 import org.cakelab.glsl.parser.GLSLParser.GlslFunctionHeaderContext;
 
 
 public class Validator {
 	
-	private HashMap<String, Function> declaredFunctions = new HashMap<String, Function>();
-	private HashMap<String, Variable> declaredVariables = new HashMap<String, Variable>();
-	private HashMap<String, Type> declaredTypes = new HashMap<String, Type>();
-	private HashMap<String, Type> builtinTypes = new HashMap<String, Type>();
-
+	private Scope scope;
+	
 	
 	public Validator() {
-		for (String name : Type.BUILTIN_TYPES) {
-			builtinTypes.put(name, null);
-		}
+		reset();
 	}
 
 	public void reset() {
-		declaredVariables.clear();
-		declaredFunctions.clear();
-		declaredTypes.clear();
+		scope = new Scope(Scope.BUILTIN_SCOPE);
 	}
 
-
-
-	public boolean isDeclaredType(ParseTree tree, int child) {
-		if (tree == null) {
-			return true;
-		}
-		String name = tree.getChild(child).getText();
-		return declaredTypes.containsKey(name);
+	public void enterScope(Scope child) {
+		scope.add(child);
+		scope = child;
+	}
+	
+	public void leaveScope() {
+		scope = scope.getParent();
 	}
 
 	public void addDeclaredStruct(org.cakelab.glsl.parser.GLSLParser.GlslStructSpecifierContext context) throws RecognitionException {
@@ -63,12 +54,12 @@ public class Validator {
 	}
 	
 	public void addDeclaredFunction(String name, Function func) {
-		declaredFunctions.put(name, func);
+		scope.addFunction(name, func);
 	}
 	
 	
 	public void addDeclaredStruct(org.cakelab.glsl.pp.GLSLPPParser.GlslStructSpecifierContext context) {
-		// preprocessing: ignore
+		// preprocessing: intentionally ignored
 	}
 
 	/**
@@ -81,10 +72,7 @@ public class Validator {
 	}
 
 	public boolean istype(String identifier) {
-		boolean result = 
-				declaredTypes.containsKey(identifier)
-			||
-				builtinTypes.containsKey(identifier);
+		boolean result = scope.containsType(identifier);
 		return result;
 	}
 
@@ -95,7 +83,7 @@ public class Validator {
 	 * @return
 	 */
 	public boolean isfunc(String identifier) {
-		boolean result = declaredFunctions.containsKey(identifier);
+		boolean result = scope.containsFunction(identifier);
 		return result;
 	}
 
@@ -106,22 +94,20 @@ public class Validator {
 	 */
 	public boolean isvar(ParserRuleContext _ctx) {
 		String name = _ctx.getStart().getText();
-		boolean result = declaredVariables.containsKey(name);
+		boolean result = scope.containsVariable(name);
 		return result;
 	}
 
 	public void addDeclaredVariable(ParserRuleContext _ctx) {
-		String name = _ctx.getStart().getText();
-		
-		addDeclaredVariable(name, null);
+		addDeclaredVariable(_ctx.getStart().getText(), null);
 	}
 
 	public void addDeclaredVariable(String name, Variable var) {
-		declaredVariables.put(name, var);
+		scope.addVariable(name, var);
 	}
 
 	public void addDeclaredType(String name, Type type) {
-		declaredTypes.put(name, type);
+		scope.addType(name, type);
 	}
 
 

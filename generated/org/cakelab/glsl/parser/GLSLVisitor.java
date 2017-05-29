@@ -269,11 +269,17 @@ public interface GLSLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGlslTypeName(GLSLParser.GlslTypeNameContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GLSLParser#glslPrimaryExpression}.
+	 * Visit a parse tree produced by {@link GLSLParser#glslFunctionName}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGlslPrimaryExpression(GLSLParser.GlslPrimaryExpressionContext ctx);
+	T visitGlslFunctionName(GLSLParser.GlslFunctionNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GLSLParser#glslBoolConstant}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGlslBoolConstant(GLSLParser.GlslBoolConstantContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GLSLParser#glslIntegerConstant}.
 	 * @param ctx the parse tree
@@ -299,11 +305,29 @@ public interface GLSLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGlslDoubleConstant(GLSLParser.GlslDoubleConstantContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link GLSLParser#glslPrimaryExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGlslPrimaryExpression(GLSLParser.GlslPrimaryExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link GLSLParser#glslPostfixExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitGlslPostfixExpression(GLSLParser.GlslPostfixExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GLSLParser#glslConstructorCallArguments}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGlslConstructorCallArguments(GLSLParser.GlslConstructorCallArgumentsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GLSLParser#glslFunctionCallArguments}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGlslFunctionCallArguments(GLSLParser.GlslFunctionCallArgumentsContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GLSLParser#glslCallArguments}.
 	 * @param ctx the parse tree
@@ -430,12 +454,6 @@ public interface GLSLVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitGlslFunctionNameList(GLSLParser.GlslFunctionNameListContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link GLSLParser#glslFunctionName}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGlslFunctionName(GLSLParser.GlslFunctionNameContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GLSLParser#glslTypeSpecifier}.
 	 * @param ctx the parse tree
