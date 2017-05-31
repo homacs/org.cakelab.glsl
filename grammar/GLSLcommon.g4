@@ -24,25 +24,27 @@ glslFieldSelection
 	: IDENTIFIER
 	;
 
-/** any unknown identifier is considered to be a variable id. 
- * Note: Calls to unknown functions will result in calls on 
- * a variable id. For example, any new builtin functions 
- * which have not been registered, will be considered as 
- * variables. Thus, any such case should be reported as 
- * warning and not an error. */
-glslVariableIdentifier
+/** any unknown identifier can be a variable, 
+ * function or type name.
+ */
+glslIdentifier
     : IDENTIFIER
     ;
     
 /** Identifier, known to be a user defined type. */
 glslTypeName
-	: TYPE_NAME
+	: IDENTIFIER
 	;
 
-/** Any identifier known to be a function. 
- * Note: Unknown function id will be considered as variable. */
+/** Identifier in variable/parameter declaration or use. */
+glslVariableIdentifier
+	: IDENTIFIER
+	;
+
+/** Any identifier considered to be a function name. 
+ */
 glslFunctionName
-	: FUNCTION_NAME
+	: IDENTIFIER
 	;
 
 glslBoolConstant
@@ -67,8 +69,9 @@ glslDoubleConstant
 	;
 
 glslPrimaryExpression
-    : glslVariableIdentifier
-    | glslFunctionName
+    : glslIdentifier // semantic analyses has to decide whether its type, function or variable
+    | glslBuiltinType
+    | glslStructSpecifier
     | glslFloatConstant
     | glslDoubleConstant
     | glslIntegerConstant
@@ -83,16 +86,29 @@ glslPrimaryExpression
 // ====================
 // Rules function and constructor calls and all referenced 
 // rules had to be replaced to resolve mutually left recursion.
+// Token TYPE_NAME has also been removed as it represented 
+// semantic analysis to be performed by the lexer. Instead 
+// user specified types are now simply IDENTIFIERS and builtin
+// types and struct declarations had to be added to primary_expression. As a consequence
+// (a) differentiation between constructor and function calls 
+// now fully relies on semantic analysis and (b) array _types_
+// have to be differentiated from array _references_ by semantic
+// analysis as well. This results in cleaner error reporting
+// and rules. This also allows function overriding, as stated
+// in the GLSL specification, which is not possible with the
+// rule set of the reference implementation.
 //
-// The new rules are basically:
-// + Function call:    'postfix_expression call_arguments'
-// + Constructor call: 'type_specifier     call_arguments'
+// As a side effect it also allows to use types in primary 
+// expressions. Thus, such misuse of types has to be identified 
+// by semantic analysis as well.
+//
+// An advantage is, that parsers now can parse without semantic 
+// analysis as well.
 //
 glslPostfixExpression
     : glslPrimaryExpression 
-    | glslTypeSpecifier glslConstructorCallArguments
-    | glslPostfixExpression glslFunctionCallArguments
-    | glslPostfixExpression LEFT_BRACKET glslIntegerExpression RIGHT_BRACKET
+    | glslPostfixExpression glslCallArguments // this rule can evaluate to a function or constructor call depending on the preceding postfix_expression.
+    | glslPostfixExpression glslArrayDimension // this rule might refer to a type (e.g. float[]) or an array reference (e.g. array[i])
     | glslPostfixExpression DOT glslFieldSelection
     | glslPostfixExpression INC_OP
     | glslPostfixExpression DEC_OP
@@ -209,8 +225,16 @@ glslConditionalExpression
 
 glslAssignmentExpression
     : glslConditionalExpression 
-    | glslUnaryExpression glslAssignmentOperator glslAssignmentExpression 
+    | glslLValue glslAssignmentOperator glslAssignmentExpression 
     ;
+    
+glslLValue
+	: glslUnaryExpression
+	;
+
+
+
+
 
 glslAssignmentOperator
     : EQUAL 
@@ -227,8 +251,7 @@ glslAssignmentOperator
     ;
 
 glslExpression
-    : glslAssignmentExpression 
-    | glslExpression COMMA glslAssignmentExpression 
+    : glslAssignmentExpression (COMMA glslAssignmentExpression)*
     ;
 
 glslConstantExpression
@@ -245,15 +268,11 @@ glslFunctionNameList
     ;
     
 glslTypeSpecifier
-    : glslTypeSpecifierNonarray glslArrayDimensionsList?
-    ;
-
-glslArrayDimensionsList
-    : glslArrayDimension+
+    : glslTypeSpecifierNonarray glslArrayDimension*
     ;
 
 glslArrayDimension
-	: LEFT_BRACKET glslConstantExpression? RIGHT_BRACKET
+	: LEFT_BRACKET glslIntegerExpression? RIGHT_BRACKET
 	;
 
 glslTypeSpecifierNonarray
@@ -386,19 +405,25 @@ glslBuiltinType
     ;
 
 
-
+/** 
+ * Declares a struct.
+ *  
+ * Grammar Note: Anonymous structs are actually 
+ * disallow (see GLSL spec.), but have been considered in the reference
+ * implementation. We keep it here for reference but will
+ * identify them as error in semantic analysis.
+ */
 glslStructSpecifier
-    : STRUCT            LEFT_BRACE  glslStructMemberList RIGHT_BRACE /* Note: anonymous structs are actually disallowed */
-    | STRUCT IDENTIFIER LEFT_BRACE  glslStructMemberList RIGHT_BRACE {validator.addDeclaredStruct(_localctx);}
-    | STRUCT TYPE_NAME  LEFT_BRACE  glslStructMemberList RIGHT_BRACE {validator.addDeclaredStruct(_localctx);} // redefinition of a user defined struct is allowed
+    : STRUCT            glslStructBody
+    | STRUCT IDENTIFIER glslStructBody
     ;
 
-glslStructMemberList
-    : glslStructMemberGroup+
-    ;
+glslStructBody
+	: LEFT_BRACE  glslStructMemberGroup+ RIGHT_BRACE
+	;
 
 /**
- * A line like
+ * A set of struct members of the same type in a line like
  * int a,b,c;
  * with type(int) and members a, b and c.
  */
@@ -411,7 +436,7 @@ glslStructMemberDeclaratorList
     ;
 
 glslStructMemberDeclarator
-    : IDENTIFIER glslArrayDimensionsList?
+    : IDENTIFIER glslArrayDimension*
     ;
 
 

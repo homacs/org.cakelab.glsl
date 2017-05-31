@@ -76,97 +76,81 @@ glsl
 
 
 
+/* Grammar Note: 
+ * The following three rules have been introduced to aid 
+ * semantic analysis in resolving variable or type 
+ * qualification declarators:
+ * 1. glslVariableQualificationList
+ * 2. glslVariableOrTypeQualification
+ * 3. glslTypeQualifier glslKnownTypeSpecifier glslVariableDeclarations?
+ * 
+ * GLSL allows to redefine the qualifier
+ * for a variable like that:
+ * <qualifier> <variable> ;
+ * and it also allows prototyping of types like that:
+ * <qualifier> <type> ;
+ * 
+ * Unfortunately type and variable names appear at the 
+ * parser as IDENTIFIER tokens. Thus, the parser cannot
+ * differentiate between both unless: (a) the identifier 
+ * is followed by a list of identifiers or (b) the 
+ * identifier is followed by brackets (indicating an array type)
+ * or (c) there is no identifier but a builtin type or struct declaration.
+ * 
+ */    
 
 glslDeclaration
-    : glslFunctionPrototype SEMICOLON 
-    | glslInitDeclaratorList SEMICOLON 
-    | PRECISION glslPrecisionQualifier glslTypeSpecifier SEMICOLON 
-    | glslBlockStructure SEMICOLON 
-    | glslBlockStructure IDENTIFIER SEMICOLON 
-    | glslBlockStructure IDENTIFIER glslArrayDimensionsList SEMICOLON 
-    | glslTypeQualifier SEMICOLON 
-    | glslTypeQualifier IDENTIFIER SEMICOLON 
-    | glslTypeQualifier IDENTIFIER glslIdentifierList SEMICOLON 
+    : glslTypeQualifier SEMICOLON 
+    | glslTypePrecisionDeclaration SEMICOLON
+
+    | glslTypeQualifier glslIdentifier SEMICOLON // semantic analysis has to decide whether identifier is type or variable
+
+    | glslTypeQualifier glslVariableIdentifier (COMMA glslVariableIdentifier)+ SEMICOLON
+    | glslTypeQualifier glslTypeName glslVariableDeclarations SEMICOLON
+    | glslTypeQualifier glslTypeName glslArrayDimension+ glslVariableDeclarations? SEMICOLON
+    | glslTypeQualifier glslBuiltinType glslArrayDimension* glslVariableDeclarations? SEMICOLON
+    | glslTypeQualifier glslStructSpecifier glslArrayDimension* glslVariableDeclarations? SEMICOLON
+    
+    | glslTypeSpecifier glslVariableDeclarations? SEMICOLON
+    | glslInterfaceBlockStructure (glslVariableIdentifier glslArrayDimension*)? SEMICOLON 
+    | glslFunctionPrototype SEMICOLON 
     ;
+
+    
+glslTypePrecisionDeclaration
+	: PRECISION glslPrecisionQualifier glslTypeSpecifier
+	;
+
+
+glslVariableDeclarations
+	: glslVariableDeclarator (COMMA glslVariableDeclarator)*
+	;
+
 
 /**
  * Interface block.
  */
-glslBlockStructure
-    : glslTypeQualifier IDENTIFIER LEFT_BRACE  glslStructMemberList RIGHT_BRACE {validator.addDeclaredInterfaceBlock(_localctx);}
-    | glslTypeQualifier TYPE_NAME LEFT_BRACE  glslStructMemberList RIGHT_BRACE {validator.addDeclaredInterfaceBlock(_localctx);}
+glslInterfaceBlockStructure
+    : glslTypeQualifier IDENTIFIER glslStructBody
     ;
 
-glslIdentifierList
-    : COMMA IDENTIFIER 
-    | glslIdentifierList COMMA IDENTIFIER 
-    ;
 
 glslFunctionPrototype
-    : glslFunctionDeclarator RIGHT_PAREN  
+    : glslFullySpecifiedType glslFunctionName LEFT_PAREN glslFunctionParameters? RIGHT_PAREN
     ;
 
-glslFunctionDeclarator
-    : glslFunctionHeader 
-    | glslFunctionHeaderWithParameters 
-    ;
+glslFunctionParameters: 
+	glslParameterDeclaration (COMMA glslParameterDeclaration)*
+;
 
-
-glslFunctionHeaderWithParameters
-    : glslFunctionHeader glslParameterDeclaration 
-    | glslFunctionHeaderWithParameters COMMA glslParameterDeclaration 
-    ;
-
-glslFunctionHeader
-    : glslFullySpecifiedType IDENTIFIER LEFT_PAREN {validator.addDeclaredFunction(_localctx);}
-    | glslFullySpecifiedType FUNCTION_NAME LEFT_PAREN {validator.addDeclaredFunction(_localctx);} // overriding
-    ;
-
-glslParameterDeclarator
-    // Type + name
-    : glslTypeSpecifier IDENTIFIER 
-    | glslTypeSpecifier IDENTIFIER glslArrayDimensionsList 
-    ;
 
 glslParameterDeclaration
-    //
-    // With name
-    //
-    : glslTypeQualifier glslParameterDeclarator 
-    | glslParameterDeclarator 
-    //
-    // Without name
-    //
-    | glslTypeQualifier glslParameterTypeSpecifier 
-    | glslParameterTypeSpecifier 
+    : glslTypeQualifier? glslTypeSpecifier (glslVariableIdentifier glslArrayDimension*)? 
     ;
 
-glslParameterTypeSpecifier
-    : glslTypeSpecifier 
-    ;
 
-glslInitDeclaratorList
-    : glslSingleDeclaration 
-    
-    | glslInitDeclaratorList COMMA glslVariableDeclarator 
-    | glslInitDeclaratorList COMMA glslVariableDeclarator EQUAL glslInitializer
-    
-    | glslInitDeclaratorList COMMA glslVariableDeclarator glslArrayDimensionsList 
-    | glslInitDeclaratorList COMMA glslVariableDeclarator glslArrayDimensionsList EQUAL glslInitializer 
-    ;
-
-glslSingleDeclaration
-    : glslFullySpecifiedType 
-    
-    | glslFullySpecifiedType glslVariableDeclarator 
-    | glslFullySpecifiedType glslVariableDeclarator EQUAL glslInitializer 
-    
-    | glslFullySpecifiedType glslVariableDeclarator glslArrayDimensionsList 
-    | glslFullySpecifiedType glslVariableDeclarator glslArrayDimensionsList EQUAL glslInitializer 
-	;
-	
 glslVariableDeclarator
-	: IDENTIFIER {validator.addDeclaredVariable(_ctx);}
+	: glslVariableIdentifier glslArrayDimension* (EQUAL glslInitializer)?
 	;
 
 
@@ -218,6 +202,15 @@ glslCompoundStatement
       RIGHT_BRACE
     ;
 
+/**
+ * Statement block immediately following 
+ * a for loop header or a function prototype. 
+ * In this case, either the for loop header 
+ * or the function header already established 
+ * a new scope. Thus, for example variables
+ * will be declared in the same scope as the
+ * parameters.
+ */
 glslStatementNoNewScope
     : glslCompoundStatementNoNewScope 
     | glslSimpleStatement                
@@ -275,12 +268,9 @@ glslCaseLabel
     ;
 
 glslIterationStatement
-    : WHILE LEFT_PAREN 
-      glslCondition RIGHT_PAREN glslStatementNoNewScope 
-    | DO 
-      glslStatement WHILE LEFT_PAREN glslExpression RIGHT_PAREN SEMICOLON 
-    | FOR LEFT_PAREN 
-      glslForInitStatement glslForRestStatement RIGHT_PAREN glslStatementNoNewScope 
+    : WHILE LEFT_PAREN glslCondition RIGHT_PAREN glslStatementNoNewScope 
+    | DO glslStatement WHILE LEFT_PAREN glslExpression RIGHT_PAREN SEMICOLON 
+    | FOR LEFT_PAREN glslForInitStatement glslForRestStatement RIGHT_PAREN glslStatementNoNewScope 
     ;
 
 glslForInitStatement
@@ -288,14 +278,8 @@ glslForInitStatement
     | glslDeclarationStatement 
     ;
 
-glslConditionopt
-    : glslCondition 
-    | /* May be null */ 
-    ;
-
 glslForRestStatement
-    : glslConditionopt SEMICOLON 
-    | glslConditionopt SEMICOLON glslExpression  
+    : glslCondition? SEMICOLON glslExpression?
     ;
 
 glslJumpStatement

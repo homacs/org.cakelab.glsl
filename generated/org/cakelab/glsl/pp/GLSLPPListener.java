@@ -308,15 +308,15 @@ public interface GLSLPPListener extends ParseTreeListener {
 	 */
 	void exitGlslFieldSelection(GLSLPPParser.GlslFieldSelectionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLPPParser#glslVariableIdentifier}.
+	 * Enter a parse tree produced by {@link GLSLPPParser#glslIdentifier}.
 	 * @param ctx the parse tree
 	 */
-	void enterGlslVariableIdentifier(GLSLPPParser.GlslVariableIdentifierContext ctx);
+	void enterGlslIdentifier(GLSLPPParser.GlslIdentifierContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GLSLPPParser#glslVariableIdentifier}.
+	 * Exit a parse tree produced by {@link GLSLPPParser#glslIdentifier}.
 	 * @param ctx the parse tree
 	 */
-	void exitGlslVariableIdentifier(GLSLPPParser.GlslVariableIdentifierContext ctx);
+	void exitGlslIdentifier(GLSLPPParser.GlslIdentifierContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GLSLPPParser#glslTypeName}.
 	 * @param ctx the parse tree
@@ -327,6 +327,16 @@ public interface GLSLPPListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitGlslTypeName(GLSLPPParser.GlslTypeNameContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLPPParser#glslVariableIdentifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslVariableIdentifier(GLSLPPParser.GlslVariableIdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLPPParser#glslVariableIdentifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslVariableIdentifier(GLSLPPParser.GlslVariableIdentifierContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GLSLPPParser#glslFunctionName}.
 	 * @param ctx the parse tree
@@ -598,6 +608,16 @@ public interface GLSLPPListener extends ParseTreeListener {
 	 */
 	void exitGlslAssignmentExpression(GLSLPPParser.GlslAssignmentExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link GLSLPPParser#glslLValue}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslLValue(GLSLPPParser.GlslLValueContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLPPParser#glslLValue}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslLValue(GLSLPPParser.GlslLValueContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link GLSLPPParser#glslAssignmentOperator}.
 	 * @param ctx the parse tree
 	 */
@@ -648,16 +668,6 @@ public interface GLSLPPListener extends ParseTreeListener {
 	 */
 	void exitGlslTypeSpecifier(GLSLPPParser.GlslTypeSpecifierContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLPPParser#glslArrayDimensionsList}.
-	 * @param ctx the parse tree
-	 */
-	void enterGlslArrayDimensionsList(GLSLPPParser.GlslArrayDimensionsListContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GLSLPPParser#glslArrayDimensionsList}.
-	 * @param ctx the parse tree
-	 */
-	void exitGlslArrayDimensionsList(GLSLPPParser.GlslArrayDimensionsListContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link GLSLPPParser#glslArrayDimension}.
 	 * @param ctx the parse tree
 	 */
@@ -698,15 +708,15 @@ public interface GLSLPPListener extends ParseTreeListener {
 	 */
 	void exitGlslStructSpecifier(GLSLPPParser.GlslStructSpecifierContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLPPParser#glslStructMemberList}.
+	 * Enter a parse tree produced by {@link GLSLPPParser#glslStructBody}.
 	 * @param ctx the parse tree
 	 */
-	void enterGlslStructMemberList(GLSLPPParser.GlslStructMemberListContext ctx);
+	void enterGlslStructBody(GLSLPPParser.GlslStructBodyContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GLSLPPParser#glslStructMemberList}.
+	 * Exit a parse tree produced by {@link GLSLPPParser#glslStructBody}.
 	 * @param ctx the parse tree
 	 */
-	void exitGlslStructMemberList(GLSLPPParser.GlslStructMemberListContext ctx);
+	void exitGlslStructBody(GLSLPPParser.GlslStructBodyContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GLSLPPParser#glslStructMemberGroup}.
 	 * @param ctx the parse tree

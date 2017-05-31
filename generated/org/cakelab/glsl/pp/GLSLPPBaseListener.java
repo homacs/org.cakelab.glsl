@@ -376,13 +376,13 @@ public class GLSLPPBaseListener implements GLSLPPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslVariableIdentifier(GLSLPPParser.GlslVariableIdentifierContext ctx) { }
+	@Override public void enterGlslIdentifier(GLSLPPParser.GlslIdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGlslVariableIdentifier(GLSLPPParser.GlslVariableIdentifierContext ctx) { }
+	@Override public void exitGlslIdentifier(GLSLPPParser.GlslIdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -395,6 +395,18 @@ public class GLSLPPBaseListener implements GLSLPPListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitGlslTypeName(GLSLPPParser.GlslTypeNameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGlslVariableIdentifier(GLSLPPParser.GlslVariableIdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslVariableIdentifier(GLSLPPParser.GlslVariableIdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -724,6 +736,18 @@ public class GLSLPPBaseListener implements GLSLPPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterGlslLValue(GLSLPPParser.GlslLValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslLValue(GLSLPPParser.GlslLValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterGlslAssignmentOperator(GLSLPPParser.GlslAssignmentOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -784,18 +808,6 @@ public class GLSLPPBaseListener implements GLSLPPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslArrayDimensionsList(GLSLPPParser.GlslArrayDimensionsListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGlslArrayDimensionsList(GLSLPPParser.GlslArrayDimensionsListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterGlslArrayDimension(GLSLPPParser.GlslArrayDimensionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -844,13 +856,13 @@ public class GLSLPPBaseListener implements GLSLPPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslStructMemberList(GLSLPPParser.GlslStructMemberListContext ctx) { }
+	@Override public void enterGlslStructBody(GLSLPPParser.GlslStructBodyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGlslStructMemberList(GLSLPPParser.GlslStructMemberListContext ctx) { }
+	@Override public void exitGlslStructBody(GLSLPPParser.GlslStructBodyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

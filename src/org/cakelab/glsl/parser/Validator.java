@@ -3,7 +3,6 @@ package org.cakelab.glsl.parser;
 import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.cakelab.glsl.ast.Array;
 import org.cakelab.glsl.ast.Expression;
@@ -16,26 +15,24 @@ import org.cakelab.glsl.ast.Struct;
 import org.cakelab.glsl.ast.Type;
 import org.cakelab.glsl.ast.Variable;
 import org.cakelab.glsl.parser.GLSLParser.GlslArrayDimensionContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslArrayDimensionsListContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslBlockStructureContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslFunctionHeaderContext;
 import org.cakelab.glsl.parser.GLSLParser.GlslFunctionNameContext;
 import org.cakelab.glsl.parser.GLSLParser.GlslFunctionNameListContext;
+import org.cakelab.glsl.parser.GLSLParser.GlslFunctionPrototypeContext;
+import org.cakelab.glsl.parser.GLSLParser.GlslInterfaceBlockStructureContext;
 import org.cakelab.glsl.parser.GLSLParser.GlslLayoutQualifierContext;
 import org.cakelab.glsl.parser.GLSLParser.GlslLayoutQualifierIdContext;
 import org.cakelab.glsl.parser.GLSLParser.GlslSingleTypeQualifierContext;
 import org.cakelab.glsl.parser.GLSLParser.GlslStorageQualifierContext;
+import org.cakelab.glsl.parser.GLSLParser.GlslStructBodyContext;
 import org.cakelab.glsl.parser.GLSLParser.GlslStructMemberDeclaratorContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslStructMemberDeclaratorListContext;
 import org.cakelab.glsl.parser.GLSLParser.GlslStructMemberGroupContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslStructMemberListContext;
 import org.cakelab.glsl.parser.GLSLParser.GlslStructSpecifierContext;
 import org.cakelab.glsl.parser.GLSLParser.GlslTypeQualifierContext;
 import org.cakelab.glsl.parser.GLSLParser.GlslTypeSpecifierContext;
 import org.cakelab.glsl.parser.GLSLParser.GlslTypeSpecifierNonarrayContext;
 
 
-public class Validator {
+public class Validator extends GLSLBaseListener {
 	
 	private Scope scope;
 	
@@ -57,8 +54,9 @@ public class Validator {
 		scope = scope.getParent();
 	}
 
-	public void addDeclaredStruct(org.cakelab.glsl.parser.GLSLParser.GlslStructSpecifierContext context) throws RecognitionException {
-		// STRUCT IDENTIFIER
+	@Override
+	public void exitGlslStructSpecifier(GlslStructSpecifierContext context) {
+		// STRUCT IDENTIFIER? structBody
 		String name = getStructIdentifier(context);
 		if (name != null && name.length() > 0) {
 			if (istype(name)) throw new Error("type '" + name + "' already exists.");
@@ -68,10 +66,20 @@ public class Validator {
 		}
 	}
 	
+	@Override
+	public void exitGlslInterfaceBlockStructure(GlslInterfaceBlockStructureContext context) {
+		// qualifiers IDENTIFIER strcutBody
+		// (second position)
+		String name = context.getChild(1).getText();
+		if (istype(name)) throw new Error("type '" + name + "' already exists.");
+		InterfaceBlock block = new InterfaceBlock(scope, name);
+		addDeclaredType(name, block);
+	}
+	
 	private Struct createStruct(String name, GlslStructSpecifierContext context) {
 		Struct struct = new Struct(scope, name);
 		
-		GlslStructMemberListContext members = context.glslStructMemberList();
+		GlslStructBodyContext members = context.glslStructBody();
 		List<GlslStructMemberGroupContext> groups = members.glslStructMemberGroup();
 		for (GlslStructMemberGroupContext group : groups) {
 			addMembers(struct, group);
@@ -89,7 +97,7 @@ public class Validator {
 			String memberName = m.IDENTIFIER().getText();
 			Type memberType = basetype;
 			
-			GlslArrayDimensionsListContext arrayDims = m.glslArrayDimensionsList();
+			List<GlslArrayDimensionContext> arrayDims = m.glslArrayDimension();
 			if (arrayDims != null) {
 				memberType = createArrayType(memberType, arrayDims);
 			}
@@ -128,7 +136,7 @@ public class Validator {
 		}
 
 
-		GlslArrayDimensionsListContext arrayDims = context.glslArrayDimensionsList();
+		List<GlslArrayDimensionContext> arrayDims = context.glslArrayDimension();
 		
 		if (arrayDims != null) {
 			type = createArrayType(type, arrayDims);
@@ -140,9 +148,6 @@ public class Validator {
 
 	private String getStructIdentifier(GlslStructSpecifierContext context) {
 		TerminalNode ident = context.IDENTIFIER();
-		if (ident == null) {
-			ident = context.TYPE_NAME();
-		}
 		if (ident != null) {
 			return ident.getText();
 		} else {
@@ -150,11 +155,10 @@ public class Validator {
 		}
 	}
 
-	private Type createArrayType(Type type, GlslArrayDimensionsListContext arrayDims) {
-		List<GlslArrayDimensionContext> dcontext = arrayDims.glslArrayDimension();
+	private Type createArrayType(Type type, List<GlslArrayDimensionContext> dcontext) {
 		Expression[] dimensions = new Expression[dcontext.size()];
 		for (int i = 0; i < dimensions.length; i++) {
-			dimensions[i] = new Expression(dcontext.get(i).glslConstantExpression().getText());
+			dimensions[i] = new Expression(dcontext.get(i).glslIntegerExpression().getText());
 		}
 
 		type = new Array(type, dimensions);
@@ -214,16 +218,7 @@ public class Validator {
 		return Qualifier.get(context.getText());
 	}
 
-	public void addDeclaredInterfaceBlock(GlslBlockStructureContext context) {
-		// qualifiers IDENTIFIER ..
-		// (second position)
-		String name = context.getChild(1).getText();
-		if (istype(name)) throw new Error("type '" + name + "' already exists.");
-		InterfaceBlock block = new InterfaceBlock(scope, name);
-		addDeclaredType(name, block);
-	}
-	
-	public void addDeclaredFunction(GlslFunctionHeaderContext context) {
+	public void addDeclaredFunction(GlslFunctionPrototypeContext context) {
 		// typeSpecifier IDENTIFIER ..
 		// (second position)
 		addDeclaredFunction(context.getChild(1).getText(), null);

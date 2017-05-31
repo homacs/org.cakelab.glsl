@@ -60,25 +60,24 @@ public class TestStruct extends TestBaseGLSL {
 				+ "  int a;"
 				+ "  float b;"
 				+ "  bool c;"
-				+ "} x";
-		assertValid(p(source).glslSingleDeclaration(), expected);
+				+ "} x;";
+		assertValid(p(source).glslDeclaration(), expected);
 
 		source = "struct boo {"
 				+ "  int a;"
 				+ "  float b;"
 				+ "  bool c;"
-				+ "} x[4]";
-		assertValid(p(source).glslSingleDeclaration(), expected);
+				+ "} x[4];";
+		assertValid(p(source).glslDeclaration(), expected);
 
 	}
 
 	private static void testStructPrototype() {
 		String source;
 		Class<? extends ParseTree> expected = GlslStructSpecifierContext.class;
-		
 		// apparently not allowed in glsl
-		source = "struct boo";
-		assertInvalid(p(source).glslSingleDeclaration(), expected);
+		source = "struct boo;";
+		assertInvalid(p(source).glslDeclaration(), expected);
 
 	}
 

@@ -191,17 +191,23 @@ public interface GLSLPPVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGlslFieldSelection(GLSLPPParser.GlslFieldSelectionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GLSLPPParser#glslVariableIdentifier}.
+	 * Visit a parse tree produced by {@link GLSLPPParser#glslIdentifier}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGlslVariableIdentifier(GLSLPPParser.GlslVariableIdentifierContext ctx);
+	T visitGlslIdentifier(GLSLPPParser.GlslIdentifierContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GLSLPPParser#glslTypeName}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitGlslTypeName(GLSLPPParser.GlslTypeNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GLSLPPParser#glslVariableIdentifier}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGlslVariableIdentifier(GLSLPPParser.GlslVariableIdentifierContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GLSLPPParser#glslFunctionName}.
 	 * @param ctx the parse tree
@@ -365,6 +371,12 @@ public interface GLSLPPVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGlslAssignmentExpression(GLSLPPParser.GlslAssignmentExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link GLSLPPParser#glslLValue}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGlslLValue(GLSLPPParser.GlslLValueContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link GLSLPPParser#glslAssignmentOperator}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -395,12 +407,6 @@ public interface GLSLPPVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGlslTypeSpecifier(GLSLPPParser.GlslTypeSpecifierContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GLSLPPParser#glslArrayDimensionsList}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGlslArrayDimensionsList(GLSLPPParser.GlslArrayDimensionsListContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link GLSLPPParser#glslArrayDimension}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -425,11 +431,11 @@ public interface GLSLPPVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGlslStructSpecifier(GLSLPPParser.GlslStructSpecifierContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GLSLPPParser#glslStructMemberList}.
+	 * Visit a parse tree produced by {@link GLSLPPParser#glslStructBody}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGlslStructMemberList(GLSLPPParser.GlslStructMemberListContext ctx);
+	T visitGlslStructBody(GLSLPPParser.GlslStructBodyContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GLSLPPParser#glslStructMemberGroup}.
 	 * @param ctx the parse tree
