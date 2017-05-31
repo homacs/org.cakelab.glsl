@@ -1,6 +1,7 @@
 package org.cakelab.glsl.ast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class Scope {
@@ -8,22 +9,20 @@ public class Scope {
 		Builtin() {
 			super(null);
 			for (Type t : Type.BUILTIN_TYPES) {
-				types.put(t.name, t);
+				types.put(t.signature, t);
 			}
 			for (Function f : Function.BUILTIN_FUNCTIONS) {
-				functions.put(f.name, f);
+				super.addFunction(f.name, f);
 			}
 		}
 	}
 
 	public static final Scope BUILTIN_SCOPE = new Builtin();
 	
-	
-	
 	Scope parent;
 	ArrayList<Scope> children = new ArrayList<Scope>();
 	
-	HashMap<String, Function> functions = new HashMap<String, Function>();
+	HashMap<String, ArrayList<Function>> functions = new HashMap<String, ArrayList<Function>>();
 	HashMap<String, Variable> variables = new HashMap<String, Variable>();
 	HashMap<String, Type> types = new HashMap<String, Type>();
 	
@@ -61,6 +60,29 @@ public class Scope {
 		return false;
 	}
 
+	public Type getType(String signature) {
+		Type t = types.get(signature);
+		if (t != null) {
+			return t;
+		} else if (parent != null) {
+			return parent.getType(signature);
+		} else {
+			return null;
+		}
+	}
+
+
+	public Function getFunction(String name) {
+		ArrayList<Function> group = functions.get(name);
+		if (group != null) {
+			return group.get(0);
+		}
+		else if (parent != null) return getFunction(name);
+		else return null;
+	}
+	
+
+	
 	public void add(Scope child) {
 		children.add(child);
 	}
@@ -70,7 +92,19 @@ public class Scope {
 	}
 
 	public void addFunction(String name, Function func) {
-		functions.put(name, func);
+		ArrayList<Function> functionGroup = functions.get(name);
+		if (functionGroup == null) {
+			functionGroup = new ArrayList<Function>(1);
+			functions.put(name, functionGroup);
+		}
+		
+		int i = Collections.binarySearch(functionGroup, func);
+		if (i >= 0) {
+			// exists
+		} else {
+			i = (-(i) - 1);
+			functionGroup.add(i, func);
+		}
 	}
 
 	public void addVariable(String name, Variable var) {
@@ -84,6 +118,6 @@ public class Scope {
 	public ArrayList<Scope> getChildren() {
 		return children;
 	}
-	
+
 
 }

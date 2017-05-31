@@ -1,10 +1,28 @@
 package org.cakelab.glsl.ast;
 
+import java.util.HashMap;
+
 public class Qualifier {
 	public static class LayoutQualifier extends Qualifier {
-		final Expression[] layoutParams;
+		public static class Parameter {
+			String name;
+			String value;
+			
+			public Parameter(String name, String value) {
+				this.name = name;
+				this.value = value;
+				
+			}
 
-		public LayoutQualifier(Expression[] layoutParams) {
+			public Parameter(String name) {
+				this.name = name;
+			}
+
+			public static Parameter SHARED = new Parameter("shared");
+		}
+		final Parameter[] layoutParams;
+
+		public LayoutQualifier(Parameter[] layoutParams) {
 			super(LAYOUT);
 			this.layoutParams = layoutParams;
 		}
@@ -41,7 +59,7 @@ public class Qualifier {
 	public static String LAYOUT = "layout";
 	public static String LAYOUT_SHARED = "shared";
 	
-	public static Qualifier _layout(Expression[] layoutParams) {
+	public static Qualifier _layout(LayoutQualifier.Parameter[] layoutParams) {
 		return new LayoutQualifier(layoutParams);
 	}
 	
@@ -81,5 +99,59 @@ public class Qualifier {
 	public static Qualifier _highp = new Qualifier("highp");
 	public static Qualifier _mediump = new Qualifier("mediump");
 	public static Qualifier _lowp = new Qualifier("lowp");
+
+	
+	static HashMap<String, Qualifier> byname = new HashMap<String, Qualifier>();
+	static {
+
+		byname.put("invariant", _invariant);
+
+		//
+		// Interpolation
+		//
+		byname.put("smooth", _smooth);
+		byname.put("flat", _flat);
+		byname.put("noperspective", _noperspective);
+		
+		
+		
+		//
+		// precise
+		//
+		byname.put("precise", _precise);
+		
+		//
+		// Storage qualifiers
+		//
+		byname.put("const", _const);
+		byname.put("attribute", _attribute);
+		byname.put("varying", _varying);
+		byname.put("inout", _inout);
+		byname.put("in", _in);
+		byname.put("out", _out);
+		byname.put("centroid", _centroid);
+		byname.put("patch", _patch);
+		byname.put("sample", _sample);
+		byname.put("uniform", _uniform);
+		byname.put("buffer", _buffer);
+		byname.put("shared", _shared);
+		byname.put("coherent", _coherent);
+		byname.put("volatile", _volatile);
+		byname.put("restrict", _restrict);
+		byname.put("readonly", _readonly);
+		byname.put("writeonly", _writeonly);
+		
+		//
+		// precision qualifier
+		//
+		byname.put("highp", _highp);
+		byname.put("mediump", _mediump);
+		byname.put("lowp", _lowp);
+
+	}
+	
+	public static Qualifier get(String name) {
+		return byname.get(name);
+	}
 
 }

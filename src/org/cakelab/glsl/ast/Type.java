@@ -1,31 +1,82 @@
 package org.cakelab.glsl.ast;
 
-public class Type {
+/** 
+ * Type has a signature instead of a name.
+ * Signature is the fully specified type name 
+ * (e.g. 'int[]' or 'void', but not 'int[3]').
+ * 
+ * There is always just one type of certain 
+ * signature in the same scope.
+ * 
+ * A qualified type is a type with one basic 
+ * type and qualifiers. The basic type of a 
+ * qualified type can be of non-qualified type 
+ * only. Qualified types have the signature of
+ * their basic type.
+ * 
+ * @author homac
+ *
+ */
+public class Type implements Comparable<Type> {
 
-	public static class QualifiedType extends Type {
-		final Qualifier[] qualifiers;
+	public interface QualifiedType {
+		Qualifier[] qualifiers();
+	}
+
+
+	public static class QualifiedTypeImpl extends Type implements QualifiedType {
+		private final Qualifier[] qualifiers;
 		
-		public QualifiedType(Type type, Qualifier ... qualifiers) {
+		public QualifiedTypeImpl(Type type, Qualifier ... qualifiers) {
 			super(type);
+			if (type instanceof QualifiedType) {
+				throw new Error("can't add qualifiers to qualified type.");
+			}
 			this.qualifiers = qualifiers;
 		}
-		
+
+		@Override
+		public Qualifier[] qualifiers() {
+			return qualifiers;
+		}
+
 	}
 	
 	
-	final String name;
-
+	
+	/** Signature is the fully specified type name (e.g. 'int[]' or 'void' but not 'int[3]'). */
+	final String signature;
+	
+	
 	public Type(String name) {
-		this.name = name;
+		this.signature = name;
 	}
 
 	
-	public Type(Type type) {
-		this.name = type.name;
+	public Type(Type that) {
+		this.signature = that.signature;
 	}
 
-	public static QualifiedType _qualified(Type type, Qualifier ... qualifiers) {
-		return new QualifiedType(type, qualifiers);
+
+	/** comparison of type basically compares their signatures. */
+	@Override
+	public int compareTo(Type that) {
+		if (this == that) return 0;
+		if (that == null) return +1;
+
+		int result = this.signature.compareTo(that.signature);
+		if (result != 0) return result;
+		
+		return 0;
+	}
+	
+	
+	public static Type _qualified(Type type, Qualifier ... qualifiers) {
+		if (type.getClass() == Array.class) return new Array.QualifiedArrayImpl((Array)type, qualifiers);
+		else if (type.getClass() == Struct.class) return new Struct.QualifiedStructImpl((Struct)type, qualifiers);
+		else if (type.getClass() == InterfaceBlock.class) return new InterfaceBlock.QualifiedInterfaceBlockImpl((InterfaceBlock)type, qualifiers);
+		else if (type.getClass() == Type.class) return new QualifiedTypeImpl(type, qualifiers);
+		else throw new Error("unexpected type of qualified type '" + type.getClass().getCanonicalName() + "'");
 	}
 
 	public static Type _void = new Type("void");

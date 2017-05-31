@@ -5,7 +5,7 @@ public class Variable {
 	String name;
 	
 	public Variable(Type type, String name, Qualifier ... qualifiers) {
-		this.type = new Type.QualifiedType(type, qualifiers);
+		this.type = Type._qualified(type, qualifiers);
 		this.name = name;
 	}
 

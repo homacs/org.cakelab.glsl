@@ -4,7 +4,7 @@ package org.cakelab.glsl.ast;
 import static org.cakelab.glsl.ast.Type.*;
 import static org.cakelab.glsl.ast.Qualifier.*;
 
-public class Function {
+public class Function implements Comparable<Function>{
 
 	public static class Body extends Scope {
 		public Body(Scope parent, Parameter[] parameters) {
@@ -21,7 +21,26 @@ public class Function {
 	final String name;
 	final Parameter[] parameters;
 	Body body;
+	
+	@Override
+	public int compareTo(Function that) {
+		int result = this.name.compareTo(that.name);
+		
+		if (result != 0) return result;
+		
+		result = this.parameters.length - that.parameters.length;
+		if (result != 0) return result;
+		
+		for (int i = 0; i < parameters.length; i++) {
+			Parameter p = that.parameters[i];
+			result = p.type.compareTo(parameters[i].type);
+			if (result != 0) return result;
+		}
+		return 0;
+	}
+	
 
+	
 	public Function(Type type, String name, Parameter ... parameters) {
 		this.type = type;
 		this.name = name;
@@ -742,7 +761,9 @@ public class Function {
 		new Function(_ivec2, "findMSB", new Parameter(_uvec2)),
 		new Function(_ivec3, "findMSB", new Parameter(_uvec3)),
 		new Function(_ivec4, "findMSB", new Parameter(_uvec4)),
+		
+		// TODO: list of builtin functions unfinished
     };
-	
+
 	
 }
