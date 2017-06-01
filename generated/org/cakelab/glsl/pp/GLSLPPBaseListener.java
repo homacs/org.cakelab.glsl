@@ -508,30 +508,6 @@ public class GLSLPPBaseListener implements GLSLPPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslConstructorCallArguments(GLSLPPParser.GlslConstructorCallArgumentsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGlslConstructorCallArguments(GLSLPPParser.GlslConstructorCallArgumentsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterGlslFunctionCallArguments(GLSLPPParser.GlslFunctionCallArgumentsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGlslFunctionCallArguments(GLSLPPParser.GlslFunctionCallArgumentsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterGlslCallArguments(GLSLPPParser.GlslCallArgumentsContext ctx) { }
 	/**
 	 * {@inheritDoc}

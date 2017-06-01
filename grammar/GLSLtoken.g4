@@ -100,24 +100,29 @@ UINTCONSTANT: NUMBER [uU][lL]?;
 
 
 CHARACTER_CONSTANT
-	: '\'' C_CHAR_SEQUENCE '\''
+	: '\'' C_CHAR_SEQUENCE '\''{preprocessing}?
 ;
 
 PREFIXED_CHARACTER_CONSTANT
-	: 'L' '\'' C_CHAR_SEQUENCE '\''
-	| 'u' '\'' C_CHAR_SEQUENCE '\''
-	| 'U' '\'' C_CHAR_SEQUENCE '\''
+	: 'L' '\'' C_CHAR_SEQUENCE '\''{preprocessing}?
+	| 'u' '\'' C_CHAR_SEQUENCE '\''{preprocessing}?
+	| 'U' '\'' C_CHAR_SEQUENCE '\''{preprocessing}?
 ;
 
 STRING_LITERAL
-	: '"' S_CHAR_SEQUENCE? '"'
+	: '"' S_CHAR_SEQUENCE? '"'{preprocessing}?
 ;
+/** for include of standard headers. 
+ * TODO: WARNING: this conflicts with conditional and shift 
+ * expressions such as (a < b > c) where < b > will 
+ * be lexed as a STD_HEADER_NAME token!
+ */
 STD_HEADER_NAME:
-	LEFT_ANGLE S_CHAR_SEQUENCE RIGHT_ANGLE
+	LEFT_ANGLE S_CHAR_SEQUENCE RIGHT_ANGLE {preprocessing}?
 ;
 
 PREFIXED_STRING_LITERAL
-	: ENCODING_PREFIX '"' S_CHAR_SEQUENCE? '"'
+	: ENCODING_PREFIX '"' S_CHAR_SEQUENCE? '"' {preprocessing}?
 ;
 
 LEFT_OP: '<<';
@@ -132,7 +137,7 @@ AND_OP: '&&';
 OR_OP: '||';
 XOR_OP: '^^';
 MUL_ASSIGN: '*=';
-DIV_ASSIGN: '\\=';
+DIV_ASSIGN: '/=';
 ADD_ASSIGN: '+=';
 MOD_ASSIGN: '%=';
 LEFT_ASSIGN: '<<=';

@@ -418,26 +418,6 @@ public interface GLSLPPListener extends ParseTreeListener {
 	 */
 	void exitGlslPostfixExpression(GLSLPPParser.GlslPostfixExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLPPParser#glslConstructorCallArguments}.
-	 * @param ctx the parse tree
-	 */
-	void enterGlslConstructorCallArguments(GLSLPPParser.GlslConstructorCallArgumentsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GLSLPPParser#glslConstructorCallArguments}.
-	 * @param ctx the parse tree
-	 */
-	void exitGlslConstructorCallArguments(GLSLPPParser.GlslConstructorCallArgumentsContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GLSLPPParser#glslFunctionCallArguments}.
-	 * @param ctx the parse tree
-	 */
-	void enterGlslFunctionCallArguments(GLSLPPParser.GlslFunctionCallArgumentsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GLSLPPParser#glslFunctionCallArguments}.
-	 * @param ctx the parse tree
-	 */
-	void exitGlslFunctionCallArguments(GLSLPPParser.GlslFunctionCallArgumentsContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link GLSLPPParser#glslCallArguments}.
 	 * @param ctx the parse tree
 	 */

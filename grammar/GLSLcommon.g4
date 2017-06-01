@@ -113,15 +113,7 @@ glslPostfixExpression
     | glslPostfixExpression INC_OP
     | glslPostfixExpression DEC_OP
     ;
-    
-glslConstructorCallArguments
-	: glslCallArguments
-	;
-
-glslFunctionCallArguments
-	: glslCallArguments
-	;
-    
+   
 /**
  * Arguments to function or constructor call.
  */
@@ -411,7 +403,7 @@ glslBuiltinType
  * Grammar Note: Anonymous structs are actually 
  * disallow (see GLSL spec.), but have been considered in the reference
  * implementation. We keep it here for reference but will
- * identify them as error in semantic analysis.
+ * report them as warning in semantic analysis.
  */
 glslStructSpecifier
     : STRUCT            glslStructBody

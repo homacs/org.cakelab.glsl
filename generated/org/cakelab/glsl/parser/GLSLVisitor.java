@@ -287,18 +287,6 @@ public interface GLSLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGlslPostfixExpression(GLSLParser.GlslPostfixExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GLSLParser#glslConstructorCallArguments}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGlslConstructorCallArguments(GLSLParser.GlslConstructorCallArgumentsContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link GLSLParser#glslFunctionCallArguments}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGlslFunctionCallArguments(GLSLParser.GlslFunctionCallArgumentsContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link GLSLParser#glslCallArguments}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

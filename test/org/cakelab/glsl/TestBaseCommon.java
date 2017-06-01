@@ -257,6 +257,7 @@ public class TestBaseCommon {
 			if (parser instanceof GLSLParser) {
 				((GLSLParser)parser).setValidator(validator);
 				((GLSLLexer)lexer).setValidator(validator);
+				((GLSLLexer)lexer).preprocessing = false;
 			} else {
 				((GLSLPPParser)parser).setValidator(validator);
 				((GLSLPPLexer)lexer).setValidator(validator);
