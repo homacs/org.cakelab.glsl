@@ -40,6 +40,18 @@ public class GLSLBaseListener implements GLSLListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterGlslDeclarationStatement(GLSLParser.GlslDeclarationStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslDeclarationStatement(GLSLParser.GlslDeclarationStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterGlslTypePrecisionDeclaration(GLSLParser.GlslTypePrecisionDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -148,30 +160,6 @@ public class GLSLBaseListener implements GLSLListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslInitializerList(GLSLParser.GlslInitializerListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGlslInitializerList(GLSLParser.GlslInitializerListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterGlslDeclarationStatement(GLSLParser.GlslDeclarationStatementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGlslDeclarationStatement(GLSLParser.GlslDeclarationStatementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterGlslStatement(GLSLParser.GlslStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -208,54 +196,6 @@ public class GLSLBaseListener implements GLSLListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslStatementNoNewScope(GLSLParser.GlslStatementNoNewScopeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGlslStatementNoNewScope(GLSLParser.GlslStatementNoNewScopeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterGlslStatementScoped(GLSLParser.GlslStatementScopedContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGlslStatementScoped(GLSLParser.GlslStatementScopedContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterGlslCompoundStatementNoNewScope(GLSLParser.GlslCompoundStatementNoNewScopeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGlslCompoundStatementNoNewScope(GLSLParser.GlslCompoundStatementNoNewScopeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterGlslStatementList(GLSLParser.GlslStatementListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGlslStatementList(GLSLParser.GlslStatementListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterGlslExpressionStatement(GLSLParser.GlslExpressionStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -268,37 +208,25 @@ public class GLSLBaseListener implements GLSLListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslSelectionStatement(GLSLParser.GlslSelectionStatementContext ctx) { }
+	@Override public void enterGlslIfStatement(GLSLParser.GlslIfStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGlslSelectionStatement(GLSLParser.GlslSelectionStatementContext ctx) { }
+	@Override public void exitGlslIfStatement(GLSLParser.GlslIfStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslSelectionRestStatement(GLSLParser.GlslSelectionRestStatementContext ctx) { }
+	@Override public void enterGlslNonIfStatement(GLSLParser.GlslNonIfStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGlslSelectionRestStatement(GLSLParser.GlslSelectionRestStatementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterGlslCondition(GLSLParser.GlslConditionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGlslCondition(GLSLParser.GlslConditionContext ctx) { }
+	@Override public void exitGlslNonIfStatement(GLSLParser.GlslNonIfStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -316,61 +244,73 @@ public class GLSLBaseListener implements GLSLListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslSwitchStatementList(GLSLParser.GlslSwitchStatementListContext ctx) { }
+	@Override public void enterGlslSwitchSubStatement(GLSLParser.GlslSwitchSubStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGlslSwitchStatementList(GLSLParser.GlslSwitchStatementListContext ctx) { }
+	@Override public void exitGlslSwitchSubStatement(GLSLParser.GlslSwitchSubStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslCaseLabel(GLSLParser.GlslCaseLabelContext ctx) { }
+	@Override public void enterGlslCondition(GLSLParser.GlslConditionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGlslCaseLabel(GLSLParser.GlslCaseLabelContext ctx) { }
+	@Override public void exitGlslCondition(GLSLParser.GlslConditionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslIterationStatement(GLSLParser.GlslIterationStatementContext ctx) { }
+	@Override public void enterGlslWhileStatement(GLSLParser.GlslWhileStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGlslIterationStatement(GLSLParser.GlslIterationStatementContext ctx) { }
+	@Override public void exitGlslWhileStatement(GLSLParser.GlslWhileStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslForInitStatement(GLSLParser.GlslForInitStatementContext ctx) { }
+	@Override public void enterGlslDoWhileStatement(GLSLParser.GlslDoWhileStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGlslForInitStatement(GLSLParser.GlslForInitStatementContext ctx) { }
+	@Override public void exitGlslDoWhileStatement(GLSLParser.GlslDoWhileStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslForRestStatement(GLSLParser.GlslForRestStatementContext ctx) { }
+	@Override public void enterGlslForStatement(GLSLParser.GlslForStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGlslForRestStatement(GLSLParser.GlslForRestStatementContext ctx) { }
+	@Override public void exitGlslForStatement(GLSLParser.GlslForStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGlslForInitExpression(GLSLParser.GlslForInitExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslForInitExpression(GLSLParser.GlslForInitExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

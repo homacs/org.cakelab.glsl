@@ -23,6 +23,12 @@ public interface GLSLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGlslDeclaration(GLSLParser.GlslDeclarationContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link GLSLParser#glslDeclarationStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGlslDeclarationStatement(GLSLParser.GlslDeclarationStatementContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link GLSLParser#glslTypePrecisionDeclaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -77,18 +83,6 @@ public interface GLSLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGlslInitializer(GLSLParser.GlslInitializerContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GLSLParser#glslInitializerList}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGlslInitializerList(GLSLParser.GlslInitializerListContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link GLSLParser#glslDeclarationStatement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGlslDeclarationStatement(GLSLParser.GlslDeclarationStatementContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link GLSLParser#glslStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -107,53 +101,23 @@ public interface GLSLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGlslCompoundStatement(GLSLParser.GlslCompoundStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GLSLParser#glslStatementNoNewScope}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGlslStatementNoNewScope(GLSLParser.GlslStatementNoNewScopeContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link GLSLParser#glslStatementScoped}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGlslStatementScoped(GLSLParser.GlslStatementScopedContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link GLSLParser#glslCompoundStatementNoNewScope}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGlslCompoundStatementNoNewScope(GLSLParser.GlslCompoundStatementNoNewScopeContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link GLSLParser#glslStatementList}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGlslStatementList(GLSLParser.GlslStatementListContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link GLSLParser#glslExpressionStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitGlslExpressionStatement(GLSLParser.GlslExpressionStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GLSLParser#glslSelectionStatement}.
+	 * Visit a parse tree produced by {@link GLSLParser#glslIfStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGlslSelectionStatement(GLSLParser.GlslSelectionStatementContext ctx);
+	T visitGlslIfStatement(GLSLParser.GlslIfStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GLSLParser#glslSelectionRestStatement}.
+	 * Visit a parse tree produced by {@link GLSLParser#glslNonIfStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGlslSelectionRestStatement(GLSLParser.GlslSelectionRestStatementContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link GLSLParser#glslCondition}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGlslCondition(GLSLParser.GlslConditionContext ctx);
+	T visitGlslNonIfStatement(GLSLParser.GlslNonIfStatementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GLSLParser#glslSwitchStatement}.
 	 * @param ctx the parse tree
@@ -161,35 +125,41 @@ public interface GLSLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGlslSwitchStatement(GLSLParser.GlslSwitchStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GLSLParser#glslSwitchStatementList}.
+	 * Visit a parse tree produced by {@link GLSLParser#glslSwitchSubStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGlslSwitchStatementList(GLSLParser.GlslSwitchStatementListContext ctx);
+	T visitGlslSwitchSubStatement(GLSLParser.GlslSwitchSubStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GLSLParser#glslCaseLabel}.
+	 * Visit a parse tree produced by {@link GLSLParser#glslCondition}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGlslCaseLabel(GLSLParser.GlslCaseLabelContext ctx);
+	T visitGlslCondition(GLSLParser.GlslConditionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GLSLParser#glslIterationStatement}.
+	 * Visit a parse tree produced by {@link GLSLParser#glslWhileStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGlslIterationStatement(GLSLParser.GlslIterationStatementContext ctx);
+	T visitGlslWhileStatement(GLSLParser.GlslWhileStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GLSLParser#glslForInitStatement}.
+	 * Visit a parse tree produced by {@link GLSLParser#glslDoWhileStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGlslForInitStatement(GLSLParser.GlslForInitStatementContext ctx);
+	T visitGlslDoWhileStatement(GLSLParser.GlslDoWhileStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GLSLParser#glslForRestStatement}.
+	 * Visit a parse tree produced by {@link GLSLParser#glslForStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGlslForRestStatement(GLSLParser.GlslForRestStatementContext ctx);
+	T visitGlslForStatement(GLSLParser.GlslForStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GLSLParser#glslForInitExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGlslForInitExpression(GLSLParser.GlslForInitExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GLSLParser#glslJumpStatement}.
 	 * @param ctx the parse tree

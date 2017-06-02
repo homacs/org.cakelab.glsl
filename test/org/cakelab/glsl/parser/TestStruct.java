@@ -61,14 +61,14 @@ public class TestStruct extends TestBaseGLSL {
 				+ "  float b;"
 				+ "  bool c;"
 				+ "} x;";
-		assertValid(p(source).glslDeclaration(), expected);
+		assertValid(p(source).glslDeclarationStatement(), expected);
 
 		source = "struct boo {"
 				+ "  int a;"
 				+ "  float b;"
 				+ "  bool c;"
 				+ "} x[4];";
-		assertValid(p(source).glslDeclaration(), expected);
+		assertValid(p(source).glslDeclarationStatement(), expected);
 
 	}
 
@@ -77,7 +77,7 @@ public class TestStruct extends TestBaseGLSL {
 		Class<? extends ParseTree> expected = GlslStructSpecifierContext.class;
 		// apparently not allowed in glsl
 		source = "struct boo;";
-		assertInvalid(p(source).glslDeclaration(), expected);
+		assertInvalid(p(source).glslDeclarationStatement(), expected);
 
 	}
 

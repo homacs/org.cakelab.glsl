@@ -1,5 +1,5 @@
 //
-// This grammar is taken of the reference implementation of
+// This grammar is derived from the reference implementation of
 // a GLSL parser published by the Khronos Group (see 
 // copyright notice below).
 //
@@ -70,19 +70,16 @@ import GLSLcommon, GLSLkeyword, GLSLtoken;
 // Added as main entry point
 //
 glsl
-	: glslTranslationUnit
+	: glslTranslationUnit EOF
 	;
 
 
 
 
 /* Grammar Note: 
- * The following three rules have been introduced to aid 
+ * Declarations with a type qualifier have been changed to aid 
  * semantic analysis in resolving variable or type 
- * qualification declarators:
- * 1. glslVariableQualificationList
- * 2. glslVariableOrTypeQualification
- * 3. glslTypeQualifier glslKnownTypeSpecifier glslVariableDeclarations?
+ * qualification declarators due to the following reason.
  * 
  * GLSL allows to redefine the qualifier
  * for a variable like that:
@@ -97,24 +94,41 @@ glsl
  * identifier is followed by brackets (indicating an array type)
  * or (c) there is no identifier but a builtin type or struct declaration.
  * 
+ * Affected rules have been split up into there respective cases and new
+ * rules (glslTypeName and glslVairableIdentifier) have been added to
+ * differentiate from the rule in question:
+ * 
+ *     glslTypeQualifier glslIdentifier SEMICOLON
+ * 
+ * This rule is now the only one using an unspecified identifier.
+ * Semantic analysis can easily tell, whether the identifier is
+ * a type or variable name to decide whether it is the 
+ * declaration of qualified type or a redefinition of 
+ * the qualifier for a variable.
+ * 
  */    
 
 glslDeclaration
-    : glslTypeQualifier SEMICOLON 
-    | glslTypePrecisionDeclaration SEMICOLON
+    : glslTypeQualifier 
+    | glslTypePrecisionDeclaration
 
-    | glslTypeQualifier glslIdentifier SEMICOLON // semantic analysis has to decide whether identifier is type or variable
+    | glslTypeQualifier glslIdentifier // semantic analysis has to decide whether identifier is type or variable
 
-    | glslTypeQualifier glslVariableIdentifier (COMMA glslVariableIdentifier)+ SEMICOLON
-    | glslTypeQualifier glslTypeName glslVariableDeclarations SEMICOLON
-    | glslTypeQualifier glslTypeName glslArrayDimension+ glslVariableDeclarations? SEMICOLON
-    | glslTypeQualifier glslBuiltinType glslArrayDimension* glslVariableDeclarations? SEMICOLON
-    | glslTypeQualifier glslStructSpecifier glslArrayDimension* glslVariableDeclarations? SEMICOLON
+    | glslTypeQualifier glslVariableIdentifier (COMMA glslVariableIdentifier)+
+    | glslTypeQualifier glslTypeName glslVariableDeclarations
+    | glslTypeQualifier glslTypeName glslArrayDimension+ glslVariableDeclarations?
+    | glslTypeQualifier glslBuiltinType glslArrayDimension* glslVariableDeclarations?
+    | glslTypeQualifier glslStructSpecifier glslArrayDimension* glslVariableDeclarations?
     
-    | glslTypeSpecifier glslVariableDeclarations? SEMICOLON
-    | glslInterfaceBlockStructure (glslVariableIdentifier glslArrayDimension*)? SEMICOLON 
-    | glslFunctionPrototype SEMICOLON 
+    | glslTypeSpecifier glslVariableDeclarations?
+    | glslInterfaceBlockStructure (glslVariableIdentifier glslArrayDimension*)? 
+    | glslFunctionPrototype 
     ;
+
+
+glslDeclarationStatement
+	: glslDeclaration SEMICOLON
+	;
 
     
 glslTypePrecisionDeclaration
@@ -165,145 +179,125 @@ glslFullySpecifiedType
 
 glslInitializer
     : glslAssignmentExpression 
-    | LEFT_BRACE glslInitializerList RIGHT_BRACE 
-    | LEFT_BRACE glslInitializerList COMMA RIGHT_BRACE 
+    | LEFT_BRACE glslInitializer (COMMA glslInitializer)* COMMA? RIGHT_BRACE 
     ;
 
-glslInitializerList
-    : glslInitializer 
-    | glslInitializerList COMMA glslInitializer 
-    ;
-
-glslDeclarationStatement
-    : glslDeclaration 
-    ;
 
 glslStatement
     : glslCompoundStatement  
     | glslSimpleStatement    
     ;
 
-// Grammar Note:  labeled statements for switch statements only; 'goto' is not supported.
-
 glslSimpleStatement
-    : glslDeclarationStatement 
-    | glslExpressionStatement  
-    | glslSelectionStatement   
-    | glslSwitchStatement      
-    | glslCaseLabel            
-    | glslIterationStatement   
-    | glslJumpStatement        
+    : glslDeclarationStatement
+    | glslExpressionStatement
+    | glslIfStatement
+    | glslSwitchStatement
+    | glslWhileStatement
+    | glslDoWhileStatement
+    | glslForStatement
+    | glslJumpStatement
     ;
 
+
+
+
 glslCompoundStatement
-    : LEFT_BRACE RIGHT_BRACE 
-    | LEFT_BRACE
-      glslStatementList 
-      RIGHT_BRACE
+    : LEFT_BRACE glslStatement* RIGHT_BRACE 
+    ;
+	
+glslExpressionStatement
+    : glslExpression? SEMICOLON  
     ;
 
 /**
- * Statement block immediately following 
- * a for loop header or a function prototype. 
- * In this case, either the for loop header 
- * or the function header already established 
- * a new scope. Thus, for example variables
- * will be declared in the same scope as the
- * parameters.
+ * Note: Else-branch is always associated with the last if-branch.
+ * Thus, the statement of the last if-branch cannot be an if-
+ * statement. The new rule 
+ * glslNonIfStatement assembles all statements but the 
+ * if-statement to differentiate those two cases.
+ * 
+ * Without it, ANTLR runs into ambiguous predictions, not knowing 
+ * which if to associate the else branch with (even though it 
+ * just needs to read from left to right ..).
  */
-glslStatementNoNewScope
-    : glslCompoundStatementNoNewScope 
-    | glslSimpleStatement                
-    ;
-
-glslStatementScoped
-    : glslCompoundStatement  
-    | glslSimpleStatement 
+glslIfStatement
+	: IF LEFT_PAREN glslCondition RIGHT_PAREN glslStatement     // e.g.   if(A) /* nothing */ if(B){..} else;
+	| IF LEFT_PAREN glslCondition RIGHT_PAREN glslNonIfStatement ELSE glslStatement // if with else branch
 	;
-	
-glslCompoundStatementNoNewScope
-    // Statement that doesn't create a new scope, for selection_statement, iteration_statement
-    : LEFT_BRACE RIGHT_BRACE 
-    | LEFT_BRACE glslStatementList RIGHT_BRACE 
-    ;
 
-glslStatementList
-    : glslStatement 
-    | glslStatementList glslStatement 
-    ;
+/**
+ * Any statement but if-statement.
+ * 
+ * Used to identify the last if-branch before an else-branch.
+ */
+glslNonIfStatement
+	: glslCompoundStatement
+	| glslDeclarationStatement
+    | glslExpressionStatement
+    | glslSwitchStatement
+    | glslWhileStatement
+    | glslDoWhileStatement
+    | glslForStatement
+    | glslJumpStatement;
 
-glslExpressionStatement
-    : SEMICOLON  
-    | glslExpression SEMICOLON  
-    ;
 
-glslSelectionStatement
-    : IF LEFT_PAREN glslExpression RIGHT_PAREN glslSelectionRestStatement 
-    ;
+glslSwitchStatement
+	: SWITCH LEFT_PAREN glslCondition RIGHT_PAREN LEFT_BRACE glslSwitchSubStatement* RIGHT_BRACE
+	;
 
-glslSelectionRestStatement
-    : glslStatementScoped ELSE glslStatementScoped 
-    | glslStatementScoped 
-    ;
+glslSwitchSubStatement
+	: CASE glslIntegerExpression COLON 
+    | DEFAULT COLON 
+    | glslStatement
+	;
+
 
 glslCondition
     // In 1996 c++ draft, conditions can include single declarations
     : glslExpression 
-    | glslFullySpecifiedType IDENTIFIER EQUAL glslInitializer 
+    | glslFullySpecifiedType glslVariableIdentifier EQUAL glslInitializer 
     ;
 
-glslSwitchStatement
-    : SWITCH LEFT_PAREN glslExpression RIGHT_PAREN 
-    LEFT_BRACE glslSwitchStatementList RIGHT_BRACE 
-    ;
 
-glslSwitchStatementList
-    : /* nothing */ 
-    | glslStatementList 
-    ;
+glslWhileStatement
+	: WHILE LEFT_PAREN glslCondition RIGHT_PAREN glslStatement
+	;
 
-glslCaseLabel
-    : CASE glslExpression COLON 
-    | DEFAULT COLON 
-    ;
+glslDoWhileStatement
+	: DO glslStatement WHILE LEFT_PAREN glslExpression RIGHT_PAREN SEMICOLON 
+	;
+    
+glslForStatement
+	: FOR LEFT_PAREN glslForInitExpression? SEMICOLON glslCondition? SEMICOLON glslExpression? RIGHT_PAREN glslStatement
+	;
 
-glslIterationStatement
-    : WHILE LEFT_PAREN glslCondition RIGHT_PAREN glslStatementNoNewScope 
-    | DO glslStatement WHILE LEFT_PAREN glslExpression RIGHT_PAREN SEMICOLON 
-    | FOR LEFT_PAREN glslForInitStatement glslForRestStatement RIGHT_PAREN glslStatementNoNewScope 
+glslForInitExpression
+    : glslExpression
+    | glslDeclaration
     ;
-
-glslForInitStatement
-    : glslExpressionStatement 
-    | glslDeclarationStatement 
-    ;
-
-glslForRestStatement
-    : glslCondition? SEMICOLON glslExpression?
-    ;
+    
 
 glslJumpStatement
     : CONTINUE SEMICOLON 
     | BREAK SEMICOLON 
-    | RETURN SEMICOLON 
-    | RETURN glslExpression SEMICOLON 
+    | RETURN glslExpression? SEMICOLON 
     | DISCARD SEMICOLON 
     ;
 
 // Grammar Note:  No 'goto'.  Gotos are not supported.
 
 glslTranslationUnit
-    : glslExternalDeclaration+
-    | EOF
+    : glslExternalDeclaration*
     ;
 
 glslExternalDeclaration
     : glslFunctionDefinition 
-    | glslDeclaration 
+    | glslDeclarationStatement 
     ;
 
 glslFunctionDefinition
-    : glslFunctionPrototype glslCompoundStatementNoNewScope 
+    : glslFunctionPrototype glslCompoundStatement
     ;
 
 

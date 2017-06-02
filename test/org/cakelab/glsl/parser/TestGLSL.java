@@ -9,5 +9,6 @@ public class TestGLSL {
 		TestVariable.test();
 		TestFunction.test();
 		TestExpression.test();
+		TestStatement.test();
 	}
 }

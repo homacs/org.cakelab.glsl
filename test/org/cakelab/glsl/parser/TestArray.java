@@ -10,19 +10,19 @@ public class TestArray extends TestBaseGLSL {
 
 	private static void testArrayVariableDeclaration() {
 		
-		assertValid(p("int[] boo;").glslDeclaration());
+		assertValid(p("int[] boo;").glslDeclarationStatement());
 		
-		assertInvalid(p("int x[] boo;").glslDeclaration());
+		assertInvalid(p("int x[] boo;").glslDeclarationStatement());
 		
-		assertValid(p("int boo[];").glslDeclaration());
+		assertValid(p("int boo[];").glslDeclarationStatement());
 		
-		assertValid(p("int boo[3];").glslDeclaration());
+		assertValid(p("int boo[3];").glslDeclarationStatement());
 
 		// common static initialisation
-		assertValid(p("float b[] = { 3.4, 4.2, 5.0, 5.2, 1.1 };").glslDeclaration());
+		assertValid(p("float b[] = { 3.4, 4.2, 5.0, 5.2, 1.1 };").glslDeclarationStatement());
 		
 		// constructor call style initialisation
-		assertValid(p("float a[] = float[](3.4, 4.2, 5.0, 5.2, 1.1);").glslDeclaration());
+		assertValid(p("float a[] = float[](3.4, 4.2, 5.0, 5.2, 1.1);").glslDeclarationStatement());
 	}
 
 }

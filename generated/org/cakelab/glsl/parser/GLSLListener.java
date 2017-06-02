@@ -28,6 +28,16 @@ public interface GLSLListener extends ParseTreeListener {
 	 */
 	void exitGlslDeclaration(GLSLParser.GlslDeclarationContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link GLSLParser#glslDeclarationStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslDeclarationStatement(GLSLParser.GlslDeclarationStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLParser#glslDeclarationStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslDeclarationStatement(GLSLParser.GlslDeclarationStatementContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link GLSLParser#glslTypePrecisionDeclaration}.
 	 * @param ctx the parse tree
 	 */
@@ -118,26 +128,6 @@ public interface GLSLListener extends ParseTreeListener {
 	 */
 	void exitGlslInitializer(GLSLParser.GlslInitializerContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslInitializerList}.
-	 * @param ctx the parse tree
-	 */
-	void enterGlslInitializerList(GLSLParser.GlslInitializerListContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslInitializerList}.
-	 * @param ctx the parse tree
-	 */
-	void exitGlslInitializerList(GLSLParser.GlslInitializerListContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslDeclarationStatement}.
-	 * @param ctx the parse tree
-	 */
-	void enterGlslDeclarationStatement(GLSLParser.GlslDeclarationStatementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslDeclarationStatement}.
-	 * @param ctx the parse tree
-	 */
-	void exitGlslDeclarationStatement(GLSLParser.GlslDeclarationStatementContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link GLSLParser#glslStatement}.
 	 * @param ctx the parse tree
 	 */
@@ -168,46 +158,6 @@ public interface GLSLListener extends ParseTreeListener {
 	 */
 	void exitGlslCompoundStatement(GLSLParser.GlslCompoundStatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslStatementNoNewScope}.
-	 * @param ctx the parse tree
-	 */
-	void enterGlslStatementNoNewScope(GLSLParser.GlslStatementNoNewScopeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslStatementNoNewScope}.
-	 * @param ctx the parse tree
-	 */
-	void exitGlslStatementNoNewScope(GLSLParser.GlslStatementNoNewScopeContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslStatementScoped}.
-	 * @param ctx the parse tree
-	 */
-	void enterGlslStatementScoped(GLSLParser.GlslStatementScopedContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslStatementScoped}.
-	 * @param ctx the parse tree
-	 */
-	void exitGlslStatementScoped(GLSLParser.GlslStatementScopedContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslCompoundStatementNoNewScope}.
-	 * @param ctx the parse tree
-	 */
-	void enterGlslCompoundStatementNoNewScope(GLSLParser.GlslCompoundStatementNoNewScopeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslCompoundStatementNoNewScope}.
-	 * @param ctx the parse tree
-	 */
-	void exitGlslCompoundStatementNoNewScope(GLSLParser.GlslCompoundStatementNoNewScopeContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslStatementList}.
-	 * @param ctx the parse tree
-	 */
-	void enterGlslStatementList(GLSLParser.GlslStatementListContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslStatementList}.
-	 * @param ctx the parse tree
-	 */
-	void exitGlslStatementList(GLSLParser.GlslStatementListContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link GLSLParser#glslExpressionStatement}.
 	 * @param ctx the parse tree
 	 */
@@ -218,35 +168,25 @@ public interface GLSLListener extends ParseTreeListener {
 	 */
 	void exitGlslExpressionStatement(GLSLParser.GlslExpressionStatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslSelectionStatement}.
+	 * Enter a parse tree produced by {@link GLSLParser#glslIfStatement}.
 	 * @param ctx the parse tree
 	 */
-	void enterGlslSelectionStatement(GLSLParser.GlslSelectionStatementContext ctx);
+	void enterGlslIfStatement(GLSLParser.GlslIfStatementContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslSelectionStatement}.
+	 * Exit a parse tree produced by {@link GLSLParser#glslIfStatement}.
 	 * @param ctx the parse tree
 	 */
-	void exitGlslSelectionStatement(GLSLParser.GlslSelectionStatementContext ctx);
+	void exitGlslIfStatement(GLSLParser.GlslIfStatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslSelectionRestStatement}.
+	 * Enter a parse tree produced by {@link GLSLParser#glslNonIfStatement}.
 	 * @param ctx the parse tree
 	 */
-	void enterGlslSelectionRestStatement(GLSLParser.GlslSelectionRestStatementContext ctx);
+	void enterGlslNonIfStatement(GLSLParser.GlslNonIfStatementContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslSelectionRestStatement}.
+	 * Exit a parse tree produced by {@link GLSLParser#glslNonIfStatement}.
 	 * @param ctx the parse tree
 	 */
-	void exitGlslSelectionRestStatement(GLSLParser.GlslSelectionRestStatementContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslCondition}.
-	 * @param ctx the parse tree
-	 */
-	void enterGlslCondition(GLSLParser.GlslConditionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslCondition}.
-	 * @param ctx the parse tree
-	 */
-	void exitGlslCondition(GLSLParser.GlslConditionContext ctx);
+	void exitGlslNonIfStatement(GLSLParser.GlslNonIfStatementContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GLSLParser#glslSwitchStatement}.
 	 * @param ctx the parse tree
@@ -258,55 +198,65 @@ public interface GLSLListener extends ParseTreeListener {
 	 */
 	void exitGlslSwitchStatement(GLSLParser.GlslSwitchStatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslSwitchStatementList}.
+	 * Enter a parse tree produced by {@link GLSLParser#glslSwitchSubStatement}.
 	 * @param ctx the parse tree
 	 */
-	void enterGlslSwitchStatementList(GLSLParser.GlslSwitchStatementListContext ctx);
+	void enterGlslSwitchSubStatement(GLSLParser.GlslSwitchSubStatementContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslSwitchStatementList}.
+	 * Exit a parse tree produced by {@link GLSLParser#glslSwitchSubStatement}.
 	 * @param ctx the parse tree
 	 */
-	void exitGlslSwitchStatementList(GLSLParser.GlslSwitchStatementListContext ctx);
+	void exitGlslSwitchSubStatement(GLSLParser.GlslSwitchSubStatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslCaseLabel}.
+	 * Enter a parse tree produced by {@link GLSLParser#glslCondition}.
 	 * @param ctx the parse tree
 	 */
-	void enterGlslCaseLabel(GLSLParser.GlslCaseLabelContext ctx);
+	void enterGlslCondition(GLSLParser.GlslConditionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslCaseLabel}.
+	 * Exit a parse tree produced by {@link GLSLParser#glslCondition}.
 	 * @param ctx the parse tree
 	 */
-	void exitGlslCaseLabel(GLSLParser.GlslCaseLabelContext ctx);
+	void exitGlslCondition(GLSLParser.GlslConditionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslIterationStatement}.
+	 * Enter a parse tree produced by {@link GLSLParser#glslWhileStatement}.
 	 * @param ctx the parse tree
 	 */
-	void enterGlslIterationStatement(GLSLParser.GlslIterationStatementContext ctx);
+	void enterGlslWhileStatement(GLSLParser.GlslWhileStatementContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslIterationStatement}.
+	 * Exit a parse tree produced by {@link GLSLParser#glslWhileStatement}.
 	 * @param ctx the parse tree
 	 */
-	void exitGlslIterationStatement(GLSLParser.GlslIterationStatementContext ctx);
+	void exitGlslWhileStatement(GLSLParser.GlslWhileStatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslForInitStatement}.
+	 * Enter a parse tree produced by {@link GLSLParser#glslDoWhileStatement}.
 	 * @param ctx the parse tree
 	 */
-	void enterGlslForInitStatement(GLSLParser.GlslForInitStatementContext ctx);
+	void enterGlslDoWhileStatement(GLSLParser.GlslDoWhileStatementContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslForInitStatement}.
+	 * Exit a parse tree produced by {@link GLSLParser#glslDoWhileStatement}.
 	 * @param ctx the parse tree
 	 */
-	void exitGlslForInitStatement(GLSLParser.GlslForInitStatementContext ctx);
+	void exitGlslDoWhileStatement(GLSLParser.GlslDoWhileStatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslForRestStatement}.
+	 * Enter a parse tree produced by {@link GLSLParser#glslForStatement}.
 	 * @param ctx the parse tree
 	 */
-	void enterGlslForRestStatement(GLSLParser.GlslForRestStatementContext ctx);
+	void enterGlslForStatement(GLSLParser.GlslForStatementContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslForRestStatement}.
+	 * Exit a parse tree produced by {@link GLSLParser#glslForStatement}.
 	 * @param ctx the parse tree
 	 */
-	void exitGlslForRestStatement(GLSLParser.GlslForRestStatementContext ctx);
+	void exitGlslForStatement(GLSLParser.GlslForStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLParser#glslForInitExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslForInitExpression(GLSLParser.GlslForInitExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLParser#glslForInitExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslForInitExpression(GLSLParser.GlslForInitExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GLSLParser#glslJumpStatement}.
 	 * @param ctx the parse tree

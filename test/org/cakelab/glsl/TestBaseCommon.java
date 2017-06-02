@@ -19,7 +19,6 @@ import org.cakelab.glsl.parser.GLSLLexer;
 import org.cakelab.glsl.parser.GLSLParser;
 import org.cakelab.glsl.parser.Validator;
 import org.cakelab.glsl.pp.GLSLPPLexer;
-import org.cakelab.glsl.pp.GLSLPPParser;
 
 public class TestBaseCommon {
 
@@ -30,6 +29,8 @@ public class TestBaseCommon {
 	protected static boolean autoTearDown = true;
 
 	private static final boolean DEBUG = false;
+	protected static boolean ALLOW_FULL_CONTEXT = false;
+	protected static boolean IGNORE_CONTEXT_SENSITIVITY = false;
 	
 	public static class ParserError implements ANTLRErrorListener {
 		public String message;
@@ -65,7 +66,7 @@ public class TestBaseCommon {
 			//       parser switched to another (slower) parsing strategy.
 			//       Most of the time, if this report comes in, it will be followed 
 			//       by a reported ambiguity. Disable it temporary to find out.
-			
+			if (IGNORE_CONTEXT_SENSITIVITY || ALLOW_FULL_CONTEXT) return;
 			if (hasError()) return;
 			this.message = "attempting full context";
 		}
@@ -73,6 +74,7 @@ public class TestBaseCommon {
 		@Override
 		public void reportContextSensitivity(Parser recognizer, DFA dfa, int startIndex, int stopIndex,
 				int prediction, ATNConfigSet configs) {
+			if (IGNORE_CONTEXT_SENSITIVITY) return;
 			if (hasError()) return;
 			this.message = "reported context sensitivity";
 		}
@@ -255,12 +257,13 @@ public class TestBaseCommon {
 		error.listenTo(parser, lexer);
 		if (validator != null) {
 			if (parser instanceof GLSLParser) {
-				((GLSLParser)parser).setValidator(validator);
-				((GLSLLexer)lexer).setValidator(validator);
+//				((GLSLParser)parser).setValidator(validator);
+//				((GLSLLexer)lexer).setValidator(validator);
 				((GLSLLexer)lexer).preprocessing = false;
 			} else {
-				((GLSLPPParser)parser).setValidator(validator);
-				((GLSLPPLexer)lexer).setValidator(validator);
+//				((GLSLPPParser)parser).setValidator(validator);
+//				((GLSLPPLexer)lexer).setValidator(validator);
+				((GLSLPPLexer)lexer).preprocessing = true;
 			}
 		}
 	}

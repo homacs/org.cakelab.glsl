@@ -260,11 +260,6 @@ public class GLSLLexer extends Lexer {
 		public void preprocessing(boolean enable) {
 			preprocessing = enable;
 		}
-		private org.cakelab.glsl.parser.Validator validator = new org.cakelab.glsl.parser.Validator();
-		public void setValidator(org.cakelab.glsl.parser.Validator validator) {
-			this.validator = validator;
-		}
-		
 
 
 	public GLSLLexer(CharStream input) {
