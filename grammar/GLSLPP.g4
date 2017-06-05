@@ -348,6 +348,8 @@ glslppUnspecifiedToken:
 		
 		| HASH
 		| PPOP_CONCAT
+		
+		| OTHER /* any error token to be identified by lang parser later */
 	)
 	;
 
