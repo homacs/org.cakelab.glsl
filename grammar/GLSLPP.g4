@@ -202,8 +202,14 @@ glslppStringLiteral
 	| PREFIXED_STRING_LITERAL
 	;
 
+/**
+ * either a standard header (<path/header.name>) or custom header ("path/header.name").
+ * Standard headers conflict with rules for relational expressions 
+ * (something '<' something '>' something) and had to be relaxed to 
+ * (LEFT_ANGLE ~RIGHT_ANGLE+ RIGHT_ANGLE).
+ */
 glslppHeaderName
-	: STD_HEADER_NAME
+	: LEFT_ANGLE ~(RIGHT_ANGLE|CRLF)+ RIGHT_ANGLE
 	| STRING_LITERAL
 	;
 
@@ -211,8 +217,6 @@ glslppHeaderName
 //////////////////////////////////////////////
 //    B A S I C S
 //////////////////////////////////////////////
-
-
 
 
 glslppIdentifier 
@@ -287,7 +291,6 @@ glslppPunctuator
 glslppUnspecifiedToken:
 	~(
 		STRING_LITERAL
-		| STD_HEADER_NAME
 		| IDENTIFIER
 		| INTCONSTANT
 		| UINTCONSTANT

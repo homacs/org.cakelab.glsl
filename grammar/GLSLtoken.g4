@@ -72,53 +72,10 @@ DOUBLECONSTANT
 	) [lL]?
 	;
 
-fragment FLOATRAW: (DIGIT+ '.' DIGIT*) | (DIGIT* '.' DIGIT+);
-fragment HEXFLOATRAW: '0'[xX] 
-		(
-			(HEXADECIMAL_DIGIT+ '.' HEXADECIMAL_DIGIT*) 
-		| 
-			(HEXADECIMAL_DIGIT* '.' HEXADECIMAL_DIGIT+)
-		)
-;
-fragment EXPONENT: [eE] SIGN? DECIMAL;
-fragment BINARY_EXPONENT: [pP] SIGN? DECIMAL;
-
 INTCONSTANT: NUMBER [lL]?;
 UINTCONSTANT: NUMBER [uU][lL]?;
 
 
-
-//////////////////////////////////////
-// S T R I N G S  (non-standard)
-//////////////////////////////////////
-
-
-
-CHARACTER_CONSTANT
-	: '\'' C_CHAR_SEQUENCE '\''{preprocessing}?
-;
-
-PREFIXED_CHARACTER_CONSTANT
-	: 'L' '\'' C_CHAR_SEQUENCE '\''{preprocessing}?
-	| 'u' '\'' C_CHAR_SEQUENCE '\''{preprocessing}?
-	| 'U' '\'' C_CHAR_SEQUENCE '\''{preprocessing}?
-;
-
-STRING_LITERAL
-	: '"' S_CHAR_SEQUENCE? '"'{preprocessing}?
-;
-/** for include of standard headers. 
- * TODO: WARNING: this conflicts with conditional and shift 
- * expressions such as (a < b > c) where < b > will 
- * be lexed as a STD_HEADER_NAME token!
- */
-STD_HEADER_NAME:
-	LEFT_ANGLE S_CHAR_SEQUENCE RIGHT_ANGLE {preprocessing}?
-;
-
-PREFIXED_STRING_LITERAL
-	: ENCODING_PREFIX '"' S_CHAR_SEQUENCE? '"' {preprocessing}?
-;
 
 LEFT_OP: '<<';
 RIGHT_OP: '>>';
@@ -172,7 +129,6 @@ QUESTION: '?';
 HASH: '#';
 PPOP_CONCAT: '##';
 DOTS: '...';
-
 //////////////////////////////////////
 // N O N S T A N D A R D   E X T E N T
 //////////////////////////////////////
@@ -180,6 +136,30 @@ DOTS: '...';
 DOUBLE_QUOTE: '"';
 SINGLE_QUOTE: '\'';
 
+
+//////////////////////////////////////
+// S T R I N G S  (non-standard)
+//////////////////////////////////////
+
+
+
+CHARACTER_CONSTANT
+	: '\'' C_CHAR_SEQUENCE '\''{preprocessing}?
+;
+
+PREFIXED_CHARACTER_CONSTANT
+	: 'L' '\'' C_CHAR_SEQUENCE '\''{preprocessing}?
+	| 'u' '\'' C_CHAR_SEQUENCE '\''{preprocessing}?
+	| 'U' '\'' C_CHAR_SEQUENCE '\''{preprocessing}?
+;
+
+STRING_LITERAL
+	: '"' S_CHAR_SEQUENCE? '"'{preprocessing}?
+;
+
+PREFIXED_STRING_LITERAL
+	: ENCODING_PREFIX '"' S_CHAR_SEQUENCE? '"' {preprocessing}?
+;
 
 //////////////////////////////////////
 //       I D E N T I F I E R S
@@ -193,7 +173,10 @@ IDENTIFIER: NONDIGIT (DIGIT | NONDIGIT)*;
 
 
 
-
+/**
+ * Any token not used by the rules above. Especially used in strings.
+ */
+OTHER: .;
 
 
 //////////////////////////////////////
@@ -273,6 +256,17 @@ fragment C_CHAR
 	| ESCAPE_SEQUENCE
 ;
 
+
+fragment FLOATRAW: (DIGIT+ '.' DIGIT*) | (DIGIT* '.' DIGIT+);
+fragment HEXFLOATRAW: '0'[xX] 
+		(
+			(HEXADECIMAL_DIGIT+ '.' HEXADECIMAL_DIGIT*) 
+		| 
+			(HEXADECIMAL_DIGIT* '.' HEXADECIMAL_DIGIT+)
+		)
+;
+fragment EXPONENT: [eE] SIGN? DECIMAL;
+fragment BINARY_EXPONENT: [pP] SIGN? DECIMAL;
 
 fragment HEXADECIMAL: '0' [xX] HEXADECIMAL_DIGIT+;
 fragment OCTAL: '0' OCTAL_DIGIT+;
