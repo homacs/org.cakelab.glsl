@@ -24,7 +24,7 @@
 		<antlr.java 
 				srcdir="${grammar.dir}" 
 				outdir="${gen.dir}"
-				package="${grammar.package}.parser"
+				package="${grammar.package}.lang"
 				visitor="true"
 				file="GLSL.g4"
 		/>

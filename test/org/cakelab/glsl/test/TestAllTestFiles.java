@@ -1,4 +1,4 @@
-package org.cakelab.glsl;
+package org.cakelab.glsl.test;
 
 import java.io.File;
 

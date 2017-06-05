@@ -1,4 +1,4 @@
-package org.cakelab.glsl;
+package org.cakelab.glsl.test;
 
 import java.io.PrintStream;
 import java.util.BitSet;
@@ -15,9 +15,9 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.tree.ErrorNodeImpl;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
-import org.cakelab.glsl.parser.GLSLLexer;
-import org.cakelab.glsl.parser.GLSLParser;
-import org.cakelab.glsl.parser.Validator;
+import org.cakelab.glsl.lang.GLSLLexer;
+import org.cakelab.glsl.lang.GLSLParser;
+import org.cakelab.glsl.lang.Validator;
 import org.cakelab.glsl.pp.GLSLPPLexer;
 
 public class TestBaseCommon {
