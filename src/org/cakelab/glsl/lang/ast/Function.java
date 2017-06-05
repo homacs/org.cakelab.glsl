@@ -1,8 +1,8 @@
-package org.cakelab.glsl.ast;
+package org.cakelab.glsl.lang.ast;
 
 
-import static org.cakelab.glsl.ast.Type.*;
-import static org.cakelab.glsl.ast.Qualifier.*;
+import static org.cakelab.glsl.lang.ast.Qualifier.*;
+import static org.cakelab.glsl.lang.ast.Type.*;
 
 public class Function implements Comparable<Function>{
 

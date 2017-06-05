@@ -1,35 +1,36 @@
-package org.cakelab.glsl.parser;
+package org.cakelab.glsl.lang;
 
 import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.cakelab.glsl.ast.Array;
-import org.cakelab.glsl.ast.Expression;
-import org.cakelab.glsl.ast.Function;
-import org.cakelab.glsl.ast.InterfaceBlock;
-import org.cakelab.glsl.ast.Qualifier;
-import org.cakelab.glsl.ast.Qualifier.LayoutQualifier;
-import org.cakelab.glsl.ast.Scope;
-import org.cakelab.glsl.ast.Struct;
-import org.cakelab.glsl.ast.Type;
-import org.cakelab.glsl.ast.Variable;
-import org.cakelab.glsl.parser.GLSLParser.GlslArrayDimensionContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslFunctionNameContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslFunctionNameListContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslFunctionPrototypeContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslInterfaceBlockStructureContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslLayoutQualifierContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslLayoutQualifierIdContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslSingleTypeQualifierContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslStorageQualifierContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslStructBodyContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslStructMemberDeclaratorContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslStructMemberGroupContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslStructSpecifierContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslTypeQualifierContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslTypeSpecifierContext;
-import org.cakelab.glsl.parser.GLSLParser.GlslTypeSpecifierNonarrayContext;
+import org.cakelab.glsl.lang.GLSLBaseListener;
+import org.cakelab.glsl.lang.GLSLParser.GlslArrayDimensionContext;
+import org.cakelab.glsl.lang.GLSLParser.GlslFunctionNameContext;
+import org.cakelab.glsl.lang.GLSLParser.GlslFunctionNameListContext;
+import org.cakelab.glsl.lang.GLSLParser.GlslFunctionPrototypeContext;
+import org.cakelab.glsl.lang.GLSLParser.GlslInterfaceBlockStructureContext;
+import org.cakelab.glsl.lang.GLSLParser.GlslLayoutQualifierContext;
+import org.cakelab.glsl.lang.GLSLParser.GlslLayoutQualifierIdContext;
+import org.cakelab.glsl.lang.GLSLParser.GlslSingleTypeQualifierContext;
+import org.cakelab.glsl.lang.GLSLParser.GlslStorageQualifierContext;
+import org.cakelab.glsl.lang.GLSLParser.GlslStructBodyContext;
+import org.cakelab.glsl.lang.GLSLParser.GlslStructMemberDeclaratorContext;
+import org.cakelab.glsl.lang.GLSLParser.GlslStructMemberGroupContext;
+import org.cakelab.glsl.lang.GLSLParser.GlslStructSpecifierContext;
+import org.cakelab.glsl.lang.GLSLParser.GlslTypeQualifierContext;
+import org.cakelab.glsl.lang.GLSLParser.GlslTypeSpecifierContext;
+import org.cakelab.glsl.lang.GLSLParser.GlslTypeSpecifierNonarrayContext;
+import org.cakelab.glsl.lang.ast.Array;
+import org.cakelab.glsl.lang.ast.Expression;
+import org.cakelab.glsl.lang.ast.Function;
+import org.cakelab.glsl.lang.ast.InterfaceBlock;
+import org.cakelab.glsl.lang.ast.Qualifier;
+import org.cakelab.glsl.lang.ast.Scope;
+import org.cakelab.glsl.lang.ast.Struct;
+import org.cakelab.glsl.lang.ast.Type;
+import org.cakelab.glsl.lang.ast.Variable;
+import org.cakelab.glsl.lang.ast.Qualifier.LayoutQualifier;
 
 
 public class Validator extends GLSLBaseListener {

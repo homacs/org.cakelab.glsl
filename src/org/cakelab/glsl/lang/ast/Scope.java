@@ -1,4 +1,4 @@
-package org.cakelab.glsl.ast;
+package org.cakelab.glsl.lang.ast;
 
 import java.util.ArrayList;
 import java.util.Collections;

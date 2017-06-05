@@ -1,27 +1,39 @@
 package org.cakelab.glsl.pp;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.TokenStream;
 
-public class GLSLPreprocessor extends GLSLPPParser {
+public class GLSLPreprocessor extends GLSLPPBaseListener {
 
-	public GLSLPreprocessor(TokenStream tokenStream) {
-		super(tokenStream);
+	private GLSLPPParser parser;
+	private CommonTokenStream tokens;
+
+
+	public GLSLPreprocessor() {
+	}
+	
+	public void process(InputStream in, OutputStream out) throws IOException {
+		CharStream input = CharStreams.fromStream(in, Charset.forName("UTF-8"));
+		GLSLPPLexer lexer = new GLSLPPLexer(input);
+		lexer.preprocessing(true);
+		tokens = new CommonTokenStream(lexer);
+		parser = new GLSLPPParser(tokens);
+		parser.glslpp();
 	}
 	
 	public static void main(String[] args) throws IOException {
 		File f = new File("test_files/100.frag");
-		CharStream input = CharStreams.fromPath(f.toPath());
-		GLSLPPLexer lexer = new GLSLPPLexer(input);
-		lexer.preprocessing(true);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		GLSLPreprocessor pp = new GLSLPreprocessor(tokens);
-		pp.glslppPreprocessingFile();
+		GLSLPreprocessor pp = new GLSLPreprocessor();
+		pp.process(new FileInputStream(f), new FileOutputStream("/tmp/output.glsl"));
 	}
 	
 }

@@ -1,4 +1,4 @@
-package org.cakelab.glsl.ast;
+package org.cakelab.glsl.lang.ast;
 
 public class Variable {
 	Type type;
