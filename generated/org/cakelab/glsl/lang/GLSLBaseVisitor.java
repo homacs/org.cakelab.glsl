@@ -1,5 +1,5 @@
 // Generated from grammar/GLSL.g4 by ANTLR 4.7
-package org.cakelab.glsl.parser;
+package org.cakelab.glsl.lang;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
