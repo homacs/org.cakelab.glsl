@@ -212,18 +212,17 @@ glslExpressionStatement
 
 /**
  * Note: Else-branch is always associated with the last if-branch.
- * Thus, the statement of the last if-branch cannot be an if-
- * statement. The new rule 
- * glslNonIfStatement assembles all statements but the 
- * if-statement to differentiate those two cases.
+ * Thus, the statement of the preceding if-branch cannot be an if-
+ * statement. The new rule glslNonIfStatement assembles all 
+ * statements but the if-statement to differentiate those cases.
  * 
  * Without it, ANTLR runs into ambiguous predictions, not knowing 
  * which if to associate the else branch with (even though it 
  * just needs to read from left to right ..).
  */
 glslIfStatement
-	: IF LEFT_PAREN glslCondition RIGHT_PAREN glslStatement     // e.g.   if(A) /* nothing */ if(B){..} else;
-	| IF LEFT_PAREN glslCondition RIGHT_PAREN glslNonIfStatement ELSE glslStatement // if with else branch
+	: IF LEFT_PAREN glslCondition RIGHT_PAREN glslStatement     // includes for example  if(A) /* nothing */ if(B){..} else;
+	| IF LEFT_PAREN glslCondition RIGHT_PAREN glslNonIfStatement ELSE glslStatement // single if with else branch
 	;
 
 /**

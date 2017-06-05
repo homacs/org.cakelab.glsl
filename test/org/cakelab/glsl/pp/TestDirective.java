@@ -92,6 +92,8 @@ public class TestDirective extends TestBaseGLSLPP {
 				+ "#endif\n");
 		assertValid("#if (a||b)\n"
 				+ "#endif\n");
+		assertValid("#if (a<b>c)\n"
+				+ "#endif\n");
 		assertValid("#if ( A && defined(B) )\n"
 				+ "#endif\n");
 		assertValid("#if defined(A)\n"
