@@ -1,7 +1,6 @@
 package org.cakelab.glsl.test.pp.syntax;
 
 import org.cakelab.glsl.pp.GLSLPPParser.GlslppMacroContext;
-import org.cakelab.glsl.pp.GLSLPPParser;
 import org.cakelab.glsl.pp.GLSLPPParser.GlslppMacroArgumentsContext;
 
 public class TestDirective extends TestBaseGLSLPP {
