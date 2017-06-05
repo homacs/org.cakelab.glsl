@@ -4,21 +4,22 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.cakelab.glsl.pp.GLSLPPLexer;
-import org.cakelab.glsl.pp.GLSLPPParser;
+import org.cakelab.glsl.GLSLLexer;
+import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.test.TestBaseCommon;
 
 public class TestBaseGLSLPP extends TestBaseCommon {
 
-	public static GLSLPPParser p(String source) {
+	public static GLSLParser p(String source) {
 		CharStream input = CharStreams.fromString(source);
-		GLSLPPLexer lexer = new GLSLPPLexer(input);
+		GLSLLexer lexer = new GLSLLexer(input);
 		lexer.preprocessing(true);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		parser = new GLSLPPParser(tokens);
+		parser = new GLSLParser(tokens);
+		lexer.preprocessing = true;
 		setup(parser,lexer);
 		error.listenTo(parser, lexer);
-		return (GLSLPPParser) parser;
+		return (GLSLParser) parser;
 	}
 	
 	@SafeVarargs
@@ -32,7 +33,7 @@ public class TestBaseGLSLPP extends TestBaseCommon {
 	@SafeVarargs
 	public static void assertInvalid(String source, Class<? extends ParseTree> ... types) {
 		ParseTree ast;
-		GLSLPPParser parser = p(source);
+		GLSLParser parser = p(source);
 		ast = parser.glslpp();
 
 		assertInvalid(ast, types);

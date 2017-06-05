@@ -24,22 +24,12 @@
 		<antlr.java 
 				srcdir="${grammar.dir}" 
 				outdir="${gen.dir}"
-				package="${grammar.package}.lang"
+				package="${grammar.package}"
 				visitor="true"
 				file="GLSL.g4"
 		/>
 	</target>
 
-	<target name="glslpp.grammar">
-		<antlr.java 
-				srcdir="${grammar.dir}" 
-				outdir="${gen.dir}"
-				package="${grammar.package}.pp"
-				visitor="true"
-				file="GLSLPP.g4"
-		/>
-	</target>
-
-	<target name="all" depends="clean, glsl.grammar, glslpp.grammar" />
+	<target name="all" depends="clean, glsl.grammar" />
 
 </project>

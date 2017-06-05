@@ -15,14 +15,13 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.tree.ErrorNodeImpl;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
-import org.cakelab.glsl.lang.GLSLLexer;
-import org.cakelab.glsl.lang.GLSLParser;
+import org.cakelab.glsl.GLSLLexer;
+import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.lang.Validator;
-import org.cakelab.glsl.pp.GLSLPPLexer;
 
 public class TestBaseCommon {
 
-	protected static Parser parser;
+	protected static GLSLParser parser;
 
 	protected static Validator validator = new Validator();
 
@@ -253,18 +252,9 @@ public class TestBaseCommon {
 		
 	}
 
-	public static void setup(Parser parser, Lexer lexer) {
+	public static void setup(GLSLParser parser, GLSLLexer lexer) {
 		error.listenTo(parser, lexer);
 		if (validator != null) {
-			if (parser instanceof GLSLParser) {
-//				((GLSLParser)parser).setValidator(validator);
-//				((GLSLLexer)lexer).setValidator(validator);
-				((GLSLLexer)lexer).preprocessing = false;
-			} else {
-//				((GLSLPPParser)parser).setValidator(validator);
-//				((GLSLPPLexer)lexer).setValidator(validator);
-				((GLSLPPLexer)lexer).preprocessing = true;
-			}
 		}
 	}
 

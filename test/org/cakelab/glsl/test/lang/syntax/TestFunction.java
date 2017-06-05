@@ -1,8 +1,8 @@
 package org.cakelab.glsl.test.lang.syntax;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.cakelab.glsl.lang.GLSLParser.GlslFunctionDefinitionContext;
-import org.cakelab.glsl.lang.GLSLParser.GlslFunctionPrototypeContext;
+import org.cakelab.glsl.GLSLParser.GlslFunctionDefinitionContext;
+import org.cakelab.glsl.GLSLParser.GlslFunctionPrototypeContext;
 
 public class TestFunction extends TestBaseGLSL {
 	public static void test() {

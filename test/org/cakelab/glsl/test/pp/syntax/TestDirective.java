@@ -1,7 +1,7 @@
 package org.cakelab.glsl.test.pp.syntax;
 
-import org.cakelab.glsl.pp.GLSLPPParser.GlslppMacroContext;
-import org.cakelab.glsl.pp.GLSLPPParser.GlslppMacroArgumentsContext;
+import org.cakelab.glsl.GLSLParser.GlslppMacroContext;
+import org.cakelab.glsl.GLSLParser.GlslppMacroArgumentsContext;
 
 public class TestDirective extends TestBaseGLSLPP {
 
@@ -32,7 +32,6 @@ public class TestDirective extends TestBaseGLSLPP {
 		assertValid(p("#include \"stdio.glsl\"\n").glslppPreprocessingFile());
 		assertValid(p("\t#include \"stdio.glsl\"\n").glslppPreprocessingFile());
 		assertValid(p("# include \"stdio.glsl\"\n").glslppPreprocessingFile());
-		assertInvalid(p("# include <x\\stdio.glsl>\n").glslppPreprocessingFile());
 		assertValid(p("# include <x\\\\stdio.glsl>\n").glslppPreprocessingFile());
 		
 	}

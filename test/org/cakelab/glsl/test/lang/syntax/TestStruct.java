@@ -1,7 +1,7 @@
 package org.cakelab.glsl.test.lang.syntax;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.cakelab.glsl.lang.GLSLParser.GlslStructSpecifierContext;
+import org.cakelab.glsl.GLSLParser.GlslStructSpecifierContext;
 
 public class TestStruct extends TestBaseGLSL {
 	public static void test() {

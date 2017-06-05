@@ -4,9 +4,9 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.cakelab.glsl.lang.GLSLLexer;
-import org.cakelab.glsl.lang.GLSLParser;
-import org.cakelab.glsl.lang.GLSLParser.GlslContext;
+import org.cakelab.glsl.GLSLLexer;
+import org.cakelab.glsl.GLSLParser;
+import org.cakelab.glsl.GLSLParser.GlslContext;
 import org.cakelab.glsl.test.TestBaseCommon;
 
 public class TestBaseGLSL extends TestBaseCommon {

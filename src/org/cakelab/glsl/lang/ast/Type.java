@@ -48,8 +48,8 @@ public class Type implements Comparable<Type> {
 	final String signature;
 	
 	
-	public Type(String name) {
-		this.signature = name;
+	public Type(String signature) {
+		this.signature = signature;
 	}
 
 	
@@ -57,6 +57,10 @@ public class Type implements Comparable<Type> {
 		this.signature = that.signature;
 	}
 
+	public String getName() {
+		return signature;
+	}
+	
 
 	/** comparison of type basically compares their signatures. */
 	@Override

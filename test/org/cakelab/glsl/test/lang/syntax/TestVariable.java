@@ -1,7 +1,7 @@
 package org.cakelab.glsl.test.lang.syntax;
 
-import org.cakelab.glsl.lang.GLSLParser.GlslBuiltinTypeContext;
-import org.cakelab.glsl.lang.GLSLParser.GlslDeclarationContext;
+import org.cakelab.glsl.GLSLParser.GlslBuiltinTypeContext;
+import org.cakelab.glsl.GLSLParser.GlslDeclarationContext;
 
 public class TestVariable extends TestBaseGLSL {
 	

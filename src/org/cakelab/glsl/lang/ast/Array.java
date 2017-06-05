@@ -24,6 +24,7 @@ public class Array extends Type {
 	}
 	
 	Expression[] dimensions;
+	/** type without array specification */
 	private Type baseType;
 	
 	public Array(Type baseType, Expression ... dimensions) {
@@ -45,6 +46,10 @@ public class Array extends Type {
 		super(that.signature);
 		this.baseType = that.baseType;
 		this.dimensions = that.dimensions;
+	}
+
+	public String getName() {
+		return baseType.getName();
 	}
 	
 	private static String signature(String name, int dimensions) {

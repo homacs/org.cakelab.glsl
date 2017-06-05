@@ -1,8 +1,8 @@
 package org.cakelab.glsl.test.lang.syntax;
 
-import org.cakelab.glsl.lang.GLSLParser.GlslArrayDimensionContext;
-import org.cakelab.glsl.lang.GLSLParser.GlslBuiltinTypeContext;
-import org.cakelab.glsl.lang.GLSLParser.GlslCallArgumentsContext;
+import org.cakelab.glsl.GLSLParser.GlslArrayDimensionContext;
+import org.cakelab.glsl.GLSLParser.GlslBuiltinTypeContext;
+import org.cakelab.glsl.GLSLParser.GlslCallArgumentsContext;
 import org.cakelab.glsl.test.TestBaseCommon;
 
 public class TestExpression extends TestBaseGLSL {

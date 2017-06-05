@@ -1,6 +1,6 @@
 package org.cakelab.glsl.test.lang.syntax;
 
-import org.cakelab.glsl.lang.GLSLParser.*;
+import org.cakelab.glsl.GLSLParser.*;
 import org.cakelab.glsl.test.TestBaseCommon;
 
 public class TestStatement extends TestBaseGLSL {

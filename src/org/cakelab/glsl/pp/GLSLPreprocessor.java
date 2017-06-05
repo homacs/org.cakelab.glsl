@@ -12,14 +12,20 @@ import java.nio.charset.Charset;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.cakelab.glsl.pp.GLSLPPParser.GlslppIfGroupContext;
-import org.cakelab.glsl.pp.GLSLPPParser.GlslppIfSectionContext;
+import org.cakelab.glsl.GLSLBaseListener;
+import org.cakelab.glsl.GLSLLexer;
+import org.cakelab.glsl.GLSLParser;
+import org.cakelab.glsl.GLSLParser.GlslppIfGroupContext;
+import org.cakelab.glsl.GLSLParser.GlslppIfSectionContext;
+import org.cakelab.glsl.lang.ast.ASTFactory;
+import org.cakelab.glsl.lang.ast.ConstantExpression;
 
-public class GLSLPreprocessor extends GLSLPPBaseListener {
+public class GLSLPreprocessor extends GLSLBaseListener {
 
-	private GLSLPPParser parser;
+	private GLSLParser parser;
 	private CommonTokenStream tokens;
 	private PrintStream out;
+	private ASTFactory factory;
 
 
 	public GLSLPreprocessor() {
@@ -27,12 +33,12 @@ public class GLSLPreprocessor extends GLSLPPBaseListener {
 	
 	public void process(InputStream in, OutputStream out) throws IOException {
 		CharStream input = CharStreams.fromStream(in, Charset.forName("UTF-8"));
-		GLSLPPLexer lexer = new GLSLPPLexer(input);
+		GLSLLexer lexer = new GLSLLexer(input);
 		lexer.preprocessing(true);
 		tokens = new CommonTokenStream(lexer);
 		this.out = new PrintStream(out);
 		parser.addParseListener(this);
-		parser = new GLSLPPParser(tokens);
+		parser = new GLSLParser(tokens);
 		parser.glslpp();
 	}
 	
@@ -44,7 +50,7 @@ public class GLSLPreprocessor extends GLSLPPBaseListener {
 
 	@Override
 	public void exitGlslppIfSection(GlslppIfSectionContext ctx) {
-		ctx.glslppIfGroup();
+		ConstantExpression expr = factory.create(ctx.glslppIfGroup().glslConstantExpression());
 	}
 
 	@Override

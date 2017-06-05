@@ -62,17 +62,52 @@ grammar GLSL;
 // Order of imported rules equals order of grammars in import statement!
 // GLSLtoken must be last!
 // 
-import GLSLcommon, GLSLkeyword, GLSLtoken;
+import GLSLPPkeyword, GLSLkeyword, GLSLtoken;
 
+
+@members {
+	
+	
+	/**
+	 * This method checks whether the previous token on hidden channel
+	 * equals tokenType.
+	 * 
+	 * The current token is always the next token to be consumed. 
+	 * Thus, the previous token is always the token that was just 
+	 * consumed.
+	 * 
+	 */
+	private boolean hidden(int tokenType) {
+		CommonTokenStream stream = ((CommonTokenStream)this._input);
+		java.util.List<Token> tokens = stream.getHiddenTokensToLeft(stream.index());
+		if (tokens != null && !tokens.isEmpty()) {
+			return tokens.get(tokens.size()-1).getType() == tokenType;
+		} else {
+			return false;
+		}
+	}
+	
+	
+}
 
 
 //
-// Added as main entry point
+// Added as main entry point for language parsing
 //
 glsl
 	: glslTranslationUnit EOF
 	;
 
+
+
+
+///////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+////
+////         L A N G U A G E    R U L E S
+////
+///////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
 
 
 
@@ -298,6 +333,820 @@ glslExternalDeclaration
 glslFunctionDefinition
     : glslFunctionPrototype glslCompoundStatement
     ;
+
+
+
+///////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+////
+////         C O M M O N    R U L E S
+////
+///////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+
+
+
+/** Identifier following a swizzle ('.') */
+glslFieldSelection
+	: IDENTIFIER
+	;
+
+/** any unknown identifier can be a variable, 
+ * function or type name.
+ */
+glslIdentifier
+    : IDENTIFIER
+    ;
+    
+/** Identifier, known to be a user defined type. */
+glslTypeName
+	: IDENTIFIER
+	;
+
+/** Identifier in variable/parameter declaration or use. */
+glslVariableIdentifier
+	: IDENTIFIER
+	;
+
+/** Any identifier considered to be a function name. 
+ */
+glslFunctionName
+	: IDENTIFIER
+	;
+
+glslBoolConstant
+	: BOOLCONSTANT
+	;
+
+glslIntegerConstant
+	: INTCONSTANT
+	;
+
+/** any positive integer postponed by [uU] */
+glslUnsignedIntegerConstant
+	: UINTCONSTANT
+	;
+
+glslFloatConstant
+	: FLOATCONSTANT
+	;
+
+glslDoubleConstant
+	: DOUBLECONSTANT
+	;
+
+glslPrimaryExpression
+    : glslIdentifier // semantic analyses has to decide whether its type, function or variable
+    | glslBuiltinType
+    | glslStructSpecifier
+    | glslFloatConstant
+    | glslDoubleConstant
+    | glslIntegerConstant
+    | glslUnsignedIntegerConstant
+    | glslBoolConstant 
+    | LEFT_PAREN glslExpression RIGHT_PAREN 
+    ;
+    
+
+//
+// Grammar Translation:
+// ====================
+// Rules function and constructor calls and all referenced 
+// rules had to be replaced to resolve mutually left recursion.
+// Token TYPE_NAME has also been removed as it represented 
+// semantic analysis to be performed by the lexer. Instead 
+// user specified types are now simply IDENTIFIERS and builtin
+// types and struct declarations had to be added to primary_expression. As a consequence
+// (a) differentiation between constructor and function calls 
+// now fully relies on semantic analysis and (b) array _types_
+// have to be differentiated from array _references_ by semantic
+// analysis as well. This results in cleaner error reporting
+// and rules. This also allows function overriding, as stated
+// in the GLSL specification, which is not possible with the
+// rule set of the reference implementation.
+//
+// As a side effect it also allows to use types in primary 
+// expressions. Thus, such misuse of types has to be identified 
+// by semantic analysis as well.
+//
+// An advantage is, that parsers now can parse without semantic 
+// analysis as well.
+//
+glslPostfixExpression
+    : glslPrimaryExpression 
+    | glslPostfixExpression glslCallArguments // this rule can evaluate to a function or constructor call depending on the preceding postfix_expression.
+    | glslPostfixExpression glslArrayDimension // this rule might refer to a type (e.g. float[]) or an array reference (e.g. array[i])
+    | glslPostfixExpression DOT glslFieldSelection
+    | glslPostfixExpression INC_OP
+    | glslPostfixExpression DEC_OP
+    ;
+   
+/**
+ * Arguments to function or constructor call.
+ */
+glslCallArguments 
+	: LEFT_PAREN glslAssignmentExpression (COMMA glslAssignmentExpression)* RIGHT_PAREN 
+    | LEFT_PAREN VOID? RIGHT_PAREN 
+	;
+
+/**
+ * Expression which has to evaluate to an integer.
+ */
+glslIntegerExpression
+    : glslExpression 
+    ;
+
+glslUnaryExpression
+    : glslPostfixExpression 
+    | glslUnaryOperator glslUnaryExpression 
+    
+    | PPOP_DEFINED ((LEFT_PAREN glslIdentifier RIGHT_PAREN)|glslIdentifier) // only available in preprocessor, PPOP_DEFINED will occur in preprocessor only
+    ;
+// Grammar Note:  No traditional style type casts.
+
+glslUnaryOperator
+    : INC_OP
+    | DEC_OP
+    | PLUS  
+    | DASH  
+    | BANG  
+    | TILDE 
+    ;
+// Grammar Note:  No '*' or '&' unary ops.  Pointers are not supported.
+
+glslMultiplicativeExpression
+    : glslUnaryExpression 
+    | glslMultiplicativeExpression STAR glslUnaryExpression 
+    | glslMultiplicativeExpression SLASH glslUnaryExpression 
+    | glslMultiplicativeExpression PERCENT glslUnaryExpression 
+    ;
+
+glslAdditiveExpression
+    : glslMultiplicativeExpression 
+    | glslAdditiveExpression PLUS glslMultiplicativeExpression 
+    | glslAdditiveExpression DASH glslMultiplicativeExpression 
+    ;
+
+glslShiftExpression
+    : glslAdditiveExpression 
+    | glslShiftExpression LEFT_OP glslAdditiveExpression 
+    | glslShiftExpression RIGHT_OP glslAdditiveExpression 
+    ;
+
+glslRelationalExpression
+    : glslShiftExpression 
+    | glslRelationalExpression LEFT_ANGLE glslShiftExpression 
+    | glslRelationalExpression RIGHT_ANGLE glslShiftExpression  
+    | glslRelationalExpression LE_OP glslShiftExpression  
+    | glslRelationalExpression GE_OP glslShiftExpression  
+    ;
+
+glslEqualityExpression
+    : glslRelationalExpression 
+    | glslEqualityExpression EQ_OP glslRelationalExpression  
+    | glslEqualityExpression NE_OP glslRelationalExpression 
+    ;
+
+glslAndExpression
+    : glslEqualityExpression 
+    | glslAndExpression AMPERSAND glslEqualityExpression 
+    ;
+
+glslExclusiveOrExpression
+    : glslAndExpression 
+    | glslExclusiveOrExpression CARET glslAndExpression 
+    ;
+
+glslInclusiveOrExpression
+    : glslExclusiveOrExpression 
+    | glslInclusiveOrExpression VERTICAL_BAR glslExclusiveOrExpression 
+    ;
+
+glslLogicalAndExpression
+    : glslInclusiveOrExpression 
+    | glslLogicalAndExpression AND_OP glslInclusiveOrExpression 
+    ;
+
+glslLogicalXorExpression
+    : glslLogicalAndExpression 
+    | glslLogicalXorExpression XOR_OP glslLogicalAndExpression  
+    ;
+
+glslLogicalOrExpression
+    : glslLogicalXorExpression 
+    | glslLogicalOrExpression OR_OP glslLogicalXorExpression  
+    ;
+
+glslConditionalExpression
+    : glslLogicalOrExpression 
+    | glslLogicalOrExpression QUESTION glslExpression COLON glslAssignmentExpression 
+    ;
+
+glslAssignmentExpression
+    : glslConditionalExpression 
+    | glslUnaryExpression glslAssignmentOperator glslAssignmentExpression 
+    ;
+    
+
+
+
+
+glslAssignmentOperator
+    : EQUAL 
+    | MUL_ASSIGN 
+    | DIV_ASSIGN 
+    | MOD_ASSIGN 
+    | ADD_ASSIGN 
+    | SUB_ASSIGN 
+    | LEFT_ASSIGN 
+    | RIGHT_ASSIGN 
+    | AND_ASSIGN 
+    | XOR_ASSIGN 
+    | OR_ASSIGN 
+    ;
+
+glslExpression
+    : glslAssignmentExpression (COMMA glslAssignmentExpression)*
+    ;
+
+glslConstantExpression
+    : glslConditionalExpression 
+    ;
+
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+
+glslFunctionNameList
+    : glslFunctionName (COMMA glslFunctionName)*
+    ;
+    
+glslTypeSpecifier
+    : glslTypeSpecifierNonarray glslArrayDimension*
+    ;
+
+glslArrayDimension
+	: LEFT_BRACKET glslIntegerExpression? RIGHT_BRACKET
+	;
+
+glslTypeSpecifierNonarray
+    : glslBuiltinType 
+    | glslStructSpecifier 
+    | glslTypeName 
+    ;
+
+glslBuiltinType
+    : VOID 
+    | FLOAT 
+    | DOUBLE 
+    | INT 
+    | UINT 
+    | BOOL 
+    | VEC2 
+    | VEC3 
+    | VEC4 
+    | DVEC2 
+    | DVEC3 
+    | DVEC4 
+    | BVEC2 
+    | BVEC3 
+    | BVEC4 
+    | IVEC2 
+    | IVEC3 
+    | IVEC4 
+    | UVEC2 
+    | UVEC3 
+    | UVEC4 
+    | MAT2 
+    | MAT3 
+    | MAT4 
+    | MAT2X2 
+    | MAT2X3 
+    | MAT2X4 
+    | MAT3X2 
+    | MAT3X3 
+    | MAT3X4 
+    | MAT4X2 
+    | MAT4X3 
+    | MAT4X4 
+    | DMAT2 
+    | DMAT3 
+    | DMAT4 
+    | DMAT2X2 
+    | DMAT2X3 
+    | DMAT2X4 
+    | DMAT3X2 
+    | DMAT3X3 
+    | DMAT3X4 
+    | DMAT4X2 
+    | DMAT4X3 
+    | DMAT4X4 
+    | ATOMIC_UINT 
+    | SAMPLER1D 
+    | SAMPLER2D 
+    | SAMPLER3D 
+    | SAMPLERCUBE 
+    | SAMPLER1DSHADOW 
+    | SAMPLER2DSHADOW 
+    | SAMPLERCUBESHADOW 
+    | SAMPLER1DARRAY 
+    | SAMPLER2DARRAY 
+    | SAMPLER1DARRAYSHADOW 
+    | SAMPLER2DARRAYSHADOW 
+    | SAMPLERCUBEARRAY 
+    | SAMPLERCUBEARRAYSHADOW 
+    | ISAMPLER1D 
+    | ISAMPLER2D 
+    | ISAMPLER3D 
+    | ISAMPLERCUBE 
+    | ISAMPLER1DARRAY 
+    | ISAMPLER2DARRAY 
+    | ISAMPLERCUBEARRAY 
+    | USAMPLER1D 
+    | USAMPLER2D 
+    | USAMPLER3D 
+    | USAMPLERCUBE 
+    | USAMPLER1DARRAY 
+    | USAMPLER2DARRAY 
+    | USAMPLERCUBEARRAY 
+    | SAMPLER2DRECT 
+    | SAMPLER2DRECTSHADOW 
+    | ISAMPLER2DRECT 
+    | USAMPLER2DRECT 
+    | SAMPLERBUFFER 
+    | ISAMPLERBUFFER 
+    | USAMPLERBUFFER 
+    | SAMPLER2DMS 
+    | ISAMPLER2DMS 
+    | USAMPLER2DMS 
+    | SAMPLER2DMSARRAY 
+    | ISAMPLER2DMSARRAY 
+    | USAMPLER2DMSARRAY 
+    | IMAGE1D 
+    | IIMAGE1D 
+    | UIMAGE1D 
+    | IMAGE2D 
+    | IIMAGE2D 
+    | UIMAGE2D 
+    | IMAGE3D 
+    | IIMAGE3D 
+    | UIMAGE3D 
+    | IMAGE2DRECT 
+    | IIMAGE2DRECT 
+    | UIMAGE2DRECT 
+    | IMAGECUBE 
+    | IIMAGECUBE 
+    | UIMAGECUBE 
+    | IMAGEBUFFER 
+    | IIMAGEBUFFER 
+    | UIMAGEBUFFER 
+    | IMAGE1DARRAY 
+    | IIMAGE1DARRAY 
+    | UIMAGE1DARRAY 
+    | IMAGE2DARRAY 
+    | IIMAGE2DARRAY 
+    | UIMAGE2DARRAY 
+    | IMAGECUBEARRAY 
+    | IIMAGECUBEARRAY 
+    | UIMAGECUBEARRAY 
+    | IMAGE2DMS 
+    | IIMAGE2DMS 
+    | UIMAGE2DMS 
+    | IMAGE2DMSARRAY 
+    | IIMAGE2DMSARRAY 
+    | UIMAGE2DMSARRAY 
+    | SAMPLEREXTERNALOES 
+    ;
+
+
+/** 
+ * Declares a struct.
+ *  
+ * Grammar Note: Anonymous structs are actually 
+ * disallow (see GLSL spec.), but have been considered in the reference
+ * implementation. We keep it here for reference but will
+ * report them as warning in semantic analysis.
+ */
+glslStructSpecifier
+    : STRUCT IDENTIFIER glslStructBody
+    ;
+
+glslStructBody
+	: LEFT_BRACE  glslStructMemberGroup+ RIGHT_BRACE
+	;
+
+/**
+ * A set of struct members of the same type in a line like
+ * int a,b,c;
+ * with type(int) and members a, b and c.
+ */
+glslStructMemberGroup
+    : glslTypeQualifier? glslTypeSpecifier glslStructMemberDeclaratorList SEMICOLON 
+    ;
+
+glslStructMemberDeclaratorList
+    : glslStructMemberDeclarator (COMMA glslStructMemberDeclarator)*
+    ;
+
+glslStructMemberDeclarator
+    : IDENTIFIER glslArrayDimension*
+    ;
+
+
+
+glslTypeQualifier
+    : glslSingleTypeQualifier+
+    ;
+
+glslSingleTypeQualifier
+    : glslStorageQualifier 
+    | glslLayoutQualifier 
+    | glslPrecisionQualifier 
+    | glslInterpolationQualifier 
+    | glslInvariantQualifier 
+    | glslPreciseQualifier 
+    ;
+
+glslInvariantQualifier
+    : INVARIANT 
+    ;
+
+glslInterpolationQualifier
+    : SMOOTH 
+    | FLAT 
+    | NOPERSPECTIVE 
+    ;
+
+glslLayoutQualifier
+    : LAYOUT LEFT_PAREN glslLayoutQualifierIdList RIGHT_PAREN 
+    ;
+
+glslLayoutQualifierIdList
+    : glslLayoutQualifierId (COMMA glslLayoutQualifierId)*
+	;
+	
+glslLayoutQualifierId
+    : IDENTIFIER 
+    | IDENTIFIER EQUAL glslConstantExpression 
+    | SHARED 
+    ;
+
+glslPreciseQualifier
+    : PRECISE 
+    ;
+
+glslStorageQualifier
+    : CONST 
+    | ATTRIBUTE 
+    | VARYING 
+    | INOUT 
+    | IN 
+    | OUT 
+    | CENTROID 
+    | PATCH 
+    | SAMPLE 
+    | UNIFORM 
+    | BUFFER 
+    | SHARED 
+    | COHERENT 
+    | VOLATILE 
+    | RESTRICT 
+    | READONLY 
+    | WRITEONLY 
+    | SUBROUTINE LEFT_PAREN glslFunctionNameList RIGHT_PAREN 
+    | SUBROUTINE 
+    ;
+
+glslPrecisionQualifier
+    : HIGH_PRECISION 
+    | MEDIUM_PRECISION 
+    | LOW_PRECISION 
+    ;
+
+
+
+///////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+////
+////         P R E P R O C E S S O R    R U L E S
+////
+///////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+
+
+
+/**
+ * Main entry point of the preprocessor parser.
+ * The preprocessor considers the text to be
+ * a set of lines where each line is either a
+ * directive or a text line. The latter is simply ignored.
+ */
+glslpp
+	: glslppPreprocessingFile
+	;
+
+
+glslppPreprocessingFile
+	: glslppGroup?
+	;
+
+glslppGroup
+	: glslppGroupPart+
+	;
+
+glslppGroupPart
+	: glslppIfSection
+	| glslppControlLine
+	| glslppTextLine
+	;
+
+glslppIfSection
+	: glslppIfGroup  glslppElifGroups? glslppElseGroup? glslppEndifLine
+	;
+
+glslppIfGroup
+	: PPIF glslConstantExpression  CRLF  glslppGroup?
+	| PPIFDEF glslppIdentifier  CRLF  glslppGroup?
+	| PPIFNDEF glslppIdentifier  CRLF  glslppGroup?
+	;
+
+glslppElifGroups
+	: glslppElifGroup+
+	;
+
+glslppElifGroup
+	: PPELIF glslConstantExpression  CRLF  glslppGroup?
+	;
+
+glslppElseGroup
+	: PPELSE CRLF glslppGroup?
+	;
+
+glslppEndifLine
+	: PPENDIF CRLF
+	;
+
+glslppControlLine
+	: PPINCLUDE glslppHeaderName  CRLF
+	| PPDEFINE glslppMacro  CRLF
+	| PPUNDEF glslppIdentifier  CRLF
+	| PPLINE glslppTokens  CRLF
+	| PPERROR glslppTokens? CRLF
+	| PPPRAGMA glslppTokens? CRLF
+	| PPEXTENSION glslppIdentifier COLON glslppExtensionBehaviour CRLF
+	| PPVERSION glslIntegerConstant glslppProfile CRLF
+	| HASH CRLF                 /* empty directive */
+	| HASH glslppNonDirective   /* ignored directive */
+	;
+
+
+/** 
+ * Macros with parameters cannot have whitespace 
+ * between the IDENTIFIER and LEFT_PAREN.
+ * Whitespace usually goes to ->channel(HIDDEN) 
+ * and thus, we need to explicitly check them here.
+ * 
+ * The method hidden is defined in the @members section above.
+ */
+glslppMacro 
+	: IDENTIFIER 
+		(
+		 { hidden(WHITESPACE)}? glslppReplacementList
+		|{!hidden(WHITESPACE)}? LEFT_PAREN glslppMacroArguments  RIGHT_PAREN glslppReplacementList
+		| /* empty */
+		)
+	;
+	
+glslppMacroArguments
+	: glslppIdentifierList?
+	| (glslppIdentifierList COMMA)? DOTS
+	;
+
+
+
+glslppExtensionBehaviour
+	: 'require'
+	| 'enable'
+	| 'warn'
+	| 'disable'
+	;
+
+glslppProfile
+	: 'core'
+	| 'compatibility'
+	| 'es'
+	;
+
+glslppIdentifierList
+	: IDENTIFIER (COMMA IDENTIFIER)*
+	;
+
+/** Any line not starting with # */
+glslppTextLine
+	:  ~(HASH
+		|PPIF
+		|PPIFDEF
+		|PPIFNDEF
+		|PPELIF
+		|PPELSE
+		|PPENDIF
+		|PPINCLUDE
+		|PPDEFINE
+		|PPUNDEF
+		|PPLINE
+		|PPERROR
+		|PPPRAGMA
+		|PPEXTENSION
+		|PPVERSION
+		) ~CRLF* CRLF
+	| CRLF
+	;
+
+glslppNonDirective
+	: glslppTokens? CRLF
+	;
+
+glslppReplacementList
+	: glslppTokens?
+	;
+	
+
+glslppTokens
+	: glslppPreprocessingToken+
+	;
+
+glslppPreprocessingToken
+	: glslppHeaderName
+	| glslppIdentifier
+	| glslppNumber
+	| glslppCharacterConstant
+	| glslppStringLiteral
+	| glslppPunctuator
+	| glslppUnspecifiedToken /* each non-white-space character that cannot be one of the above */
+	;
+
+glslppCharacterConstant
+	: CHARACTER_CONSTANT
+	| PREFIXED_CHARACTER_CONSTANT
+	;
+
+glslppStringLiteral
+	: STRING_LITERAL
+	| PREFIXED_STRING_LITERAL
+	;
+
+/**
+ * either a standard header (<path/header.name>) or custom header ("path/header.name").
+ * Standard headers conflict with rules for relational expressions 
+ * (something '<' something '>' something) and had to be relaxed to 
+ * (LEFT_ANGLE ~RIGHT_ANGLE+ RIGHT_ANGLE).
+ */
+glslppHeaderName
+	: LEFT_ANGLE ~(RIGHT_ANGLE|CRLF)+ RIGHT_ANGLE
+	| STRING_LITERAL
+	;
+
+
+//////////////////////////////////////////////
+//    B A S I C S
+//////////////////////////////////////////////
+
+
+glslppIdentifier 
+	: IDENTIFIER
+	;
+
+glslppNumber
+	: glslIntegerConstant
+	| glslUnsignedIntegerConstant
+	| glslDoubleConstant
+	| glslFloatConstant
+	;
+
+glslppSign
+	: (PLUS|DASH)?
+	;
+
+glslppPunctuator
+	: LEFT_BRACKET 
+	| RIGHT_BRACKET 
+	| LEFT_PAREN 
+	| RIGHT_PAREN 
+	| LEFT_BRACE 
+	| RIGHT_BRACE 
+	| DOT 
+	| INC_OP 
+	| DEC_OP 
+	| AMPERSAND 
+	| STAR 
+	| PLUS 
+	| DASH 
+	| TILDE 
+	| BANG
+	| SLASH 
+	| PERCENT 
+	| LEFT_OP 
+	| RIGHT_OP 
+	| LEFT_ANGLE RIGHT_ANGLE 
+	| LE_OP 
+	| GE_OP 
+	| EQ_OP 
+	| NE_OP 
+	| CARET 
+	| VERTICAL_BAR 
+	| AND_OP 
+	| OR_OP
+	| QUESTION 
+	| COLON 
+	| SEMICOLON 
+	| DOTS
+	| EQUAL 
+	| MUL_ASSIGN 
+	| DIV_ASSIGN
+	| MOD_ASSIGN 
+	| ADD_ASSIGN 
+	| SUB_ASSIGN 
+	| LEFT_ASSIGN 
+	| RIGHT_ASSIGN 
+	| AND_ASSIGN 
+	| XOR_ASSIGN 
+	| OR_ASSIGN
+	| COMMA
+	
+	| HASH
+	| PPOP_CONCAT
+	;
+
+/**
+ * All tokens, which are not specific preprocessing tokens
+ * but part of glsl (i.e. used in macros).
+ */
+glslppUnspecifiedToken:
+	~(
+		STRING_LITERAL
+		| IDENTIFIER
+		| INTCONSTANT
+		| UINTCONSTANT
+		| DOUBLECONSTANT
+		| FLOATCONSTANT
+		| CHARACTER_CONSTANT
+		| PREFIXED_CHARACTER_CONSTANT
+		| PREFIXED_STRING_LITERAL
+		| LEFT_BRACKET 
+		| RIGHT_BRACKET 
+		| LEFT_PAREN 
+		| RIGHT_PAREN 
+		| LEFT_BRACE 
+		| RIGHT_BRACE 
+		| DOT 
+		| INC_OP 
+		| DEC_OP 
+		| AMPERSAND 
+		| STAR 
+		| PLUS 
+		| DASH 
+		| TILDE 
+		| BANG
+		| SLASH 
+		| PERCENT 
+		| LEFT_OP 
+		| RIGHT_OP 
+		| LEFT_ANGLE
+		| LE_OP 
+		| GE_OP 
+		| EQ_OP 
+		| NE_OP 
+		| CARET 
+		| VERTICAL_BAR 
+		| AND_OP 
+		| OR_OP
+		| QUESTION
+		| COLON 
+		| SEMICOLON 
+		| DOTS
+		| EQUAL 
+		| MUL_ASSIGN 
+		| DIV_ASSIGN
+		| MOD_ASSIGN 
+		| ADD_ASSIGN 
+		| SUB_ASSIGN 
+		| LEFT_ASSIGN 
+		| RIGHT_ASSIGN 
+		| AND_ASSIGN 
+		| XOR_ASSIGN 
+		| OR_ASSIGN
+		| COMMA
+		| WHITESPACE
+		| CRLF
+		
+		| HASH
+		| PPOP_CONCAT
+		
+		| OTHER /* any error token to be identified by lang parser later */
+	)
+	;
+
 
 
 
