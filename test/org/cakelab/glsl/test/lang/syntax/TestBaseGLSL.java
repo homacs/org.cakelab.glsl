@@ -16,7 +16,6 @@ public class TestBaseGLSL extends TestBaseCommon {
 		GLSLLexer lexer = new GLSLLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		parser = new GLSLParser(tokens);
-		lexer.preprocessing = false;
 		TestBaseCommon.setup(parser, lexer);
 		return (GLSLParser)parser;
 	}

@@ -1,13 +1,14 @@
-package org.cakelab.glsl.pp;
+package org.cakelab.glsl.pp.ast;
 
 import org.cakelab.glsl.lang.ast.Scope;
 
-public class PPElseScope extends PPGroupScope {
+public class PPElifScope extends PPIfScope {
 	private PPIfScope previous;
 
-	public PPElseScope(Scope parent, PPIfScope previous) {
+	public PPElifScope(Scope parent, PPIfScope previous) {
 		super(parent);
 		this.previous = previous;
+		
 	}
 
 	@Override

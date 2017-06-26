@@ -1,36 +1,14 @@
 lexer grammar GLSLtoken;
 
 
-@members{
-	public boolean preprocessing = false;
-	public void preprocessing(boolean enable) {
-		preprocessing = enable;
-	}
-}
-
-
-PPOP_DEFINED: 'defined' {preprocessing}?;
-
 //////////////////////////////////////
 // W H I T E   S P A C E   E T C.
 //////////////////////////////////////
 
 WHITESPACE
-	: [ \t]+ -> channel(HIDDEN)
+	: [ \t\r\n]+ -> channel(HIDDEN)
 ;
 
-
-/** Line end. Visible only when preprocessing. 
- * See also HIDDEN_CRLF.
- */
-CRLF
-	: '\r'? '\n' {preprocessing}?
-;
-
-/** Alternative rule to CRLF. Active only when not preprocessing. */
-HIDDEN_CRLF
-	: '\r'? '\n' {!preprocessing}? -> channel(HIDDEN)
-;
 
 /**
  * Escaped line end which acts as line continuation.
@@ -125,42 +103,6 @@ QUESTION: '?';
 
 
 
-
-HASH: '#';
-PPOP_CONCAT: '##';
-DOTS: '...';
-//////////////////////////////////////
-// N O N S T A N D A R D   E X T E N T
-//////////////////////////////////////
-
-DOUBLE_QUOTE: '"';
-SINGLE_QUOTE: '\'';
-
-
-//////////////////////////////////////
-// S T R I N G S  (non-standard)
-//////////////////////////////////////
-
-
-
-CHARACTER_CONSTANT
-	: '\'' C_CHAR_SEQUENCE '\''{preprocessing}?
-;
-
-PREFIXED_CHARACTER_CONSTANT
-	: 'L' '\'' C_CHAR_SEQUENCE '\''{preprocessing}?
-	| 'u' '\'' C_CHAR_SEQUENCE '\''{preprocessing}?
-	| 'U' '\'' C_CHAR_SEQUENCE '\''{preprocessing}?
-;
-
-STRING_LITERAL
-	: '"' S_CHAR_SEQUENCE? '"'{preprocessing}?
-;
-
-PREFIXED_STRING_LITERAL
-	: ENCODING_PREFIX '"' S_CHAR_SEQUENCE? '"' {preprocessing}?
-;
-
 //////////////////////////////////////
 //       I D E N T I F I E R S
 //////////////////////////////////////
@@ -173,88 +115,12 @@ IDENTIFIER: NONDIGIT (DIGIT | NONDIGIT)*;
 
 
 
-/**
- * Any token not used by the rules above. Especially used in strings.
- */
-OTHER: .;
-
-
 //////////////////////////////////////
 //       F R A G M E N T S
 //////////////////////////////////////
 // Will not occur as actual tokens, but
 // as part of other tokens.
 
-
-
-
-fragment ENCODING_PREFIX
-	: 'u8'
-	| 'u'
-	| 'U'
-	| 'L'
-;
-
-fragment S_CHAR_SEQUENCE
-	: S_CHAR+
-;
-
-fragment C_CHAR_SEQUENCE:
-	C_CHAR+ 
-;
-fragment ESCAPE_SEQUENCE
-	: SIMPLE_ESCAPE_SEQUENCE
-	| OCTAL_ESCAPE_SEQUENCE
-	| HEXADECIMAL_ESCAPE_SEQUENCE
-	| UNIVERSAL_CHARACTER_NAME
-;
-
-fragment UNIVERSAL_CHARACTER_NAME
-	: '\\u' HEX_QUAD
-	| '\\U' HEX_QUAD  HEX_QUAD
-;
-fragment HEX_QUAD
-	: HEXADECIMAL_DIGIT  HEXADECIMAL_DIGIT HEXADECIMAL_DIGIT  HEXADECIMAL_DIGIT
-;
-
-fragment SIMPLE_ESCAPE_SEQUENCE
-	: '\\\'' 
-	| '\\"' 
-	| '\\?' 
-	| '\\\\'
-	| '\\a' 
-	| '\\b' 
-	| '\\f' 
-	| '\\n' 
-	| '\\r' 
-	| '\\t' 
-	| '\\v'
-;
-
-fragment OCTAL_ESCAPE_SEQUENCE
-	: '\\' OCTAL_DIGIT (OCTAL_DIGIT OCTAL_DIGIT?)?
-;
-
-
-fragment HEXADECIMAL_ESCAPE_SEQUENCE:
-	'\\x' HEXADECIMAL_DIGIT+
-;
-
-
-
-fragment S_CHAR
-	: ~["\\\n]
-	| [ \t]
-	| LINE_CONTINUATION
-	| ESCAPE_SEQUENCE
-;
-
-fragment C_CHAR
-	: ~['\\\n]
-	| [ \t]
-	| LINE_CONTINUATION
-	| ESCAPE_SEQUENCE
-;
 
 
 fragment FLOATRAW: (DIGIT+ '.' DIGIT*) | (DIGIT* '.' DIGIT+);

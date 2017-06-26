@@ -1,4 +1,4 @@
-package org.cakelab.glsl.pp;
+package org.cakelab.glsl.pp.ast;
 
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Expression;

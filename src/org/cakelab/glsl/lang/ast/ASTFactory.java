@@ -11,9 +11,6 @@ import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.lang.ast.Qualifier.LayoutQualifier;
-import org.cakelab.glsl.pp.Macro;
-import org.cakelab.glsl.pp.MacroReference;
-import org.cakelab.glsl.pp.PPDefinedExpression;
 
 // TODO: supposed to be an interface
 // TODO: supposed to be in parser package
@@ -155,13 +152,7 @@ public class ASTFactory {
 			case GLSLParser.BANG: return new LogicalNotExpression(start, operand);
 			case GLSLParser.TILDE: return new NotExpression(start, operand);
 			default:
-				String identifier = unary.glslIdentifier().getText();
-				Object macro = symbolTable.resolve(identifier);
-				if (macro instanceof Macro) {
-					return new PPDefinedExpression(start, new MacroReference(createInterval(unary.glslIdentifier()), (Macro)macro));
-				} else {
-					return new PPDefinedExpression(start, new UndefinedIdentifier(createInterval(unary.glslIdentifier()),identifier));
-				}
+				throw new Error("internal error: unhandled case in unary expression");
 			}
 		} else {
 			return create(postfix);
@@ -432,25 +423,6 @@ public class ASTFactory {
 		// all other cases refer to constants
 		//
 		return Qualifier.get(context.getText());
-	}
-
-	public Expression create(GlslppMacroExpressionContext ctx) {
-		String identifier = ctx.IDENTIFIER().getText();
-		Object symbol = symbolTable.resolve(identifier);
-		Expression result;
-		if (symbol instanceof Macro) {
-			Macro macro = (Macro)symbol;
-			result = new MacroReference(createInterval(ctx), macro);
-		} else {
-			result = new UndefinedIdentifier(createInterval(ctx), identifier);
-		}
-		// TODO: call arguments
-//		GlslCallArgumentsContext arguments = ctx.glslCallArguments();
-//		if (arguments == null) {
-//			result = create(result, arguments);
-//		}
-
-		return result;
 	}
 
 	

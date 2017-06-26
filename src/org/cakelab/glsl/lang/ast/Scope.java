@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import org.cakelab.glsl.pp.Macro;
+import org.cakelab.glsl.pp.ast.Macro;
 
 public class Scope {
 	static class Builtin extends Scope {

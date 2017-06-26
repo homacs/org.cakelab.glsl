@@ -1,4 +1,4 @@
-package org.cakelab.glsl.pp;
+package org.cakelab.glsl.pp.ast;
 
 public class MacroParameter {
 	// TODO: isn't macro parameter a value type?
