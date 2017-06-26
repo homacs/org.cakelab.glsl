@@ -1,6 +1,8 @@
 package org.cakelab.glsl.test.lang.syntax;
 
-public class TestArray extends TestBaseGLSL {
+import org.cakelab.glsl.test.lang.TestingBase;
+
+public class TestArray extends TestingBase {
 	public static void test() {
 
 		testArrayVariableDeclaration();

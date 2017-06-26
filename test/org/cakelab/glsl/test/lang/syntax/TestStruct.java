@@ -2,8 +2,9 @@ package org.cakelab.glsl.test.lang.syntax;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cakelab.glsl.GLSLParser.GlslStructSpecifierContext;
+import org.cakelab.glsl.test.lang.TestingBase;
 
-public class TestStruct extends TestBaseGLSL {
+public class TestStruct extends TestingBase {
 	public static void test() {
 
 		testStructPrototype();

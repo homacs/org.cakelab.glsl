@@ -1,7 +1,8 @@
 package org.cakelab.glsl.test.lang.syntax;
 
+import org.cakelab.glsl.test.lang.TestingBase;
 
-public class TestNumber extends TestBaseGLSL {
+public class TestNumber extends TestingBase {
 
 	public static void test() {
 		testInteger();

@@ -1,6 +1,8 @@
 package org.cakelab.glsl.test.lang.syntax;
 
-public class TestComment extends TestBaseGLSL {
+import org.cakelab.glsl.test.lang.TestingBase;
+
+public class TestComment extends TestingBase {
 	public static void test() {
 		String source;
 

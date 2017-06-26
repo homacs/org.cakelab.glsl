@@ -2,8 +2,9 @@ package org.cakelab.glsl.test.lang.syntax;
 
 import org.cakelab.glsl.GLSLParser.GlslBuiltinTypeContext;
 import org.cakelab.glsl.GLSLParser.GlslDeclarationContext;
+import org.cakelab.glsl.test.lang.TestingBase;
 
-public class TestVariable extends TestBaseGLSL {
+public class TestVariable extends TestingBase {
 	
 	public static void test() {
 		testScalarVariable();

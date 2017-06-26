@@ -1,9 +1,10 @@
 package org.cakelab.glsl.test.lang.syntax;
 
 import org.cakelab.glsl.GLSLParser.*;
-import org.cakelab.glsl.test.TestBaseCommon;
+import org.cakelab.glsl.test.lang.TestingBase;
+import org.cakelab.glsl.test.lang.TestingTools;
 
-public class TestStatement extends TestBaseGLSL {
+public class TestStatement extends TestingBase {
 	
 	public static void test() {
 		testSimpleStatement();
@@ -23,7 +24,7 @@ public class TestStatement extends TestBaseGLSL {
 	}
 	
 	public static void tearDownMultiTest() {
-		TestBaseCommon.tearDown();
+		TestingTools.tearDown();
 		autoTearDown = true;
 	}
 	

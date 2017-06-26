@@ -3,9 +3,10 @@ package org.cakelab.glsl.test.lang.syntax;
 import org.cakelab.glsl.GLSLParser.GlslArrayDimensionContext;
 import org.cakelab.glsl.GLSLParser.GlslBuiltinTypeContext;
 import org.cakelab.glsl.GLSLParser.GlslCallArgumentsContext;
-import org.cakelab.glsl.test.TestBaseCommon;
+import org.cakelab.glsl.test.lang.TestingBase;
+import org.cakelab.glsl.test.lang.TestingTools;
 
-public class TestExpression extends TestBaseGLSL {
+public class TestExpression extends TestingBase {
 	static String[] PRIMARY_EXPRESSION_EXAMPLES = new String[]{
 		"var",
 		"(var)",
@@ -74,7 +75,7 @@ public class TestExpression extends TestBaseGLSL {
 	}
 	
 	public static void tearDownMultiTest() {
-		TestBaseCommon.tearDown();
+		TestingTools.tearDown();
 		autoTearDown = true;
 	}
 	

@@ -2,7 +2,9 @@ package org.cakelab.glsl.test;
 
 import java.io.File;
 
-public class TestAllTestFiles extends TestBaseCommon {
+import org.cakelab.glsl.test.lang.TestingTools;
+
+public class TestAllTestFiles extends TestingTools {
 
 	public static void main(String[] args) {
 		File folder = new File("test_files");

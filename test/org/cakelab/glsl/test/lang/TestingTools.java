@@ -1,4 +1,4 @@
-package org.cakelab.glsl.test;
+package org.cakelab.glsl.test.lang;
 
 import java.io.PrintStream;
 import java.util.BitSet;
@@ -20,7 +20,7 @@ import org.cakelab.glsl.GLSLLexer;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.lang.Validator;
 
-public class TestBaseCommon {
+public class TestingTools {
 
 	protected static GLSLParser parser;
 
@@ -211,7 +211,7 @@ public class TestBaseCommon {
 	
 	private static StackTraceElement getCallSite() {
 		String baseClassNamePrefix = "TestBase";
-		assert (TestBaseCommon.class.getSimpleName().startsWith(baseClassNamePrefix)) : "need to adjust prefix of the base class names to make tests work again";
+		assert (TestingTools.class.getSimpleName().startsWith(baseClassNamePrefix)) : "need to adjust prefix of the base class names to make tests work again";
 		
 		for (StackTraceElement stackElem : Thread.currentThread().getStackTrace()) {
 			String className = stackElem.getClassName().replaceAll("[^\\.]*\\.", "");
