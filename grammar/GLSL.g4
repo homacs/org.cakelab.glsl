@@ -865,10 +865,14 @@ glslppIfSection
 	: glslppIfGroup  glslppElifGroups? glslppElseGroup? glslppEndifLine
 	;
 
+glslppIfLine
+	: PPIF glslConstantExpression  CRLF
+	| PPIFDEF glslppIdentifier  CRLF
+	| PPIFNDEF glslppIdentifier  CRLF
+	;
+
 glslppIfGroup
-	: PPIF glslConstantExpression  CRLF  glslppGroup?
-	| PPIFDEF glslppIdentifier  CRLF  glslppGroup?
-	| PPIFNDEF glslppIdentifier  CRLF  glslppGroup?
+	: glslppIfLine  glslppGroup?
 	;
 
 glslppElifGroups
@@ -895,7 +899,7 @@ glslppControlLine
 	| PPERROR glslppTokens? CRLF
 	| PPPRAGMA glslppTokens? CRLF
 	| PPEXTENSION glslppIdentifier COLON glslppExtensionBehaviour CRLF
-	| PPVERSION glslIntegerConstant glslppProfile CRLF
+	| PPVERSION glslIntegerConstant glslppProfile? CRLF
 	| HASH CRLF                 /* empty directive */
 	| HASH glslppNonDirective   /* ignored directive */
 	;
@@ -944,7 +948,21 @@ glslppIdentifierList
 
 /** Any line not starting with # */
 glslppTextLine
-	:  ~(HASH
+	:  glslppNonDirectiveStart (glslppPreprocessingToken)* CRLF
+	| glslppMacroExpression (glslppPreprocessingToken)* CRLF
+	| CRLF
+	;
+	
+glslppMacroExpression
+	: IDENTIFIER glslppMacroParameters?
+	;
+glslppMacroParameters
+	: (LEFT_PAREN glslAssignmentExpression (COMMA glslAssignmentExpression)* RIGHT_PAREN)
+	;
+
+
+glslppNonDirectiveStart
+	: ~(HASH
 		|PPIF
 		|PPIFDEF
 		|PPIFNDEF
@@ -959,9 +977,14 @@ glslppTextLine
 		|PPPRAGMA
 		|PPEXTENSION
 		|PPVERSION
-		) ~CRLF* CRLF
-	| CRLF
+		|IDENTIFIER
+		|CRLF
+		)
 	;
+
+
+
+
 
 glslppNonDirective
 	: glslppTokens? CRLF
@@ -978,7 +1001,7 @@ glslppTokens
 
 glslppPreprocessingToken
 	: glslppHeaderName
-	| glslppIdentifier
+	| glslppMacroExpression
 	| glslppNumber
 	| glslppCharacterConstant
 	| glslppStringLiteral
@@ -1143,8 +1166,8 @@ glslppUnspecifiedToken:
 		| HASH
 		| PPOP_CONCAT
 		
-		| OTHER /* any error token to be identified by lang parser later */
 	)
+	| OTHER /* any error token to be identified by lang parser later */
 	;
 
 

@@ -1,10 +1,13 @@
 package org.cakelab.glsl.lang.ast;
 
+import org.cakelab.glsl.Interval;
+
 public class VariableReference extends PrimaryExpression implements Identifier {
 
-	private Variable variable;
+	protected Variable variable;
 
-	public VariableReference(Variable variable) {
+	public VariableReference(Interval interval, Variable variable) {
+		super(interval);
 		this.variable = variable;
 	}
 
@@ -13,4 +16,15 @@ public class VariableReference extends PrimaryExpression implements Identifier {
 		return variable.name;
 	}
 
+	@Override
+	public Value value() {
+		return variable.value();
+	}
+
+	@Override
+	public LValue lvalue() {
+		return variable;
+	}
+
+	
 }

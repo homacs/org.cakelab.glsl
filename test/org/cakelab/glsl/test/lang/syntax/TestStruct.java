@@ -44,7 +44,7 @@ public class TestStruct extends TestBaseGLSL {
 				+ " int a;"
 				+ " float b;"
 				+ " bool c;"
-				+ " struct {"
+				+ " struct name {"
 				+ "  myType c;"
 				+ " } d[2];"
 				+ "};";

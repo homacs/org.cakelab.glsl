@@ -4,7 +4,7 @@ package org.cakelab.glsl.lang.ast;
 import static org.cakelab.glsl.lang.ast.Qualifier.*;
 import static org.cakelab.glsl.lang.ast.Type.*;
 
-public class Function implements Comparable<Function>{
+public class Function implements Comparable<Function> {
 
 	public static class Body extends Scope {
 		public Body(Scope parent, ParameterDeclaration[] parameters) {
@@ -52,7 +52,11 @@ public class Function implements Comparable<Function>{
 		return this.body;
 	}
 	
-	
+	public Value call(Value[] args) {
+		throw new Error("not yet implemented");
+	}
+
+
 	
 	public static final Function[] BUILTIN_FUNCTIONS = {
 		new Function(_float, "radians", new ParameterDeclaration(_float, "degrees")),

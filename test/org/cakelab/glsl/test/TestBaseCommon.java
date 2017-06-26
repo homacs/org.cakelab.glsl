@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNodeImpl;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
@@ -241,7 +242,7 @@ public class TestBaseCommon {
 			out.print(indent + parseTree.getClass().getSimpleName() + "[");
 		}
 		if (parseTree.getChildCount() > 0) {
-			out.println("'" + parseTree.getText() + "'");
+			out.println("'" + toString(parseTree) + "'");
 			for (int i = 0; i < parseTree.getChildCount(); i++) {
 				dump(out, parseTree.getChild(i), depth+1);
 			}
@@ -250,6 +251,11 @@ public class TestBaseCommon {
 			out.println("'" + parseTree + "']");
 		}
 		
+	}
+
+	private static String toString(ParseTree parseTree) {
+		Interval interval = parseTree.getSourceInterval();
+		return parser.getTokenStream().getText(interval);
 	}
 
 	public static void setup(GLSLParser parser, GLSLLexer lexer) {

@@ -1048,6 +1048,18 @@ public class GLSLBaseListener implements GLSLListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterGlslppIfLine(GLSLParser.GlslppIfLineContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslppIfLine(GLSLParser.GlslppIfLineContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterGlslppIfGroup(GLSLParser.GlslppIfGroupContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -1187,6 +1199,42 @@ public class GLSLBaseListener implements GLSLListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitGlslppTextLine(GLSLParser.GlslppTextLineContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGlslppMacroExpression(GLSLParser.GlslppMacroExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslppMacroExpression(GLSLParser.GlslppMacroExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGlslppMacroParameters(GLSLParser.GlslppMacroParametersContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslppMacroParameters(GLSLParser.GlslppMacroParametersContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGlslppNonDirectiveStart(GLSLParser.GlslppNonDirectiveStartContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlslppNonDirectiveStart(GLSLParser.GlslppNonDirectiveStartContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

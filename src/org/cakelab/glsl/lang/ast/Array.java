@@ -2,6 +2,8 @@ package org.cakelab.glsl.lang.ast;
 
 import java.util.Arrays;
 
+import org.cakelab.glsl.lang.ast.Struct.Method;
+
 public class Array extends Type {
 	
 	public static class QualifiedArrayImpl extends Array implements QualifiedType {
@@ -22,13 +24,16 @@ public class Array extends Type {
 		}
 		
 	}
+
+	public static final Method LENGTH = null;
 	
 	Expression[] dimensions;
 	/** type without array specification */
 	private Type baseType;
+	private Type componentType;
 	
 	public Array(Type baseType, Expression ... dimensions) {
-		super(signature(baseType.signature, dimensions.length));
+		super(signature(baseType.signature, dimensions.length), ARRAY);
 		if (baseType instanceof Array) {
 			Array that = ((Array)baseType);
 			this.baseType = that.baseType;
@@ -43,7 +48,7 @@ public class Array extends Type {
 	}
 
 	public Array(Array that) {
-		super(that.signature);
+		super(that.signature, ARRAY);
 		this.baseType = that.baseType;
 		this.dimensions = that.dimensions;
 	}
@@ -58,6 +63,17 @@ public class Array extends Type {
 			result.append("[]");
 		}
 		return result.toString();
+	}
+
+	public Type getComponentType() {
+		if (componentType != null) {
+			return componentType;
+		} else if (dimensions.length == 1) {
+			componentType = baseType;
+		} else {
+			componentType = new Array(baseType, Arrays.copyOfRange(dimensions, 1, dimensions.length-1));
+		}
+		return componentType;
 	}
 
 	

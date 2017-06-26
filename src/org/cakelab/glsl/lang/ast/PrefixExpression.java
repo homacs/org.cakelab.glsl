@@ -1,9 +1,12 @@
 package org.cakelab.glsl.lang.ast;
 
-public class PrefixExpression extends UnaryExpression {
+import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.Location;
 
-	public PrefixExpression(Expression operand) {
-		super(operand);
+public abstract class PrefixExpression extends UnaryExpression {
+
+	public PrefixExpression(Location start, Expression operand) {
+		super(new Interval(start, operand.getEnd()), operand);
 	}
 
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import org.cakelab.glsl.pp.Macro;
+
 public class Scope {
 	static class Builtin extends Scope {
 		Builtin() {
@@ -19,12 +21,16 @@ public class Scope {
 
 	public static final Scope BUILTIN_SCOPE = new Builtin();
 	
-	Scope parent;
+	protected Scope parent;
 	ArrayList<Scope> children = new ArrayList<Scope>();
 	
 	HashMap<String, ArrayList<Function>> functions = new HashMap<String, ArrayList<Function>>();
 	HashMap<String, Variable> variables = new HashMap<String, Variable>();
 	HashMap<String, Type> types = new HashMap<String, Type>();
+	// TODO: all macros are global
+	HashMap<String, Macro> macros = new HashMap<String, Macro>();
+	
+	
 	
 	public Scope(Scope parent) {
 		this.parent = parent;
@@ -60,19 +66,17 @@ public class Scope {
 		return false;
 	}
 
-	public Type getType(String signature) {
-		Type t = types.get(signature);
-		if (t != null) {
-			return t;
-		} else if (parent != null) {
-			return parent.getType(signature);
-		} else {
-			return null;
+	public Type getType(String name) {
+		Type type = types.get(name);
+		if (type == null && parent != null) {
+			type = parent.getType(name);
 		}
+		return type;
 	}
 
 
 	public Function getFunction(String name) {
+		// TODO: consider function signature somehow? or associate with the group of functions?
 		ArrayList<Function> group = functions.get(name);
 		if (group != null) {
 			return group.get(0);
@@ -81,7 +85,14 @@ public class Scope {
 		else return null;
 	}
 	
-
+	public Macro getMacro(String name) {
+		// TODO: is there macro overriding? like with parameters?
+		Macro macro = macros.get(name);
+		if (macro == null && parent != null) {
+			macro = parent.getMacro(name);
+		}
+		return macro;
+	}
 	
 	public void add(Scope child) {
 		children.add(child);
@@ -115,8 +126,34 @@ public class Scope {
 		types.put(name, type);
 	}
 
+	public void addMacro(String name, Macro macro) {
+		macros.put(name, macro);
+	}
+	
+	public Variable getVariable(String identifier) {
+		Variable var = variables.get(identifier);
+		if (var == null && parent != null) {
+			var = parent.getVariable(identifier);
+		}
+		return var;
+	}
+
+	
 	public ArrayList<Scope> getChildren() {
 		return children;
+	}
+
+	public Object get(String identifier) {
+		Object result = types.get(identifier);
+		if (result != null) return result;
+		
+		result = functions.get(identifier);
+		if (result != null) return result;
+		
+		result = variables.get(identifier);
+		if (result != null) return result;
+		
+		return null;
 	}
 
 

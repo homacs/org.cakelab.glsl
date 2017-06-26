@@ -1,9 +1,33 @@
 package org.cakelab.glsl.lang.ast;
 
+import org.cakelab.glsl.Interval;
+
 public class Value extends PrimaryExpression {
+	
 	Type type;
 	Object value;
-	public Value(Type type, Object value) {
+	
+	public Value(Interval interval, Type type, Object value) {
+		super(interval);
 		this.type = type;
+		this.value = value;
 	}
+	
+	@Override
+	public Value value() {
+		return this;
+	}
+
+	public Type getType() {
+		return type;
+	}
+	
+	public Object getValue() {
+		return value;
+	}
+
+	public boolean isNull() {
+		return value == null;
+	}
+
 }

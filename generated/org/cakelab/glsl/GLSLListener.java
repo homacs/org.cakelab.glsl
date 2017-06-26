@@ -868,6 +868,16 @@ public interface GLSLListener extends ParseTreeListener {
 	 */
 	void exitGlslppIfSection(GLSLParser.GlslppIfSectionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link GLSLParser#glslppIfLine}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslppIfLine(GLSLParser.GlslppIfLineContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLParser#glslppIfLine}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslppIfLine(GLSLParser.GlslppIfLineContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link GLSLParser#glslppIfGroup}.
 	 * @param ctx the parse tree
 	 */
@@ -987,6 +997,36 @@ public interface GLSLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitGlslppTextLine(GLSLParser.GlslppTextLineContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLParser#glslppMacroExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslppMacroExpression(GLSLParser.GlslppMacroExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLParser#glslppMacroExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslppMacroExpression(GLSLParser.GlslppMacroExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLParser#glslppMacroParameters}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslppMacroParameters(GLSLParser.GlslppMacroParametersContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLParser#glslppMacroParameters}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslppMacroParameters(GLSLParser.GlslppMacroParametersContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLParser#glslppNonDirectiveStart}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlslppNonDirectiveStart(GLSLParser.GlslppNonDirectiveStartContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLParser#glslppNonDirectiveStart}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlslppNonDirectiveStart(GLSLParser.GlslppNonDirectiveStartContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GLSLParser#glslppNonDirective}.
 	 * @param ctx the parse tree

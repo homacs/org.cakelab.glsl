@@ -3,6 +3,7 @@ package org.cakelab.glsl.lang.ast;
 import java.util.ArrayList;
 
 public class Struct extends Type {
+
 	public static class QualifiedStructImpl extends Struct implements QualifiedType {
 
 		private Qualifier[] qualifiers;
@@ -29,6 +30,25 @@ public class Struct extends Type {
 		}
 	}
 
+	/** method is a function with a this pointer as implicit first argument */
+	public class Method extends Member {
+		Function function;
+
+		public Method(Type returnType, Function function) {
+			super(returnType, function.name);
+			this.function = function;
+		}
+		public Method(Type returnType, Function function, Qualifier ... qualifiers) {
+			super(returnType, function.name, qualifiers);
+		}
+		public Value call(Value _this, Value[] args) {
+			
+			// TODO Auto-generated method stub
+			throw new Error("not yet implemented");
+		}
+		
+	}
+
 	
 	public static class Body extends Scope {
 		ArrayList<Member> members = new ArrayList<Member>();
@@ -41,7 +61,7 @@ public class Struct extends Type {
 	Body body;
 
 	public Struct(Scope parent, String name) {
-		super(name);
+		super(name, STRUCT);
 		this.body = new Body(parent);
 	}
 	
@@ -54,5 +74,11 @@ public class Struct extends Type {
 	public void addMember(Member member) {
 		body.members.add(member);
 	}
-	
+	public Member getMember(String identifier) {
+		/// TODO: optimise lookup?
+		for (Member member : body.members) {
+			if (member.name.equals(identifier)) return member;
+		}
+		return null;
+	}
 }

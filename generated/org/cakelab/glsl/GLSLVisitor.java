@@ -527,6 +527,12 @@ public interface GLSLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGlslppIfSection(GLSLParser.GlslppIfSectionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link GLSLParser#glslppIfLine}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGlslppIfLine(GLSLParser.GlslppIfLineContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link GLSLParser#glslppIfGroup}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -598,6 +604,24 @@ public interface GLSLVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitGlslppTextLine(GLSLParser.GlslppTextLineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GLSLParser#glslppMacroExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGlslppMacroExpression(GLSLParser.GlslppMacroExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GLSLParser#glslppMacroParameters}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGlslppMacroParameters(GLSLParser.GlslppMacroParametersContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GLSLParser#glslppNonDirectiveStart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGlslppNonDirectiveStart(GLSLParser.GlslppNonDirectiveStartContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GLSLParser#glslppNonDirective}.
 	 * @param ctx the parse tree

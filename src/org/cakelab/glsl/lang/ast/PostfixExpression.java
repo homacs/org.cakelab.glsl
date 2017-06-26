@@ -1,9 +1,13 @@
 package org.cakelab.glsl.lang.ast;
 
-public class PostfixExpression extends UnaryExpression {
+import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.Location;
 
-	public PostfixExpression(Expression operand) {
-		super(operand);
+public abstract class PostfixExpression extends UnaryExpression {
+
+	public PostfixExpression(Expression operand, Location end) {
+		super(new Interval(operand.getStart(), end), operand);
 	}
+
 
 }

@@ -74,8 +74,8 @@ public class TestDirective extends TestBaseGLSLPP {
 		assertValid(p(" # 	undef A\n").glslppControlLine());
 		
 		
-		assertValid("#define hash_hash # ## #\n");
-		assertValid("#define mkstr(a) # a\n");
+//		assertValid("#define hash_hash # ## #\n");
+//		assertValid("#define mkstr(a) # a\n");
 		assertValid("#define n_between(a) mkstr(a)\n");
 		assertValid("#define join(c, d) in_between(c hash_hash d)\n");
 		
@@ -87,6 +87,7 @@ public class TestDirective extends TestBaseGLSLPP {
 	
 
 	private static void testConditions() {
+
 		assertValid("#if 1\n"
 				+ "#endif\n");
 		assertValid("#if (1|0)\n"
@@ -127,6 +128,7 @@ public class TestDirective extends TestBaseGLSLPP {
 		assertInvalid(p("#if 1\n#elif\n#endif\n").glslppPreprocessingFile());
 		assertInvalid(p("#if 1\n#elif 0\n\n").glslppPreprocessingFile());
 		assertInvalid(p("#if A\n").glslppPreprocessingFile());
+
 	}
 	
 

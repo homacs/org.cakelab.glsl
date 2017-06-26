@@ -1,39 +1,19 @@
 package org.cakelab.glsl.lang.ast;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 import org.cakelab.glsl.GLSLParser;
+import org.cakelab.glsl.GLSLParser.*;
+import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.Location;
 import org.cakelab.glsl.SymbolTable;
-import org.cakelab.glsl.GLSLParser.GlslAdditiveExpressionContext;
-import org.cakelab.glsl.GLSLParser.GlslAndExpressionContext;
-import org.cakelab.glsl.GLSLParser.GlslArrayDimensionContext;
-import org.cakelab.glsl.GLSLParser.GlslAssignmentExpressionContext;
-import org.cakelab.glsl.GLSLParser.GlslBoolConstantContext;
-import org.cakelab.glsl.GLSLParser.GlslBuiltinTypeContext;
-import org.cakelab.glsl.GLSLParser.GlslCallArgumentsContext;
-import org.cakelab.glsl.GLSLParser.GlslConditionalExpressionContext;
-import org.cakelab.glsl.GLSLParser.GlslConstantExpressionContext;
-import org.cakelab.glsl.GLSLParser.GlslDoubleConstantContext;
-import org.cakelab.glsl.GLSLParser.GlslEqualityExpressionContext;
-import org.cakelab.glsl.GLSLParser.GlslExclusiveOrExpressionContext;
-import org.cakelab.glsl.GLSLParser.GlslExpressionContext;
-import org.cakelab.glsl.GLSLParser.GlslFieldSelectionContext;
-import org.cakelab.glsl.GLSLParser.GlslFloatConstantContext;
-import org.cakelab.glsl.GLSLParser.GlslIdentifierContext;
-import org.cakelab.glsl.GLSLParser.GlslInclusiveOrExpressionContext;
-import org.cakelab.glsl.GLSLParser.GlslIntegerConstantContext;
-import org.cakelab.glsl.GLSLParser.GlslIntegerExpressionContext;
-import org.cakelab.glsl.GLSLParser.GlslLogicalAndExpressionContext;
-import org.cakelab.glsl.GLSLParser.GlslLogicalOrExpressionContext;
-import org.cakelab.glsl.GLSLParser.GlslLogicalXorExpressionContext;
-import org.cakelab.glsl.GLSLParser.GlslMultiplicativeExpressionContext;
-import org.cakelab.glsl.GLSLParser.GlslPostfixExpressionContext;
-import org.cakelab.glsl.GLSLParser.GlslPrimaryExpressionContext;
-import org.cakelab.glsl.GLSLParser.GlslRelationalExpressionContext;
-import org.cakelab.glsl.GLSLParser.GlslShiftExpressionContext;
-import org.cakelab.glsl.GLSLParser.GlslStructSpecifierContext;
-import org.cakelab.glsl.GLSLParser.GlslUnaryExpressionContext;
-import org.cakelab.glsl.GLSLParser.GlslUnsignedIntegerConstantContext;
+import org.cakelab.glsl.lang.ast.Qualifier.LayoutQualifier;
+import org.cakelab.glsl.pp.Macro;
+import org.cakelab.glsl.pp.MacroReference;
+import org.cakelab.glsl.pp.PPDefinedExpression;
 
 // TODO: supposed to be an interface
 // TODO: supposed to be in parser package
@@ -58,11 +38,11 @@ public class ASTFactory {
 	public Expression create(GlslExpressionContext expr) {
 		List<GlslAssignmentExpressionContext> expressions = expr.glslAssignmentExpression();
 		if (expressions.size() > 1) {
-			ExpressionList list = new ExpressionList();
+			ArrayList<Expression> list = new ArrayList<Expression>();
 			for (GlslAssignmentExpressionContext assign : expressions) {
-				list.list.add(create(assign));
+				list.add(create(assign));
 			}
-			return list;
+			return new ExpressionList(list);
 		} else {
 			return create(expressions.get(0));
 		}
@@ -132,7 +112,10 @@ public class ASTFactory {
 
 	public Expression create(GlslShiftExpressionContext shift) {
 		GlslShiftExpressionContext left = shift.glslShiftExpression();
-		if (left != null) return new ShiftExpression(create(left), create(shift.glslAdditiveExpression()));
+		if (left != null) {
+			if (shift.LEFT_OP()!= null) return new ShiftLeftExpression(create(left), create(shift.glslAdditiveExpression()));
+			else return new ShiftRightExpression(create(left), create(shift.glslAdditiveExpression()));
+		}
 		else return create(shift.glslAdditiveExpression());
 	}
 
@@ -150,7 +133,9 @@ public class ASTFactory {
 		GlslMultiplicativeExpressionContext left = mul.glslMultiplicativeExpression();
 		if (left != null) {
 			if (mul.STAR()!=null) return new MulExpression(create(left), create(mul.glslUnaryExpression()));
-			else /* SLASH */ return new DivExpression(create(left), create(mul.glslUnaryExpression()));
+			else if ( mul.SLASH()!= null) return new DivExpression(create(left), create(mul.glslUnaryExpression()));
+			else if (mul.PERCENT()!=null) return new ModExpression(create(left), create(mul.glslUnaryExpression()));
+			else throw new Error("internal error: unhandled case in multiplicative expression");
 		} else {
 			return create(mul.glslUnaryExpression());
 		}
@@ -160,21 +145,22 @@ public class ASTFactory {
 		GlslPostfixExpressionContext postfix = unary.glslPostfixExpression();
 		if (postfix == null) {
 			Expression operand = create(unary.glslUnaryExpression());
+			Location start = createStartLocation(unary.glslUnaryOperator());
 			int operator = unary.glslUnaryOperator().getStart().getType();
 			switch(operator) {
-			case GLSLParser.INC_OP: return new PrefixIncExpression(operand);
-			case GLSLParser.DEC_OP: return new PrefixDecExpression(operand);
-			case GLSLParser.PLUS: return new PosExpression(operand);
-			case GLSLParser.DASH: return new NegExpression(operand);
-			case GLSLParser.BANG: return new LogicalNotExpression(operand);
-			case GLSLParser.TILDE: return new NotExpression(operand);
+			case GLSLParser.INC_OP: return new PrefixIncExpression(start, operand);
+			case GLSLParser.DEC_OP: return new PrefixDecExpression(start, operand);
+			case GLSLParser.PLUS: return new PosExpression(start, operand);
+			case GLSLParser.DASH: return new NegExpression(start, operand);
+			case GLSLParser.BANG: return new LogicalNotExpression(start, operand);
+			case GLSLParser.TILDE: return new NotExpression(start, operand);
 			default:
 				String identifier = unary.glslIdentifier().getText();
 				Object macro = symbolTable.resolve(identifier);
 				if (macro instanceof Macro) {
-					return new PPDefinedExpression(new MacroReference((Macro)macro));
+					return new PPDefinedExpression(start, new MacroReference(createInterval(unary.glslIdentifier()), (Macro)macro));
 				} else {
-					return new PPDefinedExpression(new UndefinedIdentifier(identifier));
+					return new PPDefinedExpression(start, new UndefinedIdentifier(createInterval(unary.glslIdentifier()),identifier));
 				}
 			}
 		} else {
@@ -194,10 +180,10 @@ public class ASTFactory {
 			if (dim != null) return create(operand, dim);
 			
 			GlslFieldSelectionContext field = postfix.glslFieldSelection();
-			if (field != null) return new FieldSelection(operand, field.IDENTIFIER().getText());
+			if (field != null) return new FieldSelection(operand, field.IDENTIFIER().getText(), createEndLocation(postfix));
 			
-			if (postfix.INC_OP()!= null) return new PostfixIncExpression(operand);
-			else /* DEC_OP */ return new PostfixDecExpression(operand);
+			if (postfix.INC_OP()!= null) return new PostfixIncExpression(operand, createEndLocation(postfix));
+			else /* DEC_OP */ return new PostfixDecExpression(operand, createEndLocation(postfix));
 		} else {
 			return create(primary);
 		}
@@ -207,14 +193,15 @@ public class ASTFactory {
 		GlslIdentifierContext identifier = primary.glslIdentifier();
 		if (identifier != null) {
 			Object obj = symbolTable.resolve(identifier.getText());
+			Interval interval = createInterval(identifier);
 			if (obj instanceof Type) {
-				return new TypeReference((Type)obj);
+				return new TypeReference(interval, (Type)obj);
 			} else if (obj instanceof Variable) {
-				return new VariableReference((Variable)obj);
+				return new VariableReference(interval, (Variable)obj);
 			} else if (obj instanceof Function) {
-				return new FunctionReference((Function)obj);
+				return new FunctionReference(interval, (Function)obj);
 			} else {
-				return new UndefinedIdentifier(identifier.getText());
+				return new UndefinedIdentifier(interval, identifier.getText());
 			}
 		}
 		
@@ -223,14 +210,17 @@ public class ASTFactory {
 			String name = builtinType.getText();
 			Object obj = symbolTable.resolve(name);
 			if (obj instanceof Type) {
-				return new BuiltinTypeReference((Type)obj);
+				return new BuiltinTypeReference(createInterval(builtinType), (Type)obj);
 			} else {
-				throw new RuntimeException("builtin type '" + name + "' not found in symbol table");
+				throw new Error("internal error: builtin type '" + name + "' not found in symbol table");
 			}
 		}
 		
 		GlslStructSpecifierContext struct = primary.glslStructSpecifier();
-		if (struct != null)	return new TypeReference(create(struct));
+		if (struct != null)	{
+			Struct structDef = create(struct);
+			return new TypeReference(createInterval(struct), structDef);
+		}
 		
 		GlslFloatConstantContext floatConst = primary.glslFloatConstant();
 		if (floatConst != null) return create(floatConst);
@@ -250,53 +240,232 @@ public class ASTFactory {
 		if (primary.LEFT_PAREN() != null) return create(primary.glslExpression());
 
 		// if we are still here, then we have forgotten to implement some case(es)
-		throw new Error("internal error: Unhandled branch in primary expression");
+		throw new Error("internal error: Unhandled branch in primary expression rule");
 		
 	}
 
-	public Constant<Float> create(GlslFloatConstantContext value) {
-		return new Constant<Float>(Float.valueOf(value.getText()));
+	public ConstantValue<Float> create(GlslFloatConstantContext value) {
+		Interval interval = createInterval(value);
+		return new ConstantValue<Float>(interval, Float.valueOf(value.getText()));
 	}
 
-	public Constant<Double> create(GlslDoubleConstantContext value) {
-		return new Constant<Double>(Double.valueOf(value.getText()));
+	public ConstantValue<Double> create(GlslDoubleConstantContext value) {
+		Interval interval = createInterval(value);
+		return new ConstantValue<Double>(interval, Double.valueOf(value.getText()));
 	}
 
-	public Constant<Long> create(GlslIntegerConstantContext value) {
-		return new Constant<Long>(Long.valueOf(value.getText()), true);
+	public ConstantValue<Long> create(GlslIntegerConstantContext value) {
+		Interval interval = createInterval(value);
+		return new ConstantValue<Long>(interval, Long.valueOf(value.getText()), true);
 	}
 
-	public Constant<Long> create(GlslUnsignedIntegerConstantContext value) {
-		return new Constant<Long>(Long.valueOf(value.getText()), false);
+	public ConstantValue<Long> create(GlslUnsignedIntegerConstantContext value) {
+		Interval interval = createInterval(value);
+		return new ConstantValue<Long>(interval, Long.valueOf(value.getText()), false);
 	}
 
-	public Constant<Boolean> create(GlslBoolConstantContext value) {
-		return new Constant<Boolean>(Boolean.valueOf(value.getText()));
+	public ConstantValue<Boolean> create(GlslBoolConstantContext value) {
+		Interval interval = createInterval(value);
+		return new ConstantValue<Boolean>(interval, Boolean.valueOf(value.getText()));
 	}
 
-
-	public Struct create(GlslStructSpecifierContext struct) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
+	
 	public Expression create(Expression operand, GlslArrayDimensionContext dim) {
 		GlslIntegerExpressionContext index = dim.glslIntegerExpression();
 		if (index == null) {
 			throw new Error("expected an expression, which evaluates to an integer");
+		} else if (operand instanceof TypeReference) {
+			TypeReference ref = (TypeReference) operand;
+			ref.type = createArrayType(ref.type, dim);
+			return ref;
 		} else {
 			return new ArrayIndexExpression(operand, create(index.glslExpression()));
 		}
 	}
 
-	public Expression create(Expression operand, GlslCallArgumentsContext args) {
+	public CallExpression create(Expression operand, GlslCallArgumentsContext args) {
 		List<GlslAssignmentExpressionContext> assignments = args.glslAssignmentExpression();
-		CallArguments arguments = new CallArguments();
-		for (GlslAssignmentExpressionContext assign : assignments) {
-			arguments.list.add(create(assign));
+		Expression[] arguments = new Expression[assignments.size()];
+		for (int i = 0; i < assignments.size(); i++) {
+			arguments[i] = create(assignments.get(i));
 		}
-		return new CallExpression(operand, arguments);
+		
+		return new CallExpression(operand, arguments, createEndLocation(args));
+	}
+
+	public Struct create(GlslStructSpecifierContext context) {
+		Scope scope = symbolTable.scope();
+		String name = context.IDENTIFIER().getText();
+		Struct struct = new Struct(scope, name);
+		symbolTable.enter(struct.body);
+		GlslStructBodyContext members = context.glslStructBody();
+		List<GlslStructMemberGroupContext> groups = members.glslStructMemberGroup();
+		for (GlslStructMemberGroupContext group : groups) {
+			addMembers(struct, group);
+		}
+		symbolTable.leave(struct.body);
+		return struct;
+	}
+
+
+	public void addMembers(Struct struct, GlslStructMemberGroupContext group) {
+		Qualifier[] qualifiers = getQualifiers(group.glslTypeQualifier());
+		Type basetype = getType(group.glslTypeSpecifier());
+
+		List<GlslStructMemberDeclaratorContext> dcontext = group.glslStructMemberDeclaratorList().glslStructMemberDeclarator();
+		for (GlslStructMemberDeclaratorContext m : dcontext) {
+			String memberName = m.IDENTIFIER().getText();
+			Type memberType = basetype;
+			
+			List<GlslArrayDimensionContext> arrayDims = m.glslArrayDimension();
+			if (arrayDims != null) {
+				memberType = createArrayType(memberType, arrayDims);
+			}
+			if (qualifiers != null) {
+				memberType = Type._qualified(memberType, qualifiers);
+			}
+			struct.addMember(new Struct.Member(memberType, memberName));
+		}
+	}
+	
+
+	private Type getType(GlslTypeSpecifierContext context) {
+		if (context == null) return null;
+		GlslTypeSpecifierNonarrayContext basic = context.glslTypeSpecifierNonarray();
+		Type type;
+		String typeName = null;
+		if (basic.glslBuiltinType() != null) {
+			typeName = basic.glslBuiltinType().getText();
+			type = symbolTable.resolve(Type.class, typeName);
+		} else if (basic.glslTypeName() != null) {
+			typeName = basic.glslTypeName().getText();
+			type = symbolTable.resolve(Type.class, typeName);
+		} else if (basic.glslStructSpecifier() != null) {
+			GlslStructSpecifierContext specifier = basic.glslStructSpecifier();
+			type = create(specifier);
+		} else {
+			throw new Error("internal error: unhandled type specifier rule");
+		}
+
+
+		List<GlslArrayDimensionContext> arrayDims = context.glslArrayDimension();
+		
+		if (arrayDims != null) {
+			type = createArrayType(type, arrayDims);
+		}
+		
+		
+		return type;
+	}
+
+	private Type createArrayType(Type type, List<GlslArrayDimensionContext> dcontext) {
+		Expression[] dimensions = new Expression[dcontext.size()];
+		for (int i = 0; i < dimensions.length; i++) {
+			dimensions[i] = create(dcontext.get(i).glslIntegerExpression());
+		}
+		type = new Array(type, dimensions);
+		return type;
+	}
+
+	private Type createArrayType(Type type, GlslArrayDimensionContext dim) {
+		Expression dimension = create(dim.glslIntegerExpression());
+		type = new Array(type, dimension);
+		return type;
+	}
+
+	private Expression create(GlslIntegerExpressionContext intExpr) {
+		if (intExpr != null) {
+			return create(intExpr.glslExpression());
+		} else {
+			return null;
+		}
+	}
+
+	private Qualifier[] getQualifiers(GlslTypeQualifierContext context) {
+		if (context == null) return null;
+		List<GlslSingleTypeQualifierContext> qcontext = context.glslSingleTypeQualifier();
+		Qualifier[] qualifiers = new Qualifier[qcontext.size()];
+		for (int i = 0; i < qualifiers.length; i++) {
+			qualifiers[i] = create(qcontext.get(i));
+		}
+		return qualifiers;
+	}
+
+	private Qualifier create(GlslSingleTypeQualifierContext context) {
+		//
+		// special cases need to be take care of specially!
+		//
+		if (context.glslStorageQualifier() != null) {
+			GlslStorageQualifierContext storage = context.glslStorageQualifier();
+			if (storage.SUBROUTINE() != null) {
+				GlslFunctionNameListContext flist = storage.glslFunctionNameList();
+				if (flist != null) {
+					List<GlslFunctionNameContext> names = flist.glslFunctionName();
+					Function[] function = new Function[names.size()];
+					for (int i = 0; i < function.length; i++) {
+						GlslFunctionNameContext n = names.get(i);
+						function[i] = symbolTable.resolve(Function.class, n.getText());
+					}
+					return Qualifier._subroutine();
+				} else {
+					return Qualifier._subroutine();
+				}
+			}
+		} else if (context.glslLayoutQualifier() != null) {
+			GlslLayoutQualifierContext layout = context.glslLayoutQualifier();
+			List<GlslLayoutQualifierIdContext> ids = layout.glslLayoutQualifierIdList().glslLayoutQualifierId();
+			LayoutQualifier.Parameter[] params = new LayoutQualifier.Parameter[ids.size()];
+			for (int i = 0; i < ids.size(); i++) {
+				GlslLayoutQualifierIdContext id = ids.get(i);
+				if (id.SHARED() != null) {
+					params[i] = LayoutQualifier.Parameter.SHARED;
+				} else if (id.glslConstantExpression() != null){
+					params[i] = new LayoutQualifier.Parameter(id.IDENTIFIER().getText(), id.glslConstantExpression().getText());
+				} else {
+					params[i] = new LayoutQualifier.Parameter(id.IDENTIFIER().getText());
+				}
+			}
+			return Qualifier._layout(params);
+		}
+		
+		//
+		// all other cases refer to constants
+		//
+		return Qualifier.get(context.getText());
+	}
+
+	public Expression create(GlslppMacroExpressionContext ctx) {
+		String identifier = ctx.IDENTIFIER().getText();
+		Object symbol = symbolTable.resolve(identifier);
+		Expression result;
+		if (symbol instanceof Macro) {
+			Macro macro = (Macro)symbol;
+			result = new MacroReference(createInterval(ctx), macro);
+		} else {
+			result = new UndefinedIdentifier(createInterval(ctx), identifier);
+		}
+		// TODO: call arguments
+//		GlslCallArgumentsContext arguments = ctx.glslCallArguments();
+//		if (arguments == null) {
+//			result = create(result, arguments);
+//		}
+
+		return result;
+	}
+
+	
+	private Location createStartLocation(ParserRuleContext context) {
+		Token start = context.getStart();
+		return new Location(start.getInputStream().getSourceName(), start.getStartIndex(), start.getLine(), start.getCharPositionInLine());
+	}
+
+	private Location createEndLocation(ParserRuleContext context) {
+		Token end = context.getStop();
+		return new Location(end.getInputStream().getSourceName(), end.getStopIndex(), end.getLine(), end.getCharPositionInLine() + (end.getStopIndex() - end.getStartIndex()));
+	}
+
+	public Interval createInterval(ParserRuleContext context) {
+		return new Interval(createStartLocation(context), createEndLocation(context));
 	}
 
 }
