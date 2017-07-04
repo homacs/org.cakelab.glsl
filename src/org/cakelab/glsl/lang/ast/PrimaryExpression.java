@@ -17,7 +17,8 @@ public abstract class PrimaryExpression extends Expression {
 	public abstract Value value() throws EvaluationException;
 	
 	public LValue lvalue() throws EvaluationException {
-		throw new EvaluationException(this, "not an lvalue");
+		if (this instanceof LValue) return (LValue)this;
+		else throw new EvaluationException(this, "not an lvalue");
 	}
 
 }

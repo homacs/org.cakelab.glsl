@@ -4,6 +4,10 @@ import org.cakelab.glsl.lang.EvaluationException;
 
 /**
  * Storage location actually.
+ * <p>
+ * This is an interface implemented by all primary expressions 
+ * which support assignment of a value.
+ * </p>
  * @author homac
  *
  */
