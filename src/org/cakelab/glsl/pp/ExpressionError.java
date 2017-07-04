@@ -2,6 +2,7 @@ package org.cakelab.glsl.pp;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.EvaluationException;
+import org.cakelab.glsl.lang.ast.PrimaryExpression;
 import org.cakelab.glsl.pp.ast.StringConstant;
 
 public class ExpressionError extends StringConstant {
@@ -18,7 +19,7 @@ public class ExpressionError extends StringConstant {
 	}
 
 	@Override
-	public Object eval() throws EvaluationException {
+	public PrimaryExpression eval() throws EvaluationException {
 		throw new EvaluationException(this, errorMessage);
 	}
 	

@@ -21,7 +21,7 @@ public class MacroReference extends PrimaryExpression implements Identifier {
 	}
 
 	@Override
-	public Object eval() {
+	public PrimaryExpression eval() {
 		return this;
 	}
 

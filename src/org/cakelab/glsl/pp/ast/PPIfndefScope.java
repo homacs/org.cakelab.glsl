@@ -2,7 +2,7 @@ package org.cakelab.glsl.pp.ast;
 
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.Scope;
-import org.cakelab.glsl.lang.ast.UndefinedIdentifier;
+import org.cakelab.glsl.lang.ast.PPUndefinedIdentifier;
 
 public class PPIfndefScope extends PPIfScope {
 
@@ -13,7 +13,7 @@ public class PPIfndefScope extends PPIfScope {
 	@Override
 	
 	public void setCondition(Expression ident) {
-		if (ident instanceof UndefinedIdentifier) {
+		if (ident instanceof PPUndefinedIdentifier) {
 			setCondition(ident.getInterval(), true);
 		} else if (ident instanceof MacroReference) {
 			setCondition(ident.getInterval(), false);

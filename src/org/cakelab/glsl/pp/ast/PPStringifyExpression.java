@@ -4,6 +4,7 @@ import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.PrefixExpression;
+import org.cakelab.glsl.lang.ast.PrimaryExpression;
 
 /** converts any character sequence (text) into a string.
  * Replaces " and \ with escape sequences.
@@ -17,8 +18,8 @@ public class PPStringifyExpression extends PrefixExpression {
 	}
 
 	@Override
-	public Object eval() throws EvaluationException {
-		String text = operand.value().getValue().toString().trim();
+	public PrimaryExpression eval() throws EvaluationException {
+		String text = operand.eval().value().getValue().toString().trim();
 		StringBuffer str = new StringBuffer();
 		for (int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);

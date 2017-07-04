@@ -12,10 +12,10 @@ public class ArrayIndexExpression extends PostfixExpression {
 	}
 
 	@Override
-	public Object eval() throws EvaluationException {
+	public PrimaryExpression eval() throws EvaluationException {
 		// FIXME parser is supposed to do syntax checks (we can provide a validation method here)
 		
-		Value indexValue = index.value();
+		Value indexValue = index.eval().value();
 		Rank rank = Rank.of(indexValue.type);
 		if (rank != Rank.INT && rank != Rank.UINT) {
 			throw new Error("syntax: index must be integer");
@@ -23,7 +23,7 @@ public class ArrayIndexExpression extends PostfixExpression {
 		
 		int i = ((Long)indexValue.value).intValue();
 		
-		LValue lvalue = operand.lvalue();
+		LValue lvalue = operand.eval().lvalue();
 		if (lvalue.getType().kind != Type.ARRAY) {
 			throw new Error("syntax: not an array");
 		} else {

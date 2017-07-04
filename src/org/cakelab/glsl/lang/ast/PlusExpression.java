@@ -10,8 +10,8 @@ public class PlusExpression extends BinaryExpression {
 	}
 
 	@Override
-	public Object eval() throws EvaluationException {
-		return Processor.add(leftOperand.value(), rightOperand.value());
+	public PrimaryExpression eval() throws EvaluationException {
+		return Processor.add(leftOperand.eval().value(), rightOperand.eval().value());
 	}
 
 }

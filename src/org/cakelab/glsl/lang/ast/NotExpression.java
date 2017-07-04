@@ -12,9 +12,9 @@ public class NotExpression extends PrefixExpression {
 	}
 
 	@Override
-	public Object eval() throws EvaluationException {
+	public PrimaryExpression eval() throws EvaluationException {
 		try {
-			return Processor.not(operand.value());
+			return Processor.not(operand.eval().value());
 		} catch (ProcessingException e) {
 			throw new EvaluationException(this, e);
 		}

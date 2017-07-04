@@ -11,9 +11,9 @@ public class DivExpression extends BinaryExpression {
 	}
 
 	@Override
-	public Object eval() throws EvaluationException {
+	public PrimaryExpression eval() throws EvaluationException {
 		try {
-			return Processor.div(leftOperand.value(), rightOperand.value());
+			return Processor.div(leftOperand.eval().value(), rightOperand.eval().value());
 		} catch (ProcessingException e) {
 			throw new EvaluationException(this, e);
 		}

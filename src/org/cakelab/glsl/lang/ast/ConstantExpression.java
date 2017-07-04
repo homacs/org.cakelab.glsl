@@ -11,7 +11,7 @@ public class ConstantExpression extends Expression {
 		this.expr = expr;
 	}
 
-	public Object eval() throws EvaluationException {
+	public PrimaryExpression eval() throws EvaluationException {
 		return expr.eval();
 	}
 

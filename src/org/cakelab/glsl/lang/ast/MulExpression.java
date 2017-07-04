@@ -10,8 +10,8 @@ public class MulExpression extends BinaryExpression {
 	}
 	
 	@Override
-	public Object eval() throws EvaluationException {
-		return Processor.mul(leftOperand.value(), rightOperand.value());
+	public PrimaryExpression eval() throws EvaluationException {
+		return Processor.mul(leftOperand.eval().value(), rightOperand.eval().value());
 	}
 
 }

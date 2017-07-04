@@ -10,8 +10,8 @@ public class LogicalAndExpression extends BinaryExpression {
 	}
 
 	@Override
-	public Object eval() throws EvaluationException {
-		return Processor.logAnd(leftOperand.value(), rightOperand.value());
+	public PrimaryExpression eval() throws EvaluationException {
+		return Processor.logAnd(leftOperand.eval().value(), rightOperand.eval().value());
 	}
 
 	

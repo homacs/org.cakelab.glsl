@@ -32,7 +32,12 @@ public class ArrayElementReference extends Value implements LValue {
 
 	@Override
 	public void value(Value newValue) {
-		java.lang.reflect.Array.set(array, index, newValue.value);
+		setValue(newValue.value);
+	}
+
+	@Override
+	public void setValue(Object value) {
+		java.lang.reflect.Array.set(array, index, value);
 	}
 	
 }

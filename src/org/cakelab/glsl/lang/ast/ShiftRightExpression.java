@@ -11,9 +11,9 @@ public class ShiftRightExpression extends BinaryExpression {
 	}
 	
 	@Override
-	public Object eval() throws EvaluationException {
+	public PrimaryExpression eval() throws EvaluationException {
 		try {
-			return Processor.rshift(leftOperand.value(), rightOperand.value());
+			return Processor.rshift(leftOperand.eval().value(), rightOperand.eval().value());
 		} catch (ProcessingException e) {
 			throw new EvaluationException(this, e);
 		}

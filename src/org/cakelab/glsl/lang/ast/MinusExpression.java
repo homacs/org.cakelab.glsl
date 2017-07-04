@@ -12,8 +12,8 @@ public class MinusExpression extends BinaryExpression {
 	
 	
 	@Override
-	public Object eval() throws EvaluationException {
-		return Processor.sub(leftOperand.value(), rightOperand.value());
+	public PrimaryExpression eval() throws EvaluationException {
+		return Processor.sub(leftOperand.eval().value(), rightOperand.eval().value());
 	}
 
 	

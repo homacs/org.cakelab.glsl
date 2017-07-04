@@ -13,9 +13,9 @@ public class LtExpression extends BinaryExpression {
 	
 	
 	@Override
-	public Object eval() throws EvaluationException {
+	public PrimaryExpression eval() throws EvaluationException {
 		try {
-			return Processor.logLt(leftOperand.value(), rightOperand.value());
+			return Processor.logLt(leftOperand.eval().value(), rightOperand.eval().value());
 		} catch (ProcessingException e) {
 			throw new EvaluationException(this, e);
 		}

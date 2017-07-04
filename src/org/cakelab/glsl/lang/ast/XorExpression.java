@@ -12,9 +12,9 @@ public class XorExpression extends BinaryExpression {
 
 
 	@Override
-	public Object eval() throws EvaluationException {
+	public PrimaryExpression eval() throws EvaluationException {
 		try {
-			return Processor.xor(leftOperand.value(), rightOperand.value());
+			return Processor.xor(leftOperand.eval().value(), rightOperand.eval().value());
 		} catch (ProcessingException e) {
 			throw new EvaluationException(this, e);
 		}

@@ -34,7 +34,7 @@ public class Preprocessor extends ParserBase {
 	private ResourceManager resourceManager;
 	/** this is where only valid preprocessed output goes. */
 	private PreprocessedOutputSink outputStream;
-	/** this is where valid and invalid preprocessed output goes. 
+	/** this is where valid and invalid/hidden preprocessed output goes. 
 	 * It will refer to DEV_NULL when an error occurred (i.e. invalid output). */
 	private PreprocessedOutputSink out;
 	private MacroMap macros;
@@ -59,6 +59,9 @@ public class Preprocessor extends ParserBase {
 	}
 
 	Preprocessor(String sourceIdentifier, InputStream in, PreprocessedOutputSink out) {
+		allowInclude = true;
+		insertLineDirectives = true;
+		
 		outputStream = out;
 		resourceManager = new StandardFileManager();
 		macros = new MacroMap();
@@ -254,7 +257,7 @@ public class Preprocessor extends ParserBase {
 		String text;
 		try {
 			// FIXME: parameter expansion, foreign macro calls and output generation here
-			text = expr.value().getValue().toString();
+			text = expr.eval().value().getValue().toString();
 		} catch (EvaluationException e) {
 			syntaxError(e);
 			return "";
@@ -1350,7 +1353,7 @@ public class Preprocessor extends ParserBase {
 		if (macro_identifier()) {
 			return new MacroReference(interval(mark), macros.get(last.IDENTIFIER()));
 		} else if (IDENTIFIER()) {
-			return new UndefinedIdentifier(interval(mark), last.IDENTIFIER());
+			return new PPUndefinedIdentifier(interval(mark), last.IDENTIFIER());
 		}
 		return null;
 	}

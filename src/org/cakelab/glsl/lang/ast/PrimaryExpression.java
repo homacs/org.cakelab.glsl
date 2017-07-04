@@ -10,8 +10,14 @@ public abstract class PrimaryExpression extends Expression {
 	}
 
 	@Override
-	public Object eval() throws EvaluationException {
+	public PrimaryExpression eval() throws EvaluationException {
 		return this;
+	}
+
+	public abstract Value value() throws EvaluationException;
+	
+	public LValue lvalue() throws EvaluationException {
+		throw new EvaluationException(this, "not an lvalue");
 	}
 
 }

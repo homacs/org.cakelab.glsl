@@ -191,7 +191,7 @@ public class ASTFactory {
 			} else if (obj instanceof Function) {
 				return new FunctionReference(interval, (Function)obj);
 			} else {
-				return new UndefinedIdentifier(interval, identifier.getText());
+				return new PPUndefinedIdentifier(interval, identifier.getText());
 			}
 		}
 		

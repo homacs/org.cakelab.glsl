@@ -13,10 +13,10 @@ public class ExpressionList extends Expression {
 	}
 
 	@Override
-	public Object eval() throws EvaluationException {
-		Expression result = null;
+	public PrimaryExpression eval() throws EvaluationException {
+		PrimaryExpression result = null;
 		for (Expression expr : list) {
-			result = (Expression) expr.eval();
+			result = expr.eval();
 		}
 		if (result == null) throw new Error("internal error: expression list without expressions");
 		

@@ -1,5 +1,6 @@
 package org.cakelab.glsl.lang.ast;
 
+import org.cakelab.glsl.lang.EvaluationException;
 
 /**
  * Storage location actually.
@@ -12,6 +13,9 @@ public interface LValue {
 
 	Type getType();
 
-	void value(Value value);
+	void value(Value value) throws EvaluationException;
+	void setValue(Object value) throws EvaluationException;
+	
+	LValue lvalue() throws EvaluationException;
 
 }

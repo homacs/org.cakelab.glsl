@@ -59,6 +59,7 @@ public class Function implements Comparable<Function> {
 
 	
 	public static final Function[] BUILTIN_FUNCTIONS = {
+			// TODO header for builtin functions/methods/defines etc.
 		new Function(_float, "radians", new ParameterDeclaration(_float, "degrees")),
 		new Function(_vec2, "radians", new ParameterDeclaration(_vec2, "degrees")),
 		new Function(_vec3, "radians", new ParameterDeclaration(_vec3, "degrees")),

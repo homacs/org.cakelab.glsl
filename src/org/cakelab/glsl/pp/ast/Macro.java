@@ -73,7 +73,7 @@ public class Macro {
 		StringBuffer result = new StringBuffer();
 		if (replacement_list != null) {
 			for (Expression replacement : replacement_list) {
-				Value v = replacement.value();
+				Value v = replacement.eval().value();
 				if (v == null || v.getValue() == null) throw new Error("internal error: replacement expression evaluated to null value");
 				
 				String s = v.getValue().toString();

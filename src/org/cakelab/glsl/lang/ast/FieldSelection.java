@@ -14,9 +14,9 @@ public class FieldSelection extends PostfixExpression {
 	}
 
 	@Override
-	public Object eval() throws EvaluationException {
+	public PrimaryExpression eval() throws EvaluationException {
 		// TODO syntax checks outside
-		Value compound = operand.value();
+		Value compound = operand.eval().value();
 		int kind = compound.getType().kind;
 		if (kind == Type.ARRAY) {
 			if (!identifier.equals("length")) {

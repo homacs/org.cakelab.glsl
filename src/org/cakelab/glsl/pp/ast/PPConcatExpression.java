@@ -4,6 +4,7 @@ import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.BinaryExpression;
 import org.cakelab.glsl.lang.ast.Expression;
+import org.cakelab.glsl.lang.ast.PrimaryExpression;
 import org.cakelab.glsl.lang.ast.Value;
 
 public class PPConcatExpression extends BinaryExpression {
@@ -13,12 +14,12 @@ public class PPConcatExpression extends BinaryExpression {
 	}
 
 	@Override
-	public Object eval() {
-		return this;
+	public PrimaryExpression eval() throws EvaluationException {
+		return new StringConstant(this.interval, leftOperand.eval().value().getValue().toString() + rightOperand.eval().value().getValue().toString());
 	}
 
 	public Value value() throws EvaluationException {
-		return new StringConstant(this.interval, leftOperand.value().getValue().toString() + rightOperand.value().getValue().toString());
+		return eval().value();
 	}
 	
 }

@@ -13,7 +13,7 @@ public class MacroParameterReference extends PrimaryExpression {
 	}
 
 	@Override
-	public Object eval() {
+	public PrimaryExpression eval() {
 		return this;
 	}
 

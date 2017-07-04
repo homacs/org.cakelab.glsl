@@ -11,7 +11,7 @@ public class Processor {
 		return var.value();
 	}
 	
-	public static void store(LValue var, Value value) {
+	public static void store(LValue var, Value value) throws EvaluationException {
 		var.value(Type.cast(value, var.getType()));
 	}
 	

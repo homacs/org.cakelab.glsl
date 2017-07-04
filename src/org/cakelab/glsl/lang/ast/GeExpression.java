@@ -11,9 +11,9 @@ public class GeExpression extends BinaryExpression {
 	}
 
 	@Override
-	public Object eval() throws EvaluationException {
+	public PrimaryExpression eval() throws EvaluationException {
 		try {
-			return Processor.logGe(leftOperand.value(), rightOperand.value());
+			return Processor.logGe(leftOperand.eval().value(), rightOperand.eval().value());
 		} catch (ProcessingException e) {
 			throw new EvaluationException(this, e);
 		}

@@ -14,8 +14,8 @@ public class PosExpression extends PrefixExpression {
 		super(start, operand);
 	}
 	@Override
-	public Object eval() throws EvaluationException {
-		return operand.value();
+	public PrimaryExpression eval() throws EvaluationException {
+		return operand.eval();
 	}
 
 

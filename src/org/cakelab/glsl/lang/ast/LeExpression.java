@@ -11,9 +11,9 @@ public class LeExpression extends BinaryExpression {
 	}
 
 	@Override
-	public Object eval() throws EvaluationException {
+	public PrimaryExpression eval() throws EvaluationException {
 		try {
-			return Processor.logLe(leftOperand.value(), rightOperand.value());
+			return Processor.logLe(leftOperand.eval().value(), rightOperand.eval().value());
 		} catch (ProcessingException e) {
 			throw new EvaluationException(this, e);
 		}

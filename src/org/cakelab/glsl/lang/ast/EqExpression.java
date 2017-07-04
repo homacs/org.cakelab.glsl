@@ -11,9 +11,9 @@ public class EqExpression extends BinaryExpression {
 	}
 
 	@Override
-	public Object eval() throws EvaluationException {
+	public PrimaryExpression eval() throws EvaluationException {
 		try {
-			return Processor.logEq(leftOperand.value(), rightOperand.value());
+			return Processor.logEq(leftOperand.eval().value(), rightOperand.eval().value());
 		} catch (ProcessingException e) {
 			throw new EvaluationException(this, e);
 		}

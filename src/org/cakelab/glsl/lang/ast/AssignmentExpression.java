@@ -17,47 +17,48 @@ public class AssignmentExpression extends BinaryExpression {
 	}
 
 	@Override
-	public Object eval() throws EvaluationException {
+	public PrimaryExpression eval() throws EvaluationException {
 		try {
 			Value value;
+			PrimaryExpression left = leftOperand.eval();
 			switch(operator) {
 			case EQUAL:
-				value = rightOperand.value();
+				value = rightOperand.eval().value();
 			case MUL_ASSIGN:
-				value = Processor.mul(leftOperand.value(), rightOperand.value());
+				value = Processor.mul(left.value(), rightOperand.eval().value());
 				break;
 			case DIV_ASSIGN:
-				value = Processor.div(leftOperand.value(), rightOperand.value());
+				value = Processor.div(left.value(), rightOperand.eval().value());
 				break;
 			case MOD_ASSIGN:
-				value = Processor.mod(leftOperand.value(), rightOperand.value());
+				value = Processor.mod(left.value(), rightOperand.eval().value());
 				break;
 			case ADD_ASSIGN:
-				value = Processor.add(leftOperand.value(), rightOperand.value());
+				value = Processor.add(left.value(), rightOperand.eval().value());
 				break;
 			case SUB_ASSIGN:
-				value = Processor.sub(leftOperand.value(), rightOperand.value());
+				value = Processor.sub(left.value(), rightOperand.eval().value());
 				break;
 			case LEFT_ASSIGN:
-				value = Processor.lshift(leftOperand.value(), rightOperand.value());
+				value = Processor.lshift(left.value(), rightOperand.eval().value());
 				break;
 			case RIGHT_ASSIGN:
-				value = Processor.rshift(leftOperand.value(), rightOperand.value());
+				value = Processor.rshift(left.value(), rightOperand.eval().value());
 				break;
 			case AND_ASSIGN:
-				value = Processor.and(leftOperand.value(), rightOperand.value());
+				value = Processor.and(left.value(), rightOperand.eval().value());
 				break;
 			case XOR_ASSIGN:
-				value = Processor.xor(leftOperand.value(), rightOperand.value());
+				value = Processor.xor(left.value(), rightOperand.eval().value());
 				break;
 			case OR_ASSIGN:
-				value = Processor.or(leftOperand.value(), rightOperand.value());
+				value = Processor.or(left.value(), rightOperand.eval().value());
 				break;
 			default:
 				throw new Error("internal error: unhandled case in assignment expression");
 			}
-			Processor.store(leftOperand.lvalue(), value);
-			return value;
+			Processor.store(left.lvalue(), value);
+			return left;
 		} catch (ProcessingException e) {
 			throw new EvaluationException(this,e);
 		}

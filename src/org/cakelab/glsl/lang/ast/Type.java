@@ -42,6 +42,16 @@ public class Type implements Comparable<Type> {
 			return qualifiers;
 		}
 
+		public boolean hasQualifier(Qualifier qualifier) {
+			for (Qualifier q : qualifiers) {
+				if (q.equals(qualifier)) return true;
+			}
+			return false;
+		}
+		
+		
+		
+
 	}
 	
 	public static int SCALAR = 1<<0;
@@ -569,9 +579,14 @@ public class Type implements Comparable<Type> {
 	}
 
 
-	public Object newInstance(Value[] arguments) {
+	public Value newInstance(Value[] arguments) {
 		// TODO [interpreter]
 		throw new Error("not yet supported");
+	}
+
+
+	public boolean hasQualifier(Qualifier qualifier) {
+		return false;
 	}
 
 

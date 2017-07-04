@@ -1,11 +1,10 @@
 package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.lang.EvaluationException;
 
-public class Variable implements LValue {
-	Type type;
+public class Variable extends Value implements LValue {
 	String name;
-	Value value;
 	
 	public Variable(Type type, String name, Qualifier ... qualifiers) {
 		this(Type._qualified(type, qualifiers), name);
@@ -14,23 +13,25 @@ public class Variable implements LValue {
 	public Variable(Type type, String name) {
 		this(type);
 		this.name = name;
-		this.value = new Value(Interval.NONE, type, null);
 	}
 
 	protected Variable(Type type) {
-		this.type = type;
-	}
-
-	public Value value() {
-		return value;
-	}
-
-	public Type getType() {
-		return type;
+		super(Interval.NONE, type, null);
 	}
 
 	public void value(Value newValue) {
-		value = newValue;
+		setValue(newValue.value);
+	}
+
+	@Override
+	public void setValue(Object value) {
+		super.value = value;
+	}
+
+	@Override
+	public LValue lvalue() throws EvaluationException {
+		if (type.hasQualifier(Qualifier._const)) throw new EvaluationException(this, "trying to assign a value to constant variable");
+		return this;
 	}
 
 }

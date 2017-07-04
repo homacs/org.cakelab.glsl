@@ -17,14 +17,16 @@ public class CallExpression extends PostfixExpression {
 	
 
 	@Override
-	public Object eval() throws EvaluationException {
+	public PrimaryExpression eval() throws EvaluationException {
 		// evaluate arguments to values and execute call
 		
-		Object addressed = operand.eval();
+		PrimaryExpression addressed = operand.eval();
 		Value[] args = new Value[arguments.length];
 		for (int i = 0; i < arguments.length; i++) {
-			args[i] = arguments[i].value();
+			args[i] = arguments[i].eval().value();
 		}
+		
+		// TODO functions, method, macros and constructors have to consider number and type of arguments
 		if (addressed instanceof TypeReference) {
 			return ((TypeReference)addressed).call(args);
 		} else if (addressed instanceof FunctionReference) {

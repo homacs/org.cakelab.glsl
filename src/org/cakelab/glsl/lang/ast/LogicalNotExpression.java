@@ -11,8 +11,8 @@ public class LogicalNotExpression extends PrefixExpression {
 	}
 
 	@Override
-	public Object eval() throws EvaluationException {
-		return Processor.logNot(operand.value());
+	public PrimaryExpression eval() throws EvaluationException {
+		return Processor.logNot(operand.eval().value());
 	}
 
 

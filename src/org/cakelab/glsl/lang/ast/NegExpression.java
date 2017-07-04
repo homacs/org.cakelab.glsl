@@ -13,9 +13,9 @@ public class NegExpression extends PrefixExpression {
 
 	
 	@Override
-	public Object eval() throws EvaluationException {
+	public PrimaryExpression eval() throws EvaluationException {
 		try {
-			return Processor.neg(operand.value());
+			return Processor.neg(operand.eval().value());
 		} catch (ProcessingException e) {
 			throw new EvaluationException(this, e);
 		}

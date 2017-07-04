@@ -17,19 +17,13 @@ public class BooleanExpression extends Expression {
 	}
 	
 	@Override
-	public Object eval() throws EvaluationException {
+	public PrimaryExpression eval() throws EvaluationException {
 		return expr.eval();
 	}
 
-	@Override
-	public Value value() throws EvaluationException {
-		return expr.value();
-	}
-
-	
 	public Boolean booleanValue() throws EvaluationException {
 		// TODO this is a type cast
-		Value value = value();
+		Value value = eval().value();
 		if (value.type.equals(Type._bool)) {
 			return (Boolean) value.value;
 		} else if (value.type.equals(Type._int) || value.type.equals(Type._uint)) {

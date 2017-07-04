@@ -17,7 +17,7 @@ public class ConditionalExpression extends Expression {
 	}
 
 	@Override
-	public Object eval() throws EvaluationException {
+	public PrimaryExpression eval() throws EvaluationException {
 		Boolean cond = new BooleanExpression(condition).booleanValue();
 		return cond ? caseTrue.eval() : caseFalse.eval();
 	}

@@ -12,10 +12,10 @@ public class PostfixDecExpression extends PostfixExpression {
 
 
 	@Override
-	public Object eval() throws EvaluationException {
-		Expression result = (Expression) operand.eval();
+	public PrimaryExpression eval() throws EvaluationException {
+		PrimaryExpression result = operand.eval();
 		Value val = Processor.sub(result.value(), ConstantValue.ONE);
-		Value tmp = result.value();
+		Value tmp = result.value().copy();
 		Processor.store(result.lvalue(), val);
 		return tmp;
 	}

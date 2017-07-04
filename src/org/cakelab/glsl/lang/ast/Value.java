@@ -30,4 +30,9 @@ public class Value extends PrimaryExpression {
 		return value == null;
 	}
 
+	public Value copy() {
+		return new Value(interval, type, value);
+	}
+
+
 }

@@ -20,5 +20,11 @@ public class FunctionReference extends PrimaryExpression implements Identifier {
 		return function;
 	}
 
+	@Override
+	public Value value() {
+		// TODO implement value of function. Is it a function?
+		return null;
+	}
+
 
 }
