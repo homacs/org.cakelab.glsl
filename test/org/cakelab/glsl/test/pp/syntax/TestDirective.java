@@ -1,7 +1,8 @@
 package org.cakelab.glsl.test.pp.syntax;
 
+import org.cakelab.glsl.test.pp.TestingPPBase;
 
-public class TestDirective extends TestPPBase {
+public class TestDirective extends TestingPPBase {
 
 	public static void test() {
 		testMacros();
@@ -76,6 +77,12 @@ public class TestDirective extends TestPPBase {
 		assertValid("#define A \t(x)\n");
 		assertValid("#undef A\n");
 		assertValid(" # 	undef A\n");
+
+		
+		assertValid("#define A(x) x+x\n"
+				+ "#define B(x) x + y\n"
+				+ "B(A(c))\n"
+				);
 		
 		
 //		assertValid("#define hash_hash # ## #\n");

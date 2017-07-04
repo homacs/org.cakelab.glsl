@@ -3,7 +3,7 @@ package org.cakelab.glsl.lang.ast;
 import org.cakelab.glsl.Interval;
 
 public class VariableReference extends PrimaryExpression implements Identifier {
-
+	// TODO lvalue but not an identifier and it should inherit Value?
 	protected Variable variable;
 
 	public VariableReference(Interval interval, Variable variable) {

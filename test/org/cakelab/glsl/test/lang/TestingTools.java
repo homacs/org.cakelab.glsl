@@ -18,13 +18,13 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 import org.cakelab.glsl.GLSLLexer;
 import org.cakelab.glsl.GLSLParser;
-import org.cakelab.glsl.lang.Validator;
+import org.cakelab.glsl.lang.ASTBuilder;
 
 public class TestingTools {
 
 	protected static GLSLParser parser;
 
-	protected static Validator validator = new Validator();
+	protected static ASTBuilder validator = new ASTBuilder();
 
 	protected static boolean autoTearDown = true;
 
@@ -210,7 +210,7 @@ public class TestingTools {
 	
 	
 	private static StackTraceElement getCallSite() {
-		String baseClassNamePrefix = "TestBase";
+		String baseClassNamePrefix = "Testing";
 		assert (TestingTools.class.getSimpleName().startsWith(baseClassNamePrefix)) : "need to adjust prefix of the base class names to make tests work again";
 		
 		for (StackTraceElement stackElem : Thread.currentThread().getStackTrace()) {
@@ -260,8 +260,6 @@ public class TestingTools {
 
 	public static void setup(GLSLParser parser, GLSLLexer lexer) {
 		error.listenTo(parser, lexer);
-		if (validator != null) {
-		}
 	}
 
 	public static void tearDown() {

@@ -1,9 +1,10 @@
 package org.cakelab.glsl.pp.ast;
 
+/** parameter in a macro declaration */
 public class MacroParameter {
-	// TODO: isn't macro parameter a value type?
-	
+	/** parameter name */
 	private String identifier;
+	/** parameter value */
 	private String value;
 
 	public MacroParameter(String identifier) {

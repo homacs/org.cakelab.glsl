@@ -1,20 +1,21 @@
 package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.Interval;
-import org.cakelab.glsl.lang.EvaluationException;
 
 public abstract class BinaryExpression extends Expression {
 
 	protected Expression leftOperand;
 	protected Expression rightOperand;
 
-	public BinaryExpression(Expression leftOperand, Expression rightOperand) {
-		super(new Interval(leftOperand.getStart(), rightOperand.getEnd()));
+	public BinaryExpression(Interval interval, Expression leftOperand, Expression rightOperand) {
+		super(interval);
 		this.leftOperand = leftOperand;
 		this.rightOperand = rightOperand;
 	}
 
-	@Override
-	public abstract Object eval() throws EvaluationException;
+	public BinaryExpression(Expression leftOperand, Expression rightOperand) {
+		this(new Interval(leftOperand.getStart(), rightOperand.getEnd()), leftOperand, rightOperand);
+	}
+
 
 }

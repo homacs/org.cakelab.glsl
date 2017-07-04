@@ -157,13 +157,13 @@ public class Processor {
 	}
 
 	public static Value lshift(Value left, Value right) throws ProcessingException {
+		// TODO [2] left shift: left must be int?
 		Interval interval = new Interval(left.getStart(), right.getEnd());
 		Type resultType = Type.maxRank(left, right);
 		left = Type.cast(left, resultType);
 		right = Type.cast(right, resultType);
 		switch(Type.Rank.of(resultType)) {
 		case BOOL:
-			// TODO: left must be int?
 			Boolean leftBool = (Boolean)left.getValue();
 			Boolean rightBool = (Boolean)right.getValue();
 			return new Value(interval, resultType, tobool(tolong(leftBool)<<tolong(rightBool)));
@@ -180,13 +180,14 @@ public class Processor {
 	}
 
 	public static Value rshift(Value left, Value right) throws ProcessingException {
+		// TODO [2] right shift: left must be int?
+
 		Interval interval = new Interval(left.getStart(), right.getEnd());
 		Type resultType = Type.maxRank(left, right);
 		left = Type.cast(left, resultType);
 		right = Type.cast(right, resultType);
 		switch(Type.Rank.of(resultType)) {
 		case BOOL:
-			// TODO: left must be int?
 			Boolean leftBool = (Boolean)left.getValue();
 			Boolean rightBool = (Boolean)right.getValue();
 			return new Value(interval, resultType, tobool(tolong(leftBool)>>tolong(rightBool)));

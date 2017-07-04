@@ -1,6 +1,6 @@
 package org.cakelab.glsl.test.lang.syntax;
 
-public class TestGLSL {
+public class TestGLSLSyntax {
 	public static void test() {
 		TestNumber.test();
 		TestComment.test();

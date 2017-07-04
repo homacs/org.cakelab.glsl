@@ -8,7 +8,10 @@ public abstract class UnaryExpression extends Expression {
 	public UnaryExpression(Interval interval, Expression operand) {
 		super(interval);
 		this.operand = operand;
-		
+	}
+	
+	public Expression getOperand() {
+		return operand;
 	}
 
 }

@@ -1,6 +1,6 @@
 package org.cakelab.glsl.test.pp.syntax;
 
-public class TestPP {
+public class TestPPSyntax {
 	public static void main(String[] args) {
 		test();
 	}

@@ -1,16 +1,18 @@
-package org.cakelab.glsl.test.pp.syntax;
+package org.cakelab.glsl.test.pp;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.OutputStream;
 
 import org.cakelab.glsl.Location;
+import org.cakelab.glsl.ParserErrorHandler;
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.Node;
-import org.cakelab.glsl.pp.ParserErrorHandler;
 import org.cakelab.glsl.pp.Preprocessor;
 
-public class TestPPBase {
+public class TestingPPBase {
 
 	private static String error;
 	private static Preprocessor pp;
@@ -36,16 +38,34 @@ public class TestPPBase {
 		
 	};
 
-	public static Preprocessor p(String source) {
+	public static Preprocessor p(String source, OutputStream out) {
 		try {
 			error = null;
-			pp = new Preprocessor("0", new ByteArrayInputStream(source.getBytes()), new FileOutputStream("/dev/null"));
+			pp = new Preprocessor("0", new ByteArrayInputStream(source.getBytes()), out);
 			pp.setErrorHandler(errorHandler);
-		} catch (IOException e) {
+		} catch (Throwable e) {
 			// will never happen
 			throw new Error(e);
 		}
 		return pp;
+	}
+
+	public static Preprocessor p(String source) {
+		try {
+			return p(source, new FileOutputStream("/dev/null"));
+		} catch (Throwable e) {
+			throw new Error(e);
+		}
+	}
+
+	public static void assertValid(String source, String result) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		p(source, out).process();
+		assertValidPostConditions();
+		String output = new String(out.toByteArray());
+		if (!output.equals(result)) {
+			error("result differs from expected result");
+		}
 	}
 
 	
@@ -94,8 +114,8 @@ public class TestPPBase {
 	
 	
 	private static StackTraceElement getCallSite() {
-		String baseClassNamePrefix = "TestBase";
-		assert (TestPPBase.class.getSimpleName().startsWith(baseClassNamePrefix)) : "need to adjust prefix of the base class names to make tests work again";
+		String baseClassNamePrefix = "Testing";
+		assert (TestingPPBase.class.getSimpleName().startsWith(baseClassNamePrefix)) : "need to adjust prefix of the base class names to make tests work again";
 		
 		for (StackTraceElement stackElem : Thread.currentThread().getStackTrace()) {
 			String className = stackElem.getClassName().replaceAll("[^\\.]*\\.", "");

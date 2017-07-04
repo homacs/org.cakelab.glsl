@@ -42,8 +42,7 @@ public class Struct extends Type {
 			super(returnType, function.name, qualifiers);
 		}
 		public Value call(Value _this, Value[] args) {
-			
-			// TODO Auto-generated method stub
+			// TODO [interpreter]
 			throw new Error("not yet implemented");
 		}
 		
@@ -75,7 +74,7 @@ public class Struct extends Type {
 		body.members.add(member);
 	}
 	public Member getMember(String identifier) {
-		/// TODO: optimise lookup?
+		/// TODO [6] optimise lookup?
 		for (Member member : body.members) {
 			if (member.name.equals(identifier)) return member;
 		}

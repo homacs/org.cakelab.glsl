@@ -5,7 +5,7 @@ import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.pp.ast.StringConstant;
 
 public class ExpressionError extends StringConstant {
-
+	// TODO not a string constant (rather exception)
 	private String errorMessage;
 
 	public ExpressionError(Interval interval, String errorTokens, String errorMessage) {

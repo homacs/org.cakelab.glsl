@@ -1,7 +1,8 @@
 package org.cakelab.glsl.test.pp.syntax;
 
+import org.cakelab.glsl.test.pp.TestingPPBase;
 
-public class TestNumber extends TestPPBase {
+public class TestNumber extends TestingPPBase {
 
 	public static void test() {
 		testInteger();

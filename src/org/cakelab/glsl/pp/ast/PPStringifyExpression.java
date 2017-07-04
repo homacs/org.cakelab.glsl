@@ -20,7 +20,7 @@ public class PPStringifyExpression extends PrefixExpression {
 	public Object eval() throws EvaluationException {
 		String text = operand.value().getValue().toString().trim();
 		StringBuffer str = new StringBuffer();
-		for (int i = 0; i < str.length(); i++) {
+		for (int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
 			switch(c) {
 			case '\\': 

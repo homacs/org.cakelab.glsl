@@ -20,21 +20,24 @@ public class BooleanExpression extends Expression {
 	public Object eval() throws EvaluationException {
 		return expr.eval();
 	}
+
+	@Override
+	public Value value() throws EvaluationException {
+		return expr.value();
+	}
+
 	
 	public Boolean booleanValue() throws EvaluationException {
-		Object result = eval();
-		if (result == null) return null;
-		else if (result instanceof Value) {
-			Value value = (Value)result;
-			if (value.type.equals(Type._bool)) {
-				return (Boolean) value.value;
-			} else if (value.type.equals(Type._int) || value.type.equals(Type._uint)) {
-				return ((Long)value.value).longValue() != 0;
-			}
+		// TODO this is a type cast
+		Value value = value();
+		if (value.type.equals(Type._bool)) {
+			return (Boolean) value.value;
+		} else if (value.type.equals(Type._int) || value.type.equals(Type._uint)) {
+			return ((Long)value.value).longValue() != 0;
+		} else {
+			throw new EvaluationException(this, "not a boolean value");
 		}
-		/* undecided */
-		return null;
 	}
-	
+
 
 }

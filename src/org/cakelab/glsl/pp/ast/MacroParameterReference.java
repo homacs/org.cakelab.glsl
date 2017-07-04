@@ -19,6 +19,7 @@ public class MacroParameterReference extends PrimaryExpression {
 
 	@Override
 	public Value value() {
+		// TODO lvalue
 		return new StringConstant(this.interval, param.getValue());
 	}
 

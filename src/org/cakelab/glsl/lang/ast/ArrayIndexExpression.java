@@ -4,7 +4,6 @@ import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Type.Rank;
 
 public class ArrayIndexExpression extends PostfixExpression {
-
 	protected Expression index;
 
 	public ArrayIndexExpression(Expression operand, Expression index) {
@@ -14,6 +13,8 @@ public class ArrayIndexExpression extends PostfixExpression {
 
 	@Override
 	public Object eval() throws EvaluationException {
+		// FIXME parser is supposed to do syntax checks (we can provide a validation method here)
+		
 		Value indexValue = index.value();
 		Rank rank = Rank.of(indexValue.type);
 		if (rank != Rank.INT && rank != Rank.UINT) {

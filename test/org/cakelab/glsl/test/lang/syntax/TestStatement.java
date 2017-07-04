@@ -47,7 +47,7 @@ public class TestStatement extends TestingBase {
 		assertValid(p("if (true) exit();").glslIfStatement());
 		assertValid(p("if (1) if (2) ;").glslIfStatement());
 		
-		// TODO: If statements with else branches are the only case 
+		// TODO [3] If statements with else branches are the only case 
 		// where ANTLR suspects context sensitivity, but I 
 		// really can't find the reason!
 		IGNORE_CONTEXT_SENSITIVITY = true;

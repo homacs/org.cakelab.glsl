@@ -17,6 +17,7 @@ public class TypeReference extends PrimaryExpression implements Identifier {
 	}
 
 	public Object call(Value[] arguments) {
+		// TODO introduce constructor call expression
 		return type.newInstance(arguments);
 	}
 

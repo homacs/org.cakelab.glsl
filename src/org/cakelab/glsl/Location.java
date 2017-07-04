@@ -37,7 +37,7 @@ public class Location {
 	public static final int COLUMN_START = 0;
 	private static final int LINE_START = 1;
 	public static final Location NONE = new Location("",-1,-1,-1);
-	/** byte position in input */
+	/** position in bytes from start */
 	protected int pos;
 	/** line number */
 	protected int line;
@@ -77,6 +77,23 @@ public class Location {
 		return pos;
 	}
 
+	public void nextLine() {
+		pos++;
+		line++;
+		column = COLUMN_START;
+	}
+	
+	public void nextColumn() {
+		pos++;
+		column++;
+	}
+
+	public void setPosition(int lastConsumedPos) {
+		pos = lastConsumedPos;
+	}
+
+
+	
 	public String toString() {
 		return identifier + ':' + line + ':' + column;
 	}

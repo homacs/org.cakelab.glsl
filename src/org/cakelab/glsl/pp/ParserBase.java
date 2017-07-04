@@ -1,12 +1,8 @@
 package org.cakelab.glsl.pp;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.Stack;
-
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
+import org.cakelab.glsl.ParserErrorHandler;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Node;
 
@@ -40,7 +36,6 @@ public class ParserBase {
 
 	public class LastToken {
 		private String IDENTIFIER;
-		private String MACRO_IDENTIFIER;
 		/** contains the string only, not including the limiters (e.g. '"') */
 		private String STRING_LITERAL;
 		private String ANYTHING;
@@ -51,7 +46,6 @@ public class ParserBase {
 		
 		public void erase() {
 			IDENTIFIER = null;
-			MACRO_IDENTIFIER = null;
 			STRING_LITERAL = null;
 			ANYTHING = null;
 			NUMBER = null;
@@ -69,15 +63,6 @@ public class ParserBase {
 			IDENTIFIER = iDENTIFIER;
 		}
 		
-		public String MACRO_IDENTIFIER() {
-			return MACRO_IDENTIFIER;
-		}
-		
-		public void MACRO_IDENTIFIER(String identifier) {
-			erase();
-			MACRO_IDENTIFIER = identifier;
-		}
-
 		public String STRING_LITERAL() {
 			return STRING_LITERAL;
 		}
@@ -136,15 +121,7 @@ public class ParserBase {
 
 
 
-	public static final PrintStream DEV_NULL = new PrintStream(new OutputStream(){
-		@Override
-		public void write(int b) throws IOException {
-		}}){
-		
-	};
 	
-
-	private Stack<Lexer> lexerStack = new Stack<Lexer>();
 	protected Lexer lexer;
 	private ParserErrorHandler errorHandler = new StandardErrorHandler();
 	protected LastToken last = new LastToken();
@@ -199,23 +176,52 @@ public class ParserBase {
 	}
 
 	
-	
-	
-	protected void pushLexer(Lexer lexer) {
-		lexerStack.push(lexer);
-		this.lexer = lexer;
+	/** Skips all input characters including line continuation sequences 
+	 * (\\\r) and stops after CRLF or EOF. 
+	 * @return false if lexer is already at EOF.
+	 * @see #read_remaining_line() 
+	 */
+	protected boolean skip_remaining_line() {
+		if (lexer.eof()) return false;
+		while (!ENDL()) {
+			if (!line_continuation()) {
+				lexer.consume();
+			}
+		}
+		return true;
 	}
-	
-	protected boolean popLexer() {
-		if (lexerStack.isEmpty()) {
-			return false;
-		} else {
-			lexerStack.pop();
-			lexer = lexerStack.peek();
+
+	/** 
+	 * Reads all input characters including line continuation sequences 
+	 * (\\\r) and stops after CRLF or EOF.
+	 * The sequence of characters, including the terminating CRLF or EOF
+	 * is returned as string.
+	 */
+	protected String read_remaining_line() {
+		// TODO [6] see if we really need this (consider methods above)
+		if (lexer.eof()) return null;
+		StringBuffer result = new StringBuffer();
+		while(!ENDL()) {
+			if (!line_continuation()) {
+				result.append((char)lexer.consume());
+			}
+		}
+		return result.toString();
+	}
+
+	/** Parses a sequence of white spaces (including line continuation) terminated by either CRLF or EOF. */
+	protected boolean empty_line_end() {
+		// TODO [6] see if we really need this (consider methods above)
+		Location reset = lexer.location();
+		while(WHITESPACE());
+		if (ENDL()) {
 			return true;
+		} else {
+			lexer.rewind(reset);
+			return false;
 		}
 	}
-	
+
 
 	/** \\\r\n or \\\n */
 	protected boolean line_continuation() {
@@ -480,6 +486,65 @@ public class ParserBase {
 			return false;
 		}
 	}
+	
+
+
+	/** WHITESPACE including traditional white space chars,
+	 * line continuation markers and comments but no pure
+	 * CRLF (except multi-line comments and line continuations).
+	 * Any whitespace read is stored in last.WHITESPACE .
+	 */
+	protected boolean WHITESPACE() {
+		int la = lexer.lookahead(1);
+		if (isWhite(la)) {
+			lexer.consume();
+			last.WHITESPACE(Character.toString((char)la));
+			return true;
+		} else if (line_continuation()) {
+			// To keep the same number of line in the output,
+			// we will need to forward even line continuation
+			// sequences. Because it does not matter for 
+			// preprocessors, whether it is \r\n or just \n
+			// we use the shorter one.
+			last.WHITESPACE("\\\n");
+			return true;
+		} else if (optional("/*")) {
+			// Multiline comments might contain CRLF
+			// which implicitly means, that a directive line with comments
+			// can spread over multiple lines even without line
+			// continuation markers.
+			StringBuffer comment = new StringBuffer("/*");
+			while (! LA_equals("*/") && LA1() != Lexer.EOF) {
+				if (line_continuation()) comment.append("\\\n");
+				else comment.append((char)lexer.consume());
+			}
+			if (!optional("*/")) {
+				syntaxError("missing '*/' to end the comment");
+			}
+			else 
+			{
+				comment.append("*/");
+			}
+			last.WHITESPACE(comment.toString());
+			return true;
+		} else if (optional("//")) {
+			StringBuffer comment = new StringBuffer("//");
+			while (!isEndl(LA1())) {
+				if (line_continuation()) comment.append("\\\n");
+				else comment.append((char)lexer.consume());
+			}
+			// The CRLF is not part of the comment in the preprocessor.
+			// The comment is either a text line or at the end of a directive line.
+			// In both types of rules , it is necessary to be able to 
+			// check for the line end (anyway).
+			last.WHITESPACE(comment.toString());
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	
 	protected boolean isEndl(int c) {
 		return c == '\n' || c == Lexer.EOF;
 	}
@@ -562,62 +627,17 @@ public class ParserBase {
 			return false;
 		}
 	}
+	
 
-	/** WHITESPACE include traditional white space chars,
-	 * line continuation markers and comments but no pure
-	 * CRLF (except multi-line comments and line continuations).
-	 * Any whitespace read is stored in last.WHITESPACE .
-	 */
-	protected boolean WHITESPACE() {
-		int la = lexer.lookahead(1);
-		if (isWhite(la)) {
-			lexer.consume();
-			last.WHITESPACE(Character.toString((char)la));
-			return true;
-		} else if (line_continuation()) {
-			// To keep the same number of line in the output,
-			// we will need to forward even line continuation
-			// sequences. Because it does not matter for 
-			// preprocessors, whether it is \r\n or just \n
-			// we use the shorter one.
-			last.WHITESPACE("\\\n");
-			return true;
-		} else if (optional("/*")) {
-			// Multiline comments might contain CRLF
-			// which implicitly means, that a directive line with comments
-			// can spread over multiple lines even without line
-			// continuation markers.
-			StringBuffer comment = new StringBuffer("/*");
-			while (! LA_equals("*/") && LA1() != Lexer.EOF) {
-				if (line_continuation()) comment.append("\\\n");
-				else comment.append((char)lexer.consume());
-			}
-			if (!optional("*/")) {
-				syntaxError("missing '*/' to end the comment");
-			}
-			else 
-			{
-				comment.append("*/");
-			}
-			last.WHITESPACE(comment.toString());
-			return true;
-		} else if (optional("//")) {
-			StringBuffer comment = new StringBuffer("//");
-			while (!isEndl(LA1())) {
-				if (line_continuation()) comment.append("\\\n");
-				else comment.append((char)lexer.consume());
-			}
-			// The CRLF is not part of the comment in the preprocessor.
-			// The comment is either a text line or at the end of a directive line.
-			// In both types of rules , it is necessary to be able to 
-			// check for the line end (anyway).
-			last.WHITESPACE(comment.toString());
-			return true;
-		} else {
+	protected boolean mandatory_endl() {
+		if (!ENDL()) {
+			syntaxError("missing mandatory CRLF or end of file");
+			// still here, then skip to next line end to recover from error
+			while (!ENDL()) lexer.consume();
 			return false;
 		}
+		return true;
 	}
-
 
 
 

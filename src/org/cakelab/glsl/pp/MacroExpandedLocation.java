@@ -1,7 +1,7 @@
 package org.cakelab.glsl.pp;
 
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.lang.ast.CallExpression;
+import org.cakelab.glsl.lang.ast.Expression;
 
 /**
  * Location of text expanded from a macro invocation.
@@ -23,20 +23,20 @@ import org.cakelab.glsl.lang.ast.CallExpression;
 public class MacroExpandedLocation extends Location {
 
 	private int macroExpandedOffset;
-	private CallExpression call;
+	private Expression invocation;
 
-	public MacroExpandedLocation(Location that, int macroExpandedOffset, CallExpression call) {
+	public MacroExpandedLocation(Location that, int macroExpandedOffset, Expression macroInvocation) {
 		super(that);
 		this.macroExpandedOffset = macroExpandedOffset;
-		this.call = call;
+		this.invocation = macroInvocation;
 	}
 
 	public int getMacroExpandedOffset() {
 		return macroExpandedOffset;
 	}
 
-	public CallExpression getCall() {
-		return call;
+	public Expression getMacroInvocation() {
+		return invocation;
 	}
 	
 }

@@ -27,8 +27,6 @@ public class Scope {
 	HashMap<String, ArrayList<Function>> functions = new HashMap<String, ArrayList<Function>>();
 	HashMap<String, Variable> variables = new HashMap<String, Variable>();
 	HashMap<String, Type> types = new HashMap<String, Type>();
-	// TODO: all macros are global
-	HashMap<String, Macro> macros = new HashMap<String, Macro>();
 	
 	
 	
@@ -76,22 +74,13 @@ public class Scope {
 
 
 	public Function getFunction(String name) {
-		// TODO: consider function signature somehow? or associate with the group of functions?
+		// TODO consider function signature somehow? or associate with the group of functions?
 		ArrayList<Function> group = functions.get(name);
 		if (group != null) {
 			return group.get(0);
 		}
 		else if (parent != null) return getFunction(name);
 		else return null;
-	}
-	
-	public Macro getMacro(String name) {
-		// TODO: is there macro overriding? like with parameters?
-		Macro macro = macros.get(name);
-		if (macro == null && parent != null) {
-			macro = parent.getMacro(name);
-		}
-		return macro;
 	}
 	
 	public void add(Scope child) {
@@ -126,10 +115,6 @@ public class Scope {
 		types.put(name, type);
 	}
 
-	public void addMacro(String name, Macro macro) {
-		macros.put(name, macro);
-	}
-	
 	public Variable getVariable(String identifier) {
 		Variable var = variables.get(identifier);
 		if (var == null && parent != null) {

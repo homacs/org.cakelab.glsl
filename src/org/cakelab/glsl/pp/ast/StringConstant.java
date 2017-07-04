@@ -8,7 +8,7 @@ import org.cakelab.glsl.lang.ast.Value;
 
 /** String constant: const int[] */
 public class StringConstant extends Value {
-	
+	// TODO ConstantValue<T>
 	public static final StringConstant EMPTY = new StringConstant(Interval.NONE, "");
 
 	public StringConstant(Interval interval, String value) {

@@ -1,4 +1,4 @@
-package org.cakelab.glsl.pp;
+package org.cakelab.glsl;
 
 public interface ResourceManager {
 

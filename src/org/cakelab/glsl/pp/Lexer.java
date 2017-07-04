@@ -1,6 +1,5 @@
 package org.cakelab.glsl.pp;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -48,7 +47,7 @@ public class Lexer {
 			int c;
 			
 			try {
-				readBOM();
+				readBOM(in);
 				
 				while((c = in.read()) != EOF) {
 					append(c);
@@ -59,7 +58,10 @@ public class Lexer {
 			}
 		}
 
-		private void readBOM() throws IOException {
+		private void readBOM(InputStream in) throws IOException {
+			// TODO BOM should not be read in input stream buffer
+			//       especially in temporary lexers.
+			
 			int bytes; // first two bytes as one integer
 			byte hi,lo; // the two bytes separated
 			int c = in.read();
@@ -131,7 +133,7 @@ public class Lexer {
 	
 
 	private InputStreamBuffer buffer;
-	private LexerLocation location;
+	private Location location;
 
 
 	public int current() {
@@ -140,12 +142,12 @@ public class Lexer {
 
 	public Lexer(String sourceIdentifier, InputStream in) throws SyntaxError {
 		this.buffer = new InputStreamBuffer(in);
-		this.location = new LexerLocation(sourceIdentifier);
+		this.location = new Location(sourceIdentifier);
 	}
 
-	public Lexer(Location origin, ByteArrayInputStream in) {
+	public Lexer(Location origin, InputStream in) {
 		this.buffer = new InputStreamBuffer(in);
-		this.location = new LexerLocation(origin.getSourceIdentifier(), Location.POS_START, origin.getLine(), origin.getColumn());
+		this.location = new Location(origin.getSourceIdentifier(), Location.POS_START, origin.getLine(), origin.getColumn());
 	}
 
 	public boolean eof() {
@@ -167,7 +169,7 @@ public class Lexer {
 			if (c == '\n') {
 				location.nextLine();
 			} else {
-				location.next();
+				location.nextColumn();
 			}
 		}
 		location.setPosition(lastConsumedPos);
@@ -194,20 +196,20 @@ public class Lexer {
 		buffer.dismiss(location.getPosition());
 	}
 
-	public LexerLocation location() {
-		return new LexerLocation(location);
+	public Location location() {
+		return new Location(location);
 	}
 
-	public void rewind(LexerLocation reset) {
+	public void rewind(Location reset) {
 		location = reset;
 	}
 
 	public void setVirtualLocation(int line) {
-		location = new LexerLocation(location.getSourceIdentifier(), location.getPosition(), line, Location.COLUMN_START);
+		location = new Location(location.getSourceIdentifier(), location.getPosition(), line, Location.COLUMN_START);
 	}
 
 	public void setVirtualLocation(String id, int line) {
-		location = new LexerLocation(id, location.getPosition(), line, Location.COLUMN_START);
+		location = new Location(id, location.getPosition(), line, Location.COLUMN_START);
 	}
 
 	public String getString(Location start, Location end) {

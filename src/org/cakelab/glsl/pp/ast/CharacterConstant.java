@@ -12,7 +12,7 @@ import org.cakelab.glsl.lang.ast.Value;
  *
  */
 public class CharacterConstant extends Value {
-
+	// TODO ConstantValue
 	public static final Type TYPE = Type._int;
 
 	public CharacterConstant(Interval interval, Character value) {

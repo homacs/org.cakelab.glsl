@@ -15,14 +15,15 @@ public class FieldSelection extends PostfixExpression {
 
 	@Override
 	public Object eval() throws EvaluationException {
+		// TODO syntax checks outside
 		Value compound = operand.value();
 		int kind = compound.getType().kind;
 		if (kind == Type.ARRAY) {
 			if (!identifier.equals("length")) {
-				// TODO: check for syntax error outside
+				// TODO check for syntax error outside
 				throw new Error("syntax: undefined member '" + identifier + "' for array type " + compound.getType().signature);
 			} else {
-				// TODO: add methods to type
+				// TODO add methods to type
 				return new MemberReference(this.interval, compound, Array.LENGTH);
 			}
 		} 

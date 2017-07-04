@@ -1,6 +1,8 @@
 package org.cakelab.glsl.test.pp.syntax;
 
-public class TestStringLiteral extends TestPPBase {
+import org.cakelab.glsl.test.pp.TestingPPBase;
+
+public class TestStringLiteral extends TestingPPBase {
 
 	public static void test() {
 		testCharacterSequence();

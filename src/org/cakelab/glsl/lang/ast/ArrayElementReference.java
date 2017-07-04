@@ -21,6 +21,7 @@ public class ArrayElementReference extends Value implements LValue {
 
 	@Override
 	public LValue lvalue() {
+		// TODO lvalue handling
 		return this;
 	}
 

@@ -4,14 +4,17 @@ import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.pp.ast.MacroReference;
 
-public class CallExpression extends PostfixExpression {
 
+public class CallExpression extends PostfixExpression {
+	// TODO [3] should be abstract base of constructor, function, method and macro call
 	protected Expression[] arguments;
 
 	public CallExpression(Expression operand, Expression[] arguments, Location end) {
 		super(operand, end);
 		this.arguments = arguments;
 	}
+	
+	
 
 	@Override
 	public Object eval() throws EvaluationException {

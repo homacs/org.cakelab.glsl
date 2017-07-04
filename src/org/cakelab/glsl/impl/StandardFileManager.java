@@ -1,9 +1,12 @@
-package org.cakelab.glsl.pp;
+package org.cakelab.glsl.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
+
+import org.cakelab.glsl.Resource;
+import org.cakelab.glsl.ResourceManager;
 
 public class StandardFileManager implements ResourceManager {
 
@@ -24,8 +27,5 @@ public class StandardFileManager implements ResourceManager {
 			return null;
 		}
 	}
-	
-	
-	
 
 }

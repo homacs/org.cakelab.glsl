@@ -12,8 +12,7 @@ import org.cakelab.glsl.Location;
 import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.lang.ast.Qualifier.LayoutQualifier;
 
-// TODO: supposed to be an interface
-// TODO: supposed to be in parser package
+// TODO [2] supposed to be an interface in parser package
 public class ASTFactory {
 
 	private SymbolTable symbolTable;

@@ -17,6 +17,7 @@ public abstract class Expression extends NodeImpl {
 	}
 
 
+	// TODO give evaluation result a type!
 	public abstract Object eval() throws EvaluationException;
 
 	public Value value() throws EvaluationException {

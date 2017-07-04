@@ -766,7 +766,7 @@ public class Function implements Comparable<Function> {
 		new Function(_ivec3, "findMSB", new ParameterDeclaration(_uvec3)),
 		new Function(_ivec4, "findMSB", new ParameterDeclaration(_uvec4)),
 		
-		// TODO: list of builtin functions unfinished
+		// TODO [2] list of builtin functions unfinished
     };
 
 	

@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.lang.ast.CallExpression;
+import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.pp.LocationMap.SimpleArrayList.Comparator;
 
 public class LocationMap {
@@ -100,13 +100,13 @@ public class LocationMap {
 
 	public static class MacroCallEntry extends Entry {
 		
-		CallExpression call;
+		Expression macroInvokation;
 		int outputEnd; // end position in preprocessor output
 
-		public MacroCallEntry(CallExpression call, int outputStart, int outputEnd) {
+		public MacroCallEntry(Expression call, int outputStart, int outputEnd) {
 			super(call.getStart(), outputStart);
 			this.outputEnd = outputEnd;
-			this.call = call;
+			this.macroInvokation = call;
 		}
 
 		public boolean contains(int outputPos) {
@@ -118,16 +118,33 @@ public class LocationMap {
 	SimpleArrayList<TextLineEntry> lines = new SimpleArrayList<TextLineEntry>();
 	
 	SimpleArrayList<MacroCallEntry> macros = new SimpleArrayList<MacroCallEntry>();
-	
-	
-	public void reportLineStart(Location loc, int outputPosition) {
-		lines.add(new TextLineEntry(loc, outputPosition));
+
+	public void reportLineEnd(Location loc, int outputPosition) {
+		lines.add(new TextLineEntry(loc, outputPosition+1));
 	}
 	
-	public void reportMacroCall(CallExpression call, int outputStart, int outputEnd) {
+	public void reportMacroCall(Expression call, int outputStart, int outputEnd) {
 		macros.add(new MacroCallEntry(call, outputStart, outputEnd));
 	}
 	
+	/**
+	 * Report a switch of location (input source and/or line number).
+	 * 
+	 * A location switch may override a previous text line start.
+	 * 
+	 * @param location
+	 * @param outputPos
+	 */
+	public void reportLocationSwitch(Location location, int outputPos) {
+		int lastLine = lines.size()-1;
+		if (lastLine>=0 && lines.get(lastLine).outputPos == outputPos) {
+			// if report refers to the same location then
+			// --> overwrite last text line entry
+			lines.discardAll(lastLine);
+		}
+		
+	}
+
 	
 	public Mark mark() {
 		return new Mark(lines.size(), macros.size());
@@ -171,7 +188,7 @@ public class LocationMap {
 		Entry entry = find(outputPos);
 		if (entry instanceof MacroCallEntry) {
 			int macroExpandedOffset =  outputPos - entry.outputPos;
-			return new MacroExpandedLocation(entry.loc, macroExpandedOffset, ((MacroCallEntry)entry).call);
+			return new MacroExpandedLocation(entry.loc, macroExpandedOffset, ((MacroCallEntry)entry).macroInvokation);
 		} else {
 			return textLocation(entry, outputPos);
 		}
@@ -181,7 +198,7 @@ public class LocationMap {
 		Entry entry = find(outputPos);
 		if (entry instanceof MacroCallEntry) {
 			int macroExpandedOffset =  outputPos - entry.outputPos;
-			return new MacroExpandedLocation(((MacroCallEntry)entry).call.getEnd(), macroExpandedOffset, ((MacroCallEntry)entry).call);
+			return new MacroExpandedLocation(((MacroCallEntry)entry).macroInvokation.getEnd(), macroExpandedOffset, ((MacroCallEntry)entry).macroInvokation);
 		} else {
 			return textLocation(entry, outputPos);
 		}
@@ -194,6 +211,5 @@ public class LocationMap {
 		int line = entry.loc.getLine();
 		return new Location(entry.loc.getSourceIdentifier(), pos, line, column);
 	}
-
 
 }

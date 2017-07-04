@@ -1,6 +1,5 @@
-package org.cakelab.glsl.pp;
+package org.cakelab.glsl;
 
-import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.ast.Node;
 
 public interface ParserErrorHandler {

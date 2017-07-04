@@ -12,20 +12,30 @@ import org.cakelab.glsl.lang.ast.Scope;
 import org.cakelab.glsl.lang.ast.Struct;
 import org.cakelab.glsl.lang.ast.Type;
 import org.cakelab.glsl.lang.ast.Variable;
+import org.cakelab.glsl.pp.LocationMap;
 
 
-public class Validator extends GLSLBaseListener {
+public class ASTBuilder extends GLSLBaseListener {
 	
 	private Scope scope;
 	private ASTFactory factory;
+	private LocationMap locations;
+	private Scope ast;
 	
 	
-	public Validator() {
+	public ASTBuilder(LocationMap locations) {
+		this.locations = locations;
 		reset();
+	}
+
+	public ASTBuilder() {
+		// TODO [2] location map which simply maps to antlr lexer input location
+		this.locations = null;
 	}
 
 	public void reset() {
 		scope = new Scope(Scope.BUILTIN_SCOPE);
+		ast = scope;
 	}
 
 	public void enterScope(Scope child) {
@@ -116,6 +126,10 @@ public class Validator extends GLSLBaseListener {
 
 	public void addDeclaredType(String name, Type type) {
 		scope.addType(name, type);
+	}
+
+	public Scope getToplevelScope() {
+		return ast;
 	}
 
 

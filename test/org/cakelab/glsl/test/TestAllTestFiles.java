@@ -17,7 +17,7 @@ public class TestAllTestFiles extends TestingTools {
 	}
 
 	private static void test(File f) {
-		// TODO Auto-generated method stub
+		// TODO implement testing of test files
 		
 	}
 

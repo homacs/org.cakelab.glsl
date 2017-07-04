@@ -570,7 +570,7 @@ public class Type implements Comparable<Type> {
 
 
 	public Object newInstance(Value[] arguments) {
-		// TODO Auto-generated method stub
+		// TODO [interpreter]
 		throw new Error("not yet supported");
 	}
 

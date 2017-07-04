@@ -17,7 +17,13 @@ public class Macro {
 		this.params = params;
 	}
 
+	public Macro(String name) {
+		this(name, null);
+	}
+	
+	
 	public void setReplacementList(List<Expression> expressions) {
+		// TODO really a list of expressions in macros?
 		this.replacement_list = expressions;
 	}
 	
@@ -32,6 +38,11 @@ public class Macro {
 		return null;
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
+	
 	/**
 	 * Macro invocation.
 	 * 
@@ -45,9 +56,10 @@ public class Macro {
 	 * @throws EvaluationException 
 	 */
 	public Value call(Value[] args) throws EvaluationException {
-		
+		// TODO [1] check number of macro arguments
 		// assign values to parameters
-		for (int i = 0; i < args.length; i++) {
+		
+		if (args != null) for (int i = 0; i < args.length; i++) {
 			Value arg = args[i];
 			if (arg.getValue() instanceof String) {
 				params.get(i).setValue(arg.getValue().toString());
@@ -59,12 +71,14 @@ public class Macro {
 		// execute concat and stringify expressions
 		// concatenate results in a string
 		StringBuffer result = new StringBuffer();
-		for (Expression replacement : replacement_list) {
-			Value v = replacement.value();
-			if (v == null || v.getValue() == null) throw new Error("internal error: replacement expression evaluated to null value");
-			
-			String s = v.getValue().toString();
-			result.append(s);
+		if (replacement_list != null) {
+			for (Expression replacement : replacement_list) {
+				Value v = replacement.value();
+				if (v == null || v.getValue() == null) throw new Error("internal error: replacement expression evaluated to null value");
+				
+				String s = v.getValue().toString();
+				result.append(s);
+			}
 		}
 		return new StringConstant(Interval.NONE, result.toString());
 		
