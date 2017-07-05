@@ -28,6 +28,7 @@ import org.cakelab.glsl.pp.ast.PPIfdefScope;
 import org.cakelab.glsl.pp.ast.PPIfndefScope;
 import org.cakelab.glsl.pp.ast.PPStringifyExpression;
 import org.cakelab.glsl.pp.ast.StringConstant;
+import org.cakelab.glsl.pp.ast.PPWhitespace;
 
 public class Preprocessor extends ParserBase {
 	
@@ -242,7 +243,7 @@ public class Preprocessor extends ParserBase {
 				s = preprocessing_token();
 				if (print && s != null) out.print(s);
 			} else {
-				s = expand(expr, print);
+				s = macro_expansion(expr, print);
 			}
 			
 			if (s != null) {
@@ -253,11 +254,13 @@ public class Preprocessor extends ParserBase {
 		return result.toString();
 	}
 
-	private String expand(Expression expr, boolean print) {
+	private String macro_expansion(Expression expr, boolean print) {
 		String text;
 		try {
-			// FIXME: parameter expansion, foreign macro calls and output generation here
+			// FIXME parameter expansion, foreign macro calls and output generation here
 			text = expr.eval().value().getValue().toString();
+			// rescan for more macro expansions
+			text = macro_rescan_and_expand(expr.getStart(), text);
 		} catch (EvaluationException e) {
 			syntaxError(e);
 			return "";
@@ -272,6 +275,35 @@ public class Preprocessor extends ParserBase {
 				out.reportMacroExpansionEnd(startOutputPos, expr);
 				out.reportLocationSwitch(lexer.location());
 			}
+		}
+	}
+
+	private String macro_rescan_and_expand(Location textOrigin, String text) {
+		// rescan happens after removing '#' and '##'. Any remaining 
+		// '#' and '##' will be treated as common pp-token.
+		Lexer previous = null;
+		try {
+			previous = swapLexer(new Lexer(textOrigin, new ByteArrayInputStream(text.getBytes())));
+			String s = null;
+			StringBuffer result = new StringBuffer();
+			do {
+				s = text(false); // scans simple text, whitespace, comments, line continuation and macro invocations but no '#' or '##'
+				
+				if (s == null || s.length() == 0) {
+					// no result can mean, that there are ## or #
+					s = null;
+					if (optional("##")) {
+						s = "##";
+					} else if (optional("#")) {
+						s = "#";
+					}
+				}
+				if (s != null) result.append(s);
+			} while (s != null);
+			
+			return result.toString();
+		} finally {
+			if (previous != null) swapLexer(previous);
 		}
 	}
 
@@ -383,7 +415,12 @@ public class Preprocessor extends ParserBase {
 		// TODO [1] implement pragma
 		if (optionalIDENTIFIER("pragma")) {
 			String s;
-			while(null != (s = preprocessing_token()));
+			// all preprocessing tokens except whitespace
+			ArrayList<String> tokens = new ArrayList<String>();
+			do {
+				s = preprocessing_token();
+				if (s != null) tokens.add(s);
+			} while(s != null || WHITESPACE());
 			mandatory_endl();
 			return true;
 		} else {
@@ -502,9 +539,8 @@ public class Preprocessor extends ParserBase {
 		Expression expr;
 		do {
 			expr = concat_expression(result);
-			
+			if (expr == null) expr = whitespace();
 			if (expr == null) expr = non_concat_expression();
-			
 			if (expr != null) result.add(expr);
 		} while(null != expr);
 		return result;
@@ -514,10 +550,18 @@ public class Preprocessor extends ParserBase {
 	
 	
 	
+	private StringConstant whitespace() {
+		Location start = lexer.location();
+		if (WHITESPACE()) {
+			return new PPWhitespace(interval(start),last.WHITESPACE());
+		} else {
+			return null;
+		}
+	}
+
 	private Expression non_concat_expression() {
 		Expression expr;
-		
-		expr = stringify_expression();
+		expr = single_hash_expression();
 		if (expr == null) expr = macro_parameter_reference();
 		if (expr == null) {
 			// TODO can be optimised
@@ -541,26 +585,27 @@ public class Preprocessor extends ParserBase {
 			//
 			// find last non whitespace token sequence
 			//
-			Expression last = null;
+			Expression left = null;
 			for (int i = replacement_list.size()-1; i >= 0; i--) {
 				Expression token = replacement_list.remove(i);
-				if (token instanceof StringConstant && token.toString().trim().length() == 0) {
-					// just whitespace -> ignore
+				if (token instanceof PPWhitespace) {
+					// just whitespace or comment -> ignore
 					continue;
 				} else {
-					last = token;
+					left = token;
+					break;
 				}
 			}
 			
 			while(WHITESPACE());
 			
-			Expression rightOperand = non_concat_expression();
+			Expression right = non_concat_expression();
 			
-			if (rightOperand == null) {
-				syntaxError("expected second operand to operator ##");
+			if (left == null || right == null) {
+				syntaxError("'##' cannot appear at either end of a macro expansion");
 			}
 			
-			return new PPConcatExpression(new Interval(mark, lexer.location()), last, rightOperand);
+			return new PPConcatExpression(new Interval(mark, lexer.location()), left, right);
 		} else {
 			lexer.rewind(mark);
 		}
@@ -581,20 +626,28 @@ public class Preprocessor extends ParserBase {
 		return null;
 	}
 
-	private Expression stringify_expression() {
+	private Expression single_hash_expression() {
 		Location mark = lexer.location();
 		if (optional('#')) {
-			if (!WHITESPACE()) {
-				return expressionError(mark, "missing white space after #");
-			}
-			while (WHITESPACE());
-			MacroParameterReference param = macro_parameter_reference();
-			if (param == null) {
-				return expressionError(mark, "missing or undefined macro parameter after #");
-			}
-			else 
-			{
-				return new PPStringifyExpression(mark, param);
+			assert !LA_equals('#') : "reminder: parsing of ## has to appear before # parsing";
+			
+			
+			// Iff macro has parameters, # has to be followed by 
+			// a macro parameter reference.
+			// Otherwise, it is an ordinary pp-token
+			if (currentMacroDefinition.hasParameters()) {
+				while (WHITESPACE());
+				MacroParameterReference param = macro_parameter_reference();
+				if (param == null) {
+					lexer.rewind(mark);
+					return expressionError(mark, "# is not followed by a macro parameter");
+				}
+				else 
+				{
+					return new PPStringifyExpression(mark, param);
+				}
+			} else {
+				return new StringConstant(interval(mark), "#");
 			}
 		}
 		return null;
@@ -608,48 +661,52 @@ public class Preprocessor extends ParserBase {
 	private String preprocessing_token() {
 		if (IDENTIFIER()) {
 			return last.IDENTIFIER();
-		} else if (WHITESPACE()) {
-			return last.WHITESPACE();
 		} else {
-			StringBuffer tokens = new StringBuffer();
-			while(!isWhite(LA1()) && !LA_equals('#') && !isEndl(LA1())) {
-				tokens.append(Character.toString((char)lexer.consume()));
+			// TODO improve performance by parsing numbers 
+			if (!isWhite(LA1()) && !LA_equals('#') && !isEndl(LA1())) {
+				int c = lexer.consume();
+				return String.valueOf((char)c);
+			} else {
+				return null;
 			}
-			String result = tokens.toString();
-			if (result.length() == 0) result = null;
-			
-			return result;
 		}
 	}
 
 	private Expression macro_invocation_expression() {
-		Location mark = lexer.location();
+		Location macroCallStart = lexer.location();
 		if (macro_identifier()) {
 			Macro macro = macros.get(last.IDENTIFIER());
+			Location skippedWhitespace = lexer.location();
 			while(WHITESPACE());
 			if (optional('(')) {
 				List<StringConstant> params = new ArrayList<StringConstant>();
-				Location paramStart = lexer.location();
-				String param = macro_param();
-				Interval interval = new Interval(paramStart, lexer.location());
-				if (param != null) {
+				while(WHITESPACE());
+				if (!LA_equals(')')) do {
+					while(WHITESPACE());
+					Location paramStart = lexer.location();
+					String param = macro_param();
+					Interval interval = new Interval(paramStart, lexer.location());
 					
-					params.add(new StringConstant(interval, param));
-					while (optional(',')) {
-						param = macro_param();
-						if (param != null) {
-							params.add(new StringConstant(interval, param));
-						} else {
-							return expressionError(mark, "expected another macro parameter after ','");
-						}
+					if (param != null) params.add(new StringConstant(interval, param));
+					else params.add(StringConstant.EMPTY);
+					while(WHITESPACE());
+				} while (optional(','));
+				
+				if (!optional(')')) syntaxError("missing closing ')'");
+
+				if (macro.numParameters() != params.size()) {
+					if (params.size() == 0 && macro.numParameters() == 1) {
+						params.add(StringConstant.EMPTY);
+					} else {
+						return expressionError(macroCallStart, "expected " + macro.numParameters() + " parameters but " + params.size() + " where given.");
 					}
 				}
-				if (!optional(')')) syntaxError("missing closing ')'");
-				else {
-					return new CallExpression(new MacroReference(new Interval(mark, lexer.location()), macro), params.toArray(new Expression[0]), lexer.location());
-				}
+				
+				return new CallExpression(new MacroReference(new Interval(macroCallStart, lexer.location()), macro), params.toArray(new Expression[0]), lexer.location());
 			} else {
-				return new MacroReference(interval(mark), macro);
+				// rewind to location before WHITESPACE
+				lexer.rewind(skippedWhitespace);
+				return new MacroReference(interval(macroCallStart), macro);
 			}
 		}
 		return null;
@@ -668,7 +725,7 @@ public class Preprocessor extends ParserBase {
 		while (c != ',' && c != ')' && !lexer.eof()) {
 			Expression expr = macro_invocation_expression();
 			if (expr != null) {
-				String expanded = expand(expr, false);
+				String expanded = macro_expansion(expr, false);
 				param.append(expanded);
 			} else if (macro_param_parenthesised(param)) {
 				// already added to string buffer
@@ -690,7 +747,7 @@ public class Preprocessor extends ParserBase {
 			while (c != ')' && !lexer.eof()) {
 				Expression expr = macro_invocation_expression();
 				if (expr != null) {
-					String expanded = expand(expr, false);
+					String expanded = macro_expansion(expr, false);
 					param.append(expanded);
 				} else if (macro_param_parenthesised(param)) {
 					// another pair of parenthesis
@@ -1491,7 +1548,7 @@ public class Preprocessor extends ParserBase {
 			
 			Resource resource = resourceManager.resolve(path);
 			if (resource == null) {
-				syntaxWarning("resource " + path + " not found");
+				syntaxWarning("resource '" + path + "' not found");
 				return result;
 			}
 			

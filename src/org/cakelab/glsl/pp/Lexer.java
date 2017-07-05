@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import org.cakelab.glsl.Location;
 
+
 /**
  * Most primitive lexer you've ever seen.
  * @author homac
@@ -133,7 +134,7 @@ public class Lexer {
 	
 
 	private InputStreamBuffer buffer;
-	private Location location;
+	private LexerLocation location;
 
 
 	public int current() {
@@ -145,8 +146,15 @@ public class Lexer {
 		this.location = new Location(sourceIdentifier);
 	}
 
+	/** 
+	 * This creates a lexer using origin as virtual location of the input.
+	 * The actual position in the input will be reset to the start position.
+	 * @param origin
+	 * @param in
+	 */
 	public Lexer(Location origin, InputStream in) {
 		this.buffer = new InputStreamBuffer(in);
+		// FIXME position may be misinterpreted as actual position by location map!
 		this.location = new Location(origin.getSourceIdentifier(), Location.POS_START, origin.getLine(), origin.getColumn());
 	}
 
@@ -197,7 +205,7 @@ public class Lexer {
 	}
 
 	public Location location() {
-		return new Location(location);
+		return new Location((Location)location);
 	}
 
 	public void rewind(Location reset) {
@@ -212,7 +220,7 @@ public class Lexer {
 		location = new Location(id, location.getPosition(), line, Location.COLUMN_START);
 	}
 
-	public String getString(Location start, Location end) {
+	public String getString(LexerLocation start, LexerLocation end) {
 		assert (start.getSourceIdentifier().equals(location.getSourceIdentifier())) ;
 		assert (end.getSourceIdentifier().equals(location.getSourceIdentifier())) ;
 		

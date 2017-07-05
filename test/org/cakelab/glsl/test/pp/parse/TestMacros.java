@@ -77,7 +77,8 @@ public class TestMacros extends TestingPPBase {
 				+ "",
 				"\"B\"\n");
 		
-		assertValid("#define A(x) x ## _type\n"
+		assertValid("#define A(x) x/* whitespace */\\\n## /* whitespace */\\\n"
+				+ " _type\n"
 				+ "A(B)\n"
 				+ "",
 				"B_type\n");
@@ -95,6 +96,32 @@ public class TestMacros extends TestingPPBase {
 				+ "#define TYPE(x) A(x,_type)\n"
 				+ "A(B,_type)\n",
 				"B_type()\n");
+		
+		assertValid("#define hash_hash # ## #\n"
+				+ "hash_hash\n",
+				"##\n");
+		
+		
+		assertValid("#define hash_hash # ## #\n"
+				+ "#define mkstr(a) # a\n"
+				+ "#define in_between(a) mkstr(a)\n"
+				+ "#define join(c, d) in_between(c hash_hash d)\n"
+				+ "char p[] = join(x, y);\n",
+				"char p[] = \"x ## y\";\n");
+		
+		assertValid("#define hash_hash # ## #\n"
+				+ "#define mkstr(a) # a\n"
+				+ "#define in_between(a) mkstr(a)\n"
+				+ "#define join(c, d) in_between(c hash_hash d)\n"
+				+ "char p[] = join(x,);\n",
+				"char p[] = \"x ##\";\n");
+		
+		assertValid("#define hash_hash # ## #\n"
+				+ "#define mkstr(a) # a\n"
+				+ "#define in_between(a) mkstr(a)\n"
+				+ "#define join(c, d) in_between(c hash_hash d)\n"
+				+ "char p[] = join(,y);\n",
+				"char p[] = \"## y\";\n");
 		
 	}
 

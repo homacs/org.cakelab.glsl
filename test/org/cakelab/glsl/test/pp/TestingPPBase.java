@@ -2,7 +2,6 @@ package org.cakelab.glsl.test.pp;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
@@ -64,7 +63,7 @@ public class TestingPPBase {
 		assertValidPostConditions();
 		String output = new String(out.toByteArray());
 		if (!output.equals(result)) {
-			error("result differs from expected result");
+			error("result differs from expected result.\nEXPECTED: " + result + "\nRECEIVED: " + output);
 		}
 	}
 

@@ -38,6 +38,11 @@ public class Macro {
 		return null;
 	}
 	
+	public boolean hasParameters() {
+		return params != null && params.size() > 0;
+	}
+
+
 	public String getName() {
 		return name;
 	}
@@ -82,6 +87,10 @@ public class Macro {
 		}
 		return new StringConstant(Interval.NONE, result.toString());
 		
+	}
+
+	public int numParameters() {
+		return params.size();
 	}
 
 }

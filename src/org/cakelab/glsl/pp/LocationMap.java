@@ -206,7 +206,7 @@ public class LocationMap {
 	
 	private Location textLocation(Entry entry, int outputPos) {
 		int offset = entry.outputPos - outputPos;
-		int pos = entry.loc.getPosition() + offset;
+		int pos = ((LexerLocation)entry.loc).getPosition() + offset;
 		int column = entry.loc.getColumn() + offset;
 		int line = entry.loc.getLine();
 		return new Location(entry.loc.getSourceIdentifier(), pos, line, column);

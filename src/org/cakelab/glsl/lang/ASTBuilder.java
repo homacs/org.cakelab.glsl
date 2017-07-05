@@ -53,14 +53,14 @@ public class ASTBuilder extends GLSLBaseListener {
 		// STRUCT IDENTIFIER? structBody
 		String name = context.IDENTIFIER().getText();
 		if (istype(name)) throw new Error("type '" + name + "' already exists.");
-			
+		
 		Struct struct = factory.create(context);
 		addDeclaredType(name, struct);
 	}
 	
 	@Override
 	public void exitGlslInterfaceBlockStructure(GlslInterfaceBlockStructureContext context) {
-		// qualifiers IDENTIFIER strcutBody
+		// qualifiers IDENTIFIER structBody
 		// (second position)
 		String name = context.getChild(1).getText();
 		if (istype(name)) throw new Error("type '" + name + "' already exists.");
