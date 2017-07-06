@@ -489,9 +489,10 @@ public class Preprocessor extends ParserBase {
 		boolean result = false;
 		if (optionalIDENTIFIER("define")) {
 			result = true;
+			Location start = lexer.location();
 			while(WHITESPACE());
 			if (!IDENTIFIER()) {
-				syntaxError("missing identifier for macro");
+				syntaxError(start, "no macro name given in #define directive");
 				return result;
 			}
 			String macroName = last.IDENTIFIER();
@@ -499,27 +500,28 @@ public class Preprocessor extends ParserBase {
 			if (optional('(')) {
 				params = new ArrayList<MacroParameter>();
 				// macro parameters
-				if (DOTS()) {
-					// TODO [1] DOTS argument in macros
-				}
-				else if (IDENTIFIER()) 
-				{
-					params.add(new MacroParameter(last.IDENTIFIER()));
-					while (WHITESPACE());
-					while(optional(',')) {
-						while (WHITESPACE());
-						if (!IDENTIFIER()) {
-							if (DOTS()) break;
-							else {
-								syntaxError("missing parameter name or '...' after ','");
-								return result;
-							}
-						} else {
-							params.add(new MacroParameter(last.IDENTIFIER()));
+				boolean firstIteration = true;
+				do {
+					while(WHITESPACE());
+					if (DOTS()) {
+						params.add(new MacroParameter(MacroParameter.__VA_ARGS__));
+						break;
+					} else if (IDENTIFIER()) {
+						if (last.IDENTIFIER().equals(MacroParameter.__VA_ARGS__)) {
+							syntaxWarning("__VA_ARGS__ can only appear in the expansion of a variadic macro");
 						}
-						while (WHITESPACE());
+						params.add(new MacroParameter(last.IDENTIFIER()));
+					} else if (firstIteration) {
+						// empty parameter list
+						break;
+					} else {
+						syntaxError("parameter name missing");
+						return result;
 					}
-				}
+					while(WHITESPACE());
+					firstIteration = false;
+				} while(optional(','));
+
 				mandatory(')');
 			}
 			while(WHITESPACE());
@@ -527,6 +529,7 @@ public class Preprocessor extends ParserBase {
 			List<Expression> tokens = replacement_list();
 			if ( mandatory_endl()) {
 				currentMacroDefinition.setReplacementList(tokens);
+				if (macros.containsKey(macroName)) syntaxWarning(start, "\"" + macroName + "\" redefined");
 				macros.put(macroName, currentMacroDefinition);
 				currentMacroDefinition = null;
 			}
@@ -620,6 +623,7 @@ public class Preprocessor extends ParserBase {
 			if (param != null) {
 				return new MacroParameterReference(new Interval(mark, lexer.location()), param);
 			} else {
+				if (last.IDENTIFIER().equals(MacroParameter.__VA_ARGS__)) syntaxWarning(mark, "__VA_ARGS__ can only appear in the expansion of a variadic macro");
 				lexer.rewind(mark);
 			}
 		}
@@ -635,7 +639,7 @@ public class Preprocessor extends ParserBase {
 			// Iff macro has parameters, # has to be followed by 
 			// a macro parameter reference.
 			// Otherwise, it is an ordinary pp-token
-			if (currentMacroDefinition.hasParameters()) {
+			if (currentMacroDefinition.hasArguments()) {
 				while (WHITESPACE());
 				MacroParameterReference param = macro_parameter_reference();
 				if (param == null) {
@@ -679,15 +683,23 @@ public class Preprocessor extends ParserBase {
 			Location skippedWhitespace = lexer.location();
 			while(WHITESPACE());
 			if (optional('(')) {
-				List<StringConstant> params = new ArrayList<StringConstant>();
 				while(WHITESPACE());
+				
+				List<StringConstant> params = new ArrayList<StringConstant>();
+				int numParameters = macro.numParameters();
+				boolean hasVarArgs = macro.hasVarArgs();
+				
 				if (!LA_equals(')')) do {
 					while(WHITESPACE());
 					Location paramStart = lexer.location();
+					if (hasVarArgs && params.size() == numParameters-1) {
+						StringBuffer varargs = new StringBuffer();
+						macro_param_varargs(varargs);
+						params.add(new StringConstant(interval(paramStart), varargs.toString()));
+						break;
+					}
 					String param = macro_param();
-					Interval interval = new Interval(paramStart, lexer.location());
-					
-					if (param != null) params.add(new StringConstant(interval, param));
+					if (param != null) params.add(new StringConstant(interval(paramStart), param));
 					else params.add(StringConstant.EMPTY);
 					while(WHITESPACE());
 				} while (optional(','));
@@ -704,14 +716,35 @@ public class Preprocessor extends ParserBase {
 				
 				return new CallExpression(new MacroReference(new Interval(macroCallStart, lexer.location()), macro), params.toArray(new Expression[0]), lexer.location());
 			} else {
-				// rewind to location before WHITESPACE
-				lexer.rewind(skippedWhitespace);
-				return new MacroReference(interval(macroCallStart), macro);
+				if (macro.hasArguments()) {
+					return expressionError(macroCallStart, "expected " + macro.numParameters() + " parameters but 0 where given.");
+				} else {
+					// rewind to location before WHITESPACE
+					lexer.rewind(skippedWhitespace);
+					return new MacroReference(interval(macroCallStart), macro);
+				}
 			}
 		}
 		return null;
 	}
 
+
+	private void macro_param_varargs(StringBuffer param) {
+		int c = LA1();
+		while (c != ')' && !lexer.eof()) {
+			Expression expr = macro_invocation_expression();
+			if (expr != null) {
+				String expanded = macro_expansion(expr, false);
+				param.append(expanded);
+			} else if (macro_param_parenthesised(param)) {
+				// another pair of parenthesis
+			} else {
+				param.append((char)c);
+				lexer.consume();
+			}
+			c = LA1();
+		}
+	}
 
 	private Interval interval(Location start) {
 		return new Interval(start, lexer.location());
@@ -736,27 +769,14 @@ public class Preprocessor extends ParserBase {
 			c = LA1();
 		}
 		String result = param.toString().trim();
-		if (result.length() == 0) result = null;
 		return result;
 	}
 
 	private boolean macro_param_parenthesised(StringBuffer param) {
 		if (LA1() == '(') {
-			param.append(lexer.consume());
+			param.append((char)lexer.consume());
+			macro_param_varargs(param);
 			int c = LA1();
-			while (c != ')' && !lexer.eof()) {
-				Expression expr = macro_invocation_expression();
-				if (expr != null) {
-					String expanded = macro_expansion(expr, false);
-					param.append(expanded);
-				} else if (macro_param_parenthesised(param)) {
-					// another pair of parenthesis
-				} else {
-					param.append((char)c);
-					lexer.consume();
-				}
-				c = LA1();
-			}
 			if (c == ')') {
 				param.append((char)c);
 				lexer.consume();

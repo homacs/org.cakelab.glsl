@@ -70,6 +70,7 @@ public class TestDirective extends TestingPPBase {
 		assertValid("# define A(x,y) x+y\n");
 		assertValid("#\tdefine A(x,...) x+x\n");
 		assertValid("# \tdefine A(...) x+x\n");
+		assertInvalid("#define A(...,b)");
 		assertValid("# define A(x) x+x\n");
 		assertValid("#define A (x)\n");
 		assertValid("#define A\t(x)\n");

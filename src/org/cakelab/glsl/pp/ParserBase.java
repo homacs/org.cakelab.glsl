@@ -136,10 +136,12 @@ public class ParserBase {
 	}
 
 
-
-	
 	protected void syntaxError(String string) throws SyntaxError {
-		boolean stop = errorHandler.error(lexer.location(), string);
+		syntaxError(lexer.location(), string);
+	}
+
+	protected void syntaxError(Location location, String string) throws SyntaxError {
+		boolean stop = errorHandler.error(location, string);
 		if (stop) {
 			lexer.dismiss();
 		}
@@ -168,7 +170,11 @@ public class ParserBase {
 
 
 	protected boolean syntaxWarning(String string) {
-		boolean stop = errorHandler.warning(lexer.location(), string);
+		return syntaxWarning(lexer.location(), string);
+	}
+
+	protected boolean syntaxWarning(Location location, String message) {
+		boolean stop = errorHandler.warning(location, message);
 		if (stop) {
 			lexer.dismiss();
 		}
@@ -614,7 +620,7 @@ public class ParserBase {
 		if (optional(c)) {
 			return true;
 		} else {
-			syntaxError("missing '" + c + "' (found: " + (char)LA1()+ ")");
+			syntaxError("missing '" + c + "'");
 			return false;
 		}
 	}

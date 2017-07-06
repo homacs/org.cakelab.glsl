@@ -38,10 +38,13 @@ public class Macro {
 		return null;
 	}
 	
-	public boolean hasParameters() {
+	public boolean hasArguments() {
 		return params != null && params.size() > 0;
 	}
 
+	public boolean hasVarArgs() {
+		return hasArguments() && params.get(params.size()-1).getName().equals(MacroParameter.__VA_ARGS__);
+	}
 
 	public String getName() {
 		return name;

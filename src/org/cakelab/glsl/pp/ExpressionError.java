@@ -22,7 +22,5 @@ public class ExpressionError extends StringConstant {
 	public PrimaryExpression eval() throws EvaluationException {
 		throw new EvaluationException(this, errorMessage);
 	}
-	
-	
 
 }

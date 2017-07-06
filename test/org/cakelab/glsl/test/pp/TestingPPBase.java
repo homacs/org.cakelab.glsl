@@ -14,6 +14,9 @@ import org.cakelab.glsl.pp.Preprocessor;
 public class TestingPPBase {
 
 	private static String error;
+	private static String warning;
+	private static boolean ignoreWarning = true;
+
 	private static Preprocessor pp;
 
 	private static ParserErrorHandler errorHandler = new ParserErrorHandler() {
@@ -21,13 +24,14 @@ public class TestingPPBase {
 
 		@Override
 		public boolean error(Location location, String message) {
-			if (error == null) error = location.getSourceIdentifier() + ':' + location.getLine() + ':' + location.getColumn() + ": " + message;
+			if (error == null && warning == null) error = location.getSourceIdentifier() + ':' + location.getLine() + ':' + location.getColumn() + ": " + message;
 			return false;
 		}
 
 		@Override
 		public boolean warning(Location location, String message) {
-			return true;
+			if (warning == null && error == null && !ignoreWarning) warning = location.getSourceIdentifier() + ':' + location.getLine() + ':' + location.getColumn() + ": " + message;
+			return false;
 		}
 
 		@Override
@@ -40,6 +44,7 @@ public class TestingPPBase {
 	public static Preprocessor p(String source, OutputStream out) {
 		try {
 			error = null;
+			warning = null;
 			pp = new Preprocessor("0", new ByteArrayInputStream(source.getBytes()), out);
 			pp.setErrorHandler(errorHandler);
 		} catch (Throwable e) {
@@ -67,6 +72,18 @@ public class TestingPPBase {
 		}
 	}
 
+	public static void assertWarning(String source, String warningMessage) {
+		ignoreWarning = false;
+		p(source).process();
+		if (error != null) {
+			error("received error instead of warning: " + error);
+		} else if (warning == null) {
+			error("got no warning, expected: " + warningMessage);
+		} else if (!warning.endsWith(warningMessage)) {
+			error("expected warning: \"" + warningMessage + "\"\nbut got: \"" + warning + "\"");
+		}
+		ignoreWarning  = true;
+	}
 	
 	public static void assertValid(String source) {
 		p(source).process();
@@ -79,6 +96,7 @@ public class TestingPPBase {
 	}
 
 	private static boolean assertValidPostConditions() {
+		if (warning != null) error("received unexpected warning: " + warning);
 		if (error != null) error("received unexpected error: " + error);
 		else if (!pp.atEOF()) error("preprocessor not at EOF");
 		else return true;

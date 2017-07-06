@@ -13,6 +13,11 @@ public class TestMacros extends TestingPPBase {
 	public static void testDefUndef() {
 		assertValid("#define A", "");
 		
+		// it is legal (but discouraged) to redefine a macro
+		assertWarning("#define A b\n"
+				+ "#define A c\n", 
+				"\"A\" redefined");
+		
 		assertValid("#define A\n"
 				+ "#ifdef A\n"
 				+ "success\n"
@@ -57,6 +62,7 @@ public class TestMacros extends TestingPPBase {
 				+ "success\n"
 				+ "#endif",
 				"success\n");
+		
 		
 	}
 	
@@ -122,6 +128,37 @@ public class TestMacros extends TestingPPBase {
 				+ "#define join(c, d) in_between(c hash_hash d)\n"
 				+ "char p[] = join(,y);\n",
 				"char p[] = \"## y\";\n");
+		
+
+		assertValid("#define A(...) __VA_ARGS__\n"
+				+ "A(success)\n",
+				"success\n");
+		
+		assertValid("#define A(...) #__VA_ARGS__\n"
+				+ "A(success)\n",
+				"\"success\"\n");
+		
+		assertValid("#define A(a,b,c) a ## b ## c\n"
+				+ "#define B(...) A(__VA_ARGS__)\n"
+				+ "B(su, cc, ess)\n",
+				"success\n");
+		
+		assertValid("#define A(a,b,c) a ## b ## c\n"
+				+ "#define B(...) A __VA_ARGS__\n"
+				+ "B((su, cc, ess))\n",
+				"success\n");
+		
+		
+		assertValid("#define A(a,b,c) a ## b ## c\n"
+				+ "#define B(x, ...) A(x,__VA_ARGS__)\n"
+				+ "B(su, cc, ess)\n",
+				"success\n");
+		
+		
+		
+		assertWarning("#define A(__VA_ARGS__)\n", "__VA_ARGS__ can only appear in the expansion of a variadic macro");
+		assertWarning("#define A __VA_ARGS__\n", "__VA_ARGS__ can only appear in the expansion of a variadic macro");
+
 		
 	}
 
