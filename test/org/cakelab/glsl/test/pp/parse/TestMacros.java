@@ -95,13 +95,10 @@ public class TestMacros extends TestingPPBase {
 		
 		assertValid("#define A(x,y) x ## y\n"
 				+ "#define TYPE(x) A(x,_type)\n"
-				+ "A(B,_type)\n",
+				+ "TYPE(B)\n",
 				"B_type\n");
 		
-		assertValid("#define A(x,y) x ## y ## ()\n"
-				+ "#define TYPE(x) A(x,_type)\n"
-				+ "A(B,_type)\n",
-				"B_type()\n");
+		
 		
 		assertValid("#define hash_hash # ## #\n"
 				+ "hash_hash\n",
@@ -150,7 +147,8 @@ public class TestMacros extends TestingPPBase {
 		
 		
 		assertValid("#define A(a,b,c) a ## b ## c\n"
-				+ "#define B(x, ...) A(x,__VA_ARGS__)\n"
+				+ "#define C A\n"
+				+ "#define B(x, ...) C(x,__VA_ARGS__)\n"
 				+ "B(su, cc, ess)\n",
 				"success\n");
 		

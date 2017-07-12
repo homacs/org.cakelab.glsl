@@ -31,6 +31,24 @@ import org.cakelab.glsl.pp.ast.StringConstant;
 import org.cakelab.glsl.pp.ast.PPWhitespace;
 
 public class Preprocessor extends ParserBase {
+	// TODO prepending text for macro expansion
+	// TODO notifying about end of a rescan for expanded section (rewindable)
+	// TODO managing macro expansion locations (especially with overlapping macro invocations through rescan)
+	
+	// FIXME macro invocations can span beyond line boundaries (CRLF is ordinary whitespace)
+	//       For example MACRO\n(\nPARAMS\n) is allowed.
+	//       BUT macro invocations cannot cross a line directive. 
+	//
+	//       Illegal:
+	//
+	//             #define MACRO(X)
+	//             MACRO\n
+	//             #define A
+	//             (paramX)
+	//
+	//       Thus, the only thing to be added is a CRLF to WHITESPACE, when scanning macro invocations 
+	//       and their parameters.
+	
 	
 	private ResourceManager resourceManager;
 	/** this is where only valid preprocessed output goes. */
@@ -205,7 +223,7 @@ public class Preprocessor extends ParserBase {
 				return true;
 			}
 
-			String output = text(true);
+			String output = text(true, true);
 			if (output == null) {
 				return false;
 			} else if(!ENDL()) {
@@ -229,7 +247,7 @@ public class Preprocessor extends ParserBase {
 	 * 
 	 * 
 	 */
-	private String text(boolean print) {
+	private String text(boolean print, boolean acceptHashes) {
 		StringBuffer result = new StringBuffer();
 		String s;
 		do {
@@ -240,7 +258,7 @@ public class Preprocessor extends ParserBase {
 			}
 			Expression expr = macro_invocation_expression();
 			if (expr == null) {
-				s = preprocessing_token();
+				s = preprocessing_token(acceptHashes);
 				if (print && s != null) out.print(s);
 			} else {
 				s = macro_expansion(expr, print);
@@ -259,6 +277,7 @@ public class Preprocessor extends ParserBase {
 		try {
 			// FIXME parameter expansion, foreign macro calls and output generation here
 			text = expr.eval().value().getValue().toString();
+			
 			// rescan for more macro expansions
 			text = macro_rescan_and_expand(expr.getStart(), text);
 		} catch (EvaluationException e) {
@@ -283,11 +302,12 @@ public class Preprocessor extends ParserBase {
 		// '#' and '##' will be treated as common pp-token.
 		Lexer previous = null;
 		try {
-			previous = swapLexer(new Lexer(textOrigin, new ByteArrayInputStream(text.getBytes())));
+			if (text == null || text.isEmpty()) return text;
+			previous = swapLexer(new PrependingLexer(new ByteArrayInputStream(text.getBytes()), lexer));
 			String s = null;
 			StringBuffer result = new StringBuffer();
 			do {
-				s = text(false); // scans simple text, whitespace, comments, line continuation and macro invocations but no '#' or '##'
+				s = text(false, true); // scans simple text, whitespace, comments, line continuation and macro invocations but no '#' or '##'
 				
 				if (s == null || s.length() == 0) {
 					// no result can mean, that there are ## or #
@@ -418,7 +438,7 @@ public class Preprocessor extends ParserBase {
 			// all preprocessing tokens except whitespace
 			ArrayList<String> tokens = new ArrayList<String>();
 			do {
-				s = preprocessing_token();
+				s = preprocessing_token(true);
 				if (s != null) tokens.add(s);
 			} while(s != null || WHITESPACE());
 			mandatory_endl();
@@ -569,7 +589,7 @@ public class Preprocessor extends ParserBase {
 		if (expr == null) {
 			// TODO can be optimised
 			Location start = lexer.location();
-			String s = preprocessing_token(); // anything not CRLF
+			String s = preprocessing_token(false); // anything not CRLF
 			if (s != null) {
 				expr = new StringConstant(new Interval(start, lexer.location()), s);
 			}
@@ -639,7 +659,7 @@ public class Preprocessor extends ParserBase {
 			// Iff macro has parameters, # has to be followed by 
 			// a macro parameter reference.
 			// Otherwise, it is an ordinary pp-token
-			if (currentMacroDefinition.hasArguments()) {
+			if (currentMacroDefinition.isFunctionMacro()) {
 				while (WHITESPACE());
 				MacroParameterReference param = macro_parameter_reference();
 				if (param == null) {
@@ -662,12 +682,12 @@ public class Preprocessor extends ParserBase {
 
 
 
-	private String preprocessing_token() {
+	private String preprocessing_token(boolean acceptHashes) {
 		if (IDENTIFIER()) {
 			return last.IDENTIFIER();
 		} else {
 			// TODO improve performance by parsing numbers 
-			if (!isWhite(LA1()) && !LA_equals('#') && !isEndl(LA1())) {
+			if (!isWhite(LA1()) && !isEndl(LA1()) && !(LA_equals('#') && !acceptHashes)) {
 				int c = lexer.consume();
 				return String.valueOf((char)c);
 			} else {
@@ -682,7 +702,7 @@ public class Preprocessor extends ParserBase {
 			Macro macro = macros.get(last.IDENTIFIER());
 			Location skippedWhitespace = lexer.location();
 			while(WHITESPACE());
-			if (optional('(')) {
+			if (macro.isFunctionMacro() && optional('(')) {
 				while(WHITESPACE());
 				
 				List<StringConstant> params = new ArrayList<StringConstant>();
@@ -694,7 +714,7 @@ public class Preprocessor extends ParserBase {
 					Location paramStart = lexer.location();
 					if (hasVarArgs && params.size() == numParameters-1) {
 						StringBuffer varargs = new StringBuffer();
-						macro_param_varargs(varargs);
+						macro_param_sequence(varargs);
 						params.add(new StringConstant(interval(paramStart), varargs.toString()));
 						break;
 					}
@@ -716,8 +736,8 @@ public class Preprocessor extends ParserBase {
 				
 				return new CallExpression(new MacroReference(new Interval(macroCallStart, lexer.location()), macro), params.toArray(new Expression[0]), lexer.location());
 			} else {
-				if (macro.hasArguments()) {
-					return expressionError(macroCallStart, "expected " + macro.numParameters() + " parameters but 0 where given.");
+				if (macro.isFunctionMacro()) {
+					return expressionError(macroCallStart, "expected parameter list with " + macro.numParameters() + " parameters.");
 				} else {
 					// rewind to location before WHITESPACE
 					lexer.rewind(skippedWhitespace);
@@ -729,7 +749,22 @@ public class Preprocessor extends ParserBase {
 	}
 
 
-	private void macro_param_varargs(StringBuffer param) {
+	/**
+	 * Parameter sequence is a string containing a list of
+	 * parameters instead of each parameter separated (i.e.
+	 * ',' is ignored until the next ')' is found).
+	 * 
+	 * If a macro has variadic arguments (i.e. last param: '...')
+	 * then the remaining parameters to a macro invocation
+	 * will be gathered in one single string parameter
+	 * which is assigned to __VAR_ARGS__.
+	 * 
+	 * This is the same behaviour as for a single parameter 
+	 * in parenthesis. So, both cases use this method.
+	 * 
+	 * @param param
+	 */
+	private void macro_param_sequence(StringBuffer param) {
 		int c = LA1();
 		while (c != ')' && !lexer.eof()) {
 			Expression expr = macro_invocation_expression();
@@ -775,7 +810,7 @@ public class Preprocessor extends ParserBase {
 	private boolean macro_param_parenthesised(StringBuffer param) {
 		if (LA1() == '(') {
 			param.append((char)lexer.consume());
-			macro_param_varargs(param);
+			macro_param_sequence(param);
 			int c = LA1();
 			if (c == ')') {
 				param.append((char)c);
@@ -971,9 +1006,10 @@ public class Preprocessor extends ParserBase {
 		// get *macro expanded* remainder of current line
 		Location textOrigin = lexer.location();
 		
-		String text = text(false);
+		// retrieve macro expanded remainder of current line and 
+		String text = text(false, true);
 		
-		// parse that macro expanded text
+		// and parse that macro expanded text for the expression
 		Lexer previous = swapLexer(new Lexer(textOrigin, new ByteArrayInputStream(text.getBytes())));
 		try {
 			return expression();

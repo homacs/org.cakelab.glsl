@@ -1,5 +1,6 @@
 package org.cakelab.glsl.pp;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -14,7 +15,6 @@ import org.cakelab.glsl.Location;
  */
 public class Lexer {
 
-	
 	public static class InputStreamBuffer {
 		private static final int INIT_CAPACITY = 1024;
 
@@ -24,7 +24,9 @@ public class Lexer {
 		/** tokens read from stream */
 		private int[] tokens = new int[INIT_CAPACITY];
 		/** length of the current line, not the buffer */
-		private int length;
+		protected int length;
+
+		protected boolean dismissed = false;
 		
 		
 		InputStreamBuffer(InputStream in) {
@@ -33,6 +35,10 @@ public class Lexer {
 		}
 
 		int get(int pos) {
+			if (pos < 0) {
+				throw new IndexOutOfBoundsException("buffer underflow: index " + pos);
+			}
+			if (dismissed || pos >= size()) return EOF;
 			return tokens[pos];
 		}
 		
@@ -53,7 +59,6 @@ public class Lexer {
 				while((c = in.read()) != EOF) {
 					append(c);
 				}
-				append(c); // append EOF
 			} catch (IOException e) {
 				throw new Error(e);
 			}
@@ -115,6 +120,7 @@ public class Lexer {
 		}
 
 		public String getText(int start, int end) {
+			if (dismissed) return "";
 			start = start < 0 ? 0 : start;
 			StringBuffer s = new StringBuffer();
 			for (int i = start; i <= end; i++) {
@@ -124,17 +130,17 @@ public class Lexer {
 		}
 
 		public void dismiss(int startingFrom) {
+			dismissed = true;
 			tokens[startingFrom] = -1;
 			length = startingFrom+1;
 		}
 	}
 	
-	
 	public static final int EOF = -1;
 	
 
-	private InputStreamBuffer buffer;
-	private LexerLocation location;
+	protected InputStreamBuffer buffer;
+	protected LexerLocation location;
 
 
 	public int current() {
@@ -165,7 +171,7 @@ public class Lexer {
 	public int lookahead(int i) {
 		if (eof()) return EOF;
 		int pos = location.getPosition()+i;
-		if (pos >= buffer.size()) throw new Error("lookahead exceeds line end");
+		if (pos > buffer.size()) throw new Error("lookahead exceeds line end");
 		return buffer.get(pos);
 	}
 
@@ -229,6 +235,10 @@ public class Lexer {
 
 	public int getColumn() {
 		return location.getColumn();
+	}
+
+	public String getString(int start, int end) {
+		return buffer.getText(start, end);
 	}
 
 	
