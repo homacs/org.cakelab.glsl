@@ -38,12 +38,12 @@ public class Macro {
 		return null;
 	}
 	
-	public boolean hasArguments() {
-		return params != null && params.size() > 0;
+	public boolean isFunctionMacro() {
+		return params != null;
 	}
 
 	public boolean hasVarArgs() {
-		return hasArguments() && params.get(params.size()-1).getName().equals(MacroParameter.__VA_ARGS__);
+		return isFunctionMacro() && params.size() > 0 && params.get(params.size()-1).getName().equals(MacroParameter.__VA_ARGS__);
 	}
 
 	public String getName() {
