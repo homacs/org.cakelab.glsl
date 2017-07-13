@@ -3,8 +3,9 @@ package org.cakelab.glsl.pp;
 import java.io.InputStream;
 
 import org.cakelab.glsl.Location;
+import org.cakelab.glsl.pp.ast.MacroInvocation;
 
-public class PrependingLexer extends Lexer {
+public class RescanLexer extends Lexer {
 	// TODO rename to MacroExpansionLexer
 	// A macro invocation results in at least two steps. 
 	// At first the macro is expanded, which assigns expanded parameters, 
@@ -203,24 +204,13 @@ public class PrependingLexer extends Lexer {
 	// (always referring to the location in the preprocessed output).
 	
 	
-	public class PrependedLocation extends Location {
-
-		private PrependingLexer owner;
-		private Location appendLocation;
-
-		public PrependedLocation(PrependingLexer owner, Location location, Location appendLocation) {
-			super(location);
-			this.owner = owner;
-			this.appendLocation = appendLocation;
-		}
-
-	}
-
 	private Lexer append;
-	private Location appendixStart;
+	private LexerLocation appendixStart;
+	private MacroInvocation macroInvocation;
 
-	public PrependingLexer(InputStream prepend, Lexer append) {
-		super(append.location(), prepend);
+	public RescanLexer(MacroInvocation macroInvocation, InputStream prepend, Lexer append) {
+		super(new MacroExpandedLocation(macroInvocation), prepend);
+		this.macroInvocation = macroInvocation;
 		this.append = append;
 		appendixStart = append.location();
 	}
@@ -233,53 +223,69 @@ public class PrependingLexer extends Lexer {
 
 	@Override
 	public boolean eof() {
-		return append.eof();
+		return super.eof() && append.eof();
 	}
 
 	@Override
 	public int lookahead(int i) {
-		if (eof()) return EOF;
-		int pos = location.getPosition()+i;
-		int overflow = pos - buffer.size();
-		if (overflow >= 0) {
-			return append.lookahead(i - overflow);
-		}
-		else 
-		{
-			return buffer.get(pos);
+		if (super.eof()) {
+			return append.lookahead(i);
+		} else {
+			int pos = location.getLexerPosition()+i;
+			int overflow = pos - (buffer.size()-1);
+			if (overflow > 0) {
+				return append.lookahead(overflow);
+			}
+			else 
+			{
+				return buffer.get(pos);
+			}
 		}
 	}
 
 	@Override
 	public String consume(int n) {
-		int stop = location.getPosition()+n;
+		int stop = location.getLexerPosition()+n;
 		if (stop < buffer.size()) return super.consume(n); 
 		else {
-			int start = location.getPosition()+1;
-			if (start >= buffer.size()) {
+			int start = location.getLexerPosition()+1;
+			if (start > buffer.size()) {
 				return append.consume(n);
 			} else {
 				int prependConsume = buffer.size() - start;
-				int appendConsume = stop - buffer.size();
 				String prependText = super.consume(prependConsume);
+				super.consume(1);
+				this.setEOF();
+				int appendConsume = stop - buffer.size();
 				String appendText = append.consume(appendConsume);
 				return prependText + appendText;
 			}
 		}
 	}
 
+	private void setEOF() {
+		// deliberately set to EOF position
+		super.location.setLexerPosition(buffer.size());
+	}
+
 	@Override
 	public int consume() {
-		int stop = location.getPosition()+1;
-		if (buffer.size() > stop) return super.consume();
-		else if (buffer.size() == stop) {
-			super.consume(); // consume eof
+		int pos = location.getLexerPosition()+1;
+		if (pos > buffer.size()) return append.consume();
+		else if (buffer.size() == pos) {
+			this.setEOF();
 			return append.consume();
 		} else {
-			return append.consume();
+			return super.consume();
 		}
 	}
 
+	@Override
+	public Lexer commit() {
+		if (super.eof()) return append.commit();
+		else return this;
+	}
+	
 	@Override
 	public void dismiss() {
 		super.dismiss();
@@ -288,31 +294,24 @@ public class PrependingLexer extends Lexer {
 
 	@Override
 	public Location location() {
-		if (!super.eof()) return new PrependedLocation(this, (Location)location, append.location());
+		if (!super.eof()) return new MacroExpandedLocation((MacroExpandedLocation)super.location);
 		else return append.location();
 	}
 
 	@Override
 	public void rewind(Location reset) {
 		if (isOurLocation(reset)) {
-			PrependedLocation marker = (PrependedLocation)reset;
-			super.rewind(marker);
-			append.rewind(marker.appendLocation);
+			super.rewind(reset);
+			append.rewind((Location)appendixStart);
 		} else {
 			append.rewind(reset);
 		}
 	}
 
 	@Override
-	public void setVirtualLocation(int line) {
-		if (super.eof()) append.setVirtualLocation(line);
-		else super.setVirtualLocation(line);
-	}
-
-	@Override
 	public void setVirtualLocation(String id, int line) {
 		if (super.eof()) append.setVirtualLocation(id, line);
-		else super.setVirtualLocation(id, line);
+		else throw new Error("internal error: expanded text contains line directive");
 	}
 
 	@Override
@@ -322,8 +321,8 @@ public class PrependingLexer extends Lexer {
 			if (isOurLocation(end)) {
 				return super.getString(start, end);
 			} else {
-				String prependedString = super.getString(start.pos, buffer.size());
-				String appendedString = append.getString(appendixStart.pos, end.pos);
+				String prependedString = super.getString(start.getLexerPosition(), buffer.size());
+				String appendedString = append.getString(appendixStart.getLexerPosition(), end.getLexerPosition());
 				return prependedString + appendedString;
 			}
 		}
@@ -332,13 +331,13 @@ public class PrependingLexer extends Lexer {
 	}
 
 	private boolean isOurLocation(LexerLocation l) {
-		return (l instanceof PrependedLocation && ((PrependedLocation)l).owner == this);
+		return (l instanceof MacroExpandedLocation && ((MacroExpandedLocation)l).getMacroInvocation() == macroInvocation);
 	}
 
 	@Override
-	public int getColumn() {
-		if (super.eof()) return append.getColumn();
-		else return super.getColumn();
+	public boolean atColumnStart() {
+		if (super.eof()) return append.atColumnStart();
+		else return false;
 	}
 
 }

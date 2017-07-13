@@ -39,6 +39,8 @@ public class Macro {
 	}
 	
 	public boolean isFunctionMacro() {
+		// a function macro can have an empty parameter list.
+		// a non-existing parameter list indicates an object like macro.
 		return params != null;
 	}
 
@@ -52,12 +54,12 @@ public class Macro {
 	
 	
 	/**
-	 * Macro invocation.
-	 * 
-	 * Macro executes only (1, ##) concatenation, (2, #) stringify expressions,
-	 * (3) replaces macro parameters with given values and (4) forwards text sections.
-	 * 
-	 * The result is returned in a String value, which has to be macro expanded again.
+	 * Macro invocation -> expansion.
+	 * <p>
+	 * Macro (1) replaces macro parameters with given values, (2) inserts text sections
+	 * (3) applies concatenation (##) and (4) stringify (#) expressions.
+	 * </p>
+	 * The result is returned in a String value.
 	 * 
 	 * @param args
 	 * @return

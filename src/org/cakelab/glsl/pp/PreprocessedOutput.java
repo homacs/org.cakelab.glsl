@@ -3,7 +3,7 @@ package org.cakelab.glsl.pp;
 import java.io.OutputStream;
 
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.lang.ast.Expression;
+import org.cakelab.glsl.pp.ast.MacroInvocation;
 
 public class PreprocessedOutput extends PreprocessedOutputSink {
 
@@ -26,7 +26,11 @@ public class PreprocessedOutput extends PreprocessedOutputSink {
 	}
 
 	@Override
-	public void reportMacroExpansionEnd(int startOutputPos, Expression macroCall) {
+	public void reportMacroExpansionEnd(int startOutputPos, MacroInvocation macroCall) {
+	}
+
+	@Override
+	public void reportMacroExpansion(String text, MacroInvocation expr) {
 	}
 
 }

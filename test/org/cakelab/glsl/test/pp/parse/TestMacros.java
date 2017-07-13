@@ -69,8 +69,7 @@ public class TestMacros extends TestingPPBase {
 	public static void testReplacementList() {
 		
 		assertValid("#define A() B\n"
-				+ "A()\n"
-				+ "",
+				+ "A()\n",
 				"B\n");
 		
 		assertValid("#define A(x) x = 1\n"

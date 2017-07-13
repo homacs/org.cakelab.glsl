@@ -15,6 +15,8 @@ import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.*;
 import org.cakelab.glsl.pp.ast.CharacterConstant;
 import org.cakelab.glsl.pp.ast.Macro;
+import org.cakelab.glsl.pp.ast.MacroCallExpression;
+import org.cakelab.glsl.pp.ast.MacroInvocation;
 import org.cakelab.glsl.pp.ast.MacroParameter;
 import org.cakelab.glsl.pp.ast.MacroParameterReference;
 import org.cakelab.glsl.pp.ast.MacroReference;
@@ -198,7 +200,12 @@ public class Preprocessor extends ParserBase {
 	}
 
 	private void group() {
-		while(!lexer.eof() && group_part());
+		while(!lexer.eof() && group_part()) commit_scans();
+	}
+
+	private void commit_scans() {
+		Lexer procede = lexer.commit();
+		if (procede != lexer) swapLexer(procede);
 	}
 
 	public boolean group_part() {
@@ -257,11 +264,13 @@ public class Preprocessor extends ParserBase {
 				if (print) out.print(last.WHITESPACE());
 			}
 			Expression expr = macro_invocation_expression();
-			if (expr == null) {
+			if (expr == null || !(expr instanceof MacroInvocation)) {
 				s = preprocessing_token(acceptHashes);
 				if (print && s != null) out.print(s);
 			} else {
-				s = macro_expansion(expr, print);
+				macro_expansion((MacroInvocation) expr, print);
+				s = "";
+				continue;
 			}
 			
 			if (s != null) {
@@ -272,63 +281,26 @@ public class Preprocessor extends ParserBase {
 		return result.toString();
 	}
 
-	private String macro_expansion(Expression expr, boolean print) {
-		String text;
+	private void macro_expansion(MacroInvocation expr, boolean print) {
+		String prependingText;
 		try {
-			// FIXME parameter expansion, foreign macro calls and output generation here
-			text = expr.eval().value().getValue().toString();
+			// execute macro expansion
+			prependingText = ((Expression)expr).eval().value().getValue().toString();
+			if (print) out.reportMacroExpansion(prependingText, expr);
 			
 			// rescan for more macro expansions
-			text = macro_rescan_and_expand(expr.getStart(), text);
+			// rescan happens after removing '#' and '##'. Any remaining 
+			// '#' and '##' will be treated as common pp-token.
+			if (prependingText == null || prependingText.isEmpty()) return;
+			swapLexer(Lexer.createExpansionRescanLexer(expr, prependingText, lexer));
+
 		} catch (EvaluationException e) {
 			syntaxError(e);
-			return "";
-		}
-		int startOutputPos = -1;
-		if (print) startOutputPos = out.reportMacroExpansionStart();
-		try {
-			if (print) out.print(text);
-			return text;
-		} finally {
-			if (print) {
-				out.reportMacroExpansionEnd(startOutputPos, expr);
-				out.reportLocationSwitch(lexer.location());
-			}
-		}
-	}
-
-	private String macro_rescan_and_expand(Location textOrigin, String text) {
-		// rescan happens after removing '#' and '##'. Any remaining 
-		// '#' and '##' will be treated as common pp-token.
-		Lexer previous = null;
-		try {
-			if (text == null || text.isEmpty()) return text;
-			previous = swapLexer(new PrependingLexer(new ByteArrayInputStream(text.getBytes()), lexer));
-			String s = null;
-			StringBuffer result = new StringBuffer();
-			do {
-				s = text(false, true); // scans simple text, whitespace, comments, line continuation and macro invocations but no '#' or '##'
-				
-				if (s == null || s.length() == 0) {
-					// no result can mean, that there are ## or #
-					s = null;
-					if (optional("##")) {
-						s = "##";
-					} else if (optional("#")) {
-						s = "#";
-					}
-				}
-				if (s != null) result.append(s);
-			} while (s != null);
-			
-			return result.toString();
-		} finally {
-			if (previous != null) swapLexer(previous);
 		}
 	}
 
 	private boolean has_directive_line_start() {
-		if (lexer.getColumn() != Location.COLUMN_START) return false;
+		if (!lexer.atColumnStart()) return false;
 		int i = 1;
 		int c;
 		do {
@@ -734,7 +706,7 @@ public class Preprocessor extends ParserBase {
 					}
 				}
 				
-				return new CallExpression(new MacroReference(new Interval(macroCallStart, lexer.location()), macro), params.toArray(new Expression[0]), lexer.location());
+				return new MacroCallExpression(new MacroReference(new Interval(macroCallStart, lexer.location()), macro), params.toArray(new Expression[0]), lexer.location());
 			} else {
 				if (macro.isFunctionMacro()) {
 					return expressionError(macroCallStart, "expected parameter list with " + macro.numParameters() + " parameters.");
@@ -768,9 +740,9 @@ public class Preprocessor extends ParserBase {
 		int c = LA1();
 		while (c != ')' && !lexer.eof()) {
 			Expression expr = macro_invocation_expression();
-			if (expr != null) {
-				String expanded = macro_expansion(expr, false);
-				param.append(expanded);
+			if (expr != null && expr instanceof MacroInvocation) {
+				macro_expansion((MacroInvocation)expr, false);
+				continue;
 			} else if (macro_param_parenthesised(param)) {
 				// another pair of parenthesis
 			} else {
@@ -792,9 +764,9 @@ public class Preprocessor extends ParserBase {
 		int c = LA1();
 		while (c != ',' && c != ')' && !lexer.eof()) {
 			Expression expr = macro_invocation_expression();
-			if (expr != null) {
-				String expanded = macro_expansion(expr, false);
-				param.append(expanded);
+			if (expr != null && (expr instanceof MacroInvocation)) {
+				// TODO move to macro_invocation_expression
+				macro_expansion((MacroInvocation) expr, false);
 			} else if (macro_param_parenthesised(param)) {
 				// already added to string buffer
 			} else {
@@ -1010,7 +982,7 @@ public class Preprocessor extends ParserBase {
 		String text = text(false, true);
 		
 		// and parse that macro expanded text for the expression
-		Lexer previous = swapLexer(new Lexer(textOrigin, new ByteArrayInputStream(text.getBytes())));
+		Lexer previous = swapLexer(Lexer.createStringRescanLexer(textOrigin, text));
 		try {
 			return expression();
 		} finally {

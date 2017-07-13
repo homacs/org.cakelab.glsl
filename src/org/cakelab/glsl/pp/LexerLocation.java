@@ -38,13 +38,13 @@ public class LexerLocation {
 	public static final int COLUMN_START = 0;
 	private static final int LINE_START = 1;
 	/** position in bytes from start */
-	protected int pos;
+	private int pos;
 	/** line number */
-	protected int line;
+	private int line;
 	/** column */
-	protected int column;
+	private int column;
 	/** identifier (for GLSL this is the source string number) */
-	String identifier;
+	private String identifier;
 	
 	protected LexerLocation(String sourceIdentifier, int pos, int line, int column) {
 		this.identifier = sourceIdentifier;
@@ -74,22 +74,27 @@ public class LexerLocation {
 		return identifier;
 	}
 
-	int getPosition() {
+	int getLexerPosition() {
 		return pos;
 	}
 
-	void nextLine() {
+	public int getPosition() {
+		return pos;
+	}
+	
+	
+	protected void nextLine() {
 		pos++;
 		line++;
 		column = COLUMN_START;
 	}
 	
-	void nextColumn() {
+	protected void nextColumn() {
 		pos++;
 		column++;
 	}
 
-	void setPosition(int lastConsumedPos) {
+	protected void setLexerPosition(int lastConsumedPos) {
 		pos = lastConsumedPos;
 	}
 

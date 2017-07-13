@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.pp.LocationMap.SimpleArrayList.Comparator;
+import org.cakelab.glsl.pp.ast.MacroInvocation;
 
 public class LocationMap {
 
@@ -20,8 +20,6 @@ public class LocationMap {
 		}
 
 	}
-
-
 
 	public static class SimpleArrayList<T> {
 
@@ -100,10 +98,10 @@ public class LocationMap {
 
 	public static class MacroCallEntry extends Entry {
 		
-		Expression macroInvokation;
+		MacroInvocation macroInvokation;
 		int outputEnd; // end position in preprocessor output
 
-		public MacroCallEntry(Expression call, int outputStart, int outputEnd) {
+		public MacroCallEntry(MacroInvocation call, int outputStart, int outputEnd) {
 			super(call.getStart(), outputStart);
 			this.outputEnd = outputEnd;
 			this.macroInvokation = call;
@@ -123,7 +121,7 @@ public class LocationMap {
 		lines.add(new TextLineEntry(loc, outputPosition+1));
 	}
 	
-	public void reportMacroCall(Expression call, int outputStart, int outputEnd) {
+	public void reportMacroCall(MacroInvocation call, int outputStart, int outputEnd) {
 		macros.add(new MacroCallEntry(call, outputStart, outputEnd));
 	}
 	
@@ -206,7 +204,7 @@ public class LocationMap {
 	
 	private Location textLocation(Entry entry, int outputPos) {
 		int offset = entry.outputPos - outputPos;
-		int pos = ((LexerLocation)entry.loc).getPosition() + offset;
+		int pos = ((LexerLocation)entry.loc).getLexerPosition() + offset;
 		int column = entry.loc.getColumn() + offset;
 		int line = entry.loc.getLine();
 		return new Location(entry.loc.getSourceIdentifier(), pos, line, column);

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 import org.cakelab.glsl.Location;
+import org.cakelab.glsl.pp.ast.MacroInvocation;
 
 
 /**
@@ -144,33 +145,48 @@ public class Lexer {
 
 
 	public int current() {
-		return buffer.get(location.getPosition());
+		return buffer.get(location.getLexerPosition());
 	}
 
+	/** Create a lexer scanning giving input stream. */
 	public Lexer(String sourceIdentifier, InputStream in) throws SyntaxError {
 		this.buffer = new InputStreamBuffer(in);
 		this.location = new Location(sourceIdentifier);
 	}
 
 	/** 
+	 * 
+	 * 
 	 * This creates a lexer using origin as virtual location of the input.
 	 * The actual position in the input will be reset to the start position.
 	 * @param origin
 	 * @param in
 	 */
-	public Lexer(Location origin, InputStream in) {
+	protected Lexer(Location origin, InputStream in) {
 		this.buffer = new InputStreamBuffer(in);
 		// FIXME position may be misinterpreted as actual position by location map!
-		this.location = new Location(origin.getSourceIdentifier(), Location.POS_START, origin.getLine(), origin.getColumn());
+		this.location = origin;
 	}
 
+	
+	public static Lexer createStringRescanLexer(Location origin, String text) {
+		origin = new Location(origin.getSourceIdentifier(), Location.POS_START, origin.getLine(), origin.getColumn());
+		ByteArrayInputStream in = new ByteArrayInputStream(text.getBytes());
+		return new Lexer(origin, in);
+	}
+	
+	public static Lexer createExpansionRescanLexer(MacroInvocation expr, String prepend, Lexer append) {
+		return new RescanLexer(expr, new ByteArrayInputStream(prepend.getBytes()), append);
+	}
+
+	
 	public boolean eof() {
-		return location.getPosition() != Location.POS_START && buffer.get(location.getPosition()) == EOF;
+		return location.getLexerPosition() != Location.POS_START && buffer.get(location.getLexerPosition()) == EOF;
 	}
 	
 	public int lookahead(int i) {
 		if (eof()) return EOF;
-		int pos = location.getPosition()+i;
+		int pos = location.getLexerPosition()+i;
 		if (pos > buffer.size()) throw new Error("lookahead exceeds line end");
 		return buffer.get(pos);
 	}
@@ -179,35 +195,35 @@ public class Lexer {
 	private void consumed(int lastConsumedPos) {
 		if (eof()) return;
 
-		for (int c = lookahead(1); c != EOF && location.getPosition() < lastConsumedPos;) {
+		for (int c = lookahead(1); c != EOF && location.getLexerPosition() < lastConsumedPos;) {
 			if (c == '\n') {
 				location.nextLine();
 			} else {
 				location.nextColumn();
 			}
 		}
-		location.setPosition(lastConsumedPos);
+		location.setLexerPosition(lastConsumedPos);
 	}
 
 	/** consume n tokens and return the consumed string. */
 	public String consume(int n) {
-		int stop = location.getPosition()+n;
-		assert(buffer.size() > stop);
-		String consumed = buffer.getText(location.getPosition()+1, stop);
+		int stop = location.getLexerPosition()+n;
+		assert(buffer.size() >= stop);
+		String consumed = buffer.getText(location.getLexerPosition()+1, stop);
 		consumed(stop);
 		return consumed;
 	}
 
 	public int consume() {
-		int stop = location.getPosition()+1;
-		assert(buffer.size() > stop);
+		int stop = location.getLexerPosition()+1;
+		assert(buffer.size() >= stop);
 		int consumed = buffer.get(stop);
 		consumed(stop);
 		return consumed;
 	}
 
 	public void dismiss() {
-		buffer.dismiss(location.getPosition());
+		buffer.dismiss(location.getLexerPosition());
 	}
 
 	public Location location() {
@@ -219,28 +235,34 @@ public class Lexer {
 	}
 
 	public void setVirtualLocation(int line) {
-		location = new Location(location.getSourceIdentifier(), location.getPosition(), line, Location.COLUMN_START);
+		setVirtualLocation(location.getSourceIdentifier(), line);
 	}
 
 	public void setVirtualLocation(String id, int line) {
-		location = new Location(id, location.getPosition(), line, Location.COLUMN_START);
+		location = new Location(id, location.getLexerPosition(), line, Location.COLUMN_START);
 	}
 
 	public String getString(LexerLocation start, LexerLocation end) {
 		assert (start.getSourceIdentifier().equals(location.getSourceIdentifier())) ;
 		assert (end.getSourceIdentifier().equals(location.getSourceIdentifier())) ;
 		
-		return buffer.getText(start.getPosition(), end.getPosition());
-	}
-
-	public int getColumn() {
-		return location.getColumn();
+		return buffer.getText(start.getLexerPosition(), end.getLexerPosition());
 	}
 
 	public String getString(int start, int end) {
 		return buffer.getText(start, end);
 	}
 
-	
+	/** signals that previously scanned input will not be rewound. 
+	 * @return */
+	public Lexer commit() {
+		// intentionally empty
+		return this;
+	}
+
+	public boolean atColumnStart() {
+		return location.getColumn() == Location.COLUMN_START;
+	}
+
 
 }

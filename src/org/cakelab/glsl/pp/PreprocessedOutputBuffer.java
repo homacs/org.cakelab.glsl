@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.ast.Expression;
+import org.cakelab.glsl.pp.ast.MacroInvocation;
 
 /**
  * A preprocessor output buffer is used as intermediate between preprocessor
@@ -91,9 +92,14 @@ public class PreprocessedOutputBuffer extends PreprocessedOutputSink {
 		inMacroExpansion++;
 		return getPosition();
 	}
-	public void reportMacroExpansionEnd(int outputStart, Expression macroCall) {
+	public void reportMacroExpansionEnd(int outputStart, MacroInvocation macroCall) {
 		inMacroExpansion--;
 		if (macroCall != null) locations.reportMacroCall(macroCall, outputStart, getPosition());
+	}
+
+	@Override
+	public void reportMacroExpansion(String text, MacroInvocation expr) {
+		// TODO implement macro expansion mapping in location map
 	}
 	
 }

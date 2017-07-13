@@ -6,7 +6,7 @@ import org.cakelab.glsl.lang.ast.Identifier;
 import org.cakelab.glsl.lang.ast.PrimaryExpression;
 import org.cakelab.glsl.lang.ast.Value;
 
-public class MacroReference extends PrimaryExpression implements Identifier {
+public class MacroReference extends PrimaryExpression implements Identifier, MacroInvocation {
 
 	Macro macro;
 

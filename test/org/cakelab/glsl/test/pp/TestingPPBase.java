@@ -45,7 +45,7 @@ public class TestingPPBase {
 		try {
 			error = null;
 			warning = null;
-			pp = new Preprocessor("0", new ByteArrayInputStream(source.getBytes()), out);
+			pp = new Preprocessor("0", new ByteArrayInputStream(source.getBytes()), new Tee(out, System.out));
 			pp.setErrorHandler(errorHandler);
 		} catch (Throwable e) {
 			// will never happen

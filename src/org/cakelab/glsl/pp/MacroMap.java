@@ -6,6 +6,6 @@ import org.cakelab.glsl.pp.ast.Macro;
 
 
 @SuppressWarnings("serial")
-public class MacroMap extends HashMap<String, Macro>{
+public class MacroMap extends HashMap<String, Macro> {
 
 }

@@ -6,6 +6,7 @@ import java.io.PrintStream;
 
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.ast.Expression;
+import org.cakelab.glsl.pp.ast.MacroInvocation;
 
 
 public abstract class PreprocessedOutputSink extends PrintStream {
@@ -35,8 +36,14 @@ public abstract class PreprocessedOutputSink extends PrintStream {
 		}
 
 		@Override
-		public void reportMacroExpansionEnd(int startOutputPos, Expression macroCall) {
+		public void reportMacroExpansionEnd(int startOutputPos, MacroInvocation macroCall) {
 			// intentionally empty
+		}
+
+		@Override
+		public void reportMacroExpansion(String text, MacroInvocation expr) {
+			// intentionally empty
+			
 		}
 	};
 
@@ -80,6 +87,8 @@ public abstract class PreprocessedOutputSink extends PrintStream {
 	 * @param startOutputPos start of the macro call in the output stream received from {@link #reportMacroExpansionStart()} or {@link #getPosition()}.
 	 * @param macroCall The macro invocation expression, which is either an instance of {@link MacroReference} or {@link CallExpression} with a macro reference.
 	 */
-	public abstract void reportMacroExpansionEnd(int startOutputPos, Expression macroCall);
+	public abstract void reportMacroExpansionEnd(int startOutputPos, MacroInvocation macroCall);
+
+	public abstract void reportMacroExpansion(String text, MacroInvocation expr);
 	
 }
