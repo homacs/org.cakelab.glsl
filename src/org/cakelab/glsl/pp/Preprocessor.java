@@ -496,13 +496,13 @@ public class Preprocessor extends ParserBase {
 				do {
 					while(WHITESPACE());
 					if (DOTS()) {
-						params.add(new MacroParameter(MacroParameter.__VA_ARGS__));
+						params.add(new MacroParameter(MacroParameter.__VA_ARGS__, this));
 						break;
 					} else if (IDENTIFIER()) {
 						if (last.IDENTIFIER().equals(MacroParameter.__VA_ARGS__)) {
 							syntaxWarning("__VA_ARGS__ can only appear in the expansion of a variadic macro");
 						}
-						params.add(new MacroParameter(last.IDENTIFIER()));
+						params.add(new MacroParameter(last.IDENTIFIER(), this));
 					} else if (firstIteration) {
 						// empty parameter list
 						break;
@@ -599,7 +599,8 @@ public class Preprocessor extends ParserBase {
 			if (left == null || right == null) {
 				syntaxError("'##' cannot appear at either end of a macro expansion");
 			}
-			
+			if (left instanceof MacroParameterReference) ((MacroParameterReference)left).expand(false);
+			if (right instanceof MacroParameterReference) ((MacroParameterReference)right).expand(false);
 			return new PPConcatExpression(new Interval(mark, lexer.location()), left, right);
 		} else {
 			lexer.rewind(mark);
@@ -640,6 +641,7 @@ public class Preprocessor extends ParserBase {
 				}
 				else 
 				{
+					param.expand(false);
 					return new PPStringifyExpression(mark, param);
 				}
 			} else {
@@ -659,6 +661,18 @@ public class Preprocessor extends ParserBase {
 			return last.IDENTIFIER();
 		} else {
 			// TODO improve performance by parsing numbers 
+			
+			// strings and character constants are not parsed for macro invocations
+			Value expr = string_literal();
+			if (expr != null) {
+				return "\"" + expr.getValue().toString() + "\"";
+			}
+			
+			expr = character_constant();
+			if (expr != null) {
+				return "'" + expr.getValue().toString() + "'";
+			}
+			
 			if (!isWhite(LA1()) && !isEndl(LA1()) && !(LA_equals('#') && !acceptHashes)) {
 				int c = lexer.consume();
 				return String.valueOf((char)c);
@@ -686,11 +700,11 @@ public class Preprocessor extends ParserBase {
 					Location paramStart = lexer.location();
 					if (hasVarArgs && params.size() == numParameters-1) {
 						StringBuffer varargs = new StringBuffer();
-						macro_param_sequence(varargs);
+						macro_arg_sequence(varargs);
 						params.add(new StringConstant(interval(paramStart), varargs.toString()));
 						break;
 					}
-					String param = macro_param();
+					String param = macro_arg();
 					if (param != null) params.add(new StringConstant(interval(paramStart), param));
 					else params.add(StringConstant.EMPTY);
 					while(WHITESPACE());
@@ -726,7 +740,7 @@ public class Preprocessor extends ParserBase {
 	 * parameters instead of each parameter separated (i.e.
 	 * ',' is ignored until the next ')' is found).
 	 * 
-	 * If a macro has variadic arguments (i.e. last param: '...')
+	 * If a macro has variadic parameters (i.e. last param: '...')
 	 * then the remaining parameters to a macro invocation
 	 * will be gathered in one single string parameter
 	 * which is assigned to __VAR_ARGS__.
@@ -734,36 +748,51 @@ public class Preprocessor extends ParserBase {
 	 * This is the same behaviour as for a single parameter 
 	 * in parenthesis. So, both cases use this method.
 	 * 
-	 * @param param
+	 * @param arg
 	 */
-	private void macro_param_sequence(StringBuffer param) {
+	private void macro_arg_sequence(StringBuffer arg) {
 		int c = LA1();
 		while (c != ')' && !lexer.eof()) {
-			Expression expr = macro_invocation_expression();
-			if (expr != null && expr instanceof MacroInvocation) {
-				macro_expansion((MacroInvocation)expr, false);
-				continue;
-			} else if (macro_param_parenthesised(param)) {
+			if (macro_arg_parenthesised(arg)) {
 				// another pair of parenthesis
 			} else {
-				param.append((char)c);
+				arg.append((char)c);
 				lexer.consume();
 			}
 			c = LA1();
 		}
 	}
 
-	private String macro_param() {
+	/**
+	 * Called during macro invocation to expand arguments on demand (if required).
+	 * <p>
+	 * Macro arguments cannot be expanded the usual way, because only the text 
+	 * of the argument has to be expanded and rescanned without the following
+	 * text of the file (this is the only difference).
+	 * </p>
+	 * @param origin Origin of the arguments text
+	 * @param argument The arguments text to be expanded.
+	 * @return Expanded argument.
+	 */
+	public String macro_expand_argument(Location origin, String argument) {
+		// and parse that macro expanded text for the expression
+		Lexer previous = swapLexer(Lexer.createPreprocessedOutputLexer(origin, argument));
+		try {
+			return text(false, true);
+		} finally {
+			if (previous != null) swapLexer(previous);
+		}
+	}
+
+
+	
+	private String macro_arg() {
 		// macro parameters can contain anything, even CRLF, but not ',' or ')' alone.
 		// ',' can occur in parenthesised expressions though.
 		StringBuffer param = new StringBuffer();
 		int c = LA1();
 		while (c != ',' && c != ')' && !lexer.eof()) {
-			Expression expr = macro_invocation_expression();
-			if (expr != null && (expr instanceof MacroInvocation)) {
-				// TODO move to macro_invocation_expression
-				macro_expansion((MacroInvocation) expr, false);
-			} else if (macro_param_parenthesised(param)) {
+			if (macro_arg_parenthesised(param)) {
 				// already added to string buffer
 			} else {
 				param.append((char)c);
@@ -775,10 +804,10 @@ public class Preprocessor extends ParserBase {
 		return result;
 	}
 
-	private boolean macro_param_parenthesised(StringBuffer param) {
+	private boolean macro_arg_parenthesised(StringBuffer param) {
 		if (LA1() == '(') {
 			param.append((char)lexer.consume());
-			macro_param_sequence(param);
+			macro_arg_sequence(param);
 			int c = LA1();
 			if (c == ')') {
 				param.append((char)c);
@@ -985,6 +1014,8 @@ public class Preprocessor extends ParserBase {
 			if (previous != null) swapLexer(previous);
 		}
 	}
+	
+
 	
 	/**
 	 * A single expression or a list of expressions separated by commas.

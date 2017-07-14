@@ -71,8 +71,8 @@ public class Macro {
 		
 		if (args != null) for (int i = 0; i < args.length; i++) {
 			Value arg = args[i];
-			if (arg.getValue() instanceof String) {
-				params.get(i).setValue(arg.getValue().toString());
+			if (arg instanceof StringConstant) {
+				params.get(i).setValue((StringConstant)arg);
 			} else {
 				throw new Error("internal error: argument expected to be string");
 			}

@@ -10,9 +10,9 @@ public class TestMacros extends TestingPPBase {
 	
 	public static void test() {
 		testObjectMacros();
-		testStringify();
 		testDefUndef();
 		testReplacementList();
+		testStringify();
 	}
 	
 	
@@ -72,7 +72,7 @@ public class TestMacros extends TestingPPBase {
 				"\"d\"\n");
 		
 		assertValid("#define A(x) #x\n"
-				+ "#define B b"
+				+ "#define B b\n"
 				+ "A(B)\n", 
 				"\"B\"\n");
 		

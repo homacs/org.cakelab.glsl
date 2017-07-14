@@ -1,6 +1,15 @@
 package org.cakelab.glsl.pp.ast;
 
-/** parameter in a macro declaration */
+import org.cakelab.glsl.pp.Preprocessor;
+
+/** Parameter in a macro declaration.
+ *  <p>
+ *  A parameter receives the value of its corresponding macro 
+ *  argument as plain text. The value is expanded only on demand 
+ *  (if {@link #getExpandedValue()} is called by a parameter reference).
+ *  </p>
+ *  @see MacroParameterReference
+ *  */
 public class MacroParameter {
 	/**
 	 * Name of the macro parameter for variable arguments (used for ...)
@@ -9,17 +18,20 @@ public class MacroParameter {
 	/** parameter name */
 	private String identifier;
 	/** parameter value */
-	private String value;
+	private StringConstant value;
+	private String expanded;
+	private Preprocessor preprocessor;
 
-	public MacroParameter(String identifier) {
+	public MacroParameter(String identifier, Preprocessor preprocessor) {
 		this.identifier = identifier;
+		this.preprocessor = preprocessor;
 	}
 	
-	public void setValue(String value) {
+	public void setValue(StringConstant value) {
 		if (value == null) {
 			throw new Error("internal error: trying to assign a null parameter");
 		}
-
+		this.expanded = null;
 		this.value = value;
 	}
 	
@@ -27,11 +39,18 @@ public class MacroParameter {
 		if (value == null) {
 			throw new Error("internal error: parameter was not assigned");
 		}
-		return value;
+		return value.getValue().toString();
 	}
 
 	public String getName() {
 		return identifier;
+	}
+
+	public String getExpandedValue() {
+		if (expanded == null) {
+			expanded = preprocessor.macro_expand_argument(value.getStart(), this.value.getValue().toString());
+		}
+		return expanded;
 	}
 	
 }
