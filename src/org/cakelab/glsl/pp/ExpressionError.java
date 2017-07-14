@@ -20,6 +20,7 @@ public class ExpressionError extends StringConstant {
 
 	@Override
 	public PrimaryExpression eval() throws EvaluationException {
+		// TODO think about proper error handling (this error here will be reported twice)
 		throw new EvaluationException(this, errorMessage);
 	}
 

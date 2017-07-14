@@ -3,7 +3,6 @@ package org.cakelab.glsl.pp;
 import java.io.ByteArrayOutputStream;
 
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
 
 /**

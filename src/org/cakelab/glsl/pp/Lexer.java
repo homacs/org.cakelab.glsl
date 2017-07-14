@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
+import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
 
@@ -122,7 +123,7 @@ public class Lexer {
 
 		public String getText(int start, int end) {
 			if (dismissed) return "";
-			start = start < 0 ? 0 : start;
+			if (start < 0) throw new IndexOutOfBoundsException();
 			StringBuffer s = new StringBuffer();
 			for (int i = start; i <= end; i++) {
 				s.append((char)get(i));
@@ -144,10 +145,6 @@ public class Lexer {
 	protected LexerLocation location;
 
 
-	public int current() {
-		return buffer.get(location.getLexerPosition());
-	}
-
 	/** Create a lexer scanning giving input stream. */
 	public Lexer(String sourceIdentifier, InputStream in) throws SyntaxError {
 		this.buffer = new InputStreamBuffer(in);
@@ -168,18 +165,31 @@ public class Lexer {
 		this.location = origin;
 	}
 
-	
-	public static Lexer createStringRescanLexer(Location origin, String text) {
+	/**
+	 * Used to parse macro expanded text (preprocessed) which originates 
+	 * from origin.
+	 * 
+	 * 
+	 * @param origin
+	 * @param text
+	 * @return
+	 */
+	public static Lexer createPreprocessedOutputLexer(Location origin, String text) {
+		// TODO lexer for parsing #if condition needs location map
+		// to determine probably expanded locations of errors
 		origin = new Location(origin.getSourceIdentifier(), Location.POS_START, origin.getLine(), origin.getColumn());
 		ByteArrayInputStream in = new ByteArrayInputStream(text.getBytes());
 		return new Lexer(origin, in);
 	}
 	
-	public static Lexer createExpansionRescanLexer(MacroInvocation expr, String prepend, Lexer append) {
-		return new RescanLexer(expr, new ByteArrayInputStream(prepend.getBytes()), append);
+	public Lexer createPrependLexer(MacroInvocation expr, String prepend) {
+		return new ExpansionRescanLexer(expr, new ByteArrayInputStream(prepend.getBytes()), this);
 	}
 
-	
+	public int current() {
+		return buffer.get(location.getLexerPosition());
+	}
+
 	public boolean eof() {
 		return location.getLexerPosition() != Location.POS_START && buffer.get(location.getLexerPosition()) == EOF;
 	}
@@ -192,33 +202,23 @@ public class Lexer {
 	}
 
 	/** if line end reached, then read next line */
-	private void consumed(int lastConsumedPos) {
+	private void consumed(int n) {
 		if (eof()) return;
-
-		for (int c = lookahead(1); c != EOF && location.getLexerPosition() < lastConsumedPos;) {
-			if (c == '\n') {
-				location.nextLine();
-			} else {
-				location.nextColumn();
-			}
-		}
-		location.setLexerPosition(lastConsumedPos);
+		for (int i = 0; i < n; i++) next(location);
 	}
 
 	/** consume n tokens and return the consumed string. */
-	public String consume(int n) {
+	public void consume(int n) {
 		int stop = location.getLexerPosition()+n;
 		assert(buffer.size() >= stop);
-		String consumed = buffer.getText(location.getLexerPosition()+1, stop);
-		consumed(stop);
-		return consumed;
+		consumed(n);
 	}
 
 	public int consume() {
 		int stop = location.getLexerPosition()+1;
 		assert(buffer.size() >= stop);
 		int consumed = buffer.get(stop);
-		consumed(stop);
+		consumed(1);
 		return consumed;
 	}
 
@@ -227,11 +227,11 @@ public class Lexer {
 	}
 
 	public Location location() {
-		return new Location((Location)location);
+		return ((Location)location).clone();
 	}
 
-	public void rewind(Location reset) {
-		location = reset;
+	public void rewind(LexerLocation reset) {
+		location = reset.clone();
 	}
 
 	public void setVirtualLocation(int line) {
@@ -239,17 +239,17 @@ public class Lexer {
 	}
 
 	public void setVirtualLocation(String id, int line) {
-		location = new Location(id, location.getLexerPosition(), line, Location.COLUMN_START);
+		location = new Location(id, location.getLexerPosition(), line, Location.FIRST_COLUMN);
 	}
 
 	public String getString(LexerLocation start, LexerLocation end) {
 		assert (start.getSourceIdentifier().equals(location.getSourceIdentifier())) ;
 		assert (end.getSourceIdentifier().equals(location.getSourceIdentifier())) ;
 		
-		return buffer.getText(start.getLexerPosition(), end.getLexerPosition());
+		return buffer.getText(start.getLexerPosition(), end.getLexerPosition()+1);
 	}
 
-	public String getString(int start, int end) {
+	protected String getString(int start, int end) {
 		return buffer.getText(start, end);
 	}
 
@@ -261,7 +261,31 @@ public class Lexer {
 	}
 
 	public boolean atColumnStart() {
-		return location.getColumn() == Location.COLUMN_START;
+		return location.getColumn() == Location.FIRST_COLUMN;
+	}
+
+	private void next(LexerLocation location) {
+		int i = location.getLexerPosition()+1;
+		int c = buffer.get(i);
+		if (c == EOF) {
+			location.setLexerPosition(i);
+		} else {
+			if (c == '\n') {
+				location.nextLine();
+			} else {
+				location.nextColumn();
+			}
+		}
+	}
+
+	public Location nextLocation(Location location) {
+		location = location.clone();
+		next(location);
+		return location;
+	}
+
+	public String getString(Interval interval) {
+		return getString(interval.getStart(), interval.getEnd());
 	}
 
 

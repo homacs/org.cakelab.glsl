@@ -61,8 +61,8 @@ public class Preprocessor extends ParserBase {
 	private MacroMap macros;
 	private Macro currentMacroDefinition;
 
-	private boolean allowInclude;
-	private boolean insertLineDirectives;
+	private boolean allowInclude = false;
+	private boolean insertLineDirectives = false;
 
 	private PPGroupScope currentScope;
 
@@ -99,7 +99,7 @@ public class Preprocessor extends ParserBase {
 	}
 
 	
-	public void setAllowIncludeDirective(boolean enable) {
+	public void enableInclude(boolean enable) {
 		this.allowInclude = enable;
 	}
 	
@@ -119,7 +119,7 @@ public class Preprocessor extends ParserBase {
 	 * </p>
 	 * 
 	 */
-	public void setInsertLineDirectives(boolean enable) {
+	public void enableLineDirectiveInsertion(boolean enable) {
 		this.insertLineDirectives = enable;
 	}
 
@@ -154,7 +154,6 @@ public class Preprocessor extends ParserBase {
 		Lexer previous = swapLexer(new Lexer("-- predefined --", in));
 		
 		try {
-			
 			define();
 		} finally {
 			swapLexer(previous);
@@ -195,7 +194,7 @@ public class Preprocessor extends ParserBase {
 	
 	public List<PPGroupScope> process() {
 		group();
-		if (LA1() != Lexer.EOF) syntaxError("illegal tokens"); 
+		if (LA1() != Lexer.EOF) syntaxError("illegal tokens");
 		return groups;
 	}
 
@@ -281,18 +280,19 @@ public class Preprocessor extends ParserBase {
 		return result.toString();
 	}
 
-	private void macro_expansion(MacroInvocation expr, boolean print) {
+	private void macro_expansion(MacroInvocation macroInvocation, boolean print) {
 		String prependingText;
 		try {
 			// execute macro expansion
-			prependingText = ((Expression)expr).eval().value().getValue().toString();
-			if (print) out.reportMacroExpansion(prependingText, expr);
+			prependingText = ((Expression)macroInvocation).eval().value().getValue().toString();
+			
+			if (print) out.reportMacroExpansion(prependingText, macroInvocation);
 			
 			// rescan for more macro expansions
 			// rescan happens after removing '#' and '##'. Any remaining 
 			// '#' and '##' will be treated as common pp-token.
 			if (prependingText == null || prependingText.isEmpty()) return;
-			swapLexer(Lexer.createExpansionRescanLexer(expr, prependingText, lexer));
+			swapLexer(lexer.createPrependLexer(macroInvocation, prependingText));
 
 		} catch (EvaluationException e) {
 			syntaxError(e);
@@ -613,7 +613,7 @@ public class Preprocessor extends ParserBase {
 		if (IDENTIFIER()) {
 			MacroParameter param = currentMacroDefinition.getParameter(last.IDENTIFIER());
 			if (param != null) {
-				return new MacroParameterReference(new Interval(mark, lexer.location()), param);
+				return new MacroParameterReference(interval(mark), param);
 			} else {
 				if (last.IDENTIFIER().equals(MacroParameter.__VA_ARGS__)) syntaxWarning(mark, "__VA_ARGS__ can only appear in the expansion of a variadic macro");
 				lexer.rewind(mark);
@@ -751,10 +751,6 @@ public class Preprocessor extends ParserBase {
 			}
 			c = LA1();
 		}
-	}
-
-	private Interval interval(Location start) {
-		return new Interval(start, lexer.location());
 	}
 
 	private String macro_param() {
@@ -982,7 +978,7 @@ public class Preprocessor extends ParserBase {
 		String text = text(false, true);
 		
 		// and parse that macro expanded text for the expression
-		Lexer previous = swapLexer(Lexer.createStringRescanLexer(textOrigin, text));
+		Lexer previous = swapLexer(Lexer.createPreprocessedOutputLexer(textOrigin, text));
 		try {
 			return expression();
 		} finally {
@@ -990,6 +986,10 @@ public class Preprocessor extends ParserBase {
 		}
 	}
 	
+	/**
+	 * A single expression or a list of expressions separated by commas.
+	 * Evaluation of the last expression in the list gives the result value.
+	 */
 	public Expression expression() {
 		while(WHITESPACE());
 		Expression expr = conditional_expression(null);
@@ -1001,12 +1001,13 @@ public class Preprocessor extends ParserBase {
 				ArrayList<Expression> list = new ArrayList<Expression>();
 				list.add(expr);
 				do {
+					Location commaLocation = lexer.location();
 					while(WHITESPACE());
 					Expression next = conditional_expression(null);
 					if (next != null) {
 						list.add(next);
 					} else {
-						list.add(expressionError(lexer.location(), "missing expression after ,"));
+						list.add(expressionError(commaLocation, "missing expression after ,"));
 					}
 				} while(optional(','));
 				expr = new ExpressionList(list);
@@ -1616,12 +1617,46 @@ public class Preprocessor extends ParserBase {
 		Location reset = lexer.location();
 		if (IDENTIFIER()) {
 			if (macros.containsKey(last.IDENTIFIER())) {
+				if (macro_recursion_check(reset, last.IDENTIFIER())) {
+					// macro cannot call itself, so its just a string
+					lexer.rewind(reset);
+					return false;
+				}
 				return true;
 			} else {
 				lexer.rewind(reset);
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Check if identifier lies in a macro expanded section of a macro with 
+	 * the same name.
+	 * <p>
+	 * Recursive macro calls are basically not possible. Thus, inside of 
+	 * a section expanded from a macro invocation, the same macro cannot 
+	 * be called again. This method checks it and returns true if the given
+	 * identifier would be a recursive call.
+	 * </p>
+	 * @param location
+	 * @param identifier
+	 * @return
+	 */
+	private boolean macro_recursion_check(Location location, String identifier) {
+		if (location instanceof MacroExpandedLocation) {
+			MacroExpandedLocation mloc = (MacroExpandedLocation)location;
+			Macro macro = mloc.getMacroInvocation().getMacro();
+			if (macro.getName().equals(last.IDENTIFIER())) {
+				return true;
+			} else {
+				// we need to recursively check if this macro invocation was already in
+				// a macro expanded section of another macro invocation.
+				return macro_recursion_check(mloc.getMacroInvocation().getStart(), identifier);
+			}
+		} else {
+			return false;
+		}
 	}
 
 

@@ -158,8 +158,8 @@ public class ParserBase {
 	}
 	protected ExpressionError expressionError(Location mark, String message) {
 		syntaxError(message);
-		Interval interval = new Interval(mark, lexer.location());
-		return new ExpressionError(interval, lexer.getString(mark, lexer.location()), message);
+		Interval interval = interval(mark);
+		return new ExpressionError(interval, lexer.getString(interval), message);
 	}
 
 	protected ExpressionError expressionError(String message) {
@@ -181,7 +181,11 @@ public class ParserBase {
 		return stop;
 	}
 
-	
+	protected Interval interval(Location start) {
+		return new Interval(lexer.nextLocation(start), lexer.location());
+	}
+
+
 	/** Skips all input characters including line continuation sequences 
 	 * (\\\r) and stops after CRLF or EOF. 
 	 * @return false if lexer is already at EOF.

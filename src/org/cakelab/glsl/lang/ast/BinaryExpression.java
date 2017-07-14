@@ -1,8 +1,9 @@
 package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.lang.ast.impl.ExpressionImpl;
 
-public abstract class BinaryExpression extends Expression {
+public abstract class BinaryExpression extends ExpressionImpl {
 
 	protected Expression leftOperand;
 	protected Expression rightOperand;

@@ -5,13 +5,81 @@ import org.cakelab.glsl.test.pp.TestingPPBase;
 public class TestMacros extends TestingPPBase {
 	
 	public static void main(String[] args) {
+		test();
+	}
+	
+	public static void test() {
+		testObjectMacros();
+		testStringify();
 		testDefUndef();
 		testReplacementList();
 	}
 	
 	
-	public static void testDefUndef() {
+	public static void testObjectMacros() {
 		assertValid("#define A", "");
+		assertValid("#define A x\n"
+				+ "A\n", 
+				"x\n");
+		
+		assertValid("#define A x\n"
+				+ " A\n", 
+				" x\n");
+		
+		assertValid("#define A x\n"
+				+ "A \n", 
+				"x \n");
+		
+		assertValid("#define \tA x\n"
+				+ "A\n", 
+				"x\n");
+		
+		assertValid("#define \\\n"
+				+ "A x\n"
+				+ "A\n", 
+				"x\n");
+		
+		assertValid("#define A \\\n"
+				+ " x\n"
+				+ "A\n", 
+				"x\n");
+		
+		assertValid("#define A x\n"
+				+ "#define B A \n"
+				+ "B\n", 
+				"x\n");
+		
+		assertValid("#define A x\n"
+				+ "#define B A \n"
+				+ "#define C B \n"
+				+ "C\n", 
+				"x\n");
+
+		assertValid("#define A A\n"
+				+ "A\n", 
+				"A\n");
+		
+		assertValid("#define A x B\n"
+				+ "#define B A \n"
+				+ "#define C B \n"
+				+ "C\n", 
+				"x B\n");
+	}
+
+	public static void testStringify() {
+		assertValid("#define A(x) #x\n"
+				+ "A(d)\n", 
+				"\"d\"\n");
+		
+		assertValid("#define A(x) #x\n"
+				+ "#define B b"
+				+ "A(B)\n", 
+				"\"B\"\n");
+		
+	}
+	
+
+	public static void testDefUndef() {
 		
 		// it is legal (but discouraged) to redefine a macro
 		assertWarning("#define A b\n"
@@ -62,9 +130,8 @@ public class TestMacros extends TestingPPBase {
 				+ "success\n"
 				+ "#endif",
 				"success\n");
-		
-		
 	}
+	
 	
 	public static void testReplacementList() {
 		

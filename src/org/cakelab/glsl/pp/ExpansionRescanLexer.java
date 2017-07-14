@@ -5,7 +5,7 @@ import java.io.InputStream;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
 
-public class RescanLexer extends Lexer {
+public class ExpansionRescanLexer extends Lexer {
 	// TODO rename to MacroExpansionLexer
 	// A macro invocation results in at least two steps. 
 	// At first the macro is expanded, which assigns expanded parameters, 
@@ -205,14 +205,14 @@ public class RescanLexer extends Lexer {
 	
 	
 	private Lexer append;
-	private LexerLocation appendixStart;
+	private LexerLocation appendixReset;
 	private MacroInvocation macroInvocation;
 
-	public RescanLexer(MacroInvocation macroInvocation, InputStream prepend, Lexer append) {
+	ExpansionRescanLexer(MacroInvocation macroInvocation, InputStream prepend, Lexer append) {
 		super(new MacroExpandedLocation(macroInvocation), prepend);
 		this.macroInvocation = macroInvocation;
 		this.append = append;
-		appendixStart = append.location();
+		appendixReset = append.location();
 	}
 
 	@Override
@@ -244,28 +244,21 @@ public class RescanLexer extends Lexer {
 	}
 
 	@Override
-	public String consume(int n) {
+	public void consume(int n) {
 		int stop = location.getLexerPosition()+n;
-		if (stop < buffer.size()) return super.consume(n); 
-		else {
+		if (stop < buffer.size()) {
+			super.consume(n); 
+		} else {
 			int start = location.getLexerPosition()+1;
 			if (start > buffer.size()) {
-				return append.consume(n);
+				append.consume(n);
 			} else {
 				int prependConsume = buffer.size() - start;
-				String prependText = super.consume(prependConsume);
-				super.consume(1);
-				this.setEOF();
+				super.consume(prependConsume+1); // consume to EOF
 				int appendConsume = stop - buffer.size();
-				String appendText = append.consume(appendConsume);
-				return prependText + appendText;
+				append.consume(appendConsume);
 			}
 		}
-	}
-
-	private void setEOF() {
-		// deliberately set to EOF position
-		super.location.setLexerPosition(buffer.size());
 	}
 
 	@Override
@@ -273,7 +266,7 @@ public class RescanLexer extends Lexer {
 		int pos = location.getLexerPosition()+1;
 		if (pos > buffer.size()) return append.consume();
 		else if (buffer.size() == pos) {
-			this.setEOF();
+			super.consume(); // consume EOF
 			return append.consume();
 		} else {
 			return super.consume();
@@ -299,10 +292,11 @@ public class RescanLexer extends Lexer {
 	}
 
 	@Override
-	public void rewind(Location reset) {
+	public void rewind(LexerLocation reset) {
 		if (isOurLocation(reset)) {
 			super.rewind(reset);
-			append.rewind((Location)appendixStart);
+			// we need to clone it again, because the lexer will use it without further copying
+			append.rewind(appendixReset);
 		} else {
 			append.rewind(reset);
 		}
@@ -316,18 +310,17 @@ public class RescanLexer extends Lexer {
 
 	@Override
 	public String getString(LexerLocation start, LexerLocation end) {
-		if (!isOurLocation(start)) append.getString(start, end);
-		else {
+		if (!isOurLocation(start)) {
+			return append.getString(start, end);
+		} else {
 			if (isOurLocation(end)) {
 				return super.getString(start, end);
 			} else {
-				String prependedString = super.getString(start.getLexerPosition(), buffer.size());
-				String appendedString = append.getString(appendixStart.getLexerPosition(), end.getLexerPosition());
+				String prependedString = super.getString(start.getLexerPosition(), buffer.size()-1);
+				String appendedString = append.getString(appendixReset.getLexerPosition()+1, end.getLexerPosition());
 				return prependedString + appendedString;
 			}
 		}
-		// TODO Auto-generated method stub
-		return super.getString(start, end);
 	}
 
 	private boolean isOurLocation(LexerLocation l) {

@@ -1,8 +1,16 @@
-package org.cakelab.glsl.lang.ast;
+package org.cakelab.glsl.lang.ast.impl;
 
-import org.cakelab.glsl.lang.EvaluationException;
+import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.Location;
+import org.cakelab.glsl.lang.ast.Expression;
+import org.cakelab.glsl.lang.ast.LValue;
+import org.cakelab.glsl.lang.ast.MulExpression;
+import org.cakelab.glsl.lang.ast.PlusExpression;
+import org.cakelab.glsl.lang.ast.PrimaryExpression;
+import org.cakelab.glsl.lang.ast.VariableReference;
+
 /**
- * Base interface of all expression classes.
+ * Base class of all expression classes.
  * <p>
  * Instances of Expression establish an expression tree which
  * represents the logical structure of the written expression.
@@ -41,12 +49,16 @@ import org.cakelab.glsl.lang.EvaluationException;
  * @author homac
  *
  */
-public interface Expression extends Node {
+public abstract class ExpressionImpl extends NodeImpl implements Expression {
+	
+	public ExpressionImpl(Interval interval) {
+		super(interval);
+	}
 
-	/**
-	 * @return result of the expression represented as primary expression
-	 * @throws EvaluationException
-	 */
-	PrimaryExpression eval() throws EvaluationException;
+
+	public ExpressionImpl(Location start, Location end) {
+		super(start, end);
+	}
+
 
 }

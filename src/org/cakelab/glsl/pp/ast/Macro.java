@@ -90,7 +90,7 @@ public class Macro {
 				result.append(s);
 			}
 		}
-		return new StringConstant(Interval.NONE, result.toString());
+		return new StringConstant(Interval.NONE, result.toString().trim());
 		
 	}
 

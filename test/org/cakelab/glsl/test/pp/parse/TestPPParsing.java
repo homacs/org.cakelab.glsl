@@ -7,7 +7,7 @@ public class TestPPParsing {
 	}
 
 	public static void test() {
-		TestMacros.testDefUndef();
+		TestMacros.test();
 	}
 	
 	

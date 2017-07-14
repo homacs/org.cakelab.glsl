@@ -2,8 +2,9 @@ package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.EvaluationException;
+import org.cakelab.glsl.lang.ast.impl.ExpressionImpl;
 
-public class BooleanExpression extends Expression {
+public class BooleanExpression extends ExpressionImpl {
 
 	private Expression expr;
 

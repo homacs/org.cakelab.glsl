@@ -1,8 +1,9 @@
 package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.lang.EvaluationException;
+import org.cakelab.glsl.lang.ast.impl.ExpressionImpl;
 
-public class ConstantExpression extends Expression {
+public class ConstantExpression extends ExpressionImpl {
 
 	Expression expr;
 

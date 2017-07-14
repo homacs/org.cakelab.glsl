@@ -36,6 +36,8 @@ public class GLSL {
 		Preprocessor pp = new Preprocessor(resource.getIdentifier(), resource.getData(), buffer);
 		pp.setResourceManager(resourceManager);
 		pp.setErrorHandler(errorHandler);
+		pp.enableInclude(true);
+		pp.enableLineDirectiveInsertion(false);
 		
 		List<PPGroupScope> ppAST = pp.process();
 

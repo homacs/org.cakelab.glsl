@@ -2,8 +2,9 @@ package org.cakelab.glsl.test.pp;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.ParserErrorHandler;
@@ -16,9 +17,40 @@ public class TestingPPBase {
 	private static String error;
 	private static String warning;
 	private static boolean ignoreWarning = true;
+	private static boolean mirrorToStdout = false;
 
 	private static Preprocessor pp;
 
+	private static final OutputStream DEV_NULL = new OutputStream() {
+		@Override
+		public void write(int b) throws IOException {
+			// -> /dev/null
+		}
+	};
+
+	/**
+	 * Like UNIX tee. Output to two sinks (e.g. stdout and pipe).
+	 * @author homac
+	 *
+	 */
+	private static class Tee extends OutputStream {
+	
+		private PrintStream pipe;
+		private OutputStream tee;
+	
+		public Tee(OutputStream tee, PrintStream pipeOut) {
+			this.tee = tee;
+			this.pipe = pipeOut;
+		}
+	
+		@Override
+		public void write(int b) throws IOException {
+			tee.write(b);
+			pipe.write(b);
+		}
+	
+	}
+	
 	private static ParserErrorHandler errorHandler = new ParserErrorHandler() {
 
 
@@ -41,11 +73,16 @@ public class TestingPPBase {
 		
 	};
 
+	private static OutputStream output(OutputStream out) {
+		if (mirrorToStdout) return new Tee(out, System.out);
+		else return out;
+	}
+	
 	public static Preprocessor p(String source, OutputStream out) {
 		try {
 			error = null;
 			warning = null;
-			pp = new Preprocessor("0", new ByteArrayInputStream(source.getBytes()), new Tee(out, System.out));
+			pp = new Preprocessor("0", new ByteArrayInputStream(source.getBytes()), output(out));
 			pp.setErrorHandler(errorHandler);
 		} catch (Throwable e) {
 			// will never happen
@@ -56,7 +93,7 @@ public class TestingPPBase {
 
 	public static Preprocessor p(String source) {
 		try {
-			return p(source, new FileOutputStream("/dev/null"));
+			return p(source, DEV_NULL);
 		} catch (Throwable e) {
 			throw new Error(e);
 		}
@@ -68,7 +105,7 @@ public class TestingPPBase {
 		assertValidPostConditions();
 		String output = new String(out.toByteArray());
 		if (!output.equals(result)) {
-			error("result differs from expected result.\nEXPECTED: " + result + "\nRECEIVED: " + output);
+			error("result differs from expected result.\nEXPECTED: '" + result + "'\nRECEIVED: '" + output + "'");
 		}
 	}
 

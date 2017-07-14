@@ -3,8 +3,9 @@ package org.cakelab.glsl.lang.ast;
 import java.util.ArrayList;
 
 import org.cakelab.glsl.lang.EvaluationException;
+import org.cakelab.glsl.lang.ast.impl.ExpressionImpl;
 
-public class ExpressionList extends Expression {
+public class ExpressionList extends ExpressionImpl {
 	ArrayList<Expression> list;
 
 	public ExpressionList(ArrayList<Expression> list) {

@@ -4,4 +4,6 @@ import org.cakelab.glsl.lang.ast.Node;
 
 public interface MacroInvocation extends Node {
 
+	Macro getMacro();
+
 }

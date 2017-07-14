@@ -34,9 +34,10 @@ package org.cakelab.glsl.pp;
  *
  */
 public class LexerLocation {
-	public static final int POS_START = -1;
-	public static final int COLUMN_START = 0;
-	private static final int LINE_START = 1;
+	public static final int POS_START = -1; // indicates: no input read so far
+	public static final int FIRST_POSITION = 0;
+	public static final int FIRST_COLUMN = 0;
+	public static final int FIRST_LINE = 1;
 	/** position in bytes from start */
 	private int pos;
 	/** line number */
@@ -59,7 +60,7 @@ public class LexerLocation {
 
 	/** constructing an instance pointing to the start of the resource identified by sourceIdentifier.*/
 	protected LexerLocation(String sourceIdentifier) {
-		this(sourceIdentifier, POS_START, LINE_START, COLUMN_START);
+		this(sourceIdentifier, POS_START, FIRST_LINE, FIRST_COLUMN);
 	}
 
 	public int getLine() {
@@ -86,7 +87,7 @@ public class LexerLocation {
 	protected void nextLine() {
 		pos++;
 		line++;
-		column = COLUMN_START;
+		column = FIRST_COLUMN;
 	}
 	
 	protected void nextColumn() {
@@ -103,5 +104,10 @@ public class LexerLocation {
 	public String toString() {
 		return identifier + ':' + line + ':' + column;
 	}
+	
+	public LexerLocation clone() {
+		return new LexerLocation(this);
+	}
+	
 	
 }
