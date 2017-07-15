@@ -34,7 +34,7 @@ public class PPStringifyExpression extends PrefixExpression {
 					str.append("\\\\");
 				}
 				break;
-			case '\"':
+			case '"':
 				str.append("\\\"");
 				break;
 			default:

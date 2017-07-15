@@ -30,6 +30,7 @@ import org.cakelab.glsl.pp.ast.PPIfdefScope;
 import org.cakelab.glsl.pp.ast.PPIfndefScope;
 import org.cakelab.glsl.pp.ast.PPStringifyExpression;
 import org.cakelab.glsl.pp.ast.StringConstant;
+import org.cakelab.glsl.pp.ast.Text;
 import org.cakelab.glsl.pp.ast.PPWhitespace;
 
 public class Preprocessor extends ParserBase {
@@ -488,6 +489,9 @@ public class Preprocessor extends ParserBase {
 				return result;
 			}
 			String macroName = last.IDENTIFIER();
+			if (macros.containsKey(macroName)) syntaxWarning(line_start(start), "\"" + macroName + "\" redefined");
+
+			
 			List<MacroParameter> params = null;
 			if (optional('(')) {
 				params = new ArrayList<MacroParameter>();
@@ -521,7 +525,6 @@ public class Preprocessor extends ParserBase {
 			List<Expression> tokens = replacement_list();
 			if ( mandatory_endl()) {
 				currentMacroDefinition.setReplacementList(tokens);
-				if (macros.containsKey(macroName)) syntaxWarning(start, "\"" + macroName + "\" redefined");
 				macros.put(macroName, currentMacroDefinition);
 				currentMacroDefinition = null;
 			}
@@ -541,10 +544,6 @@ public class Preprocessor extends ParserBase {
 		return result;
 	}
 
-	
-	
-	
-	
 	private StringConstant whitespace() {
 		Location start = lexer.location();
 		if (WHITESPACE()) {
@@ -660,19 +659,20 @@ public class Preprocessor extends ParserBase {
 		if (IDENTIFIER()) {
 			return last.IDENTIFIER();
 		} else {
-			// TODO improve performance by parsing numbers 
 			
 			// strings and character constants are not parsed for macro invocations
 			Value expr = string_literal();
 			if (expr != null) {
-				return "\"" + expr.getValue().toString() + "\"";
+				return lexer.getText(expr.getInterval());
 			}
 			
 			expr = character_constant();
 			if (expr != null) {
-				return "'" + expr.getValue().toString() + "'";
+				return lexer.getText(expr.getInterval());
 			}
-			
+
+			// TODO improve performance by parsing numbers 
+
 			if (!isWhite(LA1()) && !isEndl(LA1()) && !(LA_equals('#') && !acceptHashes)) {
 				int c = lexer.consume();
 				return String.valueOf((char)c);
@@ -689,38 +689,38 @@ public class Preprocessor extends ParserBase {
 			Location skippedWhitespace = lexer.location();
 			while(WHITESPACE());
 			if (macro.isFunctionMacro() && optional('(')) {
-				while(WHITESPACE());
+				while(whitespace_crlf_sequence());// FIXME: whitespace or endl
 				
-				List<StringConstant> params = new ArrayList<StringConstant>();
+				List<Text> params = new ArrayList<Text>();
 				int numParameters = macro.numParameters();
 				boolean hasVarArgs = macro.hasVarArgs();
 				
 				if (!LA_equals(')')) do {
-					while(WHITESPACE());
+					while(whitespace_crlf_sequence());
 					Location paramStart = lexer.location();
 					if (hasVarArgs && params.size() == numParameters-1) {
 						StringBuffer varargs = new StringBuffer();
 						macro_arg_sequence(varargs);
-						params.add(new StringConstant(interval(paramStart), varargs.toString()));
+						params.add(new Text(interval(paramStart), varargs.toString()));
 						break;
 					}
 					String param = macro_arg();
-					if (param != null) params.add(new StringConstant(interval(paramStart), param));
-					else params.add(StringConstant.EMPTY);
-					while(WHITESPACE());
+					if (param != null) params.add(new Text(interval(paramStart), param));
+					else params.add(Text.EMPTY);
+					while(whitespace_crlf_sequence());
 				} while (optional(','));
 				
 				if (!optional(')')) syntaxError("missing closing ')'");
 
 				if (macro.numParameters() != params.size()) {
 					if (params.size() == 0 && macro.numParameters() == 1) {
-						params.add(StringConstant.EMPTY);
+						params.add(Text.EMPTY);
 					} else {
 						return expressionError(macroCallStart, "expected " + macro.numParameters() + " parameters but " + params.size() + " where given.");
 					}
 				}
 				
-				return new MacroCallExpression(new MacroReference(new Interval(macroCallStart, lexer.location()), macro), params.toArray(new Expression[0]), lexer.location());
+				return new MacroCallExpression(new MacroReference(new Interval(macroCallStart, lexer.location()), macro), params.toArray(new Text[0]), lexer.location());
 			} else {
 				if (macro.isFunctionMacro()) {
 					return expressionError(macroCallStart, "expected parameter list with " + macro.numParameters() + " parameters.");
@@ -743,7 +743,7 @@ public class Preprocessor extends ParserBase {
 	 * If a macro has variadic parameters (i.e. last param: '...')
 	 * then the remaining parameters to a macro invocation
 	 * will be gathered in one single string parameter
-	 * which is assigned to __VAR_ARGS__.
+	 * which is assigned to __VA_ARGS__.
 	 * 
 	 * This is the same behaviour as for a single parameter 
 	 * in parenthesis. So, both cases use this method.
@@ -753,8 +753,15 @@ public class Preprocessor extends ParserBase {
 	private void macro_arg_sequence(StringBuffer arg) {
 		int c = LA1();
 		while (c != ')' && !lexer.eof()) {
-			if (macro_arg_parenthesised(arg)) {
+			Value expr = null;
+			if (whitespace_crlf_sequence()) {
+				arg.append(' ');
+			} else if (macro_arg_parenthesised(arg)) {
 				// another pair of parenthesis
+			} else if (null != (expr = string_literal())) {
+				arg.append(lexer.getText(expr.getInterval()));
+			} else if (null != (expr = character_constant())) {
+				arg.append(lexer.getText(expr.getInterval()));
 			} else {
 				arg.append((char)c);
 				lexer.consume();
@@ -783,24 +790,31 @@ public class Preprocessor extends ParserBase {
 			if (previous != null) swapLexer(previous);
 		}
 	}
-
-
 	
 	private String macro_arg() {
 		// macro parameters can contain anything, even CRLF, but not ',' or ')' alone.
 		// ',' can occur in parenthesised expressions though.
-		StringBuffer param = new StringBuffer();
+		StringBuffer arg = new StringBuffer();
 		int c = LA1();
 		while (c != ',' && c != ')' && !lexer.eof()) {
-			if (macro_arg_parenthesised(param)) {
+			
+			Value expr = null;
+			if (whitespace_crlf_sequence()) {
+				// replace each whitespace sequence with a single whitespace
+				arg.append(' ');
+			} else if (macro_arg_parenthesised(arg)) {
 				// already added to string buffer
+			} else if (null != (expr  = string_literal())) {
+				arg.append(lexer.getText(expr.getInterval()));
+			} else if (null != (expr = character_constant())) {
+				arg.append(lexer.getText(expr.getInterval()));
 			} else {
-				param.append((char)c);
+				arg.append((char)c);
 				lexer.consume();
 			}
 			c = LA1();
 		}
-		String result = param.toString().trim();
+		String result = arg.toString().trim();
 		return result;
 	}
 

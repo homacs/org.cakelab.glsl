@@ -83,7 +83,7 @@ public class TestPrependingLexer {
 		assert(c == '9');
 
 		
-		String s = lexer.getString(lexer.nextLocation(reset), lexer.location());
+		String s = lexer.getText(lexer.nextLocation(reset), lexer.location());
 		assert(s.equals("569"));
 		
 		lexer.rewind(reset);

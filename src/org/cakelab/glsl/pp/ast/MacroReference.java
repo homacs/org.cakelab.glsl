@@ -21,13 +21,8 @@ public class MacroReference extends PrimaryExpression implements Identifier, Mac
 	}
 
 	@Override
-	public PrimaryExpression eval() {
-		return this;
-	}
-
-	@Override
 	public Value value() throws EvaluationException {
-		Value result = macro.call(new Value[0]).value();
+		Value result = macro.call(null).value();
 		result.setInterval(this.interval);
 		return result;
 	}

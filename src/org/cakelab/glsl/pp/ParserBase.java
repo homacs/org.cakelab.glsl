@@ -156,10 +156,11 @@ public class ParserBase {
 			}
 		}
 	}
+	
 	protected ExpressionError expressionError(Location mark, String message) {
 		syntaxError(message);
 		Interval interval = interval(mark);
-		return new ExpressionError(interval, lexer.getString(interval), message);
+		return new ExpressionError(interval, lexer.getText(interval), message);
 	}
 
 	protected ExpressionError expressionError(String message) {
@@ -170,7 +171,7 @@ public class ParserBase {
 
 
 	protected boolean syntaxWarning(String string) {
-		return syntaxWarning(lexer.location(), string);
+		return syntaxWarning(line_start(lexer.location()), string);
 	}
 
 	protected boolean syntaxWarning(Location location, String message) {
@@ -184,6 +185,13 @@ public class ParserBase {
 	protected Interval interval(Location start) {
 		return new Interval(lexer.nextLocation(start), lexer.location());
 	}
+
+	protected Location line_start(Location start) {
+		Location l = start.clone();
+		l.setColumn(Location.FIRST_COLUMN);
+		return l;
+	}
+
 
 
 	/** Skips all input characters including line continuation sequences 
@@ -303,14 +311,16 @@ public class ParserBase {
 			while(!(LA_equals(end)||lexer.eof())) {
 				if (LA1() != '\\') {
 					if (LA1() == '\n') {
-						syntaxError("invalid line end in string literal");
+						syntaxError("missing terminating \"");
+						// it was a string, just terminator missing
+						break;
 					}
 					
 					string.append((char)lexer.consume());
 				} else if (line_continuation()) {
 					continue;
 				} else {
-					// escape sequence:
+					// decode escape sequence:
 					lexer.consume();
 					int c = LA1();
 					switch(c) {
@@ -554,6 +564,28 @@ public class ParserBase {
 		}
 	}
 
+	
+	protected boolean CRLF() {
+		if (LA1() == '\n') {
+			lexer.consume(); 
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Sequence consisting of CRLF() and WHITESPACE()
+	 * @return
+	 */
+	protected boolean whitespace_crlf_sequence() {
+		boolean result = false;
+		while (WHITESPACE() || CRLF()) result = true;
+		return result;
+	}
+
+
+	
 	
 	protected boolean isEndl(int c) {
 		return c == '\n' || c == Lexer.EOF;

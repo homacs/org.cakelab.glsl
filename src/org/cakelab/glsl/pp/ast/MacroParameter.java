@@ -18,7 +18,7 @@ public class MacroParameter {
 	/** parameter name */
 	private String identifier;
 	/** parameter value */
-	private StringConstant value;
+	private Text value;
 	private String expanded;
 	private Preprocessor preprocessor;
 
@@ -27,7 +27,7 @@ public class MacroParameter {
 		this.preprocessor = preprocessor;
 	}
 	
-	public void setValue(StringConstant value) {
+	public void setValue(Text value) {
 		if (value == null) {
 			throw new Error("internal error: trying to assign a null parameter");
 		}

@@ -4,8 +4,8 @@ import org.cakelab.glsl.Interval;
 
 public class Value extends PrimaryExpression {
 	
-	Type type;
-	Object value;
+	protected Type type;
+	protected Object value;
 	
 	public Value(Interval interval, Type type, Object value) {
 		super(interval);

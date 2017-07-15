@@ -6,16 +6,15 @@ import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
 
 public class ExpansionRescanLexer extends Lexer {
-	// TODO rename to MacroExpansionLexer
 	// A macro invocation results in at least two steps. 
-	// At first the macro is expanded, which assigns expanded parameters, 
+	// At first the macro is expanded, which assigns (expanded) arguments, 
 	// evaluates # and ## operators and returns a macro expanded 
 	// string as result. This string then replaces the originating 
 	// macro invocation expression in the text. The expanded string
 	// is from now on considered to be an ordinary part of the input 
 	// and gets scanned like ordinary text by the parser. This may or 
 	// may not result in another macro invocation originating from
-	// the expanded text. To keep track of locations of expression found
+	// the expanded text. To keep track of locations of expressions found
 	// in the text, the introduction of the prepending lexer was necessary.
 	//
  	// Prepending lexer is used to prepend text received from macro expansion 
@@ -309,12 +308,12 @@ public class ExpansionRescanLexer extends Lexer {
 	}
 
 	@Override
-	public String getString(LexerLocation start, LexerLocation end) {
+	public String getText(LexerLocation start, LexerLocation end) {
 		if (!isOurLocation(start)) {
-			return append.getString(start, end);
+			return append.getText(start, end);
 		} else {
 			if (isOurLocation(end)) {
-				return super.getString(start, end);
+				return super.getText(start, end);
 			} else {
 				String prependedString = super.getString(start.getLexerPosition(), buffer.size()-1);
 				String appendedString = append.getString(appendixReset.getLexerPosition()+1, end.getLexerPosition());

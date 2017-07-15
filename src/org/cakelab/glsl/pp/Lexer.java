@@ -242,11 +242,11 @@ public class Lexer {
 		location = new Location(id, location.getLexerPosition(), line, Location.FIRST_COLUMN);
 	}
 
-	public String getString(LexerLocation start, LexerLocation end) {
+	public String getText(LexerLocation start, LexerLocation end) {
 		assert (start.getSourceIdentifier().equals(location.getSourceIdentifier())) ;
 		assert (end.getSourceIdentifier().equals(location.getSourceIdentifier())) ;
 		
-		return buffer.getText(start.getLexerPosition(), end.getLexerPosition()+1);
+		return buffer.getText(start.getLexerPosition(), end.getLexerPosition());
 	}
 
 	protected String getString(int start, int end) {
@@ -284,8 +284,8 @@ public class Lexer {
 		return location;
 	}
 
-	public String getString(Interval interval) {
-		return getString(interval.getStart(), interval.getEnd());
+	public String getText(Interval interval) {
+		return getText(interval.getStart(), interval.getEnd());
 	}
 
 

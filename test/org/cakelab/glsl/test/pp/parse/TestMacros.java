@@ -10,9 +10,11 @@ public class TestMacros extends TestingPPBase {
 	
 	public static void test() {
 		testObjectMacros();
+		testFunctionMacros();
+		testStringify();
+		testConcatenation();
 		testDefUndef();
 		testReplacementList();
-		testStringify();
 	}
 	
 	
@@ -66,7 +68,66 @@ public class TestMacros extends TestingPPBase {
 				"x B\n");
 	}
 
+	
+	public static void testFunctionMacros() {
+		assertValid("#define A() x\n"
+				+ "A()\n", 
+				"x\n");
+		
+		assertValid("#define A(x) x\n"
+				+ "A(d)\n", 
+				"d\n");
+		
+		assertValid("#define A(x) x\n"
+				+ "#define B() y\n"
+				+ "A(B())\n", 
+				"y\n");
+		
+		assertValid("#define A(x) x\n"
+				+ "#define B y\n"
+				+ "A(B)\n", 
+				"y\n");
+
+		assertValid("#define A(x) x\n"
+				+ "#define B() A(y)\n"
+				+ "B()\n", 
+				"y\n");
+		
+		assertValid("#define A(x) x\n"
+				+ "#define B() A(y)\n"
+				+ "B()\n", 
+				"y\n");
+		
+		assertValid("#define A(x) x\n"
+				+ "#define B(y) A(y)\n"
+				+ "#define C() r\n"
+				+ "B(C())\n", 
+				"r\n");
+		
+		assertValid("#define A(x) A(x)\n"
+				+ "A(z)\n", 
+				"A(z)\n");
+		
+		assertValid("#define A(x) B(x)\n"
+				+ "#define B(y) y + 1\n"
+				+ "A(z)", 
+				"z + 1\n");
+		
+		assertValid("#define A(x) B(x)\n"
+				+ "#define B(y) A(y) + 1\n"
+				+ "A(z)", 
+				"A(z) + 1\n");
+		
+		assertValid("#define A(x) B(x)\n"
+				+ "#define B(y) A(y) + 1\n"
+				+ "A(z)", 
+				"A(z) + 1\n");
+		
+	}
+	
+	
 	public static void testStringify() {
+		
 		assertValid("#define A(x) #x\n"
 				+ "A(d)\n", 
 				"\"d\"\n");
@@ -76,8 +137,52 @@ public class TestMacros extends TestingPPBase {
 				+ "A(B)\n", 
 				"\"B\"\n");
 		
+		assertValid("#define A(x) #x\n"
+				+ "A(\"B\")\n", 
+				"\"\\\"B\\\"\"\n");
+		
+		assertValid("#define A(x) #x\n"
+				+ "A(a  b)\n", 
+				"\"a b\"\n");
+		
+		assertValid("#define A(x) #x\n"
+				+ "A(a \n b)\n", 
+				"\"a b\"\n");
+		
+		assertValid("#define A(x) #x\n"
+				+ "A(\"a  b\")\n", 
+				"\"\\\"a  b\\\"\"\n");
+		
 	}
 	
+	private static void testConcatenation() {
+		assertValid("#define A(x,y) x ## y\n"
+				+ "A( succ , ess )\n", 
+				"success\n");
+		
+		assertValid("#define A(x,y,z) x ## y ## z\n"
+				+ "A( su , cc , ess )\n", 
+				"success\n");
+		
+		assertValid("#define A(x,y,z) x ## y ## z\n"
+				+ "#define B(s) s\n"
+				+ "A( su , cc , B(ess) )\n", 
+				"succB(ess)\n");
+
+		assertValid("#define A(x,y,z) x ## y ## z\n"
+				+ "#define B(x,y,z) A(x,y,z)\n"
+				+ "#define C(s) s\n"
+				+ "B( C(su) , C(cc) , C( ess ) )\n", 
+				"success\n");
+
+		assertValid("#define A(x,y,z) x ## y ## z z\n"
+				+ "#define B(s) s\n"
+				+ "A( su /* comment */ , cc , B(ess) )\n", 
+				"succB(ess) ess\n");
+		
+		
+	}
+
 
 	public static void testDefUndef() {
 		

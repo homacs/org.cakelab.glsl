@@ -66,15 +66,14 @@ public class Macro {
 	 * @throws EvaluationException 
 	 */
 	public Value call(Value[] args) throws EvaluationException {
-		// TODO [1] check number of macro arguments
-		// assign values to parameters
+		// TODO check if we still need to check number of macro arguments
 		
 		if (args != null) for (int i = 0; i < args.length; i++) {
 			Value arg = args[i];
-			if (arg instanceof StringConstant) {
-				params.get(i).setValue((StringConstant)arg);
+			if (arg instanceof Text) {
+				params.get(i).setValue((Text)arg);
 			} else {
-				throw new Error("internal error: argument expected to be string");
+				throw new Error("internal error: argument expected to be source code text (instances of Text)");
 			}
 		}
 		

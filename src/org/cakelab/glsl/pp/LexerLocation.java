@@ -1,6 +1,7 @@
 package org.cakelab.glsl.pp;
 
-
+import org.cakelab.glsl.Location;
+import org.cakelab.glsl.pp.MacroExpandedLocation;
 /** Source code location of the cursor.
  * 
  * Source code resource (e.g. file or source string) is
@@ -29,14 +30,15 @@ package org.cakelab.glsl.pp;
  * the set of input streams is only needed by the 
  * lexer itself and therefore hidden inside.
  * 
- * 
+ * @see Location
+ * @see MacroExpandedLocation
  * @author homac
  *
  */
 public class LexerLocation {
 	public static final int POS_START = -1; // indicates: no input read so far
 	public static final int FIRST_POSITION = 0;
-	public static final int FIRST_COLUMN = 0;
+	public static final int FIRST_COLUMN = 0; // yes, columns start at 0 and lines at 1
 	public static final int FIRST_LINE = 1;
 	/** position in bytes from start */
 	private int pos;
@@ -99,6 +101,11 @@ public class LexerLocation {
 		pos = lastConsumedPos;
 	}
 
+	public void setColumn(int column) {
+		int diff = column - this.column;
+		setLexerPosition(getLexerPosition() + diff);
+		this.column = column;
+	}
 
 	
 	public String toString() {
