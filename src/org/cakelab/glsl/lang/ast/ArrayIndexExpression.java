@@ -24,7 +24,7 @@ public class ArrayIndexExpression extends PostfixExpression {
 		int i = ((Long)indexValue.value).intValue();
 		
 		LValue lvalue = operand.eval().lvalue();
-		if (lvalue.getType().kind != Type.ARRAY) {
+		if (lvalue.getType().kind != Type.KIND_ARRAY) {
 			throw new Error("syntax: not an array");
 		} else {
 			// Turn VariableReference or ArrayReference into 

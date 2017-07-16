@@ -6,12 +6,13 @@ import org.cakelab.glsl.lang.ast.ConstantValue;
 import org.cakelab.glsl.lang.ast.Type;
 import org.cakelab.glsl.lang.ast.Value;
 
-/** String constant: const int[] */
+/** Source code text. 
+ * Type: <code>char[]</code> */
 public class Text extends Value {
 	public static final Text EMPTY = new Text(Interval.NONE, "");
 
 	public Text(Interval interval, String value) {
-		super(interval, new Array(Type._int, new ConstantValue<Long>(interval, (long) value.length(), true)), value);
+		super(interval, new Array(Type._char, new ConstantValue<Long>(interval, (long) value.length(), true)), value);
 	}
 
 	

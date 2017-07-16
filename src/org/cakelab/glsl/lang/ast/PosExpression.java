@@ -4,7 +4,9 @@ import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.EvaluationException;
 
 /**
- * + <em>expression</em>
+ * <pre>
+ * 	+ <em>primary</em>
+ * </pre>
  * @author homac
  *
  */

@@ -59,7 +59,7 @@ public class Macro {
 	 * Macro (1) replaces macro parameters with given values, (2) inserts text sections
 	 * (3) applies concatenation (##) and (4) stringify (#) expressions.
 	 * </p>
-	 * The result is returned in a String value.
+	 * The result is returned in a Text value.
 	 * 
 	 * @param args
 	 * @return
@@ -89,7 +89,7 @@ public class Macro {
 				result.append(s);
 			}
 		}
-		return new StringConstant(Interval.NONE, result.toString().trim());
+		return new Text(Interval.NONE, result.toString().trim());
 		
 	}
 

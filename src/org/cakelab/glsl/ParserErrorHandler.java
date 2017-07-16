@@ -4,7 +4,7 @@ import org.cakelab.glsl.lang.ast.Node;
 
 public interface ParserErrorHandler {
 	/**
-	 * @param expression
+	 * @param node malicious node
 	 * @param string
 	 * @return whether to stop processing or not
 	 */
@@ -21,5 +21,12 @@ public interface ParserErrorHandler {
 	 * @return whether to stop processing or not
 	 */
 	public boolean warning(Location location, String message);
+	/**
+	 * 
+	 * @param interval interval containing the malicious tokens
+	 * @param message
+	 * @return
+	 */
+	public boolean warning(Interval interval, String message);
 }
 

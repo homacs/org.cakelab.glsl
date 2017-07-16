@@ -33,7 +33,7 @@ public class Array extends Type {
 	private Type componentType;
 	
 	public Array(Type baseType, Expression ... dimensions) {
-		super(signature(baseType.signature, dimensions.length), ARRAY);
+		super(signature(baseType.signature, dimensions.length), KIND_ARRAY);
 		if (baseType instanceof Array) {
 			Array that = ((Array)baseType);
 			this.baseType = that.baseType;
@@ -48,7 +48,7 @@ public class Array extends Type {
 	}
 
 	public Array(Array that) {
-		super(that.signature, ARRAY);
+		super(that.signature, KIND_ARRAY);
 		this.baseType = that.baseType;
 		this.dimensions = that.dimensions;
 	}

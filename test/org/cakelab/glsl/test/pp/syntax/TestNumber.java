@@ -1,5 +1,6 @@
 package org.cakelab.glsl.test.pp.syntax;
 
+import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.test.pp.TestingPPBase;
 
 public class TestNumber extends TestingPPBase {
@@ -125,6 +126,11 @@ public class TestNumber extends TestingPPBase {
 		assertInvalid(p("0x010.pl").number());
 		assertInvalid(p("0x0f.PL").number());
 		
+	}
+
+	private static void assertValid(Expression number) {
+		// TODO number testing more serious
+		assertValid(number, number.getClass());
 	}
 
 	private static void testFloat() {

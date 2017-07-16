@@ -60,7 +60,7 @@ public class Struct extends Type {
 	Body body;
 
 	public Struct(Scope parent, String name) {
-		super(name, STRUCT);
+		super(name, KIND_STRUCT);
 		this.body = new Body(parent);
 	}
 	

@@ -25,11 +25,13 @@ public class Processor {
 		case BOOL:
 			Boolean leftBool = (Boolean)left.getValue();
 			Boolean rightBool = (Boolean)right.getValue();
-			return new Value(interval, resultType, tobool(tolong(leftBool)*tolong(rightBool)));
+			return new Value(interval, Type._int, Long.valueOf(tolong(leftBool)*tolong(rightBool)));
 		case DOUBLE:
 			return new Value(interval, resultType, ((Double)left.getValue())*((Double)right.getValue()));
 		case FLOAT:
 			return new Value(interval, resultType, ((Float)left.getValue())*((Float)right.getValue()));
+		case CHAR:
+			return new Value(interval, resultType, ((Character)left.getValue())*((Character)right.getValue()));
 		case INT:
 		case UINT:
 			return new Value(interval, resultType, ((Long)left.getValue())*((Long)right.getValue()));
@@ -49,11 +51,13 @@ public class Processor {
 			case BOOL:
 				Boolean leftBool = (Boolean)left.getValue();
 				Boolean rightBool = (Boolean)right.getValue();
-				return new Value(interval, resultType, tobool(tolong(leftBool)/tolong(rightBool)));
+				return new Value(interval, Type._int, Long.valueOf(tolong(leftBool)/tolong(rightBool)));
 			case DOUBLE:
 				return new Value(interval, resultType, ((Double)left.getValue())/((Double)right.getValue()));
 			case FLOAT:
 				return new Value(interval, resultType, ((Float)left.getValue())/((Float)right.getValue()));
+			case CHAR:
+				return new Value(interval, resultType, ((Character)left.getValue())/((Character)right.getValue()));
 			case INT:
 			case UINT:
 				return new Value(interval, resultType, ((Long)left.getValue())/((Long)right.getValue()));
@@ -75,11 +79,13 @@ public class Processor {
 		case BOOL:
 			Boolean leftBool = (Boolean)left.getValue();
 			Boolean rightBool = (Boolean)right.getValue();
-			return new Value(interval, resultType, tobool(tolong(leftBool)%tolong(rightBool)));
+			return new Value(interval, Type._int, Long.valueOf(tolong(leftBool)%tolong(rightBool)));
 		case DOUBLE:
 			return new Value(interval, resultType, ((Double)left.getValue())%((Double)right.getValue()));
 		case FLOAT:
 			return new Value(interval, resultType, ((Float)left.getValue())%((Float)right.getValue()));
+		case CHAR:
+			return new Value(interval, resultType, ((Character)left.getValue())%((Character)right.getValue()));
 		case INT:
 		case UINT:
 			return new Value(interval, resultType, ((Long)left.getValue())%((Long)right.getValue()));
@@ -98,11 +104,13 @@ public class Processor {
 		case BOOL:
 			Boolean leftBool = (Boolean)left.getValue();
 			Boolean rightBool = (Boolean)right.getValue();
-			return new Value(interval, resultType, tobool(tolong(leftBool)+tolong(rightBool)));
+			return new Value(interval, Type._int, Long.valueOf(tolong(leftBool)+tolong(rightBool)));
 		case DOUBLE:
 			return new Value(interval, resultType, ((Double)left.getValue())+((Double)right.getValue()));
 		case FLOAT:
 			return new Value(interval, resultType, ((Float)left.getValue())+((Float)right.getValue()));
+		case CHAR:
+			return new Value(interval, resultType, ((Character)left.getValue())+((Character)right.getValue()));
 		case INT:
 		case UINT:
 			return new Value(interval, resultType, ((Long)left.getValue())+((Long)right.getValue()));
@@ -122,11 +130,13 @@ public class Processor {
 		case BOOL:
 			Boolean leftBool = (Boolean)left.getValue();
 			Boolean rightBool = (Boolean)right.getValue();
-			return new Value(interval, resultType, tobool(tolong(leftBool)-tolong(rightBool)));
+			return new Value(interval, Type._int, Long.valueOf(tolong(leftBool)-tolong(rightBool)));
 		case DOUBLE:
 			return new Value(interval, resultType, ((Double)left.getValue())-((Double)right.getValue()));
 		case FLOAT:
 			return new Value(interval, resultType, ((Float)left.getValue())-((Float)right.getValue()));
+		case CHAR:
+			return new Value(interval, resultType, ((Character)left.getValue())-((Character)right.getValue()));
 		case INT:
 		case UINT:
 			v = ((Long)left.getValue())-((Long)right.getValue());
@@ -143,11 +153,13 @@ public class Processor {
 		Type resultType = value.getType();
 		switch(Type.Rank.of(resultType)) {
 		case BOOL:
-			throw new ProcessingException("undefined operation for type bool");
+			return new Value(interval, Type._int, Long.valueOf(-tolong((Boolean)value.getValue())));
 		case DOUBLE:
 			return new Value(interval, resultType, -((Double)value.getValue()));
 		case FLOAT:
 			return new Value(interval, resultType, -((Float)value.getValue()));
+		case CHAR:
+			return new Value(interval, resultType, -((Character)value.getValue()));
 		case INT:
 		case UINT:
 			return new Value(interval, resultType, -((Long)value.getValue()));
@@ -157,133 +169,70 @@ public class Processor {
 	}
 
 	public static Value lshift(Value left, Value right) throws ProcessingException {
-		// TODO [2] left shift: left must be int?
 		Interval interval = new Interval(left.getStart(), right.getEnd());
-		Type resultType = Type.maxRank(left, right);
-		left = Type.cast(left, resultType);
-		right = Type.cast(right, resultType);
-		switch(Type.Rank.of(resultType)) {
-		case BOOL:
-			Boolean leftBool = (Boolean)left.getValue();
-			Boolean rightBool = (Boolean)right.getValue();
-			return new Value(interval, resultType, tobool(tolong(leftBool)<<tolong(rightBool)));
-		case DOUBLE:
-		case FLOAT:
-			throw new ProcessingException("bit operations undefined for floating point types");
-		case INT:
-		case UINT:
-			return new Value(interval, resultType, ((Long)left.getValue())<<((Long)right.getValue()));
-		case NON_SCALAR:
-			throw new ProcessingException("bit operations undefined for non-scalar types");
+		Type resultType = Type._int;
+		int intleft = prepare_bitoperation(left);
+		int intright = prepare_bitoperation(right);
+		if (intright>0) return new Value(interval, resultType, Long.valueOf((intright >= 32)?0:intleft<<intright));
+		else {
+			intright = -intright;
+			return new Value(interval, resultType, Long.valueOf((intright >= 32)?0:intleft>>>intright));
 		}
-		throw new Error("internal error: unhandled type in arithmetic operation");
 	}
 
 	public static Value rshift(Value left, Value right) throws ProcessingException {
-		// TODO [2] right shift: left must be int?
-
 		Interval interval = new Interval(left.getStart(), right.getEnd());
-		Type resultType = Type.maxRank(left, right);
-		left = Type.cast(left, resultType);
-		right = Type.cast(right, resultType);
-		switch(Type.Rank.of(resultType)) {
-		case BOOL:
-			Boolean leftBool = (Boolean)left.getValue();
-			Boolean rightBool = (Boolean)right.getValue();
-			return new Value(interval, resultType, tobool(tolong(leftBool)>>tolong(rightBool)));
-		case DOUBLE:
-		case FLOAT:
-			throw new ProcessingException("bit operations undefined for floating point types");
-		case INT:
-		case UINT:
-			return new Value(interval, resultType, ((Long)left.getValue())>>((Long)right.getValue()));
-		case NON_SCALAR:
-			throw new ProcessingException("bit operations undefined for non-scalar types");
+		Type resultType = Type._int;
+		int intleft = prepare_bitoperation(left);
+		int intright = prepare_bitoperation(right);
+		if (intright > 0) return new Value(interval, resultType, Long.valueOf((intright >= 32)?0:intleft>>>intright));
+		else {
+			intright = -intright;
+			return new Value(interval, resultType, Long.valueOf((intright >= 32)?0:intleft<<intright));
 		}
-		throw new Error("internal error: unhandled type in arithmetic operation");
 	}
 
 	public static Value and(Value left, Value right) throws ProcessingException {
 		Interval interval = new Interval(left.getStart(), right.getEnd());
-		Type resultType = Type.maxRank(left, right);
-		left = Type.cast(left, resultType);
-		right = Type.cast(right, resultType);
-		switch(Type.Rank.of(resultType)) {
-		case BOOL:
-			Boolean leftBool = (Boolean)left.getValue();
-			Boolean rightBool = (Boolean)right.getValue();
-			return new Value(interval, resultType, tobool(tolong(leftBool)&tolong(rightBool)));
-		case DOUBLE:
-		case FLOAT:
-			throw new ProcessingException("bit operations undefined for floating point types");
-		case INT:
-		case UINT:
-			return new Value(interval, resultType, ((Long)left.getValue())&((Long)right.getValue()));
-		case NON_SCALAR:
-			throw new ProcessingException("bit operations undefined for non-scalar types");
-		}
-		throw new Error("internal error: unhandled type in arithmetic operation");
+		int intleft = prepare_bitoperation(left);
+		int intright = prepare_bitoperation(right);
+		Type resultType = Type._int;
+		return new Value(interval, resultType, Long.valueOf(intleft&intright));
 	}
 
 	public static Value xor(Value left, Value right) throws ProcessingException {
 		Interval interval = new Interval(left.getStart(), right.getEnd());
-		Type resultType = Type.maxRank(left, right);
-		left = Type.cast(left, resultType);
-		right = Type.cast(right, resultType);
-		switch(Type.Rank.of(resultType)) {
-		case BOOL:
-			Boolean leftBool = (Boolean)left.getValue();
-			Boolean rightBool = (Boolean)right.getValue();
-			return new Value(interval, resultType, tobool(tolong(leftBool)^tolong(rightBool)));
-		case DOUBLE:
-		case FLOAT:
-			throw new ProcessingException("bit operations undefined for floating point types");
-		case INT:
-		case UINT:
-			return new Value(interval, resultType, ((Long)left.getValue())^((Long)right.getValue()));
-		case NON_SCALAR:
-			throw new ProcessingException("bit operations undefined for non-scalar types");
-		}
-		throw new Error("internal error: unhandled type in arithmetic operation");
+		int intleft = prepare_bitoperation(left);
+		int intright = prepare_bitoperation(right);
+		Type resultType = Type._int;
+		return new Value(interval, resultType, Long.valueOf(intleft^intright));
 	}
 
 	public static Value or(Value left, Value right) throws ProcessingException {
 		Interval interval = new Interval(left.getStart(), right.getEnd());
-		Type resultType = Type.maxRank(left, right);
-		left = Type.cast(left, resultType);
-		right = Type.cast(right, resultType);
-		switch(Type.Rank.of(resultType)) {
-		case BOOL:
-			Boolean leftBool = (Boolean)left.getValue();
-			Boolean rightBool = (Boolean)right.getValue();
-			return new Value(interval, resultType, tobool(tolong(leftBool)|tolong(rightBool)));
-		case DOUBLE:
-		case FLOAT:
-			throw new ProcessingException("bit operations undefined for floating point types");
-		case INT:
-		case UINT:
-			return new Value(interval, resultType, ((Long)left.getValue())|((Long)right.getValue()));
-		case NON_SCALAR:
-			throw new ProcessingException("bit operations undefined for non-scalar types");
-		}
-		throw new Error("internal error: unhandled type in arithmetic operation");
+		int intleft = prepare_bitoperation(left);
+		int intright = prepare_bitoperation(right);
+		Type resultType = Type._int;
+		return new Value(interval, resultType, Long.valueOf(intleft|intright));
 	}
 
 	public static Value not(Value value) throws ProcessingException {
-		Type resultType = value.getType();
-		switch(Type.Rank.of(resultType)) {
-		case BOOL:
-			return new Value(value.getInterval(), resultType, !((Boolean)value.getValue()));
-		case DOUBLE:
-		case FLOAT:
-			throw new ProcessingException("bit operations undefined for floating point types");
-		case INT:
-		case UINT:
-			return new Value(value.getInterval(), resultType, ~((Long)value.getValue()));
-		case NON_SCALAR:
-		}
-		throw new Error("internal error: unhandled type in arithmetic operation");
+		int intvalue = prepare_bitoperation(value);
+		return new Value(value.getInterval(), Type._int, Long.valueOf(~intvalue));
 	}
+
+	private static int prepare_bitoperation(Value value) throws ProcessingException {
+		if (value.getType().hasKind(Type.KIND_SCALAR)) {
+			Type.Rank rank = Type.Rank.of(value.getType());
+			if (rank.lt(Type.Rank.UINT)) value = Type.cast(value, Type._int);
+			Type type = value.getType();
+			if (Type.Rank.of(type).equals(Type.Rank.UINT) || Type.Rank.of(type).equals(Type.Rank.INT)) {
+				return ((Long)(value.getValue())).intValue();
+			}
+		}
+		throw new ProcessingException("bit operations undefined for " + value.getType().getName());
+	}
+
 
 	public static Value logEq(Value left, Value right) throws ProcessingException {
 		Interval interval = new Interval(left.getStart(), right.getEnd());
@@ -294,14 +243,16 @@ public class Processor {
 		case BOOL:
 			Boolean leftBool = (Boolean)left.getValue();
 			Boolean rightBool = (Boolean)right.getValue();
-			return new Value(interval, Type._bool, leftBool == rightBool);
+			return new Value(interval, Type._bool, tolong(leftBool) == tolong(rightBool));
+		case CHAR:
+			return new Value(interval, Type._bool, ((Character)left.getValue()) == ((Character)right.getValue()));
+		case INT:
+		case UINT:
+			return new Value(interval, Type._bool, ((Long)left.getValue()) == ((Long)right.getValue()));
 		case DOUBLE:
 			return new Value(interval, Type._bool, ((Double)left.getValue()) == ((Double)right.getValue()));
 		case FLOAT:
 			return new Value(interval, Type._bool, ((Float)left.getValue()) == ((Float)right.getValue()));
-		case INT:
-		case UINT:
-			return new Value(interval, Type._bool, ((Long)left.getValue()) == ((Long)right.getValue()));
 		case NON_SCALAR:
 			throw new ProcessingException("logical operations undefined for non-scalar types");
 		}
@@ -317,14 +268,16 @@ public class Processor {
 		case BOOL:
 			Boolean leftBool = (Boolean)left.getValue();
 			Boolean rightBool = (Boolean)right.getValue();
-			return new Value(interval, Type._bool, leftBool == rightBool);
+			return new Value(interval, Type._bool, tolong(leftBool) != tolong(rightBool));
+		case CHAR:
+			return new Value(interval, Type._bool, ((Character)left.getValue()) != ((Character)right.getValue()));
+		case INT:
+		case UINT:
+			return new Value(interval, Type._bool, ((Long)left.getValue()) != ((Long)right.getValue()));
 		case DOUBLE:
 			return new Value(interval, Type._bool, ((Double)left.getValue()) != ((Double)right.getValue()));
 		case FLOAT:
 			return new Value(interval, Type._bool, ((Float)left.getValue()) != ((Float)right.getValue()));
-		case INT:
-		case UINT:
-			return new Value(interval, Type._bool, ((Long)left.getValue()) != ((Long)right.getValue()));
 		case NON_SCALAR:
 			throw new ProcessingException("logical operations undefined for non-scalar types");
 		}
@@ -341,14 +294,16 @@ public class Processor {
 		case BOOL:
 			Boolean leftBool = (Boolean)left.getValue();
 			Boolean rightBool = (Boolean)right.getValue();
-			return new Value(interval, Type._bool, leftBool == rightBool);
+			return new Value(interval, Type._bool, tolong(leftBool) >= tolong(rightBool));
+		case CHAR:
+			return new Value(interval, Type._bool, ((Character)left.getValue()) >= ((Character)right.getValue()));
+		case INT:
+		case UINT:
+			return new Value(interval, Type._bool, ((Long)left.getValue()) >= ((Long)right.getValue()));
 		case DOUBLE:
 			return new Value(interval, Type._bool, ((Double)left.getValue()) >= ((Double)right.getValue()));
 		case FLOAT:
 			return new Value(interval, Type._bool, ((Float)left.getValue()) >= ((Float)right.getValue()));
-		case INT:
-		case UINT:
-			return new Value(interval, Type._bool, ((Long)left.getValue()) >= ((Long)right.getValue()));
 		case NON_SCALAR:
 			throw new ProcessingException("logical operations undefined for non-scalar types");
 		}
@@ -364,11 +319,13 @@ public class Processor {
 		case BOOL:
 			Boolean leftBool = (Boolean)left.getValue();
 			Boolean rightBool = (Boolean)right.getValue();
-			return new Value(interval, Type._bool, leftBool == rightBool);
+			return new Value(interval, Type._bool, tolong(leftBool) <= tolong(rightBool));
 		case DOUBLE:
 			return new Value(interval, Type._bool, ((Double)left.getValue()) <= ((Double)right.getValue()));
 		case FLOAT:
 			return new Value(interval, Type._bool, ((Float)left.getValue()) <= ((Float)right.getValue()));
+		case CHAR:
+			return new Value(interval, Type._bool, ((Character)left.getValue()) <= ((Character)right.getValue()));
 		case INT:
 		case UINT:
 			return new Value(interval, Type._bool, ((Long)left.getValue()) <= ((Long)right.getValue()));
@@ -387,11 +344,13 @@ public class Processor {
 		case BOOL:
 			Boolean leftBool = (Boolean)left.getValue();
 			Boolean rightBool = (Boolean)right.getValue();
-			return new Value(interval, Type._bool, leftBool == rightBool);
+			return new Value(interval, Type._bool, tolong(leftBool) > tolong(rightBool));
 		case DOUBLE:
 			return new Value(interval, Type._bool, ((Double)left.getValue()) > ((Double)right.getValue()));
 		case FLOAT:
 			return new Value(interval, Type._bool, ((Float)left.getValue()) > ((Float)right.getValue()));
+		case CHAR:
+			return new Value(interval, Type._bool, ((Character)left.getValue()) > ((Character)right.getValue()));
 		case INT:
 		case UINT:
 			return new Value(interval, Type._bool, ((Long)left.getValue()) > ((Long)right.getValue()));
@@ -410,11 +369,13 @@ public class Processor {
 		case BOOL:
 			Boolean leftBool = (Boolean)left.getValue();
 			Boolean rightBool = (Boolean)right.getValue();
-			return new Value(interval, Type._bool, leftBool == rightBool);
+			return new Value(interval, Type._bool, tolong(leftBool) < tolong(rightBool));
 		case DOUBLE:
 			return new Value(interval, Type._bool, ((Double)left.getValue()) < ((Double)right.getValue()));
 		case FLOAT:
 			return new Value(interval, Type._bool, ((Float)left.getValue()) < ((Float)right.getValue()));
+		case CHAR:
+			return new Value(interval, Type._bool, ((Character)left.getValue()) < ((Character)right.getValue()));
 		case INT:
 		case UINT:
 			return new Value(interval, Type._bool, ((Long)left.getValue()) < ((Long)right.getValue()));
@@ -460,11 +421,11 @@ public class Processor {
 
 	
 
-	private static boolean tobool(long value) {
+	public static boolean tobool(long value) {
 		return value != 0;
 	}
 
-	private static int tolong(boolean value) {
+	public static int tolong(boolean value) {
 		return value?1:0;
 	}
 

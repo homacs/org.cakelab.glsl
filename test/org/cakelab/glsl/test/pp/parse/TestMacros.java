@@ -14,7 +14,7 @@ public class TestMacros extends TestingPPBase {
 		testStringify();
 		testConcatenation();
 		testDefUndef();
-		testReplacementList();
+		testVariadicMacros();
 	}
 	
 	
@@ -70,6 +70,7 @@ public class TestMacros extends TestingPPBase {
 
 	
 	public static void testFunctionMacros() {
+		
 		assertValid("#define A() x\n"
 				+ "A()\n", 
 				"x\n");
@@ -122,7 +123,63 @@ public class TestMacros extends TestingPPBase {
 				+ "#define B(y) A(y) + 1\n"
 				+ "A(z)", 
 				"A(z) + 1\n");
+
+		//
+		// empty arguments
+		//
 		
+		assertValid("#define A(x) x\n"
+				+ "A()", 
+				"\n");
+
+		assertValid("#define A(x,y) x\n"
+				+ "A(,)", 
+				"\n");
+
+		assertValid("#define A(x,y) x\n"
+				+ "A(a,)", 
+				"a\n");
+
+		assertValid("#define A(x,y) x y\n"
+				+ "A(,a)", 
+				"a\n");
+
+		
+		
+		
+		
+		
+		assertValid("#define A() B\n"
+				+ "A()\n",
+				"B\n");
+		
+		assertValid("#define A(x) x = 1\n"
+				+ "A(B)\n"
+				+ "",
+				"B = 1\n");
+		
+		assertValid("#define A(x) # x\n"
+				+ "A(B)\n"
+				+ "",
+				"\"B\"\n");
+		
+		assertValid("#define A(x) x/* whitespace */\\\n## /* whitespace */\\\n"
+				+ " _type\n"
+				+ "A(B)\n"
+				+ "",
+				"B_type\n");
+		
+		assertValid("#define A(x,y) x ## y\n"
+				+ "A(B,_type)\n",
+				"B_type\n");
+		
+		assertValid("#define A(x,y) x ## y\n"
+				+ "#define TYPE(x) A(x,_type)\n"
+				+ "TYPE(B)\n",
+				"B_type\n");
+		
+		
+
 	}
 	
 	
@@ -153,6 +210,20 @@ public class TestMacros extends TestingPPBase {
 				+ "A(\"a  b\")\n", 
 				"\"\\\"a  b\\\"\"\n");
 		
+		assertError("#define A() #\n","# is not followed by a macro parameter");
+		
+		assertValid("#define A #\n"
+				+ "A\n", 
+				  "#\n");
+		
+		
+		assertValid("#define A(x) #x\n"
+				+ "A()", 
+				"\"\"\n");
+
+
+		
+		
 	}
 	
 	private static void testConcatenation() {
@@ -180,7 +251,47 @@ public class TestMacros extends TestingPPBase {
 				+ "A( su /* comment */ , cc , B(ess) )\n", 
 				"succB(ess) ess\n");
 		
+		assertValid("#define hash_hash # ## #\n"
+				+ "hash_hash\n",
+				"##\n");
+
+		assertValid("#define A(x,y) # x ## # y\n"
+				+ "A(a,b)\n",
+				"\"a\"\"b\"\n");
 		
+		assertValid("#define A(x,y) x ## y\n"
+				+ "A(a,)\n",
+				"a\n");
+		
+		assertValid("#define A(x,y) x ## y\n"
+				+ "A(,a)\n",
+				"a\n");
+		
+		
+		assertValid("#define hash_hash # ## #\n"
+				+ "#define mkstr(a) # a\n"
+				+ "#define in_between(a) mkstr(a)\n"
+				+ "#define join(c, d) in_between(c hash_hash d)\n"
+				+ "char p[] = join(x, y);\n",
+				"char p[] = \"x ## y\";\n");
+		
+		assertValid("#define hash_hash # ## #\n"
+				+ "#define mkstr(a) # a\n"
+				+ "#define in_between(a) mkstr(a)\n"
+				+ "#define join(c, d) in_between(c hash_hash d)\n"
+				+ "char p[] = join(x,);\n",
+				"char p[] = \"x ##\";\n");
+		
+		assertValid("#define hash_hash # ## #\n"
+				+ "#define mkstr(a) # a\n"
+				+ "#define in_between(a) mkstr(a)\n"
+				+ "#define join(c, d) in_between(c hash_hash d)\n"
+				+ "char p[] = join(,y);\n",
+				"char p[] = \"## y\";\n");
+		
+
+		
+		assertError("#define A ##\n", "'##' cannot appear at either end of a macro expansion");
 	}
 
 
@@ -238,73 +349,21 @@ public class TestMacros extends TestingPPBase {
 	}
 	
 	
-	public static void testReplacementList() {
-		
-		assertValid("#define A() B\n"
-				+ "A()\n",
-				"B\n");
-		
-		assertValid("#define A(x) x = 1\n"
-				+ "A(B)\n"
-				+ "",
-				"B = 1\n");
-		
-		assertValid("#define A(x) # x\n"
-				+ "A(B)\n"
-				+ "",
-				"\"B\"\n");
-		
-		assertValid("#define A(x) x/* whitespace */\\\n## /* whitespace */\\\n"
-				+ " _type\n"
-				+ "A(B)\n"
-				+ "",
-				"B_type\n");
-		
-		assertValid("#define A(x,y) x ## y\n"
-				+ "A(B,_type)\n",
-				"B_type\n");
-		
-		assertValid("#define A(x,y) x ## y\n"
-				+ "#define TYPE(x) A(x,_type)\n"
-				+ "TYPE(B)\n",
-				"B_type\n");
-		
-		
-		
-		assertValid("#define hash_hash # ## #\n"
-				+ "hash_hash\n",
-				"##\n");
-		
-		
-		assertValid("#define hash_hash # ## #\n"
-				+ "#define mkstr(a) # a\n"
-				+ "#define in_between(a) mkstr(a)\n"
-				+ "#define join(c, d) in_between(c hash_hash d)\n"
-				+ "char p[] = join(x, y);\n",
-				"char p[] = \"x ## y\";\n");
-		
-		assertValid("#define hash_hash # ## #\n"
-				+ "#define mkstr(a) # a\n"
-				+ "#define in_between(a) mkstr(a)\n"
-				+ "#define join(c, d) in_between(c hash_hash d)\n"
-				+ "char p[] = join(x,);\n",
-				"char p[] = \"x ##\";\n");
-		
-		assertValid("#define hash_hash # ## #\n"
-				+ "#define mkstr(a) # a\n"
-				+ "#define in_between(a) mkstr(a)\n"
-				+ "#define join(c, d) in_between(c hash_hash d)\n"
-				+ "char p[] = join(,y);\n",
-				"char p[] = \"## y\";\n");
-		
+	public static void testVariadicMacros() {
 
+		assertError("#define A(...,x)\n", "0:1:14: missing ')'");
+		
 		assertValid("#define A(...) __VA_ARGS__\n"
 				+ "A(success)\n",
 				"success\n");
 		
 		assertValid("#define A(...) #__VA_ARGS__\n"
-				+ "A(success)\n",
-				"\"success\"\n");
+				+ "A(succ,ess)\n",
+				"\"succ,ess\"\n");
+		
+		assertValid("#define A(x,...) x ## __VA_ARGS__\n"
+				+ "A(s,ucc,ess)\n",
+				"succ,ess\n");
 		
 		assertValid("#define A(a,b,c) a ## b ## c\n"
 				+ "#define B(...) A(__VA_ARGS__)\n"
@@ -328,9 +387,8 @@ public class TestMacros extends TestingPPBase {
 		assertWarning("#define A(__VA_ARGS__)\n", "__VA_ARGS__ can only appear in the expansion of a variadic macro");
 		assertWarning("#define A __VA_ARGS__\n", "__VA_ARGS__ can only appear in the expansion of a variadic macro");
 
-		
 	}
-
+	
 	
 	
 }

@@ -18,7 +18,7 @@ import org.cakelab.glsl.Interval;
  * but not a regular CRLF like '\n'.
  * </p>
  */
-public class PPWhitespace extends StringConstant {
+public class PPWhitespace extends Text {
 
 	public PPWhitespace(Interval interval, String value) {
 		super(interval, value);

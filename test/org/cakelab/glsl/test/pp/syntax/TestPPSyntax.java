@@ -8,6 +8,7 @@ public class TestPPSyntax {
 	public static void test() {
 		TestNumber.test();
 		TestStringLiteral.test();
+		TestExpression.test();
 		TestDirective.test();
 	}
 }

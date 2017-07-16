@@ -8,6 +8,7 @@ public class TestPPParsing {
 
 	public static void test() {
 		TestMacros.test();
+		TestConditionalInclusion.test();
 	}
 	
 	

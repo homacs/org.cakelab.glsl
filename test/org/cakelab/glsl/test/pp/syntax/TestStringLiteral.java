@@ -1,5 +1,6 @@
 package org.cakelab.glsl.test.pp.syntax;
 
+import org.cakelab.glsl.lang.ast.Value;
 import org.cakelab.glsl.test.pp.TestingPPBase;
 
 public class TestStringLiteral extends TestingPPBase {
@@ -55,6 +56,11 @@ public class TestStringLiteral extends TestingPPBase {
 		assertInvalid(p("'''").character_constant());
 //		assertInvalid(p("l'wchar_t'").character_constant());
 //		assertInvalid(p("b'char16_t'").character_constant());
+	}
+
+	private static void assertValid(Value v) {
+		// TODO string type testing
+		assertValid(v, v.getClass());
 	}
 
 	private static void testStringLiteral() {

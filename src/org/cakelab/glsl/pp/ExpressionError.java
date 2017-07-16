@@ -3,9 +3,9 @@ package org.cakelab.glsl.pp;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.PrimaryExpression;
-import org.cakelab.glsl.pp.ast.StringConstant;
+import org.cakelab.glsl.pp.ast.Text;
 
-public class ExpressionError extends StringConstant {
+public class ExpressionError extends Text {
 	// TODO not a string constant (rather exception)
 	private String errorMessage;
 

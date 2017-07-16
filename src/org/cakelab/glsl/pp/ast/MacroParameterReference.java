@@ -34,7 +34,7 @@ public class MacroParameterReference extends PrimaryExpression {
 		// TODO lvalue
 		String v = param.getValue();
 		if (expand) v = param.getExpandedValue();
-		return new StringConstant(this.interval, v);
+		return new Text(this.interval, v);
 	}
 
 	public MacroParameter getParameter() {

@@ -42,7 +42,7 @@ public class PPStringifyExpression extends PrefixExpression {
 				break;
 			}
 		}
-		return new StringConstant(this.interval, "\"" + str.toString() + "\"");
+		return new Text(this.interval, "\"" + str.toString() + "\"");
 	}
 
 }

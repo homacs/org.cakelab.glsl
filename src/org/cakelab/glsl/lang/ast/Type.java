@@ -54,12 +54,12 @@ public class Type implements Comparable<Type> {
 
 	}
 	
-	public static int SCALAR = 1<<0;
-	public static int ARRAY  = 1<<1;
-	public static int STRUCT = 1<<2;
-	public static int VECTOR = ARRAY|STRUCT;
-	public static int MATRIX = ARRAY|STRUCT;
-	public static int UNDEFINED = 0;
+	public static int KIND_SCALAR = 1<<0;
+	public static int KIND_ARRAY  = 1<<1;
+	public static int KIND_STRUCT = 1<<2;
+	public static int KIND_VECTOR = KIND_ARRAY|KIND_STRUCT;
+	public static int KIND_MATRIX = KIND_ARRAY|KIND_STRUCT;
+	public static int KIND_UNDEFINED = 0;
 	
 	/** Signature is the fully specified type name (e.g. 'int[]' or 'void' but not 'int[3]'). */
 	final String signature;
@@ -131,151 +131,155 @@ public class Type implements Comparable<Type> {
 		else throw new Error("unexpected type of qualified type '" + type.getClass().getCanonicalName() + "'");
 	}
 
-	public static Type _void = new Type("void", SCALAR);
-	
-	public static Type _atomic_uint = new Type("atomic_uint", SCALAR);
-	
-	public static Type _float = new Type("float", SCALAR);
-	public static Type _double = new Type("double", SCALAR);
-	public static Type _int = new Type("int", SCALAR);
-	public static Type _uint = new Type("uint", SCALAR);
-	public static Type _bool = new Type("bool", SCALAR);
-	
-	public static Type _vec2 = new Type("vec2", VECTOR);
-	public static Type _vec3 = new Type("vec3", VECTOR);
-	public static Type _vec4 = new Type("vec4", VECTOR);
-	public static Type _dvec2 = new Type("dvec2", VECTOR);
-	public static Type _dvec3 = new Type("dvec3", VECTOR);
-	public static Type _dvec4 = new Type("dvec4", VECTOR);
-	public static Type _bvec2 = new Type("bvec2", VECTOR);
-	public static Type _bvec3 = new Type("bvec3", VECTOR);
-	public static Type _bvec4 = new Type("bvec4", VECTOR);
-	public static Type _ivec2 = new Type("ivec2", VECTOR);
-	public static Type _ivec3 = new Type("ivec3", VECTOR);
-	public static Type _ivec4 = new Type("ivec4", VECTOR);
-	public static Type _uvec2 = new Type("uvec2", VECTOR);
-	public static Type _uvec3 = new Type("uvec3", VECTOR);
-	public static Type _uvec4 = new Type("uvec4", VECTOR);
-	
-	public static Type _mat2 = new Type("mat2", MATRIX);
-	public static Type _mat3 = new Type("mat3", MATRIX);
-	public static Type _mat4 = new Type("mat4", MATRIX);
-	public static Type _mat2x2 = new Type("mat2x2", MATRIX);
-	public static Type _mat2x3 = new Type("mat2x3", MATRIX);
-	public static Type _mat2x4 = new Type("mat2x4", MATRIX);
-	public static Type _mat3x2 = new Type("mat3x2", MATRIX);
-	public static Type _mat3x3 = new Type("mat3x3", MATRIX);
-	public static Type _mat3x4 = new Type("mat3x4", MATRIX);
-	public static Type _mat4x2 = new Type("mat4x2", MATRIX);
-	public static Type _mat4x3 = new Type("mat4x3", MATRIX);
-	public static Type _mat4x4 = new Type("mat4x4", MATRIX);
-	public static Type _dmat2 = new Type("dmat2", MATRIX);
-	public static Type _dmat3 = new Type("dmat3", MATRIX);
-	public static Type _dmat4 = new Type("dmat4", MATRIX);
-	public static Type _dmat2x2 = new Type("dmat2x2", MATRIX);
-	public static Type _dmat2x3 = new Type("dmat2x3", MATRIX);
-	public static Type _dmat2x4 = new Type("dmat2x4", MATRIX);
-	public static Type _dmat3x2 = new Type("dmat3x2", MATRIX);
-	public static Type _dmat3x3 = new Type("dmat3x3", MATRIX);
-	public static Type _dmat3x4 = new Type("dmat3x4", MATRIX);
-	public static Type _dmat4x2 = new Type("dmat4x2", MATRIX);
-	public static Type _dmat4x3 = new Type("dmat4x3", MATRIX);
-	public static Type _dmat4x4 = new Type("dmat4x4", MATRIX);
-	
-	public static Type _sampler1D = new Type("sampler1D", STRUCT);
-	public static Type _sampler2D = new Type("sampler2D", STRUCT);
-	public static Type _sampler3D = new Type("sampler3D", STRUCT);
-	public static Type _samplerCube = new Type("samplerCube", STRUCT);
-
-	public static Type _sampler1DShadow = new Type("sampler1DShadow", STRUCT);
-	public static Type _sampler2DShadow = new Type("sampler2DShadow", STRUCT);
-	public static Type _samplerCubeShadow = new Type("samplerCubeShadow", STRUCT);
-	public static Type _sampler1DArray = new Type("sampler1DArray", STRUCT);
-	public static Type _sampler2DArray = new Type("sampler2DArray", STRUCT);
-	public static Type _sampler1DArrayShadow = new Type("sampler1DArrayShadow", STRUCT);
-	public static Type _sampler2DArrayShadow = new Type("sampler2DArrayShadow", STRUCT);
-	public static Type _samplerCubeArray = new Type("samplerCubeArray", STRUCT);
-	public static Type _samplerCubeArrayShadow = new Type("samplerCubeArrayShadow", STRUCT);
-	
-	public static Type _isampler1D = new Type("isampler1D", STRUCT);
-	public static Type _isampler2D = new Type("isampler2D", STRUCT);
-	public static Type _isampler3D = new Type("isampler3D", STRUCT);
-	public static Type _isamplerCube = new Type("isamplerCube", STRUCT);
-	public static Type _isampler1DArray = new Type("isampler1DArray", STRUCT);
-	public static Type _isampler2DArray = new Type("isampler2DArray", STRUCT);
-	public static Type _isamplerCubeArray = new Type("isamplerCubeArray", STRUCT);
-	
-	public static Type _usampler1D = new Type("usampler1D", STRUCT);
-	public static Type _usampler2D = new Type("usampler2D", STRUCT);
-	public static Type _usampler3D = new Type("usampler3D", STRUCT);
-	public static Type _usamplerCube = new Type("usamplerCube", STRUCT);
-	public static Type _usampler1DArray = new Type("usampler1DArray", STRUCT);
-	public static Type _usampler2DArray = new Type("usampler2DArray", STRUCT);
-	public static Type _usamplerCubeArray = new Type("usamplerCubeArray", STRUCT);
-	
-	public static Type _sampler2DRect = new Type("sampler2DRect", STRUCT);
-	public static Type _sampler2DRectShadow = new Type("sampler2DRectShadow", STRUCT);
-	public static Type _isampler2DRect = new Type("isampler2DRect", STRUCT);
-	public static Type _usampler2DRect = new Type("usampler2DRect", STRUCT);
-
-	public static Type _samplerBuffer = new Type("samplerBuffer", STRUCT);
-	public static Type _isamplerBuffer = new Type("isamplerBuffer", STRUCT);
-	public static Type _usamplerBuffer = new Type("usamplerBuffer", STRUCT);
-
-	public static Type _sampler2DMS = new Type("sampler2DMS", STRUCT);
-	public static Type _isampler2DMS = new Type("isampler2DMS", STRUCT);
-	public static Type _usampler2DMS = new Type("usampler2DMS", STRUCT);
-	
-	public static Type _sampler2DMSArray = new Type("sampler2DMSArray", STRUCT);
-	public static Type _isampler2DMSArray = new Type("isampler2DMSArray", STRUCT);
-	public static Type _usampler2DMSArray = new Type("usampler2DMSArray", STRUCT);
-	
-	public static Type _image1D = new Type("image1D", STRUCT);
-	public static Type _iimage1D = new Type("iimage1D", STRUCT);
-	public static Type _uimage1D = new Type("uimage1D", STRUCT);
-
-	public static Type _image2D = new Type("image2D", STRUCT);
-	public static Type _iimage2D = new Type("iimage2D", STRUCT);
-	public static Type _uimage2D = new Type("uimage2D", STRUCT);
-
-	public static Type _image3D = new Type("image3D", STRUCT);
-	public static Type _iimage3D = new Type("iimage3D", STRUCT);
-	public static Type _uimage3D = new Type("uimage3D", STRUCT);
+	/** non-glsl type, for preprocessor only */
+	public static Type _char = new Type("char", KIND_SCALAR);
 
 	
-	public static Type _image2DRect = new Type("image2DRect", STRUCT);
-	public static Type _iimage2DRect = new Type("iimage2DRect", STRUCT);
-	public static Type _uimage2DRect = new Type("uimage2DRect", STRUCT);
+	public static Type _void = new Type("void", KIND_SCALAR);
 	
-	public static Type _imageCube = new Type("imageCube", STRUCT);
-	public static Type _iimageCube = new Type("iimageCube", STRUCT);
-	public static Type _uimageCube = new Type("uimageCube", STRUCT);
+	public static Type _atomic_uint = new Type("atomic_uint", KIND_SCALAR);
 	
-	public static Type _imageBuffer = new Type("imageBuffer", STRUCT);
-	public static Type _iimageBuffer = new Type("iimageBuffer", STRUCT);
-	public static Type _uimageBuffer = new Type("uimageBuffer", STRUCT);
+	public static Type _float = new Type("float", KIND_SCALAR);
+	public static Type _double = new Type("double", KIND_SCALAR);
+	public static Type _int = new Type("int", KIND_SCALAR);
+	public static Type _uint = new Type("uint", KIND_SCALAR);
+	public static Type _bool = new Type("bool", KIND_SCALAR);
 	
-	public static Type _image1DArray = new Type("image1DArray", ARRAY);
-	public static Type _iimage1DArray = new Type("iimage1DArray", ARRAY);
-	public static Type _uimage1DArray = new Type("uimage1DArray", ARRAY);
+	public static Type _vec2 = new Type("vec2", KIND_VECTOR);
+	public static Type _vec3 = new Type("vec3", KIND_VECTOR);
+	public static Type _vec4 = new Type("vec4", KIND_VECTOR);
+	public static Type _dvec2 = new Type("dvec2", KIND_VECTOR);
+	public static Type _dvec3 = new Type("dvec3", KIND_VECTOR);
+	public static Type _dvec4 = new Type("dvec4", KIND_VECTOR);
+	public static Type _bvec2 = new Type("bvec2", KIND_VECTOR);
+	public static Type _bvec3 = new Type("bvec3", KIND_VECTOR);
+	public static Type _bvec4 = new Type("bvec4", KIND_VECTOR);
+	public static Type _ivec2 = new Type("ivec2", KIND_VECTOR);
+	public static Type _ivec3 = new Type("ivec3", KIND_VECTOR);
+	public static Type _ivec4 = new Type("ivec4", KIND_VECTOR);
+	public static Type _uvec2 = new Type("uvec2", KIND_VECTOR);
+	public static Type _uvec3 = new Type("uvec3", KIND_VECTOR);
+	public static Type _uvec4 = new Type("uvec4", KIND_VECTOR);
 	
-	public static Type _image2DArray = new Type("image2DArray", ARRAY);
-	public static Type _iimage2DArray = new Type("iimage2DArray", ARRAY);
-	public static Type _uimage2DArray = new Type("uimage2DArray", ARRAY);
+	public static Type _mat2 = new Type("mat2", KIND_MATRIX);
+	public static Type _mat3 = new Type("mat3", KIND_MATRIX);
+	public static Type _mat4 = new Type("mat4", KIND_MATRIX);
+	public static Type _mat2x2 = new Type("mat2x2", KIND_MATRIX);
+	public static Type _mat2x3 = new Type("mat2x3", KIND_MATRIX);
+	public static Type _mat2x4 = new Type("mat2x4", KIND_MATRIX);
+	public static Type _mat3x2 = new Type("mat3x2", KIND_MATRIX);
+	public static Type _mat3x3 = new Type("mat3x3", KIND_MATRIX);
+	public static Type _mat3x4 = new Type("mat3x4", KIND_MATRIX);
+	public static Type _mat4x2 = new Type("mat4x2", KIND_MATRIX);
+	public static Type _mat4x3 = new Type("mat4x3", KIND_MATRIX);
+	public static Type _mat4x4 = new Type("mat4x4", KIND_MATRIX);
+	public static Type _dmat2 = new Type("dmat2", KIND_MATRIX);
+	public static Type _dmat3 = new Type("dmat3", KIND_MATRIX);
+	public static Type _dmat4 = new Type("dmat4", KIND_MATRIX);
+	public static Type _dmat2x2 = new Type("dmat2x2", KIND_MATRIX);
+	public static Type _dmat2x3 = new Type("dmat2x3", KIND_MATRIX);
+	public static Type _dmat2x4 = new Type("dmat2x4", KIND_MATRIX);
+	public static Type _dmat3x2 = new Type("dmat3x2", KIND_MATRIX);
+	public static Type _dmat3x3 = new Type("dmat3x3", KIND_MATRIX);
+	public static Type _dmat3x4 = new Type("dmat3x4", KIND_MATRIX);
+	public static Type _dmat4x2 = new Type("dmat4x2", KIND_MATRIX);
+	public static Type _dmat4x3 = new Type("dmat4x3", KIND_MATRIX);
+	public static Type _dmat4x4 = new Type("dmat4x4", KIND_MATRIX);
 	
-	public static Type _imageCubeArray = new Type("imageCubeArray", ARRAY);
-	public static Type _iimageCubeArray = new Type("iimageCubeArray", ARRAY);
-	public static Type _uimageCubeArray = new Type("uimageCubeArray", ARRAY);
+	public static Type _sampler1D = new Type("sampler1D", KIND_STRUCT);
+	public static Type _sampler2D = new Type("sampler2D", KIND_STRUCT);
+	public static Type _sampler3D = new Type("sampler3D", KIND_STRUCT);
+	public static Type _samplerCube = new Type("samplerCube", KIND_STRUCT);
+
+	public static Type _sampler1DShadow = new Type("sampler1DShadow", KIND_STRUCT);
+	public static Type _sampler2DShadow = new Type("sampler2DShadow", KIND_STRUCT);
+	public static Type _samplerCubeShadow = new Type("samplerCubeShadow", KIND_STRUCT);
+	public static Type _sampler1DArray = new Type("sampler1DArray", KIND_STRUCT);
+	public static Type _sampler2DArray = new Type("sampler2DArray", KIND_STRUCT);
+	public static Type _sampler1DArrayShadow = new Type("sampler1DArrayShadow", KIND_STRUCT);
+	public static Type _sampler2DArrayShadow = new Type("sampler2DArrayShadow", KIND_STRUCT);
+	public static Type _samplerCubeArray = new Type("samplerCubeArray", KIND_STRUCT);
+	public static Type _samplerCubeArrayShadow = new Type("samplerCubeArrayShadow", KIND_STRUCT);
 	
-	public static Type _image2DMS = new Type("image2DMS", STRUCT);
-	public static Type _iimage2DMS = new Type("iimage2DMS", STRUCT);
-	public static Type _uimage2DMS = new Type("uimage2DMS", STRUCT);
+	public static Type _isampler1D = new Type("isampler1D", KIND_STRUCT);
+	public static Type _isampler2D = new Type("isampler2D", KIND_STRUCT);
+	public static Type _isampler3D = new Type("isampler3D", KIND_STRUCT);
+	public static Type _isamplerCube = new Type("isamplerCube", KIND_STRUCT);
+	public static Type _isampler1DArray = new Type("isampler1DArray", KIND_STRUCT);
+	public static Type _isampler2DArray = new Type("isampler2DArray", KIND_STRUCT);
+	public static Type _isamplerCubeArray = new Type("isamplerCubeArray", KIND_STRUCT);
 	
-	public static Type _image2DMSArray = new Type("image2DMSArray", ARRAY);
-	public static Type _iimage2DMSArray = new Type("iimage2DMSArray", ARRAY);
-	public static Type _uimage2DMSArray = new Type("uimage2DMSArray", ARRAY);
+	public static Type _usampler1D = new Type("usampler1D", KIND_STRUCT);
+	public static Type _usampler2D = new Type("usampler2D", KIND_STRUCT);
+	public static Type _usampler3D = new Type("usampler3D", KIND_STRUCT);
+	public static Type _usamplerCube = new Type("usamplerCube", KIND_STRUCT);
+	public static Type _usampler1DArray = new Type("usampler1DArray", KIND_STRUCT);
+	public static Type _usampler2DArray = new Type("usampler2DArray", KIND_STRUCT);
+	public static Type _usamplerCubeArray = new Type("usamplerCubeArray", KIND_STRUCT);
 	
-	public static Type _samplerExternalOES = new Type("samplerExternalOES", STRUCT);
+	public static Type _sampler2DRect = new Type("sampler2DRect", KIND_STRUCT);
+	public static Type _sampler2DRectShadow = new Type("sampler2DRectShadow", KIND_STRUCT);
+	public static Type _isampler2DRect = new Type("isampler2DRect", KIND_STRUCT);
+	public static Type _usampler2DRect = new Type("usampler2DRect", KIND_STRUCT);
+
+	public static Type _samplerBuffer = new Type("samplerBuffer", KIND_STRUCT);
+	public static Type _isamplerBuffer = new Type("isamplerBuffer", KIND_STRUCT);
+	public static Type _usamplerBuffer = new Type("usamplerBuffer", KIND_STRUCT);
+
+	public static Type _sampler2DMS = new Type("sampler2DMS", KIND_STRUCT);
+	public static Type _isampler2DMS = new Type("isampler2DMS", KIND_STRUCT);
+	public static Type _usampler2DMS = new Type("usampler2DMS", KIND_STRUCT);
+	
+	public static Type _sampler2DMSArray = new Type("sampler2DMSArray", KIND_STRUCT);
+	public static Type _isampler2DMSArray = new Type("isampler2DMSArray", KIND_STRUCT);
+	public static Type _usampler2DMSArray = new Type("usampler2DMSArray", KIND_STRUCT);
+	
+	public static Type _image1D = new Type("image1D", KIND_STRUCT);
+	public static Type _iimage1D = new Type("iimage1D", KIND_STRUCT);
+	public static Type _uimage1D = new Type("uimage1D", KIND_STRUCT);
+
+	public static Type _image2D = new Type("image2D", KIND_STRUCT);
+	public static Type _iimage2D = new Type("iimage2D", KIND_STRUCT);
+	public static Type _uimage2D = new Type("uimage2D", KIND_STRUCT);
+
+	public static Type _image3D = new Type("image3D", KIND_STRUCT);
+	public static Type _iimage3D = new Type("iimage3D", KIND_STRUCT);
+	public static Type _uimage3D = new Type("uimage3D", KIND_STRUCT);
+
+	
+	public static Type _image2DRect = new Type("image2DRect", KIND_STRUCT);
+	public static Type _iimage2DRect = new Type("iimage2DRect", KIND_STRUCT);
+	public static Type _uimage2DRect = new Type("uimage2DRect", KIND_STRUCT);
+	
+	public static Type _imageCube = new Type("imageCube", KIND_STRUCT);
+	public static Type _iimageCube = new Type("iimageCube", KIND_STRUCT);
+	public static Type _uimageCube = new Type("uimageCube", KIND_STRUCT);
+	
+	public static Type _imageBuffer = new Type("imageBuffer", KIND_STRUCT);
+	public static Type _iimageBuffer = new Type("iimageBuffer", KIND_STRUCT);
+	public static Type _uimageBuffer = new Type("uimageBuffer", KIND_STRUCT);
+	
+	public static Type _image1DArray = new Type("image1DArray", KIND_ARRAY);
+	public static Type _iimage1DArray = new Type("iimage1DArray", KIND_ARRAY);
+	public static Type _uimage1DArray = new Type("uimage1DArray", KIND_ARRAY);
+	
+	public static Type _image2DArray = new Type("image2DArray", KIND_ARRAY);
+	public static Type _iimage2DArray = new Type("iimage2DArray", KIND_ARRAY);
+	public static Type _uimage2DArray = new Type("uimage2DArray", KIND_ARRAY);
+	
+	public static Type _imageCubeArray = new Type("imageCubeArray", KIND_ARRAY);
+	public static Type _iimageCubeArray = new Type("iimageCubeArray", KIND_ARRAY);
+	public static Type _uimageCubeArray = new Type("uimageCubeArray", KIND_ARRAY);
+	
+	public static Type _image2DMS = new Type("image2DMS", KIND_STRUCT);
+	public static Type _iimage2DMS = new Type("iimage2DMS", KIND_STRUCT);
+	public static Type _uimage2DMS = new Type("uimage2DMS", KIND_STRUCT);
+	
+	public static Type _image2DMSArray = new Type("image2DMSArray", KIND_ARRAY);
+	public static Type _iimage2DMSArray = new Type("iimage2DMSArray", KIND_ARRAY);
+	public static Type _uimage2DMSArray = new Type("uimage2DMSArray", KIND_ARRAY);
+	
+	public static Type _samplerExternalOES = new Type("samplerExternalOES", KIND_STRUCT);
 
 	
 	public static Type[] BUILTIN_TYPES = new Type[] {
@@ -435,19 +439,22 @@ public class Type implements Comparable<Type> {
 	
 	public enum Rank {
 		BOOL,
+		CHAR,
 		UINT,
 		INT,
 		FLOAT,
 		DOUBLE,
 		NON_SCALAR;
 		public static Rank of(Type type) {
-			if (type.equals(_bool)) {
+			if (type.equals(_char)) {
+				return CHAR;
+			} else if (type.equals(_bool)) {
 				return BOOL;
 			} else if (type.equals(_uint)) {
 				return UINT;
 			} else if (type.equals(_atomic_uint)) {
 				return UINT;
-			} else if (type.equals(_int)) {
+			} else if (type.equals(_int)||type.equals(_char)) {
 				return INT;
 			} else if (type.equals(_float)) {
 				return FLOAT;
@@ -461,9 +468,14 @@ public class Type implements Comparable<Type> {
 		public boolean gt(Rank rightRank) {
 			return this.ordinal() > rightRank.ordinal();
 		}
+
+		public boolean lt(Rank i) {
+			return this.ordinal() < i.ordinal();
+		}
 	}
 
 	public static Value cast(Value value, Type targetType) {
+		// TODO type cast exception
 		Interval interval = value.getInterval();
 		if (value.value == null) return new Value(interval, targetType, null);
 
@@ -476,6 +488,8 @@ public class Type implements Comparable<Type> {
 				switch(Rank.of(targetType)) {
 				case BOOL:
 					return value;
+				case CHAR:
+					return new Value(interval, targetType, Character.valueOf((char)intValue));
 				case DOUBLE:
 					return new Value(interval, targetType, Double.valueOf(intValue));
 				case FLOAT:
@@ -487,12 +501,34 @@ public class Type implements Comparable<Type> {
 					return new Value(interval, targetType, null);
 				}
 			}
+			case CHAR:
+			{
+				char v = ((Character)value.value).charValue();
+				switch(Rank.of(targetType)) {
+				case BOOL:
+					return new Value(interval, targetType, Boolean.valueOf(v != 0));
+				case CHAR:
+					return value;
+				case DOUBLE:
+					return new Value(interval, targetType, Double.valueOf(v));
+				case FLOAT:
+					return new Value(interval, targetType, Float.valueOf(v));
+				case INT:
+					return new Value(interval, targetType, Long.valueOf(v));
+				case UINT:
+					return value;
+				case NON_SCALAR:
+					return new Value(interval, targetType, null);
+				}
+			}
 			case UINT:
 			{
 				Long v = (Long)value.value;
 				switch(Rank.of(targetType)) {
 				case BOOL:
 					return new Value(interval, targetType, Boolean.valueOf(v.longValue() != 0));
+				case CHAR:
+					return new Value(interval, targetType, Character.valueOf((char)v.longValue()));
 				case DOUBLE:
 					return new Value(interval, targetType, Double.valueOf(v.longValue()));
 				case FLOAT:
@@ -511,6 +547,8 @@ public class Type implements Comparable<Type> {
 				switch(Rank.of(targetType)) {
 				case BOOL:
 					return new Value(interval, targetType, Boolean.valueOf(v.longValue() != 0));
+				case CHAR:
+					return new Value(interval, targetType, Character.valueOf((char)v.longValue()));
 				case DOUBLE:
 					return new Value(interval, targetType, Double.valueOf(v.longValue()));
 				case FLOAT:
@@ -529,6 +567,8 @@ public class Type implements Comparable<Type> {
 				switch(Rank.of(targetType)) {
 				case BOOL:
 					return new Value(interval, targetType, Boolean.valueOf(v != 0));
+				case CHAR:
+					return new Value(interval, targetType, Character.valueOf((char)v.longValue()));
 				case DOUBLE:
 					return new Value(interval, targetType, Double.valueOf(v));
 				case FLOAT:
@@ -546,6 +586,8 @@ public class Type implements Comparable<Type> {
 				switch(Rank.of(targetType)) {
 				case BOOL:
 					return new Value(interval, targetType, Boolean.valueOf(v.longValue() != 0));
+				case CHAR:
+					return new Value(interval, targetType, Character.valueOf((char)v.longValue()));
 				case DOUBLE:
 					return value;
 				case FLOAT:
@@ -587,6 +629,11 @@ public class Type implements Comparable<Type> {
 
 	public boolean hasQualifier(Qualifier qualifier) {
 		return false;
+	}
+
+
+	public boolean hasKind(int kind) {
+		return 0 != (kind|this.kind);
 	}
 
 

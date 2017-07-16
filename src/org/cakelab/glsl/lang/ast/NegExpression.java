@@ -5,6 +5,13 @@ import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ProcessingException;
 import org.cakelab.glsl.lang.Processor;
 
+/**
+ * <pre>
+ *   - <em>primary</em>
+ * </pre>
+ * @author homac
+ *
+ */
 public class NegExpression extends PrefixExpression {
 
 	public NegExpression(Location start, Expression operand) {

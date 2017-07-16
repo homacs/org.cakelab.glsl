@@ -13,7 +13,7 @@ import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.impl.StandardFileManager;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.*;
-import org.cakelab.glsl.pp.ast.CharacterConstant;
+import org.cakelab.glsl.lang.ast.Type.Rank;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.ast.MacroCallExpression;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
@@ -485,7 +485,7 @@ public class Preprocessor extends ParserBase {
 			Location start = lexer.location();
 			while(WHITESPACE());
 			if (!IDENTIFIER()) {
-				syntaxError(start, "no macro name given in #define directive");
+				syntaxError(line_start(start), "no macro name given in #define directive");
 				return result;
 			}
 			String macroName = last.IDENTIFIER();
@@ -499,12 +499,13 @@ public class Preprocessor extends ParserBase {
 				boolean firstIteration = true;
 				do {
 					while(WHITESPACE());
+					Location tokenStart = lexer.location();
 					if (DOTS()) {
 						params.add(new MacroParameter(MacroParameter.__VA_ARGS__, this));
 						break;
 					} else if (IDENTIFIER()) {
 						if (last.IDENTIFIER().equals(MacroParameter.__VA_ARGS__)) {
-							syntaxWarning("__VA_ARGS__ can only appear in the expansion of a variadic macro");
+							syntaxWarning(interval(tokenStart), "__VA_ARGS__ can only appear in the expansion of a variadic macro");
 						}
 						params.add(new MacroParameter(last.IDENTIFIER(), this));
 					} else if (firstIteration) {
@@ -544,7 +545,7 @@ public class Preprocessor extends ParserBase {
 		return result;
 	}
 
-	private StringConstant whitespace() {
+	private Text whitespace() {
 		Location start = lexer.location();
 		if (WHITESPACE()) {
 			return new PPWhitespace(interval(start),last.WHITESPACE());
@@ -562,7 +563,7 @@ public class Preprocessor extends ParserBase {
 			Location start = lexer.location();
 			String s = preprocessing_token(false); // anything not CRLF
 			if (s != null) {
-				expr = new StringConstant(new Interval(start, lexer.location()), s);
+				expr = new Text(new Interval(start, lexer.location()), s);
 			}
 		}
 		return expr;
@@ -625,7 +626,7 @@ public class Preprocessor extends ParserBase {
 	private Expression single_hash_expression() {
 		Location mark = lexer.location();
 		if (optional('#')) {
-			assert !LA_equals('#') : "reminder: parsing of ## has to appear before # parsing";
+			assert !LA_equals('#') : "reminder: scanning for ## has to appear before # scanning";
 			
 			
 			// Iff macro has parameters, # has to be followed by 
@@ -635,7 +636,6 @@ public class Preprocessor extends ParserBase {
 				while (WHITESPACE());
 				MacroParameterReference param = macro_parameter_reference();
 				if (param == null) {
-					lexer.rewind(mark);
 					return expressionError(mark, "# is not followed by a macro parameter");
 				}
 				else 
@@ -644,7 +644,7 @@ public class Preprocessor extends ParserBase {
 					return new PPStringifyExpression(mark, param);
 				}
 			} else {
-				return new StringConstant(interval(mark), "#");
+				return new Text(interval(mark), "#");
 			}
 		}
 		return null;
@@ -899,7 +899,7 @@ public class Preprocessor extends ParserBase {
 			while(WHITESPACE());
 			condition = directive_condition();
 			if (condition == null) {
-				condition = expressionError(lexer.location(), "missing condition to #if directive");
+				condition = expressionError("#if with no expression");
 			}
 		} else if (optionalIDENTIFIER("ifdef")) {
 			ifscope = new PPIfdefScope(currentScope);
@@ -1176,7 +1176,7 @@ public class Preprocessor extends ParserBase {
 				while(WHITESPACE());
 				Expression operand2 = xor_expression(null);
 				if (operand2 != null) {
-					return or_expression(new XorExpression(operand1, operand2));
+					return or_expression(new OrExpression(operand1, operand2));
 				} else {
 					return expressionError("missing second operand to operator |");
 				}
@@ -1252,7 +1252,7 @@ public class Preprocessor extends ParserBase {
 				while(WHITESPACE());
 				Expression operand2 = relational_expression(null);
 				if (operand2 != null) {
-					return equality_expression(new LeExpression(operand1, operand2));
+					return equality_expression(new EqExpression(operand1, operand2));
 				} else {
 					return expressionError("missing second operand to operator ==");
 				}
@@ -1260,7 +1260,7 @@ public class Preprocessor extends ParserBase {
 				while(WHITESPACE());
 				Expression operand2 = relational_expression(null);
 				if (operand2 != null) {
-					return equality_expression(new GeExpression(operand1, operand2));
+					return equality_expression(new NeExpression(operand1, operand2));
 				} else {
 					return expressionError("missing second operand to operator !=");
 				}
@@ -1331,7 +1331,7 @@ public class Preprocessor extends ParserBase {
 				while(WHITESPACE());
 				Expression operand2 = additive_expression(null);
 				if (operand2 != null) {
-					shift_expression(new ShiftLeftExpression(operand1, operand2));
+					return shift_expression(new ShiftLeftExpression(operand1, operand2));
 				} else {
 					return expressionError("missing second operand to operator <<");
 				}
@@ -1339,7 +1339,7 @@ public class Preprocessor extends ParserBase {
 				while(WHITESPACE());
 				Expression operand2 = additive_expression(null);
 				if (operand2 != null) {
-					shift_expression(new ShiftRightExpression(operand1, operand2));
+					return shift_expression(new ShiftRightExpression(operand1, operand2));
 				} else {
 					return expressionError("missing second operand to operator >>");
 				}
@@ -1357,11 +1357,12 @@ public class Preprocessor extends ParserBase {
 		} else {
 			while(WHITESPACE());
 			if (TOKEN("+-")) {
+				int op = last.TOKEN();
 				while(WHITESPACE());
 				Expression operand2 = multiplicative_expression(null);
 				Expression add = null;
 				if (operand2 != null) {
-					switch(last.TOKEN()) {
+					switch(op) {
 					case '+': add = new PlusExpression(operand1, operand2); break;
 					case '-': add = new MinusExpression(operand1, operand2); break;
 					default: throw new Error("internal error: unhandled multiplicative operator " + (char)last.TOKEN());
@@ -1384,11 +1385,12 @@ public class Preprocessor extends ParserBase {
 		} else {
 			while(WHITESPACE());
 			if (TOKEN("*/%")) {
+				int operator = last.TOKEN();
 				while(WHITESPACE());
 				Expression operand2 = unary_expression();
 				if (operand2 != null) {
 					Expression mul = null;
-					switch(last.TOKEN()) {
+					switch(operator) {
 					case '*': mul = new MulExpression(operand1, operand2); break;
 					case '/': mul =  new DivExpression(operand1, operand2); break;
 					case '%': mul =  new ModExpression(operand1, operand2); break;
@@ -1412,11 +1414,12 @@ public class Preprocessor extends ParserBase {
 		if (LA_equals("!=")) {
 			return null;
 		} else if (TOKEN("+-!~")) {
+			int op = last.TOKEN();
 			if (null == (primary = unary_expression())) {
 				return expressionError("missing expression after unary operator '" + (char)last.TOKEN() + "'");
 			}
-			switch(last.TOKEN()) {
-			case '+': return primary;
+			switch(op) {
+			case '+': return new PosExpression(mark, primary);
 			case '-': return new NegExpression(mark, primary);
 			case '!': return new LogicalNotExpression(mark, primary);
 			case '~': return new NotExpression(mark, primary);
@@ -1437,8 +1440,24 @@ public class Preprocessor extends ParserBase {
 	public Expression primary_expression() {
 		while(WHITESPACE());
 		Expression expr = number();
-		if (expr != null) return expr;
+		if (expr != null) {
+			Value v = (Value)expr;
+			Rank rank = Type.Rank.of(v.getType());
+			switch(rank) {
+			case BOOL:
+			case INT:
+			case UINT:
+				break;
+			default:
+				syntaxError(v.getType().getName() + " in preprocessor expression");
+				break;
+			}
+			return expr;
+		}
 
+		expr = constant_boolean();
+		if (expr != null) return expr;
+		
 		expr = identifier();
 		if (expr != null) return expr;
 		
@@ -1466,7 +1485,7 @@ public class Preprocessor extends ParserBase {
 			else if (value.length() == 0) {
 				return expressionError(mark, "missing character");
 			}
-			return new CharacterConstant(interval(mark), value.charAt(0));
+			return new ConstantValue<Character>(interval(mark), value.charAt(0));
 		}
 		return null;
 	}
@@ -1489,6 +1508,16 @@ public class Preprocessor extends ParserBase {
 		return null;
 	}
 
+	public Expression constant_boolean() {
+		if (optionalIDENTIFIER("true")) {
+			return ConstantValue.TRUE;
+		} else if (optionalIDENTIFIER("false")) {
+			return ConstantValue.FALSE;
+		} else {
+			return null;
+		}
+	}
+	
 	public Expression number() {
 		Location mark = lexer.location();
 		

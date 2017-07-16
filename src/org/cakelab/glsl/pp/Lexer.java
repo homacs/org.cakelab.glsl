@@ -288,5 +288,9 @@ public class Lexer {
 		return getText(interval.getStart(), interval.getEnd());
 	}
 
+	public Location nextLocation() {
+		return nextLocation((Location) location);
+	}
+
 
 }

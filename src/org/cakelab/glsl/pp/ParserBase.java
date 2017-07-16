@@ -31,6 +31,11 @@ public class ParserBase {
 		public boolean error(Node node, String errMsg) {
 			return error(node.getStart(), errMsg);
 		}
+
+		@Override
+		public boolean warning(Interval interval, String message) {
+			return warning(interval.getStart(), message);
+		}
 	}
 	
 
@@ -136,8 +141,9 @@ public class ParserBase {
 	}
 
 
+	/** reports an error on the next location to be scanned */
 	protected void syntaxError(String string) throws SyntaxError {
-		syntaxError(lexer.location(), string);
+		syntaxError(lexer.nextLocation(), string);
 	}
 
 	protected void syntaxError(Location location, String string) throws SyntaxError {
@@ -176,6 +182,14 @@ public class ParserBase {
 
 	protected boolean syntaxWarning(Location location, String message) {
 		boolean stop = errorHandler.warning(location, message);
+		if (stop) {
+			lexer.dismiss();
+		}
+		return stop;
+	}
+
+	protected boolean syntaxWarning(Interval interval, String message) {
+		boolean stop = errorHandler.warning(interval, message);
 		if (stop) {
 			lexer.dismiss();
 		}
@@ -656,7 +670,7 @@ public class ParserBase {
 		if (optional(c)) {
 			return true;
 		} else {
-			syntaxError("missing '" + c + "'");
+			syntaxError(lexer.nextLocation(), "missing '" + c + "'");
 			return false;
 		}
 	}

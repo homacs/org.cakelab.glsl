@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
+import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.ParserErrorHandler;
+import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.pp.Preprocessor;
@@ -70,6 +72,11 @@ public class TestingPPBase {
 		public boolean error(Node node, String message) {
 			return error(node.getStart(), message);
 		}
+
+		@Override
+		public boolean warning(Interval interval, String message) {
+			return warning(interval.getStart(), message);
+		}
 		
 	};
 
@@ -122,14 +129,33 @@ public class TestingPPBase {
 		ignoreWarning  = true;
 	}
 	
+	public static void assertError(String source, String errorMessage) {
+		p(source).process();
+		assertError(errorMessage);
+	}
+	public static void assertError(String errorMessage) {
+		if (error == null) {
+			error("expected an error");
+		} else if (!error.endsWith(errorMessage)) {
+			error("expected error: \"" + errorMessage + "\"\nbut got: \"" + error + "\"");
+		}
+	}
+
+	public static void assertError(Expression e, String errorMessage) {
+		if (!assertInvalidPostConditions()) error("expected an error");
+		assertError(errorMessage);
+	}
+
+
 	public static void assertValid(String source) {
 		p(source).process();
 		assertValidPostConditions();
 	}
 
-	public static void assertValid(Expression expr) {
+	public static void assertValid(Node expr, Class<? extends Node> clazz) {
 		if (expr == null) error("expected a result");
-		else assertValidPostConditions();
+		else if (clazz.isInstance(expr)) assertValidPostConditions();
+		else error("expected an instance of type " + clazz.getSimpleName() + " but got " + expr.getClass().getSimpleName());
 	}
 
 	private static boolean assertValidPostConditions() {
@@ -152,12 +178,33 @@ public class TestingPPBase {
 		else error("expected an error");
 	}
 
-	private static boolean assertInvalidPostConditions() {
+	public static boolean assertInvalidPostConditions() {
 		if (error != null || !pp.atEOF()) return true;
 		return false;
 	}
 
+	public static void assertEval(Expression e, int result, Class<? extends Expression> clazz) {
+		assertEval(e, Long.valueOf(result), clazz);
+	}
 	
+	public static void assertEval(Expression e, boolean result, Class<? extends Expression> clazz) {
+		assertEval(e, Boolean.valueOf(result), clazz);
+	}
+	
+	public static void assertEval(Expression e, Object result, Class<? extends Expression> clazz) {
+		assertValid(e, clazz);
+		try {
+			Object value = e.eval().value().getValue();
+			if (!value.equals(result)) {
+				error("result " + value.toString() + " does not equal " + result.toString());
+			}
+		} catch (EvaluationException ex) {
+			error(ex.getMessage());
+		}
+		
+	}
+
+
 	
 	public static void error(String msg) {
 		System.err.println("\n");
