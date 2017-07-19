@@ -71,53 +71,6 @@ To support text highlighting in editors, we need to keep the
 preprocessor tokens and map them to the combined AST.
 
 
-Grammar and Tokens
-==================
-Grammars and tokens for preprocessor and language parser are 
-basically the same. Differences are mainly:
-1. Tokens: 
-   * CRLF is important in preprocessor but ignored in language.
-   * Tokens # and ## exist in directive lines, only.
-   * Names of directives are keywords when at the start of a 
-     directive line, but can be freely used as identifiers 
-     elsewhere (e.g. 'version').
-2. Parser rules: Preprocessor and language parser share most 
-   of the rules for expressions (e.g. conditional expressions).
-   But both have many special rules: 
-   * Both have different entry rules
-   * Rules for directives are needed in the preprocessor only
-   * Parser has rules for declarations of functions and types and
-     control flow etc. not needed in preprocessor.
-
-
-ANTLR has some limitations in regards to grammar reuse. The best
-bet is to have a combined token set and a common grammar base
-which is imported by the special grammar extensions for preprocessor
-and parser. To support different behaviour of tokens, a flag 
-will be introduced to switch the lexer between preprocessing and language
-lexing mode. The lexer grammar then contains predicates
-based on the flag, which are used to enable/disable tokens. In
-case of different behaviour for the same token (discard or consider) 
-two rules will be inserted to alternate between them based on the
-selected processing mode.
-
-The resulting conceptual hierarchy of lexer and parser rule files 
-is like this:
-
-           lexer:             lexer:           lexer:
-      GLSLPPkeyword.g4    GLSLkeyword.g4     GLSLtoken.g4
-             ^                  ^                ^
-             |                  |________________|
-             |                  |
-             |                parser:
-             |             GLSLcommon.g4
-             |                  ^
-             |__________________|
-             |                  |
-          parser:            parser:
-         GLSLPP.g4           GLSL.g4
-
-
 
 Combined Abstract Syntax Tree
 =============================

@@ -237,7 +237,7 @@ public class Preprocessor extends ParserBase {
 				syntaxError("unexpected tokens at end of text line");
 				return false;
 			} else {
-				out.print('\n');
+				out.println();
 				return true;
 			}
 		}
