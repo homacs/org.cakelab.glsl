@@ -74,6 +74,10 @@ public class TestMacros extends TestingPPBase {
 		assertValid("#define A() x\n"
 				+ "A()\n", 
 				"x\n");
+		// between macro name and parameter list can be CRLF and any WHITESPACE
+		assertValid("#define A() x\n"
+				+ "A \n /* comment */()\n", 
+				"x\n");
 		
 		assertValid("#define A(x) x\n"
 				+ "A(d)\n", 
