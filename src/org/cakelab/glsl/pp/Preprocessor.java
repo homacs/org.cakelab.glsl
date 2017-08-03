@@ -34,23 +34,8 @@ import org.cakelab.glsl.pp.ast.Text;
 import org.cakelab.glsl.pp.ast.PPWhitespace;
 
 public class Preprocessor extends ParserBase {
-	// TODO prepending text for macro expansion
-	// TODO notifying about end of a rescan for expanded section (rewindable)
 	// TODO managing macro expansion locations (especially with overlapping macro invocations through rescan)
 	
-	// FIXME macro invocations can span beyond line boundaries (CRLF is ordinary whitespace)
-	//       For example MACRO\n(\nPARAMS\n) is allowed.
-	//       BUT macro invocations cannot cross a line directive. 
-	//
-	//       Illegal:
-	//
-	//             #define MACRO(X)
-	//             MACRO\n
-	//             #define A
-	//             (paramX)
-	//
-	//       Thus, the only thing to be added is a CRLF to WHITESPACE, when scanning macro invocations 
-	//       and their parameters.
 	
 	
 	private ResourceManager resourceManager;
@@ -695,7 +680,8 @@ public class Preprocessor extends ParserBase {
 		if (macro_identifier()) {
 			Macro macro = macros.get(last.IDENTIFIER());
 			Location skippedWhitespace = lexer.location();
-			while(WHITESPACE());
+			// between macro name and parameters can be multiple WHITESPACE and CRLF
+			while(whitespace_crlf_sequence());
 			if (macro.isFunctionMacro() && optional('(')) {
 				while(whitespace_crlf_sequence());
 				
