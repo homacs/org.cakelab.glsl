@@ -18,5 +18,13 @@ public abstract class BinaryExpression extends ExpressionImpl {
 		this(new Interval(leftOperand.getStart(), rightOperand.getEnd()), leftOperand, rightOperand);
 	}
 
+	public Expression getLeftOperand() {
+		return leftOperand;
+	}
+
+	public Expression getRightOperand() {
+		return rightOperand;
+	}
+
 
 }

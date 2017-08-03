@@ -21,7 +21,64 @@ public class Macro {
 		this(name, null);
 	}
 	
+	public boolean equals(Macro that) {
+		if (!this.name.equals(that.name)) return false;
+		
+		
+		if (this.params == null) {
+			if (that.params != null) return false;
+		} else if (that.params == null) {
+			return false;
+		} else {
+			if (this.params.size() != that.params.size()) return false;
+			for (int i = 0; i < params.size(); i++) {
+				if (!this.params.get(i).same(that.params.get(i))) return false;
+			}
+		}
+		
+		if (this.replacement_list == null) {
+			return (that.replacement_list == null);
+		} else if (that.replacement_list == null) {
+			return false;
+		} else {
+			if (this.replacement_list.size() != that.replacement_list.size()) {
+				return false;
+			}
+			
+			for (int i = 0; i < this.replacement_list.size(); i++) {
+				if (!same(this.replacement_list.get(i), that.replacement_list.get(i))) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
 	
+	
+	
+	
+	
+	private boolean same(Expression e1, Expression e2) {
+		if (e1.getClass() != e2.getClass()) {
+			return false;
+		} else if (e1 instanceof PPConcatExpression) {
+			PPConcatExpression c1 = ((PPConcatExpression)e1);
+			PPConcatExpression c2 = ((PPConcatExpression)e2);
+			return same(c1.getLeftOperand(), c2.getLeftOperand()) && same(c1.getRightOperand(), c2.getRightOperand());
+		} else if (e1 instanceof PPWhitespace) {
+			return true;
+		} else if (e1 instanceof PPStringifyExpression) {
+			return same(((PPStringifyExpression)e1).getOperand(), ((PPStringifyExpression)e2).getOperand());
+		} else if (e1 instanceof Text) {
+			return ((Text)e1).same(((Text)e2));
+		} else if (e1 instanceof MacroParameterReference) {
+			return ((MacroParameterReference)e1).same(((MacroParameterReference)e2));
+		} else {
+			throw new Error("internal error: unhandled case in macro comparison");
+		}
+	}
+
 	public void setReplacementList(List<Expression> expressions) {
 		// TODO really a list of expressions in macros?
 		this.replacement_list = expressions;

@@ -339,7 +339,7 @@ public class Preprocessor extends ParserBase {
 				// the following directives will be ignored.
 				skip_remaining_line();
 			} else if (
-				  empty_line_end() // empty directive
+				  ENDL() // empty directive
 				||include()
 				||define()
 				||undef()
@@ -479,8 +479,6 @@ public class Preprocessor extends ParserBase {
 	
 
 	private boolean define() {
-		// TODO [1] report macro redefinitions
-		// TODO [1] ignore identical macro redefinitions
 		
 		boolean result = false;
 		if (optionalIDENTIFIER("define")) {
@@ -492,8 +490,6 @@ public class Preprocessor extends ParserBase {
 				return result;
 			}
 			String macroName = last.IDENTIFIER();
-			if (macros.containsKey(macroName)) syntaxWarning(line_start(start), "\"" + macroName + "\" redefined");
-
 			
 			List<MacroParameter> params = null;
 			if (optional('(')) {
@@ -525,13 +521,22 @@ public class Preprocessor extends ParserBase {
 				mandatory(')');
 			}
 			while(WHITESPACE());
+			
+			
 			currentMacroDefinition = new Macro(macroName, params);
 			List<Expression> tokens = replacement_list();
-			if ( mandatory_endl()) {
-				currentMacroDefinition.setReplacementList(tokens);
-				macros.put(macroName, currentMacroDefinition);
-				currentMacroDefinition = null;
+			
+			currentMacroDefinition.setReplacementList(tokens);
+			
+			Macro previousDefinition = macros.get(macroName);
+			if (previousDefinition != null && !previousDefinition.equals(currentMacroDefinition)) {
+				syntaxWarning(line_start(start), "\"" + macroName + "\" redefined");
 			}
+
+			macros.put(macroName, currentMacroDefinition);
+			currentMacroDefinition = null;
+			
+			mandatory_endl();
 		}
 		return result;
 	}

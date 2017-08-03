@@ -52,5 +52,9 @@ public class MacroParameter {
 		}
 		return expanded;
 	}
+
+	public boolean same(MacroParameter that) {
+		return this.identifier.equals(that.identifier);
+	}
 	
 }

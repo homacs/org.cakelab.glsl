@@ -18,7 +18,7 @@ public class TestingPPBase {
 
 	private static String error;
 	private static String warning;
-	private static boolean ignoreWarning = true;
+	protected static boolean ignoreWarning = true;
 	private static boolean mirrorToStdout = false;
 
 	private static Preprocessor pp;

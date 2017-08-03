@@ -50,6 +50,10 @@ public class MacroParameterReference extends PrimaryExpression {
 	public void expand(boolean enable) {
 		this.expand = enable;
 	}
+
+	public boolean same(MacroParameterReference that) {
+		return this.param.same(that.param);
+	}
 	
 	
 	

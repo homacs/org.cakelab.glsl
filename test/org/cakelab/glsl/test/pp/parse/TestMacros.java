@@ -297,11 +297,6 @@ public class TestMacros extends TestingPPBase {
 
 	public static void testDefUndef() {
 		
-		// it is legal (but discouraged) to redefine a macro
-		assertWarning("#define A b\n"
-				+ "#define A c\n", 
-				"\"A\" redefined");
-		
 		assertValid("#define A\n"
 				+ "#ifdef A\n"
 				+ "success\n"
@@ -346,6 +341,31 @@ public class TestMacros extends TestingPPBase {
 				+ "success\n"
 				+ "#endif",
 				"success\n");
+		
+		
+		
+		
+		
+		// it is legal (but discouraged) to redefine a macro
+		assertWarning("#define A b\n"
+				+ "#define A c\n", 
+				"\"A\" redefined");
+		
+		// even this is discouraged
+		assertWarning("#define A b\n"
+				+ "#define A() b\n", 
+				"\"A\" redefined");
+
+		ignoreWarning = false;
+		
+		// but this is allowed (both params and replacement list items are equal)
+		assertValid("#define A a\n"
+				+ "#define A a\n");
+		assertValid("#define A(a) # a ## b \"hallo\" \\\n\n"
+				+ "#define A(a) # a ## b \"hallo\" \\\n\n");
+		
+		ignoreWarning = true;
+		
 	}
 	
 	

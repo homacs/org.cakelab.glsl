@@ -241,20 +241,6 @@ public class ParserBase {
 		return result.toString();
 	}
 
-	/** Parses a sequence of white spaces (including line continuation) terminated by either CRLF or EOF. */
-	protected boolean empty_line_end() {
-		// TODO [6] see if we really need this (consider methods above)
-		Location reset = lexer.location();
-		while(WHITESPACE());
-		if (ENDL()) {
-			return true;
-		} else {
-			lexer.rewind(reset);
-			return false;
-		}
-	}
-
-
 	/** \\\r\n or \\\n */
 	protected boolean line_continuation() {
 		if (optional("\\\r\n") || optional("\\\n")) {
@@ -634,7 +620,7 @@ public class ParserBase {
 			return false;
 		}
 	}
-	
+
 	protected boolean optional(char c) {
 		if (LA1() == c) {
 			lexer.consume();

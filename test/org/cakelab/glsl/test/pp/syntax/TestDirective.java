@@ -5,12 +5,18 @@ import org.cakelab.glsl.test.pp.TestingPPBase;
 public class TestDirective extends TestingPPBase {
 
 	public static void test() {
+		testNonDirective();
 		testMacros();
 		testConditions();
 		testInclude();
 		testLine();
 		testError();
 		testGLSLExtensions();
+	}
+
+	private static void testNonDirective() {
+		assertValid("#\n");
+		assertInvalid("# illegal");
 	}
 
 	private static void testLine() {

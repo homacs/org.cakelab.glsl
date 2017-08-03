@@ -19,4 +19,12 @@ public class Text extends Value {
 	public String toString() {
 		return value.toString();
 	}
+
+
+	public boolean same(Text that) {
+		return this.toString().equals(that.toString());
+	}
+	
+	
+	
 }
