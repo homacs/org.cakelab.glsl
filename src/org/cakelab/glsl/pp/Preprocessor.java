@@ -69,6 +69,7 @@ public class Preprocessor extends ParserBase {
 
 	// TODO [1] create preprocessor ast output
 	private List<PPGroupScope> groups;
+	private PPGroupScope globalScope;
 	
 	/**
 	 * Construct a preprocessor for standalone preprocessing (without language parsing).
@@ -87,7 +88,8 @@ public class Preprocessor extends ParserBase {
 		outputStream = out;
 		resourceManager = new StandardFileManager();
 		macros = new MacroMap();
-		pushScope(new PPGroupScope(null));
+		globalScope = new PPGroupScope(null);
+		pushScope(globalScope);
 		swapLexer(new Lexer(sourceIdentifier, in));
 	}
 
@@ -194,36 +196,28 @@ public class Preprocessor extends ParserBase {
 
 	
 	public List<PPGroupScope> process() {
-		group();
-		if (LA1() != Lexer.EOF) {
-			syntaxError("illegal tokens");
+		
+		// main parser loop
+		while(LA1() != Lexer.EOF) {
+			if (!directive_line() && !text_line()) {
+				syntaxError("illegal token");
+				break;
+			}
+			commit_scans();
 		}
-		else if (currentScope != null) 
+		
+		// check if all scopes of conditional inclusion are complete
+		if (currentScope != globalScope) 
 		{
 			syntaxError("missing #endif");
 		}
 		return groups;
 	}
 
-	private void group() {
-		while(!lexer.eof() && group_part()) commit_scans();
-	}
-
 	private void commit_scans() {
 		Lexer proceed = lexer.commit();
 		if (proceed != lexer) swapLexer(proceed);
 	}
-
-	public boolean group_part() {
-		if (LA1() == Lexer.EOF) return false;
-		
-		if (directive()) {
-			return true;
-		}
-		
-		return text_line();
-	}
-
 
 	/**
 	 * line of text to be macro expanded and forwarded to parser.
@@ -319,29 +313,34 @@ public class Preprocessor extends ParserBase {
 	}
 
 
-	private boolean directive() {
-		if (!has_directive_line_start()) return false;
+	private boolean directive_line() {
+		boolean result = false;
+
+		// shortcut
+		if (!has_directive_line_start()) return result;
 		
-		Location reset = lexer.location();
 		while(WHITESPACE());
 		if (optional('#')) {
+			result = true;
 			while (WHITESPACE());
-			if (LA_equals("elif")||LA_equals("else")||LA_equals("endif")) {
-				// to be handled in conditional --> ignore here
-				
-				// We can't handle them here, because we would lose the context and
-				// had to search for the matching #if .
-				// But to avoid them to be considered as unknown directive (see below)
-				// we need to catch them and leave the method here.
-				lexer.rewind(reset);
-				return false;
+			
+			if (
+				   ifgroup()
+				|| elifgroup()
+				|| elsegroup()
+				|| endif()) 
+			{
+				// those directive lines which control conditional 
+				// inclusion are always visible.
+				// They cannot be ignored, because we need to match
+				// #if and #endif directives properly
 			} else if (!currentScope.visible()) {
+				// if the current conditional scope is not visible
+				// the following directives will be ignored.
 				skip_remaining_line();
-				return false;
-			} else if (empty_line_end()) {
-				return true;
-			} else if (include()
-				||conditional()
+			} else if (
+				  empty_line_end() // empty directive
+				||include()
 				||define()
 				||undef()
 				||line()
@@ -351,14 +350,12 @@ public class Preprocessor extends ParserBase {
 				||version()
 				)
 			{
-				return true;
+				// directive line has been processed;
 			} else {
 				syntaxError("unknown directive #" + read_remaining_line());
-				return true;
 			}
-		} else {
-			return false;
 		}
+		return result;
 	}
 
 
@@ -862,40 +859,6 @@ public class Preprocessor extends ParserBase {
 		return result;
 	}
 	
-	/**
-	 * Sequence of:<br/>
-	 * #if expr \n group* (#elif expr \n group*)* (#else \n group*)* #endif \n
-	 */
-	private boolean conditional() {
-		boolean result = false;
-		
-		if (ifgroup()) {
-			result = true;
-			// when we get here, all text lines, which 
-			// belong to the if group, have been consumed already.
-			// next will be either #elif, #else or #endif.
-			if (!optional_directive_line_start()) {
-				syntaxError("missing #endif");
-				return result;
-			}
-			while(elifgroup()) {
-				if (!optional_directive_line_start()) {
-					syntaxError("missing #endif");
-					return result;
-				}
-			}
-			if (elsegroup()) {
-				if (!optional_directive_line_start()) {
-					syntaxError("missing #endif");
-					return result;
-				}
-			}
-			if (!endif()) {
-				syntaxError("missing #endif");
-			}
-		}
-		return result;
-	}
 
 	private boolean ifgroup() {
 		PPIfScope ifscope = null;
@@ -932,7 +895,6 @@ public class Preprocessor extends ParserBase {
 			while(WHITESPACE());
 			mandatory_endl();
 			pushScope(ifscope);
-			group();
 			return true;
 		} else {
 			return false;
@@ -964,7 +926,6 @@ public class Preprocessor extends ParserBase {
 			while(WHITESPACE());
 			mandatory_endl();
 			pushScope(elifscope);
-			group();
 		}
 		return elifscope != null;
 	}
@@ -979,7 +940,6 @@ public class Preprocessor extends ParserBase {
 			while(WHITESPACE());
 			mandatory_endl();
 			pushScope(elsescope);
-			group();
 		}
 		return elsescope != null;
 	}
@@ -995,19 +955,6 @@ public class Preprocessor extends ParserBase {
 			mandatory_endl();
 		}
 		return result;
-	}
-
-
-	/** consumes WHITESPACE* # WHITESPACE* */
-	private boolean optional_directive_line_start() {
-		if (has_directive_line_start()) {
-			while(WHITESPACE());
-			assert (LA1() == '#');
-			lexer.consume();
-			while(WHITESPACE());
-			return true;
-		}
-		return false;
 	}
 
 

@@ -92,6 +92,55 @@ public class TestConditionalInclusion extends TestingPPBase {
 		assertInvalid("#if 1\n#elif 0\n\n");
 		assertInvalid("#if A\n");
 
+		
+		assertValid("#if 0\n"
+				+ "#if 1\n"
+				+ "text()\n"
+				+ "#endif\n"
+				+ "#endif\n",
+				"");
+		
+		assertValid("#if 1\n"
+				+ "#if 1\n"
+				+ "text()\n"
+				+ "#endif\n"
+				+ "#endif\n",
+				"text()\n");
+		
+		assertValid("#if 0\n"
+				+ "#else\n"
+				+ "# if 1\n"
+				+ "text()\n"
+				+ "# endif\n"
+				+ "#endif\n",
+				"text()\n");
+		
+		assertValid("#if 0\n"
+				+ "#elif 1\n"
+				+ "# if 1\n"
+				+ "text()\n"
+				+ "# endif\n"
+				+ "#endif\n",
+				"text()\n");
+		
+		assertValid("#if 0\n"
+				+ "#elif 1\n"
+				+ "#else \n"
+				+ "# if 1\n"
+				+ "text()\n"
+				+ "# endif\n"
+				+ "#endif\n",
+				"");
+		
+		assertValid("#if 0\n"
+				+ "#else \n"
+				+ "# if 0\n"
+				+ "# else"
+				+ "text()\n"
+				+ "# endif\n"
+				+ "#endif\n",
+				"");
+		
 	}
 
 	
