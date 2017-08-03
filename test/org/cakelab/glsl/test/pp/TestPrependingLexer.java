@@ -10,7 +10,7 @@ import org.cakelab.glsl.pp.ast.MacroReference;
 
 
 public class TestPrependingLexer {
-	// TODO
+	// TODO [2] finish tests for prepending lexer
 	
 	public static void main(String [] args) {
 		test();

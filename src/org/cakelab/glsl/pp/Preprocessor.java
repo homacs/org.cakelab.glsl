@@ -34,7 +34,7 @@ import org.cakelab.glsl.pp.ast.Text;
 import org.cakelab.glsl.pp.ast.PPWhitespace;
 
 public class Preprocessor extends ParserBase {
-	// TODO managing macro expansion locations (especially with overlapping macro invocations through rescan)
+	// TODO [1] managing macro expansion locations (especially with overlapping macro invocations through rescan)
 	
 	
 	
@@ -552,7 +552,7 @@ public class Preprocessor extends ParserBase {
 		expr = single_hash_expression();
 		if (expr == null) expr = macro_parameter_reference();
 		if (expr == null) {
-			// TODO can be optimised
+			// TODO [6] can be optimised
 			Location start = lexer.location();
 			String s = preprocessing_token(false); // anything not CRLF
 			if (s != null) {
@@ -664,7 +664,7 @@ public class Preprocessor extends ParserBase {
 				return lexer.getText(expr.getInterval());
 			}
 
-			// TODO improve performance by parsing numbers 
+			// TODO [3] improve performance by parsing numbers 
 
 			if (!isWhite(LA1()) && !isEndl(LA1()) && !(LA_equals('#') && !acceptHashes)) {
 				int c = lexer.consume();

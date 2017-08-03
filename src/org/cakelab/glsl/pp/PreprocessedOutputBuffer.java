@@ -98,7 +98,7 @@ public class PreprocessedOutputBuffer extends PreprocessedOutputSink {
 
 	@Override
 	public void reportMacroExpansion(String text, MacroInvocation expr) {
-		// TODO implement macro expansion mapping in location map
+		// TODO [1] implement macro expansion mapping in location map
 	}
 	
 }

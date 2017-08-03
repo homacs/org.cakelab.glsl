@@ -79,6 +79,12 @@ public class TestMacros extends TestingPPBase {
 				+ "A \n /* comment */()\n", 
 				"x\n");
 		
+		// function macros cannot be called as object like macros
+		assertError("#define A() x\n"
+				+ "A\n",
+				"expected parameter list with 0 parameters.");
+		
+		
 		assertValid("#define A(x) x\n"
 				+ "A(d)\n", 
 				"d\n");

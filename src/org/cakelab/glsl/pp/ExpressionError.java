@@ -6,7 +6,6 @@ import org.cakelab.glsl.lang.ast.PrimaryExpression;
 import org.cakelab.glsl.pp.ast.Text;
 
 public class ExpressionError extends Text {
-	// TODO not a string constant (rather exception)
 	private String errorMessage;
 
 	public ExpressionError(Interval interval, String errorTokens, String errorMessage) {
@@ -20,7 +19,7 @@ public class ExpressionError extends Text {
 
 	@Override
 	public PrimaryExpression eval() throws EvaluationException {
-		// TODO think about proper error handling (this error here will be reported twice)
+		// TODO [2] think about proper error handling (this error here will be reported twice)
 		throw new EvaluationException(this, errorMessage);
 	}
 

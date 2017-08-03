@@ -114,8 +114,8 @@ public class ExpansionRescanLexer extends Lexer {
 	// lexers. Commits can be performed on any layer if the precondition holds, that a rewind
 	// beyond the current position cannot happen in future.
 	// 
-	// TODO merge with location mapping in respect to macro expanded locations
-	// TODO prepending lexer has to use MacroExpandedLocation, to refer to own locations: 
+	// TODO [1] merge with location mapping in respect to macro expanded locations
+	// TODO [1] prepending lexer has to use MacroExpandedLocation, to refer to own locations: 
 	//      Returned location always refers to start of macro invocation.
 	//      The macro expanded offset refers to the offset inside of the 
 	//      prepended string and replaces Location.pos . Attributes pos, column 
@@ -125,7 +125,7 @@ public class ExpansionRescanLexer extends Lexer {
 	//      one prepending lexer at a time.  
 	//      The macro invocation causing the prepended text, will have already been
 	//      reported to the location map before prepended text gets scanned.
-	// TODO location map has to consider, that multiple macro invocations may start 
+	// TODO [1] location map has to consider, that multiple macro invocations may start 
 	//      on another macro invocation. This is identifiable with the reported 
 	//      MacroExpandedLocation but it may still overlap with an appended text section.
 	//

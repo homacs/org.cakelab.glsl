@@ -42,7 +42,7 @@ public class MacroExpandedLocation extends Location {
 	private int macroExpandedOffset;
 	private MacroInvocation invocation;
 
-	// TODO check whether we can drop some of the constructors
+	// TODO [6] check whether we can drop some of the constructors
 	public MacroExpandedLocation(Location that, int macroExpandedOffset, MacroInvocation macroInvocation) {
 		super(that);
 		this.macroExpandedOffset = macroExpandedOffset;

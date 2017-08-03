@@ -338,7 +338,7 @@ public class ParserBase {
 					case 'v': lexer.consume(); string.append('\u0011'); break; // vertical tab
 					case 'u': lexer.consume(); {
 						if (NUMBER_HEX(4)) {
-							// TODO support 8 byte hex
+							// TODO [3] support 8 byte hex
 							try {
 								int hex = Integer.decode("0x" + last.NUMBER());
 								if (hex > 0xffff) string.append((char)(hex>>32));
@@ -355,7 +355,7 @@ public class ParserBase {
 					}
 					case 'x': lexer.consume(); {
 						if (NUMBER_HEX(4)) {
-							// TODO support 8 byte hex
+							// TODO [3] support 8 byte hex
 							try {
 								string.append(Character.toChars(Integer.decode("0x" + last.NUMBER())));
 							} catch (NumberFormatException e) {

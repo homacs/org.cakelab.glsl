@@ -129,7 +129,8 @@ public class TestNumber extends TestingPPBase {
 	}
 
 	private static void assertValid(Expression number) {
-		// TODO number testing more serious
+		// TODO [4] number testing more serious
+		// type, qualifier and value
 		assertValid(number, number.getClass());
 	}
 

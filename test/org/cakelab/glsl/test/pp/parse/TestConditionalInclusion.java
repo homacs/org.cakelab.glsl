@@ -38,7 +38,7 @@ public class TestConditionalInclusion extends TestingPPBase {
 				+ "#endif\n",
 				"");
 
-		// TODO: conditional inclusion result tests
+		// conditional inclusion result tests
 		
 		assertValid("#if 0|\\\n1\n"
 				+ "success\n"

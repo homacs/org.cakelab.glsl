@@ -80,7 +80,7 @@ public class Macro {
 	}
 
 	public void setReplacementList(List<Expression> expressions) {
-		// TODO really a list of expressions in macros?
+		// TODO [6] really a list of expressions in macros?
 		this.replacement_list = expressions;
 	}
 	
@@ -123,7 +123,7 @@ public class Macro {
 	 * @throws EvaluationException 
 	 */
 	public Value call(Value[] args) throws EvaluationException {
-		// TODO check if we still need to check number of macro arguments
+		// TODO [6] check if we still need to check number of macro arguments
 		
 		if (args != null) for (int i = 0; i < args.length; i++) {
 			Value arg = args[i];

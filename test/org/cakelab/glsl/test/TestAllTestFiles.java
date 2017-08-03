@@ -17,7 +17,7 @@ public class TestAllTestFiles extends TestingTools {
 	}
 
 	private static void test(File f) {
-		// TODO implement testing of test files
+		// TODO [5] implement testing of test files
 		
 	}
 

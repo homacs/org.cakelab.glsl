@@ -67,7 +67,7 @@ public class Lexer {
 		}
 
 		private void readBOM(InputStream in) throws IOException {
-			// TODO BOM should not be read in input stream buffer
+			// TODO [6] BOM should not be read in input stream buffer
 			//       especially in temporary lexers.
 			
 			int bytes; // first two bytes as one integer
@@ -161,7 +161,7 @@ public class Lexer {
 	 */
 	protected Lexer(Location origin, InputStream in) {
 		this.buffer = new InputStreamBuffer(in);
-		// FIXME position may be misinterpreted as actual position by location map!
+		// FIXME [2] position may be misinterpreted as actual position by location map!
 		this.location = origin;
 	}
 
@@ -175,7 +175,7 @@ public class Lexer {
 	 * @return
 	 */
 	public static Lexer createPreprocessedOutputLexer(Location origin, String text) {
-		// TODO lexer for parsing #if condition needs location map
+		// TODO [1] lexer for parsing #if condition needs location map
 		// to determine probably expanded locations of errors
 		origin = new Location(origin.getSourceIdentifier(), Location.POS_START, origin.getLine(), origin.getColumn());
 		ByteArrayInputStream in = new ByteArrayInputStream(text.getBytes());

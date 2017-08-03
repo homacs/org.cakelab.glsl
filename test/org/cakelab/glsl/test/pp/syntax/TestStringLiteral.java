@@ -59,7 +59,8 @@ public class TestStringLiteral extends TestingPPBase {
 	}
 
 	private static void assertValid(Value v) {
-		// TODO string type testing
+		// TODO [4] string testing more serious
+		// type (char or string), qualifier and value
 		assertValid(v, v.getClass());
 	}
 

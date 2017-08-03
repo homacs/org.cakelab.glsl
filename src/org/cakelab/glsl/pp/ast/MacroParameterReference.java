@@ -31,7 +31,6 @@ public class MacroParameterReference extends PrimaryExpression {
 
 	@Override
 	public Value value() {
-		// TODO lvalue
 		String v = param.getValue();
 		if (expand) v = param.getExpandedValue();
 		return new Text(this.interval, v);

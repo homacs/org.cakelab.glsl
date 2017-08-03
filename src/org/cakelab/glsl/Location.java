@@ -28,7 +28,7 @@ import org.cakelab.glsl.pp.LexerLocation;
  *
  */
 public class Location extends LexerLocation {
-	// TODO untangle location classes
+	// TODO [5] untangle location classes
 	public static final Location NONE = new Location("",-1,-1,-1);
 
 	
