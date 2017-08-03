@@ -71,6 +71,15 @@ To support text highlighting in editors, we need to keep the
 preprocessor tokens and map them to the combined AST.
 
 
+Cases Where we Use Lexer.rewind()
+=================================
+
+1. Rewinding read WHITESPACES 
+2. Rewinding read identifiers, if they are not macro references
+3. Rewinding read identifiers, if they are not macro parameters
+
+
+
 
 Combined Abstract Syntax Tree
 =============================

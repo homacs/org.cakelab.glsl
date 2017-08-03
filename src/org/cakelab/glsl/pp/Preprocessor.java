@@ -195,7 +195,13 @@ public class Preprocessor extends ParserBase {
 	
 	public List<PPGroupScope> process() {
 		group();
-		if (LA1() != Lexer.EOF) syntaxError("illegal tokens");
+		if (LA1() != Lexer.EOF) {
+			syntaxError("illegal tokens");
+		}
+		else if (currentScope != null) 
+		{
+			syntaxError("missing #endif");
+		}
 		return groups;
 	}
 
@@ -204,8 +210,8 @@ public class Preprocessor extends ParserBase {
 	}
 
 	private void commit_scans() {
-		Lexer procede = lexer.commit();
-		if (procede != lexer) swapLexer(procede);
+		Lexer proceed = lexer.commit();
+		if (proceed != lexer) swapLexer(proceed);
 	}
 
 	public boolean group_part() {
@@ -574,9 +580,9 @@ public class Preprocessor extends ParserBase {
 	 *  
 	 */
 	private Expression concat_expression(List<Expression> replacement_list) {
-		Location mark = lexer.location();
-		while (WHITESPACE());
+		Location operatorStart = lexer.location();
 		if (optional("##")) {
+			Location operatorEnd = lexer.location();
 			//
 			// find last non whitespace token sequence
 			//
@@ -598,12 +604,12 @@ public class Preprocessor extends ParserBase {
 			
 			if (left == null || right == null) {
 				syntaxError("'##' cannot appear at either end of a macro expansion");
-			}
+				if (left == null) left = new ExpressionError(new Interval(operatorStart, operatorStart), "", "missing left operand to concatenation in macro replacement list");
+				if (right == null) right = new ExpressionError(new Interval(operatorEnd, operatorEnd), "", "missing right operand to concatenation in macro replacement list");
+						}
 			if (left instanceof MacroParameterReference) ((MacroParameterReference)left).expand(false);
 			if (right instanceof MacroParameterReference) ((MacroParameterReference)right).expand(false);
-			return new PPConcatExpression(new Interval(mark, lexer.location()), left, right);
-		} else {
-			lexer.rewind(mark);
+			return new PPConcatExpression(new Interval(left.getStart(), right.getEnd()), left, right);
 		}
 		return null;
 	}
@@ -689,38 +695,38 @@ public class Preprocessor extends ParserBase {
 			Location skippedWhitespace = lexer.location();
 			while(WHITESPACE());
 			if (macro.isFunctionMacro() && optional('(')) {
-				while(whitespace_crlf_sequence());// FIXME: whitespace or endl
+				while(whitespace_crlf_sequence());
 				
-				List<Text> params = new ArrayList<Text>();
+				List<Text> arguments = new ArrayList<Text>();
 				int numParameters = macro.numParameters();
 				boolean hasVarArgs = macro.hasVarArgs();
 				
 				if (!LA_equals(')')) do {
 					while(whitespace_crlf_sequence());
 					Location paramStart = lexer.location();
-					if (hasVarArgs && params.size() == numParameters-1) {
+					if (hasVarArgs && arguments.size() == numParameters-1) {
 						StringBuffer varargs = new StringBuffer();
 						macro_arg_sequence(varargs);
-						params.add(new Text(interval(paramStart), varargs.toString()));
+						arguments.add(new Text(interval(paramStart), varargs.toString()));
 						break;
 					}
 					String param = macro_arg();
-					if (param != null) params.add(new Text(interval(paramStart), param));
-					else params.add(Text.EMPTY);
+					if (param != null) arguments.add(new Text(interval(paramStart), param));
+					else arguments.add(Text.EMPTY);
 					while(whitespace_crlf_sequence());
 				} while (optional(','));
 				
 				if (!optional(')')) syntaxError("missing closing ')'");
 
-				if (macro.numParameters() != params.size()) {
-					if (params.size() == 0 && macro.numParameters() == 1) {
-						params.add(Text.EMPTY);
+				if (macro.numParameters() != arguments.size()) {
+					if (arguments.size() == 0 && macro.numParameters() == 1) {
+						arguments.add(Text.EMPTY);
 					} else {
-						return expressionError(macroCallStart, "expected " + macro.numParameters() + " parameters but " + params.size() + " where given.");
+						return expressionError(macroCallStart, "expected " + macro.numParameters() + " parameters but " + arguments.size() + " where given.");
 					}
 				}
 				
-				return new MacroCallExpression(new MacroReference(new Interval(macroCallStart, lexer.location()), macro), params.toArray(new Text[0]), lexer.location());
+				return new MacroCallExpression(new MacroReference(new Interval(macroCallStart, lexer.location()), macro), arguments.toArray(new Text[0]), lexer.location());
 			} else {
 				if (macro.isFunctionMacro()) {
 					return expressionError(macroCallStart, "expected parameter list with " + macro.numParameters() + " parameters.");
@@ -938,6 +944,7 @@ public class Preprocessor extends ParserBase {
 		PPElifScope elifscope = null;
 		if (optionalIDENTIFIER("elif")) {
 			PPGroupScope predecessor = currentScope;
+			if (predecessor == null || !(predecessor instanceof PPIfScope)) syntaxError("#elif must follow #if* or #elif group");
 			popScope();
 			
 			elifscope = new PPElifScope(currentScope, (PPIfScope)predecessor);
@@ -966,6 +973,7 @@ public class Preprocessor extends ParserBase {
 		PPElseScope elsescope = null;
 		if (optionalIDENTIFIER("else")) {
 			PPGroupScope predecessor = currentScope;
+			if (predecessor == null || !(predecessor instanceof PPIfScope)) syntaxError("#else must follow #if* or #elif group");
 			popScope();
 			elsescope = new PPElseScope(currentScope, (PPIfScope) predecessor);
 			while(WHITESPACE());
@@ -980,6 +988,8 @@ public class Preprocessor extends ParserBase {
 		boolean result = false;
 		if (optionalIDENTIFIER("endif")) {
 			result = true;
+			PPGroupScope predecessor = currentScope;
+			if (predecessor == null) syntaxError("#endif must follow #if*, #elif or #else group");
 			popScope();
 			while(WHITESPACE());
 			mandatory_endl();
@@ -1586,11 +1596,15 @@ public class Preprocessor extends ParserBase {
 				}
 			}
 			
+			
+			//
+			// Decode value
+			//
 			try {
 				if (isReal) {
 					Double value;
 					if (digits == HEX_DIGITS) {
-						String[] part = num.toString().toLowerCase().split("[pP]");
+						String[] part = num.toString().toLowerCase().split("p");
 						double exp;
 						if (part.length == 2) exp = Double.valueOf(part[1]);
 						else exp = 0;

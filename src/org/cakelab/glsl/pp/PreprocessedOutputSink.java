@@ -26,7 +26,7 @@ public abstract class PreprocessedOutputSink extends PrintStream {
 		@Override
 		public int getPosition() {
 			// intentionally empty
-			return -1;
+			return Location.POS_START;
 		}
 
 		@Override

@@ -315,6 +315,7 @@ public class ParserBase {
 	protected boolean STRING_LITERAL(char limiter) {
 		return STRING_LITERAL(limiter, limiter);
 	}
+	
 	/** a string enclosed in the given start and end limiters */
 	protected boolean STRING_LITERAL(char start, char end) {
 		last.STRING_LITERAL(null);

@@ -133,7 +133,7 @@ public class Lexer {
 
 		public void dismiss(int startingFrom) {
 			dismissed = true;
-			tokens[startingFrom] = -1;
+			tokens[startingFrom] = EOF;
 			length = startingFrom+1;
 		}
 	}
@@ -197,7 +197,7 @@ public class Lexer {
 	public int lookahead(int i) {
 		if (eof()) return EOF;
 		int pos = location.getLexerPosition()+i;
-		if (pos > buffer.size()) throw new Error("lookahead exceeds line end");
+		if (pos > buffer.size()) throw new Error("lookahead exceeds end of file");
 		return buffer.get(pos);
 	}
 
