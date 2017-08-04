@@ -1,6 +1,5 @@
 package org.cakelab.glsl.pp.ast;
 
-import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.CallExpression;
