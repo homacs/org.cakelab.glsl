@@ -230,10 +230,6 @@ public class Lexer {
 		return ((Location)location).clone();
 	}
 
-	public void rewind(LexerLocation reset) {
-		location = reset.clone();
-	}
-
 	public void setVirtualLocation(int line) {
 		setVirtualLocation(location.getSourceIdentifier(), line);
 	}

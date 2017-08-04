@@ -250,13 +250,21 @@ public class ParserBase {
 	}
 	
 	protected int LA1() {
-		return lexer.lookahead(1);
+		return LA(1);
 	}
 
+	protected int LA(int i) {
+		return lexer.lookahead(i);
+	}
 
 	protected boolean LA_equals(String s) {
-		for (int i = 0; i < s.length(); i++) {
-			char c = (char) lexer.lookahead(i+1);
+		return LA_equals(1,s);
+	}
+
+	protected boolean LA_equals(int start, String s) {
+		assert(start > 0);
+		for (int i = 0, l = start; i < s.length(); i++, l++) {
+			char c = (char) lexer.lookahead(l);
 			if (c != s.charAt(i)) return false;
 		}
 		return true;
@@ -565,6 +573,68 @@ public class ParserBase {
 		}
 	}
 
+	protected int nextTokenLookahead(int from, boolean skipCRLF) {
+		int i = from;
+		for (; lexer.lookahead(i) != Lexer.EOF;) {
+			int next = skipNextWhite(i, skipCRLF);
+			if (i == next) return i;
+			else i = next;
+		}
+		return i;
+	}
+	
+	protected int skipLineContinuation(int start) {
+		if (LA_equals(start, "\\\n")) {
+			return start+2;
+		} else if (LA_equals(start, "\\\r\n")) {
+			return start+3;
+		} else {
+			return start;
+		}
+	}
+	
+	protected int skipNextWhite(int start, boolean includingCRLF) {
+		int i = start;
+		
+		
+		int next = skipLineContinuation(i);
+		if (next != i) {
+			return next;
+		}
+		
+		int la = lexer.lookahead(i);
+		if (isWhite(la)) {
+			return i+1;
+		} else if (includingCRLF && la == '\n') {
+			return i+1;
+		} else if (LA_equals(i, "/*")) {
+			i += 2;
+			while (! LA_equals(i, "*/") && LA1() != Lexer.EOF) {
+				i++;
+			}
+			if (!LA_equals(i, "*/")) {
+				syntaxError("missing '*/' to end the comment");
+			}
+			else 
+			{
+				i += 2;
+			}
+			return i;
+		} else if (LA_equals(i, "//")) {
+			i += 2;
+			while (!isEndl(lexer.lookahead(i))) {
+				next = skipLineContinuation(i);
+				if (next == i) {
+					i++;
+				} else {
+					i = next;
+				}
+			}
+			return i;
+		} else {
+			return i;
+		}
+	}
 	
 	protected boolean CRLF() {
 		if (LA1() == '\n') {
@@ -582,6 +652,26 @@ public class ParserBase {
 	protected boolean whitespace_crlf_sequence() {
 		boolean result = false;
 		while (WHITESPACE() || CRLF()) result = true;
+		return result;
+	}
+
+	/**
+	 * Sequence consisting of CRLF() and WHITESPACE()
+	 * @return
+	 */
+	protected boolean whitespace_crlf_sequence(StringBuffer whites) {
+		boolean result = false;
+		while (true) {
+			if (WHITESPACE()) {
+				result = true;
+				whites.append(last.WHITESPACE());
+			} else if (CRLF()) {
+				result = true;
+				whites.append('\n');
+			} else {
+				break;
+			}
+		}
 		return result;
 	}
 

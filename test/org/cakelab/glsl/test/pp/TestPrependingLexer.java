@@ -44,11 +44,6 @@ public class TestPrependingLexer {
 		Lexer prepending = lexer.createPrependLexer(invokeA, prepend);
 		lexer = prepending;
 
-		Location reset = lexer.location();
-
-		
-		
-		
 		for (int i = 5; i < 7; i++) {
 			c = (char) lexer.lookahead(i-4);
 			assert(Character.toString(c).equals(Integer.toString(i)));
@@ -60,46 +55,6 @@ public class TestPrependingLexer {
 			c = (char) lexer.consume();
 			assert(Character.toString(c).equals(Integer.toString(i)));
 		}
-
-		lexer.rewind(reset);
-
-		for (int i = 5; i < 7; i++) {
-			c = (char) lexer.lookahead(i-4);
-			assert(Character.toString(c).equals(Integer.toString(i)));
-		}
-		c = (char) lexer.lookahead(3);
-		assert(c == '9');
-		
-		for (int i = 5; i < 7; i++) {
-			c = (char) lexer.lookahead(1);
-			assert(Character.toString(c).equals(Integer.toString(i)));
-			c = (char) lexer.consume();
-			assert(Character.toString(c).equals(Integer.toString(i)));
-		}
-
-		c = (char) lexer.lookahead(1);
-		assert(c == '9');
-		c = (char) lexer.consume();
-		assert(c == '9');
-
-		
-		String s = lexer.getText(lexer.nextLocation(reset), lexer.location());
-		assert(s.equals("569"));
-		
-		lexer.rewind(reset);
-		
-		for (int i = 5; i < 7; i++) {
-			c = (char) lexer.lookahead(1);
-			assert(Character.toString(c).equals(Integer.toString(i)));
-			c = (char) lexer.consume();
-			assert(Character.toString(c).equals(Integer.toString(i)));
-		}
-
-		c = (char) lexer.lookahead(1);
-		assert(c == '9');
-		c = (char) lexer.consume();
-		assert(c == '9');
-
 		lexer = lexer.commit();
 	}
 }

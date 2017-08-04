@@ -291,17 +291,6 @@ public class ExpansionRescanLexer extends Lexer {
 	}
 
 	@Override
-	public void rewind(LexerLocation reset) {
-		if (isOurLocation(reset)) {
-			super.rewind(reset);
-			// we need to clone it again, because the lexer will use it without further copying
-			append.rewind(appendixReset);
-		} else {
-			append.rewind(reset);
-		}
-	}
-
-	@Override
 	public void setVirtualLocation(String id, int line) {
 		if (super.eof()) append.setVirtualLocation(id, line);
 		else throw new Error("internal error: expanded text contains line directive");

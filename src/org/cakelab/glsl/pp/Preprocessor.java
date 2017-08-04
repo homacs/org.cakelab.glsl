@@ -244,24 +244,68 @@ public class Preprocessor extends ParserBase {
 		String s;
 		do {
 			s = null;
-			while(WHITESPACE()) {
-				result.append(last.WHITESPACE());
-				if (print) out.print(last.WHITESPACE());
-			}
-			Expression expr = macro_invocation_expression();
-			if (expr == null || !(expr instanceof MacroInvocation)) {
-				s = preprocessing_token(acceptHashes);
-				if (print && s != null) out.print(s);
-			} else {
-				macro_expansion((MacroInvocation) expr, print);
-				s = "";
-				continue;
-			}
 			
+			Location mark = lexer.location();
+			if (WHITESPACE()) {
+				s = last.WHITESPACE();
+			} else if (IDENTIFIER()) {
+				String id = last.IDENTIFIER();
+				Macro macro = macros.get(id);
+				if (macro != null) {
+					if (macro_recursion_check(mark, id)) {
+						// macro cannot call itself, so its just a string
+						s = id;
+					} else {
+						MacroReference reference = new MacroReference(interval(mark), macro);
+						
+						// presuming object like macro
+						MacroInvocation invocation = reference;
+						if (macro.isFunctionMacro()) {
+							int i = nextTokenLookahead(1, true);
+							if (LA(i) == '(') {
+								// arguments following -> consume white spaces
+								// and thereby skip to '('
+								lexer.consume(i-1);
+								assert(LA1() == '(');
+								List<Text> args = macro_argument_list(macro);
+								if (args != null) {
+									// it is an invocation of a function like macro
+									invocation = new MacroCallExpression(reference, args.toArray(new Text[0]), lexer.location());
+								} else {
+									// no or improper arguments
+									// error has been reported, just proceed to next token
+									continue;
+								}
+							} else {
+								// not a function macro invocation, just an identifier.
+								invocation = null;
+								s = id;
+							}
+						}
+						
+						if (invocation != null) {
+							macro_expansion(invocation, print);
+							// expanded text has been added to input -> proceed to next token
+							continue;
+						}
+					}
+				} else {
+					s = id;
+				}
+			} else {
+				s = preprocessing_token(acceptHashes);
+			}
+
+			
+			// store and forward output
 			if (s != null) {
 				result.append(s);
+				if (print) out.print(s);
+			} else {
+				break;
 			}
-		} while (s != null);
+			
+		} while (true);
 		
 		return result.toString();
 	}
@@ -549,11 +593,17 @@ public class Preprocessor extends ParserBase {
 
 	private Expression non_concat_expression() {
 		Expression expr;
+		Location start = lexer.location();
 		expr = single_hash_expression();
-		if (expr == null) expr = macro_parameter_reference();
+		if (expr == null && IDENTIFIER()) {
+			String id = last.IDENTIFIER();
+			expr = macro_parameter_reference(id);
+			if (expr == null) {
+				expr = new Text(interval(start), id);
+			}
+		}
 		if (expr == null) {
 			// TODO [6] can be optimised
-			Location start = lexer.location();
 			String s = preprocessing_token(false); // anything not CRLF
 			if (s != null) {
 				expr = new Text(new Interval(start, lexer.location()), s);
@@ -593,7 +643,7 @@ public class Preprocessor extends ParserBase {
 				syntaxError("'##' cannot appear at either end of a macro expansion");
 				if (left == null) left = new ExpressionError(new Interval(operatorStart, operatorStart), "", "missing left operand to concatenation in macro replacement list");
 				if (right == null) right = new ExpressionError(new Interval(operatorEnd, operatorEnd), "", "missing right operand to concatenation in macro replacement list");
-						}
+			}
 			if (left instanceof MacroParameterReference) ((MacroParameterReference)left).expand(false);
 			if (right instanceof MacroParameterReference) ((MacroParameterReference)right).expand(false);
 			return new PPConcatExpression(new Interval(left.getStart(), right.getEnd()), left, right);
@@ -602,16 +652,13 @@ public class Preprocessor extends ParserBase {
 	}
 
 
-	private MacroParameterReference macro_parameter_reference() {
+	private MacroParameterReference macro_parameter_reference(String id) {
 		Location mark = lexer.location();
-		if (IDENTIFIER()) {
-			MacroParameter param = currentMacroDefinition.getParameter(last.IDENTIFIER());
-			if (param != null) {
-				return new MacroParameterReference(interval(mark), param);
-			} else {
-				if (last.IDENTIFIER().equals(MacroParameter.__VA_ARGS__)) syntaxWarning(mark, "__VA_ARGS__ can only appear in the expansion of a variadic macro");
-				lexer.rewind(mark);
-			}
+		MacroParameter param = currentMacroDefinition.getParameter(id);
+		if (param != null) {
+			return new MacroParameterReference(interval(mark), param);
+		} else {
+			if (id.equals(MacroParameter.__VA_ARGS__)) syntaxWarning(mark, "__VA_ARGS__ can only appear in the expansion of a variadic macro");
 		}
 		return null;
 	}
@@ -626,8 +673,14 @@ public class Preprocessor extends ParserBase {
 			// a macro parameter reference.
 			// Otherwise, it is an ordinary pp-token
 			if (currentMacroDefinition.isFunctionMacro()) {
+				// must be followed by a macro parameter
+				MacroParameterReference param = null;
 				while (WHITESPACE());
-				MacroParameterReference param = macro_parameter_reference();
+				if (IDENTIFIER()) {
+					String id = last.IDENTIFIER();
+					param = macro_parameter_reference(id);
+				}
+				
 				if (param == null) {
 					return expressionError(mark, "# is not followed by a macro parameter");
 				}
@@ -645,9 +698,6 @@ public class Preprocessor extends ParserBase {
 	
 
 	
-
-
-
 	private String preprocessing_token(boolean acceptHashes) {
 		if (IDENTIFIER()) {
 			return last.IDENTIFIER();
@@ -675,61 +725,48 @@ public class Preprocessor extends ParserBase {
 		}
 	}
 
-	private Expression macro_invocation_expression() {
-		Location macroCallStart = lexer.location();
-		if (macro_identifier()) {
-			Macro macro = macros.get(last.IDENTIFIER());
-			
-			if (macro.isFunctionMacro()) {
-				// between macro name and parameters can be WHITESPACE and CRLF
-				while(whitespace_crlf_sequence());
-				if (optional('(')) {
-					while(whitespace_crlf_sequence());
-					
-					List<Text> arguments = new ArrayList<Text>();
-					int numParameters = macro.numParameters();
-					boolean hasVarArgs = macro.hasVarArgs();
-					
-					if (!LA_equals(')')) {
-						do {
-							while(whitespace_crlf_sequence());
-							Location paramStart = lexer.location();
-							if (hasVarArgs && arguments.size() == numParameters-1) {
-								StringBuffer varargs = new StringBuffer();
-								macro_arg_token_sequence(varargs, ")");
-								arguments.add(new Text(interval(paramStart), varargs.toString()));
-								break;
-							}
-							String param = macro_arg();
-							if (param != null) arguments.add(new Text(interval(paramStart), param));
-							else arguments.add(Text.EMPTY);
-							while(whitespace_crlf_sequence());
-						} while (optional(','));
-					}
-					
-					if (!optional(')')) syntaxError("missing closing ')'");
 
-					if (macro.numParameters() != arguments.size()) {
-						if (arguments.size() == 0 && macro.numParameters() == 1) {
-							arguments.add(Text.EMPTY);
-						} else {
-							return expressionError(macroCallStart, "macro \"" + macro.getName() + "\" requires " + macro.numParameters() + " arguments, but only " + arguments.size() + " where given.");
-						}
+	private List<Text> macro_argument_list(Macro macro) {
+		
+		if (optional('(')) {
+			while(whitespace_crlf_sequence());
+			
+			List<Text> arguments = new ArrayList<Text>();
+			int numParameters = macro.numParameters();
+			boolean hasVarArgs = macro.hasVarArgs();
+			
+			if (!LA_equals(')')) {
+				do {
+					while(whitespace_crlf_sequence());
+					Location paramStart = lexer.location();
+					if (hasVarArgs && arguments.size() == numParameters-1) {
+						StringBuffer varargs = new StringBuffer();
+						macro_variadic_arguments(varargs);
+						arguments.add(new Text(interval(paramStart), varargs.toString()));
+						break;
 					}
-					
-					return new MacroCallExpression(new MacroReference(new Interval(macroCallStart, lexer.location()), macro), arguments.toArray(new Text[0]), lexer.location());
+					String param = macro_arg();
+					if (param != null) arguments.add(new Text(interval(paramStart), param));
+					else arguments.add(Text.EMPTY);
+					while(whitespace_crlf_sequence());
+				} while (optional(','));
+			}
+			
+			if (!optional(')')) syntaxError("missing closing ')'");
+
+			if (macro.numParameters() != arguments.size()) {
+				if (arguments.size() == 0 && macro.numParameters() == 1) {
+					arguments.add(Text.EMPTY);
 				} else {
-					// if it is a function like macro and no parameter list where given, 
-					// then the identifier is a regular pp-token and not a macro reference.
-					lexer.rewind(macroCallStart);
+					syntaxError(line_start(lexer.location()), "macro \"" + macro.getName() + "\" requires " + macro.numParameters() + " arguments, but only " + arguments.size() + " where given.");
 					return null;
 				}
-			} else {
-				// object like macro
-				return new MacroReference(interval(macroCallStart), macro);
 			}
+			
+			return arguments;
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 	private String macro_arg() {
@@ -739,6 +776,11 @@ public class Preprocessor extends ParserBase {
 		macro_arg_token_sequence(arg, ",)");
 		String result = arg.toString().trim();
 		return result;
+	}
+
+	private void macro_variadic_arguments(StringBuffer varargs) {
+		// same rules as for macro_arg, but ',' is no longer a delimiter.
+		macro_arg_token_sequence(varargs, ")");
 	}
 
 	private boolean macro_arg_parenthesised(StringBuffer arg) {
@@ -1433,10 +1475,14 @@ public class Preprocessor extends ParserBase {
 
 	private Expression identifier() {
 		Location mark = lexer.location();
-		if (macro_identifier()) {
-			return new MacroReference(interval(mark), macros.get(last.IDENTIFIER()));
-		} else if (IDENTIFIER()) {
-			return new PPUndefinedIdentifier(interval(mark), last.IDENTIFIER());
+		if (IDENTIFIER()) {
+			String id = last.IDENTIFIER();
+			Macro macro = macros.get(id);
+			if (macro == null) {
+				return new PPUndefinedIdentifier(interval(mark), last.IDENTIFIER());
+			} else {
+				return new MacroReference(interval(mark), macros.get(last.IDENTIFIER()));
+			}
 		}
 		return null;
 	}
@@ -1622,24 +1668,6 @@ public class Preprocessor extends ParserBase {
 	}
 	
 	
-
-
-	private boolean macro_identifier() {
-		Location reset = lexer.location();
-		if (IDENTIFIER()) {
-			if (macros.containsKey(last.IDENTIFIER())) {
-				if (macro_recursion_check(reset, last.IDENTIFIER())) {
-					// macro cannot call itself, so its just a string
-					lexer.rewind(reset);
-					return false;
-				}
-				return true;
-			} else {
-				lexer.rewind(reset);
-			}
-		}
-		return false;
-	}
 
 	/**
 	 * Check if identifier lies in a macro expanded section of a macro with 
