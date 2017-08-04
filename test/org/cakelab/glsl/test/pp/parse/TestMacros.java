@@ -79,11 +79,16 @@ public class TestMacros extends TestingPPBase {
 				+ "A \n /* comment */()\n", 
 				"x\n");
 		
-		// function macros cannot be called as object like macros
-		assertError("#define A() x\n"
+		// identifiers matching function macros but lacking a parameter list
+		// are regular pp-tokens.
+		assertValid("#define A() x\n"
 				+ "A\n",
-				"expected parameter list with 0 parameters.");
+				"A\n");
 		
+		
+		assertError("#define A(x,y) x\n"
+				+ "A()\n",
+				"macro \"A\" requires 2 arguments, but only 0 where given.");
 		
 		assertValid("#define A(x) x\n"
 				+ "A(d)\n", 
@@ -188,6 +193,11 @@ public class TestMacros extends TestingPPBase {
 				+ "TYPE(B)\n",
 				"B_type\n");
 		
+		// is not supposed to work, since parameter expansion occurs after parameter parsing
+		assertInvalid("#define M(x,y) x+y\n"
+				+ "#define A 1,0\n"
+				+ "#define B M(A)\n"
+				+ "B\n");
 		
 
 	}

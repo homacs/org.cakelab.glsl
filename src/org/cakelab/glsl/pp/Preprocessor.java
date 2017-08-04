@@ -679,74 +679,102 @@ public class Preprocessor extends ParserBase {
 		Location macroCallStart = lexer.location();
 		if (macro_identifier()) {
 			Macro macro = macros.get(last.IDENTIFIER());
-			Location skippedWhitespace = lexer.location();
-			// between macro name and parameters can be multiple WHITESPACE and CRLF
-			while(whitespace_crlf_sequence());
-			if (macro.isFunctionMacro() && optional('(')) {
+			
+			if (macro.isFunctionMacro()) {
+				// between macro name and parameters can be WHITESPACE and CRLF
 				while(whitespace_crlf_sequence());
-				
-				List<Text> arguments = new ArrayList<Text>();
-				int numParameters = macro.numParameters();
-				boolean hasVarArgs = macro.hasVarArgs();
-				
-				if (!LA_equals(')')) do {
+				if (optional('(')) {
 					while(whitespace_crlf_sequence());
-					Location paramStart = lexer.location();
-					if (hasVarArgs && arguments.size() == numParameters-1) {
-						StringBuffer varargs = new StringBuffer();
-						macro_arg_sequence(varargs);
-						arguments.add(new Text(interval(paramStart), varargs.toString()));
-						break;
+					
+					List<Text> arguments = new ArrayList<Text>();
+					int numParameters = macro.numParameters();
+					boolean hasVarArgs = macro.hasVarArgs();
+					
+					if (!LA_equals(')')) {
+						do {
+							while(whitespace_crlf_sequence());
+							Location paramStart = lexer.location();
+							if (hasVarArgs && arguments.size() == numParameters-1) {
+								StringBuffer varargs = new StringBuffer();
+								macro_arg_token_sequence(varargs, ")");
+								arguments.add(new Text(interval(paramStart), varargs.toString()));
+								break;
+							}
+							String param = macro_arg();
+							if (param != null) arguments.add(new Text(interval(paramStart), param));
+							else arguments.add(Text.EMPTY);
+							while(whitespace_crlf_sequence());
+						} while (optional(','));
 					}
-					String param = macro_arg();
-					if (param != null) arguments.add(new Text(interval(paramStart), param));
-					else arguments.add(Text.EMPTY);
-					while(whitespace_crlf_sequence());
-				} while (optional(','));
-				
-				if (!optional(')')) syntaxError("missing closing ')'");
+					
+					if (!optional(')')) syntaxError("missing closing ')'");
 
-				if (macro.numParameters() != arguments.size()) {
-					if (arguments.size() == 0 && macro.numParameters() == 1) {
-						arguments.add(Text.EMPTY);
-					} else {
-						return expressionError(macroCallStart, "expected " + macro.numParameters() + " parameters but " + arguments.size() + " where given.");
+					if (macro.numParameters() != arguments.size()) {
+						if (arguments.size() == 0 && macro.numParameters() == 1) {
+							arguments.add(Text.EMPTY);
+						} else {
+							return expressionError(macroCallStart, "macro \"" + macro.getName() + "\" requires " + macro.numParameters() + " arguments, but only " + arguments.size() + " where given.");
+						}
 					}
-				}
-				
-				return new MacroCallExpression(new MacroReference(new Interval(macroCallStart, lexer.location()), macro), arguments.toArray(new Text[0]), lexer.location());
-			} else {
-				if (macro.isFunctionMacro()) {
-					return expressionError(macroCallStart, "expected parameter list with " + macro.numParameters() + " parameters.");
+					
+					return new MacroCallExpression(new MacroReference(new Interval(macroCallStart, lexer.location()), macro), arguments.toArray(new Text[0]), lexer.location());
 				} else {
-					// rewind to location before WHITESPACE
-					lexer.rewind(skippedWhitespace);
-					return new MacroReference(interval(macroCallStart), macro);
+					// if it is a function like macro and no parameter list where given, 
+					// then the identifier is a regular pp-token and not a macro reference.
+					lexer.rewind(macroCallStart);
+					return null;
 				}
+			} else {
+				// object like macro
+				return new MacroReference(interval(macroCallStart), macro);
 			}
 		}
 		return null;
 	}
 
+	private String macro_arg() {
+		// macro parameters can contain anything, even CRLF, but not ',' or ')' alone.
+		// ',' can occur in parenthesised expressions though.
+		StringBuffer arg = new StringBuffer();
+		macro_arg_token_sequence(arg, ",)");
+		String result = arg.toString().trim();
+		return result;
+	}
+
+	private boolean macro_arg_parenthesised(StringBuffer arg) {
+		if (LA1() == '(') {
+			arg.append((char)lexer.consume());
+			macro_arg_token_sequence(arg, ")");
+			int c = LA1();
+			if (c == ')') {
+				arg.append((char)c);
+				lexer.consume();
+			} else {
+				syntaxError("missing closing ')' in parenthesised macro argument");
+			}
+			return true;
+		}
+		return false;
+	}
 
 	/**
-	 * Parameter sequence is a string containing a list of
-	 * parameters instead of each parameter separated (i.e.
-	 * ',' is ignored until the next ')' is found).
-	 * 
+	 * Method gathers all tokens for a macro argument until one of 
+	 * the given delimiters (e.g. ',' and/or ')') is found.
+	 * <p>
 	 * If a macro has variadic parameters (i.e. last param: '...')
 	 * then the remaining parameters to a macro invocation
 	 * will be gathered in one single string parameter
 	 * which is assigned to __VA_ARGS__.
-	 * 
-	 * This is the same behaviour as for a single parameter 
-	 * in parenthesis. So, both cases use this method.
-	 * 
+	 * </p>
+	 * <p>
+	 * Delimiters occurring in strings, character constants 
+	 * or comments will be ignored.
+	 * </p>
 	 * @param arg
 	 */
-	private void macro_arg_sequence(StringBuffer arg) {
+	private void macro_arg_token_sequence(StringBuffer arg, String delimiters) {
 		int c = LA1();
-		while (c != ')' && !lexer.eof()) {
+		while (delimiters.indexOf(c) == -1 && !lexer.eof()) {
 			Value expr = null;
 			if (whitespace_crlf_sequence()) {
 				arg.append(' ');
@@ -757,12 +785,12 @@ public class Preprocessor extends ParserBase {
 			} else if (null != (expr = character_constant())) {
 				arg.append(lexer.getText(expr.getInterval()));
 			} else {
-				arg.append((char)c);
-				lexer.consume();
+				arg.append((char)lexer.consume());
 			}
 			c = LA1();
 		}
 	}
+
 
 	/**
 	 * Called during macro invocation to expand arguments on demand (if required).
@@ -783,49 +811,6 @@ public class Preprocessor extends ParserBase {
 		} finally {
 			if (previous != null) swapLexer(previous);
 		}
-	}
-	
-	private String macro_arg() {
-		// macro parameters can contain anything, even CRLF, but not ',' or ')' alone.
-		// ',' can occur in parenthesised expressions though.
-		StringBuffer arg = new StringBuffer();
-		int c = LA1();
-		while (c != ',' && c != ')' && !lexer.eof()) {
-			
-			Value expr = null;
-			if (whitespace_crlf_sequence()) {
-				// replace each whitespace sequence with a single whitespace
-				arg.append(' ');
-			} else if (macro_arg_parenthesised(arg)) {
-				// already added to string buffer
-			} else if (null != (expr  = string_literal())) {
-				arg.append(lexer.getText(expr.getInterval()));
-			} else if (null != (expr = character_constant())) {
-				arg.append(lexer.getText(expr.getInterval()));
-			} else {
-				arg.append((char)c);
-				lexer.consume();
-			}
-			c = LA1();
-		}
-		String result = arg.toString().trim();
-		return result;
-	}
-
-	private boolean macro_arg_parenthesised(StringBuffer param) {
-		if (LA1() == '(') {
-			param.append((char)lexer.consume());
-			macro_arg_sequence(param);
-			int c = LA1();
-			if (c == ')') {
-				param.append((char)c);
-				lexer.consume();
-			} else {
-				syntaxError("missing closing ')' in parenthesised macro parameter");
-			}
-			return true;
-		}
-		return false;
 	}
 
 	private boolean undef() {
@@ -965,7 +950,7 @@ public class Preprocessor extends ParserBase {
 		// get *macro expanded* remainder of current line
 		Location textOrigin = lexer.location();
 		
-		// retrieve macro expanded remainder of current line and 
+		// retrieve macro expanded remainder of current line 
 		String text = text(false, true);
 		
 		// and parse that macro expanded text for the expression
