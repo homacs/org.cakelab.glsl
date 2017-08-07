@@ -55,6 +55,12 @@ public class MacroExpandedLocation extends Location {
 		this.invocation = that.invocation;
 	}
 
+	/** 
+	 * Creates a macro expanded location, pointing at the start
+	 * of the expanded text of the given macro invocation expression.
+	 * 
+	 * @param macroInvocation
+	 */
 	public MacroExpandedLocation(MacroInvocation macroInvocation) {
 		super(macroInvocation.getStart());
 		this.macroExpandedOffset = LexerLocation.POS_START;

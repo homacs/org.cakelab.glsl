@@ -42,7 +42,7 @@ public class ParserBase {
 	public class LastToken {
 		private String IDENTIFIER;
 		/** contains the string only, not including the limiters (e.g. '"') */
-		private String STRING_LITERAL;
+		private String CHAR_SEQUENCE;
 		private String ANYTHING;
 		private String NUMBER;
 		private int TOKEN;
@@ -51,7 +51,7 @@ public class ParserBase {
 		
 		public void erase() {
 			IDENTIFIER = null;
-			STRING_LITERAL = null;
+			CHAR_SEQUENCE = null;
 			ANYTHING = null;
 			NUMBER = null;
 			TOKEN = -1;
@@ -68,13 +68,13 @@ public class ParserBase {
 			IDENTIFIER = iDENTIFIER;
 		}
 		
-		public String STRING_LITERAL() {
-			return STRING_LITERAL;
+		public String CHAR_SEQUENCE() {
+			return CHAR_SEQUENCE;
 		}
 
-		public void STRING_LITERAL(String string) {
+		public void CHAR_SEQUENCE(String chars) {
 			erase();
-			STRING_LITERAL = string;
+			CHAR_SEQUENCE = chars;
 		}
 		
 		public String ANYTHING() {
@@ -166,13 +166,13 @@ public class ParserBase {
 	protected ExpressionError expressionError(Location mark, String message) {
 		syntaxError(message);
 		Interval interval = interval(mark);
-		return new ExpressionError(interval, lexer.getText(interval), message);
+		return new ExpressionError(interval, message);
 	}
 
 	protected ExpressionError expressionError(String message) {
 		syntaxError(message);
 		Interval interval = new Interval(lexer.location(), lexer.location());
-		return new ExpressionError(interval, "", message);
+		return new ExpressionError(interval, message);
 	}
 
 
@@ -305,101 +305,167 @@ public class ParserBase {
 		}
 	}
 
-	/** a string enclosed in given limiters */
-	protected boolean STRING_LITERAL(char limiter) {
-		return STRING_LITERAL(limiter, limiter);
+	/** 
+	 * Preprocessed text of a string started and terminated by given delimiter.
+	 * @see #CHAR_SEQUENCE(char, char)*/
+	protected boolean CHAR_SEQUENCE(char startAndEndDelimiter) {
+		return CHAR_SEQUENCE(startAndEndDelimiter, startAndEndDelimiter);
 	}
 	
-	/** a string enclosed in the given start and end limiters */
-	protected boolean STRING_LITERAL(char start, char end) {
-		last.STRING_LITERAL(null);
+
+	/** Returns the preprocessed text of a string (or character) enclosed in 
+	 * the given start and end delimiters.
+	 * <h3>Note:</h3> Returned string contains start and end delimiter, 
+	 * and line continuations will be removed, but escape sequences 
+	 * will not be decoded!
+	 * */
+	protected boolean CHAR_SEQUENCE(char startDelimiter, char endDelimiter) {
+		last.CHAR_SEQUENCE(null);
 		boolean result = false;
-		if (optional(start)){
+		if (optional(startDelimiter)){
 			result = true;
 			StringBuffer string = new StringBuffer();
-			while(!(LA_equals(end)||lexer.eof())) {
+			string.append(startDelimiter);
+			while(!(LA_equals(endDelimiter)||lexer.eof())) {
 				if (LA1() != '\\') {
+					// general case: anything not an escape sequence
+					
 					if (LA1() == '\n') {
 						syntaxError("missing terminating \"");
 						// it was a string, just terminator missing
 						break;
 					}
-					
 					string.append((char)lexer.consume());
 				} else if (line_continuation()) {
+					// "\\\n"
 					continue;
 				} else {
-					// decode escape sequence:
-					lexer.consume();
+					// special case: escape sequence
+					// we do not fully interpret escape sequences here
+					// just tracking whether there is a proper number of characters following the '\'
+
+					string.append((char)lexer.consume());
 					int c = LA1();
 					switch(c) {
-					case '\'': lexer.consume(); string.append('\''); break;
-					case '\"': lexer.consume(); string.append('\"'); break;
-					case '\\': lexer.consume(); string.append('\\'); break;
-					case '?': lexer.consume(); string.append('?'); break;
-					case 'a': lexer.consume(); string.append('\u0007'); break; // bell (alert), ASCII 07
-					case 'b': lexer.consume(); string.append('\b'); break;
-					case 'f': lexer.consume(); string.append('\f'); break;
-					case 'n': lexer.consume(); string.append('\n'); break;
-					case 'r': lexer.consume(); string.append('\r'); break;
-					case 't': lexer.consume(); string.append('\t'); break;
-					case 'v': lexer.consume(); string.append('\u0011'); break; // vertical tab
-					case 'u': lexer.consume(); {
+					case 'u': 
+					case 'x':
+					{
+						string.append((char)lexer.consume());
 						if (NUMBER_HEX(4)) {
 							// TODO [3] support 8 byte hex
-							try {
-								int hex = Integer.decode("0x" + last.NUMBER());
-								if (hex > 0xffff) string.append((char)(hex>>32));
-								string.append((char)(hex&0xffff));
-							} catch (NumberFormatException e) {
-								syntaxError("hexadecimal number in escape sequence too large");
-							} catch (IllegalArgumentException e) {
-								syntaxError("hexadecimal number in escape sequence is an invalid unicode code point");
-							}
+							string.append(last.NUMBER());
 						} else {
 							syntaxError("missing digits to unicode escape sequence");
 						}
 						break;
 					}
-					case 'x': lexer.consume(); {
-						if (NUMBER_HEX(4)) {
-							// TODO [3] support 8 byte hex
-							try {
-								string.append(Character.toChars(Integer.decode("0x" + last.NUMBER())));
-							} catch (NumberFormatException e) {
-								syntaxError("hexadecimal number in escape sequence too large");
-							} catch (IllegalArgumentException e) {
-								syntaxError("hexadecimal number in escape sequence is an invalid unicode code point");
-							}
-						} else {
-							syntaxError("missing digits to hexadeciaml number escape sequence");
-						}
-						break;
-					}
 					default:
-						if (isDigit(c)) {
+						if (NUMBER_OCT(3)) {
 							// 1-3 octal digits
-							NUMBER_OCT(3);
-							try {
-								int oct = Integer.decode("0" + last.NUMBER());
-								string.append((char)oct);
-							} catch (NumberFormatException e) {
-								syntaxError("hexadecimal number in escape sequence too large");
-							} catch (IllegalArgumentException e) {
-								syntaxError("hexadecimal number in escape sequence is an invalid unicode code point");
-							}
+							string.append(last.NUMBER());
 						} else {
-							syntaxError("undefined escape sequence '\\" + (char)c + "'");
+							// any other escape sequence (or non-escape sequence)
+							string.append((char)lexer.consume());
 						}
 					}
 				}
 			}
-			mandatory(end);
-			last.STRING_LITERAL(string.toString());
+			mandatory(endDelimiter);
+			string.append(endDelimiter);
+			last.CHAR_SEQUENCE(string.toString());
 		}
 		return result;
 	}
 	
+	
+	
+	protected String decodeCharSequence(String text, char startDelimiter, char endDelimiter) {
+		int i = 0;
+		char c = text.charAt(i);
+		assert(c == startDelimiter) : "internal error: missing start delimiter for char sequence";
+		StringBuffer string = new StringBuffer();
+		for (i++; i < text.length()-1; i++) {
+			c = text.charAt(i);
+			if (c != '\\') {
+				// general case: anything not an escape sequence
+				assert (c != '\n') : "internal error: char sequence containing '\n'";  // has to be removed by preprocessor
+				assert (c != endDelimiter) : "internal error: char sequence internally containing end delimiter";  // sequence should have ended there
+				string.append(c);
+			} else {
+				// special case: escape sequence
+				
+				i++;
+				c = text.charAt(i);
+				assert (c != '\n') : "internal error: char sequence containing '\n'"; // has to be removed by preprocessor
+				
+				switch(c) {
+				case '\'': string.append('\''); break;
+				case '\"': string.append('\"'); break;
+				case '\\': string.append('\\'); break;
+				case '?': string.append('?'); break;
+				case 'a': string.append('\u0007'); break; // bell (alert), ASCII 07
+				case 'b': string.append('\b'); break;
+				case 'f': string.append('\f'); break;
+				case 'n': string.append('\n'); break;
+				case 'r': string.append('\r'); break;
+				case 't': string.append('\t'); break;
+				case 'v': string.append('\u0011'); break; // vertical tab
+				case 'u':
+				case 'x':
+				{
+					char prefix = c;
+					// decode unicode code
+					i++;
+					c = text.charAt(i);
+					// TODO [3] support 8 byte hex (depending on OS)
+					if (isHexDigit(c)) {
+						StringBuffer upto_four_hex_digits = new StringBuffer();
+						int max = Math.min(i+4, text.length()-1);
+						for (; isHexDigit(c) && i < max ; i++, c = text.charAt(i)) upto_four_hex_digits.append(c);
+						// 1-3 octal digits
+						i--;  // for loop will at the last
+						try {
+							int oct = Integer.decode("0x" + upto_four_hex_digits.toString());
+							string.append((char)oct);
+						} catch (IllegalArgumentException e) {
+							syntaxError("illegal unicode code sequence in character sequence (\\" + prefix + upto_four_hex_digits.toString() + ")");
+						}
+					}
+					break;
+				}
+				default:
+					if (isOctDigit(c)) {
+						StringBuffer upto_three_oct_digits = new StringBuffer();
+						int max = Math.min(i+3, text.length()-1);
+						for (; isOctDigit(c) && i < max ; i++, c = text.charAt(i)) upto_three_oct_digits.append(c);
+						// 1-3 octal digits
+						i--;  // for loop will at the last
+						try {
+							int oct = Integer.decode("0" + upto_three_oct_digits.toString());
+							string.append((char)oct);
+						} catch (IllegalArgumentException e) {
+							syntaxError("illegal octal sequence in character sequence (\\" + upto_three_oct_digits + ")");
+						}
+					} else {
+						syntaxError("undefined escape sequence '\\" + (char)c + "'");
+					}
+					break;
+				}
+			}
+		}
+		assert text.charAt(i) == endDelimiter : "missing end delimiter in string";
+		assert ++i == text.length() : "end delimiter before end of text";
+		return string.toString();
+	}
+
+
+	private boolean isOctDigit(char c) {
+		return '0' <= c  && c <= '7';
+	}
+
+	private boolean isHexDigit(char c) {
+		return isDigit(c) || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F');
+	}
 
 	/** a following sequence of characters which does contain characters
 	 * of the given set only.

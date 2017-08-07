@@ -204,14 +204,14 @@ public class ExpansionRescanLexer extends Lexer {
 	
 	
 	private Lexer append;
-	private LexerLocation appendixReset;
+	private LexerLocation appendixStart;
 	private MacroInvocation macroInvocation;
 
 	ExpansionRescanLexer(MacroInvocation macroInvocation, InputStream prepend, Lexer append) {
 		super(new MacroExpandedLocation(macroInvocation), prepend);
 		this.macroInvocation = macroInvocation;
 		this.append = append;
-		appendixReset = append.location();
+		appendixStart = append.location();
 	}
 
 	@Override
@@ -294,25 +294,6 @@ public class ExpansionRescanLexer extends Lexer {
 	public void setVirtualLocation(String id, int line) {
 		if (super.eof()) append.setVirtualLocation(id, line);
 		else throw new Error("internal error: expanded text contains line directive");
-	}
-
-	@Override
-	public String getText(LexerLocation start, LexerLocation end) {
-		if (!isOurLocation(start)) {
-			return append.getText(start, end);
-		} else {
-			if (isOurLocation(end)) {
-				return super.getText(start, end);
-			} else {
-				String prependedString = super.getString(start.getLexerPosition(), buffer.size()-1);
-				String appendedString = append.getString(appendixReset.getLexerPosition()+1, end.getLexerPosition());
-				return prependedString + appendedString;
-			}
-		}
-	}
-
-	private boolean isOurLocation(LexerLocation l) {
-		return (l instanceof MacroExpandedLocation && ((MacroExpandedLocation)l).getMacroInvocation() == macroInvocation);
 	}
 
 	@Override

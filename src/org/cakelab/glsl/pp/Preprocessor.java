@@ -641,8 +641,8 @@ public class Preprocessor extends ParserBase {
 			
 			if (left == null || right == null) {
 				syntaxError("'##' cannot appear at either end of a macro expansion");
-				if (left == null) left = new ExpressionError(new Interval(operatorStart, operatorStart), "", "missing left operand to concatenation in macro replacement list");
-				if (right == null) right = new ExpressionError(new Interval(operatorEnd, operatorEnd), "", "missing right operand to concatenation in macro replacement list");
+				if (left == null) left = new ExpressionError(new Interval(operatorStart, operatorStart), "missing left operand to concatenation in macro replacement list");
+				if (right == null) right = new ExpressionError(new Interval(operatorEnd, operatorEnd), "missing right operand to concatenation in macro replacement list");
 			}
 			if (left instanceof MacroParameterReference) ((MacroParameterReference)left).expand(false);
 			if (right instanceof MacroParameterReference) ((MacroParameterReference)right).expand(false);
@@ -699,29 +699,17 @@ public class Preprocessor extends ParserBase {
 
 	
 	private String preprocessing_token(boolean acceptHashes) {
+		// TODO [3] improve performance by parsing numbers as full token
 		if (IDENTIFIER()) {
 			return last.IDENTIFIER();
-		} else {
-			
+		} else if (CHAR_SEQUENCE('"') || CHAR_SEQUENCE('\'')) {
 			// strings and character constants are not parsed for macro invocations
-			Value expr = string_literal();
-			if (expr != null) {
-				return lexer.getText(expr.getInterval());
-			}
-			
-			expr = character_constant();
-			if (expr != null) {
-				return lexer.getText(expr.getInterval());
-			}
-
-			// TODO [3] improve performance by parsing numbers 
-
-			if (!isWhite(LA1()) && !isEndl(LA1()) && !(LA_equals('#') && !acceptHashes)) {
-				int c = lexer.consume();
-				return String.valueOf((char)c);
-			} else {
-				return null;
-			}
+			return last.CHAR_SEQUENCE();
+		} else if (!isWhite(LA1()) && !isEndl(LA1()) && !(LA_equals('#') && !acceptHashes)) {
+			int c = lexer.consume();
+			return String.valueOf((char)c);
+		} else {
+			return null;
 		}
 	}
 
@@ -817,15 +805,14 @@ public class Preprocessor extends ParserBase {
 	private void macro_arg_token_sequence(StringBuffer arg, String delimiters) {
 		int c = LA1();
 		while (delimiters.indexOf(c) == -1 && !lexer.eof()) {
-			Value expr = null;
 			if (whitespace_crlf_sequence()) {
 				arg.append(' ');
 			} else if (macro_arg_parenthesised(arg)) {
 				// another pair of parenthesis
-			} else if (null != (expr = string_literal())) {
-				arg.append(lexer.getText(expr.getInterval()));
-			} else if (null != (expr = character_constant())) {
-				arg.append(lexer.getText(expr.getInterval()));
+			} else if (CHAR_SEQUENCE('"')) {
+				arg.append(last.CHAR_SEQUENCE());
+			} else if (CHAR_SEQUENCE('\'')) {
+				arg.append(last.CHAR_SEQUENCE());
 			} else {
 				arg.append((char)lexer.consume());
 			}
@@ -1452,12 +1439,15 @@ public class Preprocessor extends ParserBase {
 	public Value character_constant() {
 		// Note: simple C character constants only - no prefixed character constants
 		Location mark = lexer.location();
-		if (STRING_LITERAL('\'')) {
-			String value = last.STRING_LITERAL();
-			if (value.length() > 1) {
-				return expressionError(mark, "character constant to long");
+		if (CHAR_SEQUENCE('\'')) {
+			String text = last.CHAR_SEQUENCE();
+			String value = decodeCharSequence(text, '\'', '\'');
+			if (value.length() > 1) 
+			{
+				return expressionError(mark, "character constant contains more than one character");
 			}
-			else if (value.length() == 0) {
+			else if (value.length() == 0) 
+			{
 				return expressionError(mark, "missing character");
 			}
 			return new ConstantValue<Character>(interval(mark), value.charAt(0));
@@ -1467,8 +1457,10 @@ public class Preprocessor extends ParserBase {
 
 	public Value string_literal() {
 		Location mark = lexer.location();
-		if (STRING_LITERAL('"')) {
-			return new StringConstant(interval(mark), last.STRING_LITERAL());
+		if (CHAR_SEQUENCE('"')) {
+			String text = last.CHAR_SEQUENCE();
+			String value = decodeCharSequence(text, '"', '"');
+			return new StringConstant(interval(mark), value, text);
 		}
 		return null;
 	}
@@ -1622,10 +1614,10 @@ public class Preprocessor extends ParserBase {
 			}
 			while(WHITESPACE());
 			String path;
-			if (STRING_LITERAL('<','>')) {
-				path = last.STRING_LITERAL();
-			} else if (STRING_LITERAL('"')){
-				path = last.STRING_LITERAL();
+			if (CHAR_SEQUENCE('<','>')) {
+				path = decodeCharSequence(last.CHAR_SEQUENCE(), '<', '>');
+			} else if (CHAR_SEQUENCE('"')){
+				path = decodeCharSequence(last.CHAR_SEQUENCE(), '"', '"');
 			} else {
 				syntaxError("missing include file path");
 				return result;

@@ -152,6 +152,11 @@ public class TestingPPBase {
 		assertValidPostConditions();
 	}
 
+	public static void assertValid(Node expr) {
+		assertValid(expr, expr.getClass());
+	}
+	
+	
 	public static void assertValid(Node expr, Class<? extends Node> clazz) {
 		if (expr == null) error("expected a result");
 		else if (clazz.isInstance(expr)) assertValidPostConditions();

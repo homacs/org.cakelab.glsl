@@ -238,17 +238,6 @@ public class Lexer {
 		location = new Location(id, location.getLexerPosition(), line, Location.FIRST_COLUMN);
 	}
 
-	public String getText(LexerLocation start, LexerLocation end) {
-		assert (start.getSourceIdentifier().equals(location.getSourceIdentifier())) ;
-		assert (end.getSourceIdentifier().equals(location.getSourceIdentifier())) ;
-		
-		return buffer.getText(start.getLexerPosition(), end.getLexerPosition());
-	}
-
-	protected String getString(int start, int end) {
-		return buffer.getText(start, end);
-	}
-
 	/** signals that previously scanned input will not be rewound. 
 	 * @return */
 	public Lexer commit() {
@@ -278,10 +267,6 @@ public class Lexer {
 		location = location.clone();
 		next(location);
 		return location;
-	}
-
-	public String getText(Interval interval) {
-		return getText(interval.getStart(), interval.getEnd());
 	}
 
 	public Location nextLocation() {

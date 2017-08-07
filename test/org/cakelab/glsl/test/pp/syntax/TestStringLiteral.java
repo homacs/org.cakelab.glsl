@@ -1,9 +1,10 @@
 package org.cakelab.glsl.test.pp.syntax;
 
-import org.cakelab.glsl.lang.ast.Value;
 import org.cakelab.glsl.test.pp.TestingPPBase;
 
 public class TestStringLiteral extends TestingPPBase {
+	// TODO [4] string testing more serious
+
 
 	public static void test() {
 		testCharacterSequence();
@@ -56,12 +57,6 @@ public class TestStringLiteral extends TestingPPBase {
 		assertInvalid(p("'''").character_constant());
 //		assertInvalid(p("l'wchar_t'").character_constant());
 //		assertInvalid(p("b'char16_t'").character_constant());
-	}
-
-	private static void assertValid(Value v) {
-		// TODO [4] string testing more serious
-		// type (char or string), qualifier and value
-		assertValid(v, v.getClass());
 	}
 
 	private static void testStringLiteral() {
