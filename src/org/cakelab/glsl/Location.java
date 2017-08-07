@@ -1,6 +1,6 @@
 package org.cakelab.glsl;
 
-import org.cakelab.glsl.pp.LexerLocation;
+import org.cakelab.glsl.pp.ScannerLocation;
 
 /** 
  * Representation of a source code location.
@@ -27,7 +27,7 @@ import org.cakelab.glsl.pp.LexerLocation;
  * @author homac
  *
  */
-public class Location extends LexerLocation {
+public class Location extends ScannerLocation {
 	// TODO [5] untangle location classes
 	public static final Location NONE = new Location("",-1,-1,-1);
 

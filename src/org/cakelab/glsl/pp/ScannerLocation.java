@@ -35,7 +35,7 @@ import org.cakelab.glsl.pp.MacroExpandedLocation;
  * @author homac
  *
  */
-public class LexerLocation {
+public class ScannerLocation {
 	public static final int POS_START = -1; // indicates: no input read so far
 	public static final int FIRST_POSITION = 0;
 	public static final int FIRST_COLUMN = 0; // yes, columns start at 0 and lines at 1
@@ -49,19 +49,19 @@ public class LexerLocation {
 	/** identifier (for GLSL this is the source string number) */
 	private String identifier;
 	
-	protected LexerLocation(String sourceIdentifier, int pos, int line, int column) {
+	protected ScannerLocation(String sourceIdentifier, int pos, int line, int column) {
 		this.identifier = sourceIdentifier;
 		this.line = line;
 		this.column = column;
 		this.pos = pos;
 	}
 
-	protected LexerLocation(LexerLocation that) {
+	protected ScannerLocation(ScannerLocation that) {
 		this(that.identifier, that.pos, that.line, that.column);
 	}
 
 	/** constructing an instance pointing to the start of the resource identified by sourceIdentifier.*/
-	protected LexerLocation(String sourceIdentifier) {
+	protected ScannerLocation(String sourceIdentifier) {
 		this(sourceIdentifier, POS_START, FIRST_LINE, FIRST_COLUMN);
 	}
 
@@ -112,8 +112,8 @@ public class LexerLocation {
 		return identifier + ':' + line + ':' + column;
 	}
 	
-	public LexerLocation clone() {
-		return new LexerLocation(this);
+	public ScannerLocation clone() {
+		return new ScannerLocation(this);
 	}
 	
 	

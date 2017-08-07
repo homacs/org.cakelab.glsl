@@ -4,7 +4,7 @@ import java.io.ByteArrayInputStream;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.pp.Lexer;
+import org.cakelab.glsl.pp.Scanner;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.ast.MacroReference;
 
@@ -25,8 +25,8 @@ public class TestPrependingLexer {
 		
 		
 		String original = "012349";
-		Lexer mainLexer = new Lexer("0", new ByteArrayInputStream(original.getBytes()));
-		Lexer lexer = mainLexer;
+		Scanner mainLexer = new Scanner("0", new ByteArrayInputStream(original.getBytes()));
+		Scanner lexer = mainLexer;
 
 		for (int i = 0; i < 5; i++) {
 			c = (char) lexer.lookahead(i+1);
@@ -41,7 +41,7 @@ public class TestPrependingLexer {
 			assert(Character.toString(c).equals(Integer.toString(i)));
 		}
 		String prepend = "56";
-		Lexer prepending = lexer.createPrependLexer(invokeA, prepend);
+		Scanner prepending = lexer.createPrependScanner(invokeA, prepend);
 		lexer = prepending;
 
 		for (int i = 5; i < 7; i++) {

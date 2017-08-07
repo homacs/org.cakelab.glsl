@@ -11,6 +11,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.cakelab.glsl.impl.StandardFileManager;
 import org.cakelab.glsl.lang.ASTBuilder;
 import org.cakelab.glsl.lang.ast.Scope;
+import org.cakelab.glsl.pp.Parser.ErrorHandler;
 import org.cakelab.glsl.pp.PreprocessedOutputBuffer;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.PPGroupScope;
@@ -18,14 +19,14 @@ import org.cakelab.glsl.pp.ast.PPGroupScope;
 public class GLSL {
 	
 	private ResourceManager resourceManager;
-	private ParserErrorHandler errorHandler;
+	private ErrorHandler errorHandler;
 	private ANTLRErrorListener antlrErrorListener;
 
-	public GLSL(ParserErrorHandler errorHandler) {
+	public GLSL(ErrorHandler errorHandler) {
 		this(errorHandler, new StandardFileManager());
 	}
 	
-	public GLSL(ParserErrorHandler errorHandler, ResourceManager resources) {
+	public GLSL(ErrorHandler errorHandler, ResourceManager resources) {
 		this.errorHandler = errorHandler;
 		this.resourceManager = resources;
 	}

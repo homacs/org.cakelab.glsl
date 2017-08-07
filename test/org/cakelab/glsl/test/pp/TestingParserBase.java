@@ -1,6 +1,5 @@
 package org.cakelab.glsl.test.pp;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -8,12 +7,11 @@ import java.io.PrintStream;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.ParserErrorHandler;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.pp.Parser;
-import org.cakelab.glsl.pp.Preprocessor;
+import org.cakelab.glsl.pp.Parser.ErrorHandler;
 
 public abstract class TestingParserBase {
 
@@ -54,7 +52,7 @@ public abstract class TestingParserBase {
 	
 	}
 	
-	protected ParserErrorHandler errorHandler = new ParserErrorHandler() {
+	protected ErrorHandler errorHandler = new ErrorHandler() {
 
 
 		@Override
@@ -85,20 +83,10 @@ public abstract class TestingParserBase {
 		if (mirrorToStdout) return new Tee(out, System.out);
 		else return out;
 	}
-	
-	public Parser p(String source, OutputStream out) {
-		try {
-			error = null;
-			warning = null;
-			parser = new Preprocessor("0", new ByteArrayInputStream(source.getBytes()), output(out));
-			parser.setErrorHandler(errorHandler);
-		} catch (Throwable e) {
-			// will never happen
-			throw new Error(e);
-		}
-		return parser;
-	}
 
+	
+	public abstract Parser p(String source, OutputStream out);
+	
 	public Parser p(String source) {
 		try {
 			return p(source, DEV_NULL);

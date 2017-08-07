@@ -63,7 +63,7 @@ public class MacroExpandedLocation extends Location {
 	 */
 	public MacroExpandedLocation(MacroInvocation macroInvocation) {
 		super(macroInvocation.getStart());
-		this.macroExpandedOffset = LexerLocation.POS_START;
+		this.macroExpandedOffset = ScannerLocation.POS_START;
 		this.invocation = macroInvocation;
 	}
 

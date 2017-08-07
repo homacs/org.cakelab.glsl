@@ -2,13 +2,41 @@ package org.cakelab.glsl.pp;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.ParserErrorHandler;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Node;
 
 public abstract class Parser {
-	
-	public static class StandardErrorHandler implements ParserErrorHandler {
+
+	public static interface ErrorHandler {
+		/**
+		 * @param node malicious node
+		 * @param string
+		 * @return whether to stop processing or not
+		 */
+		public boolean error(Node node, String message);
+		/**
+		 * @param expression
+		 * @param string
+		 * @return whether to stop processing or not
+		 */
+		public boolean error(Location start, String message);
+		/**
+		 * @param location
+		 * @param string
+		 * @return whether to stop processing or not
+		 */
+		public boolean warning(Location location, String message);
+		/**
+		 * 
+		 * @param interval interval containing the malicious tokens
+		 * @param message
+		 * @return
+		 */
+		public boolean warning(Interval interval, String message);
+	}
+
+
+	public static class StandardErrorHandler implements ErrorHandler {
 
 		/**
 		 * @param location
@@ -125,29 +153,29 @@ public abstract class Parser {
 
 
 
-	protected Lexer lexer;
-	protected ParserErrorHandler errorHandler = new StandardErrorHandler();
+	protected IScanner in;
+	protected ErrorHandler errorHandler = new StandardErrorHandler();
 	protected LastToken last = new LastToken();
 
 	
-	public void setErrorHandler(ParserErrorHandler errorHandler) {
+	public void setErrorHandler(ErrorHandler errorHandler) {
 		this.errorHandler = errorHandler;
 	}
 
 	public boolean atEOF() {
-		return lexer.eof() || LA1() == Lexer.EOF;
+		return in.eof() || LA1() == Scanner.EOF;
 	}
 
 
 	/** reports an error on the next location to be scanned */
 	protected void syntaxError(String string) throws SyntaxError {
-		syntaxError(lexer.nextLocation(), string);
+		syntaxError(in.nextLocation(), string);
 	}
 
 	protected void syntaxError(Location location, String string) throws SyntaxError {
 		boolean stop = errorHandler.error(location, string);
 		if (stop) {
-			lexer.dismiss();
+			in.dismiss();
 		}
 	}
 
@@ -156,7 +184,7 @@ public abstract class Parser {
 			// has not yet been reported -> report
 			boolean stop = errorHandler.error(e.getOrigin(), e.getMessage());
 			if (stop) {
-				lexer.dismiss();
+				in.dismiss();
 			}
 		}
 	}
@@ -169,19 +197,19 @@ public abstract class Parser {
 
 	protected ExpressionError expressionError(String message) {
 		syntaxError(message);
-		Interval interval = new Interval(lexer.location(), lexer.location());
+		Interval interval = new Interval(in.location(), in.location());
 		return new ExpressionError(interval, message);
 	}
 
 
 	protected boolean syntaxWarning(String string) {
-		return syntaxWarning(line_start(lexer.location()), string);
+		return syntaxWarning(line_start(in.location()), string);
 	}
 
 	protected boolean syntaxWarning(Location location, String message) {
 		boolean stop = errorHandler.warning(location, message);
 		if (stop) {
-			lexer.dismiss();
+			in.dismiss();
 		}
 		return stop;
 	}
@@ -189,7 +217,7 @@ public abstract class Parser {
 	protected boolean syntaxWarning(Interval interval, String message) {
 		boolean stop = errorHandler.warning(interval, message);
 		if (stop) {
-			lexer.dismiss();
+			in.dismiss();
 		}
 		return stop;
 	}
@@ -200,7 +228,7 @@ public abstract class Parser {
 	
 	
 	protected Interval interval(Location start) {
-		return new Interval(lexer.nextLocation(start), lexer.location());
+		return new Interval(in.nextLocation(start), in.location());
 	}
 
 	protected Location line_start(Location start) {
@@ -217,10 +245,10 @@ public abstract class Parser {
 	 * @see #read_remaining_line() 
 	 */
 	protected boolean skip_remaining_line() {
-		if (lexer.eof()) return false;
+		if (in.eof()) return false;
 		while (!ENDL()) {
 			if (!line_continuation()) {
-				lexer.consume();
+				in.consume();
 			}
 		}
 		return true;
@@ -234,11 +262,11 @@ public abstract class Parser {
 	 */
 	protected String read_remaining_line() {
 		// TODO [6] see if we really need this (consider methods above)
-		if (lexer.eof()) return null;
+		if (in.eof()) return null;
 		StringBuffer result = new StringBuffer();
 		while(!ENDL()) {
 			if (!line_continuation()) {
-				result.append((char)lexer.consume());
+				result.append((char)in.consume());
 			}
 		}
 		return result.toString();
@@ -257,7 +285,7 @@ public abstract class Parser {
 	}
 
 	protected int LA(int i) {
-		return lexer.lookahead(i);
+		return in.lookahead(i);
 	}
 
 	protected boolean LA_equals(String s) {
@@ -267,7 +295,7 @@ public abstract class Parser {
 	protected boolean LA_equals(int start, String s) {
 		assert(start > 0);
 		for (int i = 0, l = start; i < s.length(); i++, l++) {
-			char c = (char) lexer.lookahead(l);
+			char c = (char) in.lookahead(l);
 			if (c != s.charAt(i)) return false;
 		}
 		return true;
@@ -280,8 +308,8 @@ public abstract class Parser {
 
 	
 	protected boolean TOKEN(String set) {
-		if (0 <= set.indexOf(lexer.lookahead(1))) {
-			last.TOKEN(lexer.consume());
+		if (0 <= set.indexOf(in.lookahead(1))) {
+			last.TOKEN(in.consume());
 			return true;
 		}
 		return false;
@@ -299,8 +327,8 @@ public abstract class Parser {
 		} else if (optional('\n')) {
 			last.ENDL("\n");
 			return true;
-		} else if (LA1() == Lexer.EOF) {
-			lexer.consume();
+		} else if (LA1() == Scanner.EOF) {
+			in.consume();
 			last.ENDL("");
 			return true;
 		} else {
@@ -329,7 +357,7 @@ public abstract class Parser {
 			result = true;
 			StringBuffer string = new StringBuffer();
 			string.append(startDelimiter);
-			while(!(LA_equals(endDelimiter)||lexer.eof())) {
+			while(!(LA_equals(endDelimiter)||in.eof())) {
 				if (LA1() != '\\') {
 					// general case: anything not an escape sequence
 					
@@ -338,7 +366,7 @@ public abstract class Parser {
 						// it was a string, just terminator missing
 						break;
 					}
-					string.append((char)lexer.consume());
+					string.append((char)in.consume());
 				} else if (line_continuation()) {
 					// "\\\n"
 					continue;
@@ -347,13 +375,13 @@ public abstract class Parser {
 					// we do not fully interpret escape sequences here
 					// just tracking whether there is a proper number of characters following the '\'
 
-					string.append((char)lexer.consume());
+					string.append((char)in.consume());
 					int c = LA1();
 					switch(c) {
 					case 'u': 
 					case 'x':
 					{
-						string.append((char)lexer.consume());
+						string.append((char)in.consume());
 						if (NUMBER_HEX(4)) {
 							// TODO [3] support 8 byte hex
 							string.append(last.NUMBER());
@@ -368,7 +396,7 @@ public abstract class Parser {
 							string.append(last.NUMBER());
 						} else {
 							// any other escape sequence (or non-escape sequence)
-							string.append((char)lexer.consume());
+							string.append((char)in.consume());
 						}
 					}
 				}
@@ -492,7 +520,7 @@ public abstract class Parser {
 			StringBuffer anything = new StringBuffer();
 			do {
 				anything.append((char)c);
-				lexer.consume();
+				in.consume();
 				c = LA1();
 				max--;
 			} while (set.indexOf(c) >= 0 && max > 0);
@@ -508,7 +536,7 @@ public abstract class Parser {
 		if (c != limiter) {
 			StringBuffer anything = new StringBuffer();
 			do {
-				lexer.consume();
+				in.consume();
 				anything.append((char)c);
 				c = LA1();
 			} while(c != limiter);
@@ -575,7 +603,7 @@ public abstract class Parser {
 		if (isAlpha(c)||c == '_') {
 			StringBuffer identifier = new StringBuffer();
 			do {
-				identifier.append((char)lexer.consume());
+				identifier.append((char)in.consume());
 				c = LA1();
 			} while(isAlpha(c)||isDigit(c)||c == '_');
 			last.IDENTIFIER(identifier.toString());
@@ -593,9 +621,9 @@ public abstract class Parser {
 	 * Any whitespace read is stored in last.WHITESPACE .
 	 */
 	protected boolean WHITESPACE() {
-		int la = lexer.lookahead(1);
+		int la = in.lookahead(1);
 		if (isWhite(la)) {
-			lexer.consume();
+			in.consume();
 			last.WHITESPACE(Character.toString((char)la));
 			return true;
 		} else if (line_continuation()) {
@@ -612,9 +640,9 @@ public abstract class Parser {
 			// can spread over multiple lines even without line
 			// continuation markers.
 			StringBuffer comment = new StringBuffer("/*");
-			while (! LA_equals("*/") && LA1() != Lexer.EOF) {
+			while (! LA_equals("*/") && LA1() != Scanner.EOF) {
 				if (line_continuation()) comment.append("\\\n");
-				else comment.append((char)lexer.consume());
+				else comment.append((char)in.consume());
 			}
 			if (!optional("*/")) {
 				syntaxError("missing '*/' to end the comment");
@@ -629,7 +657,7 @@ public abstract class Parser {
 			StringBuffer comment = new StringBuffer("//");
 			while (!isEndl(LA1())) {
 				if (line_continuation()) comment.append("\\\n");
-				else comment.append((char)lexer.consume());
+				else comment.append((char)in.consume());
 			}
 			// The CRLF is not part of the comment in the preprocessor.
 			// The comment is either a text line or at the end of a directive line.
@@ -644,7 +672,7 @@ public abstract class Parser {
 
 	protected int nextTokenLookahead(int from, boolean skipCRLF) {
 		int i = from;
-		for (; lexer.lookahead(i) != Lexer.EOF;) {
+		for (; in.lookahead(i) != Scanner.EOF;) {
 			int next = skipNextWhite(i, skipCRLF);
 			if (i == next) return i;
 			else i = next;
@@ -671,14 +699,14 @@ public abstract class Parser {
 			return next;
 		}
 		
-		int la = lexer.lookahead(i);
+		int la = in.lookahead(i);
 		if (isWhite(la)) {
 			return i+1;
 		} else if (includingCRLF && la == '\n') {
 			return i+1;
 		} else if (LA_equals(i, "/*")) {
 			i += 2;
-			while (! LA_equals(i, "*/") && LA1() != Lexer.EOF) {
+			while (! LA_equals(i, "*/") && LA1() != Scanner.EOF) {
 				i++;
 			}
 			if (!LA_equals(i, "*/")) {
@@ -691,7 +719,7 @@ public abstract class Parser {
 			return i;
 		} else if (LA_equals(i, "//")) {
 			i += 2;
-			while (!isEndl(lexer.lookahead(i))) {
+			while (!isEndl(in.lookahead(i))) {
 				next = skipLineContinuation(i);
 				if (next == i) {
 					i++;
@@ -707,7 +735,7 @@ public abstract class Parser {
 	
 	protected boolean CRLF() {
 		if (LA1() == '\n') {
-			lexer.consume(); 
+			in.consume(); 
 			return true;
 		} else {
 			return false;
@@ -748,21 +776,21 @@ public abstract class Parser {
 	
 	
 	protected boolean isEndl(int c) {
-		return c == '\n' || c == Lexer.EOF;
+		return c == '\n' || c == Scanner.EOF;
 	}
 
 	protected boolean isDigit(int c) {
-		if (c == Lexer.EOF) return false;
+		if (c == Scanner.EOF) return false;
 		return '0' <= c && c <= '9';
 	}
 
 	protected boolean isAlpha(int c) {
-		if (c == Lexer.EOF) return false;
+		if (c == Scanner.EOF) return false;
 		return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z');
 	}
 	
 	protected boolean isWhite(int c) {
-		if (c == Lexer.EOF) return false;
+		if (c == Scanner.EOF) return false;
 		else return c == ' ' || c == '\t' || c == '\r';
 	}
 
@@ -773,7 +801,7 @@ public abstract class Parser {
 	 */
 	protected boolean optional(String string) {
 		if (LA_equals(string)) {
-			lexer.consume(string.length());
+			in.consume(string.length());
 			return true;
 		} else {
 			return false;
@@ -782,7 +810,7 @@ public abstract class Parser {
 
 	protected boolean optional(char c) {
 		if (LA1() == c) {
-			lexer.consume();
+			in.consume();
 			return true;
 		} else {
 			return false;
@@ -799,11 +827,11 @@ public abstract class Parser {
 	 */
 	protected boolean optionalIDENTIFIER(String id) {
 		if (LA_equals(id)) {
-			int next = lexer.lookahead(id.length()+1);
+			int next = in.lookahead(id.length()+1);
 			if (isAlpha(next) || isDigit(next) || next == '_' ) {
 				return false;
 			} else {
-				lexer.consume(id.length());
+				in.consume(id.length());
 				last.IDENTIFIER(id);
 				return true;
 			}
@@ -816,7 +844,7 @@ public abstract class Parser {
 		if (optional(c)) {
 			return true;
 		} else {
-			syntaxError(lexer.nextLocation(), "missing '" + c + "'");
+			syntaxError(in.nextLocation(), "missing '" + c + "'");
 			return false;
 		}
 	}
@@ -835,7 +863,7 @@ public abstract class Parser {
 		if (!ENDL()) {
 			syntaxError("missing mandatory CRLF or end of file");
 			// still here, then skip to next line end to recover from error
-			while (!ENDL()) lexer.consume();
+			while (!ENDL()) in.consume();
 			return false;
 		}
 		return true;

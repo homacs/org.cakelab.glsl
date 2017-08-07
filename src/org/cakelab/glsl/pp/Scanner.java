@@ -3,18 +3,14 @@ package org.cakelab.glsl.pp;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
 
 
-/**
- * Most primitive lexer you've ever seen.
- * @author homac
- *
- */
-public class Lexer {
+public class Scanner implements IScanner {
 
 	public static class InputStreamBuffer {
 		private static final int INIT_CAPACITY = 1024;
@@ -141,11 +137,14 @@ public class Lexer {
 	
 
 	protected InputStreamBuffer buffer;
-	protected LexerLocation location;
+	protected ScannerLocation location;
+
+
+	private ArrayList<Runnable> eofHandlers = new ArrayList<Runnable>();
 
 
 	/** Create a lexer scanning giving input stream. */
-	public Lexer(String sourceIdentifier, InputStream in) throws SyntaxError {
+	public Scanner(String sourceIdentifier, InputStream in) throws SyntaxError {
 		this.buffer = new InputStreamBuffer(in);
 		this.location = new Location(sourceIdentifier);
 	}
@@ -158,7 +157,7 @@ public class Lexer {
 	 * @param origin
 	 * @param in
 	 */
-	protected Lexer(Location origin, InputStream in) {
+	protected Scanner(Location origin, InputStream in) {
 		this.buffer = new InputStreamBuffer(in);
 		// FIXME [2] position may be misinterpreted as actual position by location map!
 		this.location = origin;
@@ -173,16 +172,16 @@ public class Lexer {
 	 * @param text
 	 * @return
 	 */
-	public static Lexer createPreprocessedOutputLexer(Location origin, String text) {
-		// TODO [1] lexer for parsing #if condition needs location map
+	public Scanner createPreprocessedOutputScanner(Location origin, String text) {
+		// TODO [1] scanner for parsing #if condition needs location map
 		// to determine probably expanded locations of errors
 		origin = new Location(origin.getSourceIdentifier(), Location.POS_START, origin.getLine(), origin.getColumn());
 		ByteArrayInputStream in = new ByteArrayInputStream(text.getBytes());
-		return new Lexer(origin, in);
+		return new Scanner(origin, in);
 	}
 	
-	public Lexer createPrependLexer(MacroInvocation expr, String prepend) {
-		return new ExpansionRescanLexer(expr, new ByteArrayInputStream(prepend.getBytes()), this);
+	public Scanner createPrependScanner(MacroInvocation expr, String prepend) {
+		return new ExpansionRescanScanner(expr, new ByteArrayInputStream(prepend.getBytes()), this);
 	}
 
 	public int current() {
@@ -204,6 +203,13 @@ public class Lexer {
 	private void consumed(int n) {
 		if (eof()) return;
 		for (int i = 0; i < n; i++) next(location);
+		if (eof()) runEofHandlers();
+	}
+
+	private void runEofHandlers() {
+		for (Runnable handler : eofHandlers) {
+			handler.run();
+		}
 	}
 
 	/** consume n tokens and return the consumed string. */
@@ -239,7 +245,7 @@ public class Lexer {
 
 	/** signals that previously scanned input will not be rewound. 
 	 * @return */
-	public Lexer commit() {
+	public Scanner commit() {
 		// intentionally empty
 		return this;
 	}
@@ -248,7 +254,7 @@ public class Lexer {
 		return location.getColumn() == Location.FIRST_COLUMN;
 	}
 
-	private void next(LexerLocation location) {
+	public void next(ScannerLocation location) {
 		int i = location.getLexerPosition()+1;
 		int c = buffer.get(i);
 		if (c == EOF) {
@@ -270,6 +276,11 @@ public class Lexer {
 
 	public Location nextLocation() {
 		return nextLocation((Location) location);
+	}
+
+	@Override
+	public void addOnEofHandler(Runnable runnable) {
+		eofHandlers .add(runnable);
 	}
 
 

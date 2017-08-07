@@ -3,13 +3,13 @@ package org.cakelab.glsl.pp;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
 
-public interface ILexer {
+public interface IScanner {
 
 	public static final int EOF = -1;
 
-	public Lexer createPreprocessedOutputLexer(Location origin, String text);
+	public IScanner createPreprocessedOutputScanner(Location origin, String text);
 	
-	public Lexer createPrependLexer(MacroInvocation expr, String prepend);
+	public IScanner createPrependScanner(MacroInvocation expr, String prepend);
 	
 	public int current();
 	
@@ -29,9 +29,13 @@ public interface ILexer {
 	
 	public boolean atColumnStart();
 
-	public void next(LexerLocation location);
-
 	public Location nextLocation(Location location);
 
 	public Location nextLocation();
+
+	public void dismiss();
+
+	public IScanner commit();
+
+	public void addOnEofHandler(Runnable runnable);
 }

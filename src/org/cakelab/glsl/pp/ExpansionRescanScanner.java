@@ -5,7 +5,8 @@ import java.io.InputStream;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
 
-public class ExpansionRescanLexer extends Lexer {
+public class ExpansionRescanScanner extends Scanner {
+	// TODO [4] remove from here
 	// A macro invocation results in at least two steps. 
 	// At first the macro is expanded, which assigns (expanded) arguments, 
 	// evaluates # and ## operators and returns a macro expanded 
@@ -203,9 +204,9 @@ public class ExpansionRescanLexer extends Lexer {
 	// (always referring to the location in the preprocessed output).
 	
 	
-	private Lexer append;
+	private Scanner append;
 
-	ExpansionRescanLexer(MacroInvocation macroInvocation, InputStream prepend, Lexer append) {
+	ExpansionRescanScanner(MacroInvocation macroInvocation, InputStream prepend, Scanner append) {
 		super(new MacroExpandedLocation(macroInvocation), prepend);
 		this.append = append;
 	}
@@ -269,7 +270,7 @@ public class ExpansionRescanLexer extends Lexer {
 	}
 
 	@Override
-	public Lexer commit() {
+	public Scanner commit() {
 		if (super.eof()) return append.commit();
 		else return this;
 	}

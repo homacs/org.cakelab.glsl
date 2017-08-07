@@ -27,7 +27,6 @@ import org.cakelab.glsl.pp.ast.PPIfScope;
 import org.cakelab.glsl.pp.ast.PPIfdefScope;
 import org.cakelab.glsl.pp.ast.PPIfndefScope;
 import org.cakelab.glsl.pp.ast.PPStringifyExpression;
-import org.cakelab.glsl.pp.ast.StringConstant;
 import org.cakelab.glsl.pp.ast.Text;
 import org.cakelab.glsl.pp.ast.PPWhitespace;
 
@@ -71,7 +70,7 @@ public class Preprocessor extends Parser {
 		macros = new MacroMap();
 		globalScope = new PPGroupScope(null);
 		pushScope(globalScope);
-		swapLexer(new Lexer(sourceIdentifier, in));
+		swapScanner(new Scanner(sourceIdentifier, in));
 	}
 
 	/** sets the resource manager, which is used to lookup resources
@@ -135,12 +134,12 @@ public class Preprocessor extends Parser {
 	public void addDefine(String define) {
 		define = "#define " + define;
 		ByteArrayInputStream in = new ByteArrayInputStream(define.getBytes());
-		Lexer previous = swapLexer(new Lexer("-- predefined --", in));
+		IScanner previous = swapScanner(new Scanner("-- predefined --", in));
 		
 		try {
 			define();
 		} finally {
-			swapLexer(previous);
+			swapScanner(previous);
 		}
 	}
 	
@@ -149,9 +148,9 @@ public class Preprocessor extends Parser {
 	}
 	
 	
-	protected Lexer swapLexer(Lexer lexer) {
-		Lexer previous = this.lexer;
-		this.lexer = lexer;
+	protected IScanner swapScanner(IScanner lexer) {
+		IScanner previous = this.in;
+		this.in = lexer;
 		out.reportLocationSwitch(lexer.location());
 		return previous;
 	}
@@ -183,7 +182,7 @@ public class Preprocessor extends Parser {
 	public List<PPGroupScope> process() {
 		
 		// main parser loop
-		while(LA1() != Lexer.EOF) {
+		while(LA1() != Scanner.EOF) {
 			if (!directive_line() && !text_line()) {
 				syntaxError("illegal token");
 				break;
@@ -200,8 +199,8 @@ public class Preprocessor extends Parser {
 	}
 
 	private void commit_scans() {
-		Lexer proceed = lexer.commit();
-		if (proceed != lexer) swapLexer(proceed);
+		IScanner proceed = in.commit();
+		if (proceed != in) swapScanner(proceed);
 	}
 
 	/**
@@ -245,7 +244,7 @@ public class Preprocessor extends Parser {
 		do {
 			s = null;
 			
-			Location mark = lexer.location();
+			Location mark = in.location();
 			if (WHITESPACE()) {
 				s = last.WHITESPACE();
 			} else if (IDENTIFIER()) {
@@ -265,12 +264,12 @@ public class Preprocessor extends Parser {
 							if (LA(i) == '(') {
 								// arguments following -> consume white spaces
 								// and thereby skip to '('
-								lexer.consume(i-1);
+								in.consume(i-1);
 								assert(LA1() == '(');
 								List<Text> args = macro_argument_list(macro);
 								if (args != null) {
 									// it is an invocation of a function like macro
-									invocation = new MacroCallExpression(reference, args.toArray(new Text[0]), lexer.location());
+									invocation = new MacroCallExpression(reference, args.toArray(new Text[0]), in.location());
 								} else {
 									// no or improper arguments
 									// error has been reported, just proceed to next token
@@ -322,7 +321,7 @@ public class Preprocessor extends Parser {
 			// rescan happens after removing '#' and '##'. Any remaining 
 			// '#' and '##' will be treated as common pp-token.
 			if (prependingText == null || prependingText.isEmpty()) return;
-			swapLexer(lexer.createPrependLexer(macroInvocation, prependingText));
+			swapScanner(in.createPrependScanner(macroInvocation, prependingText));
 
 		} catch (EvaluationException e) {
 			syntaxError(e);
@@ -330,11 +329,11 @@ public class Preprocessor extends Parser {
 	}
 
 	private boolean has_directive_line_start() {
-		if (!lexer.atColumnStart()) return false;
+		if (!in.atColumnStart()) return false;
 		int i = 1;
 		int c;
 		do {
-			c = lexer.lookahead(i);
+			c = in.lookahead(i);
 			i++;
 		} while (!isEndl(c) && isWhite(c));
 		if (c == '#') return true;
@@ -497,9 +496,9 @@ public class Preprocessor extends Parser {
 			while(WHITESPACE());
 			if (mandatory_endl()) {
 				if (id >= 0) {
-					lexer.setVirtualLocation(Integer.toString(id), line);
+					in.setVirtualLocation(Integer.toString(id), line);
 				} else {
-					lexer.setVirtualLocation(line);
+					in.setVirtualLocation(line);
 				}
 			}
 		}
@@ -512,7 +511,7 @@ public class Preprocessor extends Parser {
 		boolean result = false;
 		if (optionalIDENTIFIER("define")) {
 			result = true;
-			Location start = lexer.location();
+			Location start = in.location();
 			while(WHITESPACE());
 			if (!IDENTIFIER()) {
 				syntaxError(line_start(start), "no macro name given in #define directive");
@@ -527,7 +526,7 @@ public class Preprocessor extends Parser {
 				boolean firstIteration = true;
 				do {
 					while(WHITESPACE());
-					Location tokenStart = lexer.location();
+					Location tokenStart = in.location();
 					if (DOTS()) {
 						params.add(new MacroParameter(MacroParameter.__VA_ARGS__, this));
 						break;
@@ -583,7 +582,7 @@ public class Preprocessor extends Parser {
 	}
 
 	private Text whitespace() {
-		Location start = lexer.location();
+		Location start = in.location();
 		if (WHITESPACE()) {
 			return new PPWhitespace(interval(start),last.WHITESPACE());
 		} else {
@@ -593,7 +592,7 @@ public class Preprocessor extends Parser {
 
 	private Expression non_concat_expression() {
 		Expression expr;
-		Location start = lexer.location();
+		Location start = in.location();
 		expr = single_hash_expression();
 		if (expr == null && IDENTIFIER()) {
 			String id = last.IDENTIFIER();
@@ -606,7 +605,7 @@ public class Preprocessor extends Parser {
 			// TODO [6] can be optimised
 			String s = preprocessing_token(false); // anything not CRLF
 			if (s != null) {
-				expr = new Text(new Interval(start, lexer.location()), s);
+				expr = new Text(new Interval(start, in.location()), s);
 			}
 		}
 		return expr;
@@ -617,9 +616,9 @@ public class Preprocessor extends Parser {
 	 *  
 	 */
 	private Expression concat_expression(List<Expression> replacement_list) {
-		Location operatorStart = lexer.location();
+		Location operatorStart = in.location();
 		if (optional("##")) {
-			Location operatorEnd = lexer.location();
+			Location operatorEnd = in.location();
 			//
 			// find last non whitespace token sequence
 			//
@@ -653,7 +652,7 @@ public class Preprocessor extends Parser {
 
 
 	private MacroParameterReference macro_parameter_reference(String id) {
-		Location mark = lexer.location();
+		Location mark = in.location();
 		MacroParameter param = currentMacroDefinition.getParameter(id);
 		if (param != null) {
 			return new MacroParameterReference(interval(mark), param);
@@ -664,7 +663,7 @@ public class Preprocessor extends Parser {
 	}
 
 	private Expression single_hash_expression() {
-		Location mark = lexer.location();
+		Location mark = in.location();
 		if (optional('#')) {
 			assert !LA_equals('#') : "reminder: scanning for ## has to appear before # scanning";
 			
@@ -706,7 +705,7 @@ public class Preprocessor extends Parser {
 			// strings and character constants are not parsed for macro invocations
 			return last.CHAR_SEQUENCE();
 		} else if (!isWhite(LA1()) && !isEndl(LA1()) && !(LA_equals('#') && !acceptHashes)) {
-			int c = lexer.consume();
+			int c = in.consume();
 			return String.valueOf((char)c);
 		} else {
 			return null;
@@ -726,7 +725,7 @@ public class Preprocessor extends Parser {
 			if (!LA_equals(')')) {
 				do {
 					while(whitespace_crlf_sequence());
-					Location paramStart = lexer.location();
+					Location paramStart = in.location();
 					if (hasVarArgs && arguments.size() == numParameters-1) {
 						StringBuffer varargs = new StringBuffer();
 						macro_variadic_arguments(varargs);
@@ -746,7 +745,7 @@ public class Preprocessor extends Parser {
 				if (arguments.size() == 0 && macro.numParameters() == 1) {
 					arguments.add(Text.EMPTY);
 				} else {
-					syntaxError(line_start(lexer.location()), "macro \"" + macro.getName() + "\" requires " + macro.numParameters() + " arguments, but only " + arguments.size() + " where given.");
+					syntaxError(line_start(in.location()), "macro \"" + macro.getName() + "\" requires " + macro.numParameters() + " arguments, but only " + arguments.size() + " where given.");
 					return null;
 				}
 			}
@@ -773,12 +772,12 @@ public class Preprocessor extends Parser {
 
 	private boolean macro_arg_parenthesised(StringBuffer arg) {
 		if (LA1() == '(') {
-			arg.append((char)lexer.consume());
+			arg.append((char)in.consume());
 			macro_arg_token_sequence(arg, ")");
 			int c = LA1();
 			if (c == ')') {
 				arg.append((char)c);
-				lexer.consume();
+				in.consume();
 			} else {
 				syntaxError("missing closing ')' in parenthesised macro argument");
 			}
@@ -804,7 +803,7 @@ public class Preprocessor extends Parser {
 	 */
 	private void macro_arg_token_sequence(StringBuffer arg, String delimiters) {
 		int c = LA1();
-		while (delimiters.indexOf(c) == -1 && !lexer.eof()) {
+		while (delimiters.indexOf(c) == -1 && !in.eof()) {
 			if (whitespace_crlf_sequence()) {
 				arg.append(' ');
 			} else if (macro_arg_parenthesised(arg)) {
@@ -814,7 +813,7 @@ public class Preprocessor extends Parser {
 			} else if (CHAR_SEQUENCE('\'')) {
 				arg.append(last.CHAR_SEQUENCE());
 			} else {
-				arg.append((char)lexer.consume());
+				arg.append((char)in.consume());
 			}
 			c = LA1();
 		}
@@ -834,11 +833,11 @@ public class Preprocessor extends Parser {
 	 */
 	public String macro_expand_argument(Location origin, String argument) {
 		// and parse that macro expanded text for the expression
-		Lexer previous = swapLexer(Lexer.createPreprocessedOutputLexer(origin, argument));
+		IScanner previous = swapScanner(in.createPreprocessedOutputScanner(origin, argument));
 		try {
 			return text(false, true);
 		} finally {
-			if (previous != null) swapLexer(previous);
+			if (previous != null) swapScanner(previous);
 		}
 	}
 
@@ -880,14 +879,14 @@ public class Preprocessor extends Parser {
 			while(WHITESPACE());
 			condition = identifier();
 			if (condition == null) {
-				condition = expressionError(lexer.location(), "missing identifier");
+				condition = expressionError(in.location(), "missing identifier");
 			}
 		} else if (optionalIDENTIFIER("ifndef")) {
 			ifscope = new PPIfndefScope(currentScope);
 			while(WHITESPACE());
 			condition = identifier();
 			if (condition == null) {
-				condition = expressionError(lexer.location(), "missing identifier");
+				condition = expressionError(in.location(), "missing identifier");
 			}
 		}
 		
@@ -918,7 +917,7 @@ public class Preprocessor extends Parser {
 			while(WHITESPACE());
 			Expression expr = directive_condition();
 			if (expr == null) {
-				expr = expressionError(lexer.location(), "missing condition to elif directive");
+				expr = expressionError(in.location(), "missing condition to elif directive");
 			}
 
 			try {
@@ -977,18 +976,18 @@ public class Preprocessor extends Parser {
 	public Expression directive_condition() {
 
 		// get *macro expanded* remainder of current line
-		Location textOrigin = lexer.location();
+		Location textOrigin = in.location();
 		
 		// retrieve macro expanded remainder of current line 
 		String text = text(false, true);
 		
 		// and parse that macro expanded text for the expression
-		ExpressionParser parser = new ExpressionParser(Lexer.createPreprocessedOutputLexer(textOrigin, text), errorHandler);
+		ExpressionParser parser = new ExpressionParser(in.createPreprocessedOutputScanner(textOrigin, text), errorHandler);
 		return parser.expression();
 	}
 	
 	private Expression identifier() {
-		Location mark = lexer.location();
+		Location mark = in.location();
 		if (IDENTIFIER()) {
 			String id = last.IDENTIFIER();
 			Macro macro = macros.get(id);
@@ -1036,21 +1035,26 @@ public class Preprocessor extends Parser {
 
 			// exec include
 			
-			Location mark = lexer.location(); // <-- points to start of next line in current input (or EOF)
-			Lexer previous = swapLexer(new Lexer(resource.getIdentifier(), resource.getData()));
+			Location mark = in.location(); // <-- points to start of next line in current input (or EOF)
+			IScanner includeScanner = new Scanner(resource.getIdentifier(), resource.getData());
+			IScanner previous = swapScanner(includeScanner);
 			try {
 				if (insertLineDirectives) {
 					out.println("#line 1 " + resource.getIdentifier());
+					includeScanner.addOnEofHandler(new Runnable() {
+						@Override
+						public void run() {
+							// insert CRLF if necessary
+							if (includeScanner.current() != '\n') out.println();
+							out.println("#line " + mark.getLine() + ' ' + mark.getSourceIdentifier());
+						}
+						
+					});
 				}
 				parse();
-				// insert CRLF if necessary
-				if (lexer.current() != '\n') out.println();
-				if (insertLineDirectives) {
-					out.println("#line " + mark.getLine() + ' ' + mark.getSourceIdentifier());
-				}
 			} finally {
 				if (previous != null) {
-					swapLexer(previous);
+					swapScanner(previous);
 				}
 			}
 		}

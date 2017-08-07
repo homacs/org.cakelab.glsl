@@ -3,7 +3,6 @@ package org.cakelab.glsl.pp;
 import java.util.ArrayList;
 
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.ParserErrorHandler;
 import org.cakelab.glsl.lang.ast.AndExpression;
 import org.cakelab.glsl.lang.ast.ConditionalExpression;
 import org.cakelab.glsl.lang.ast.ConstantValue;
@@ -41,8 +40,8 @@ import org.cakelab.glsl.pp.ast.StringConstant;
 public class ExpressionParser extends Parser {
 	// TODO [1] managing macro expansion locations (especially with overlapping macro invocations through rescan)
 	
-	public ExpressionParser(Lexer lexer, ParserErrorHandler errorHandler) {
-		this.lexer = lexer;
+	public ExpressionParser(IScanner lexer, ErrorHandler errorHandler) {
+		this.in = lexer;
 		super.setErrorHandler(errorHandler);
 	}
 
@@ -68,7 +67,7 @@ public class ExpressionParser extends Parser {
 				ArrayList<Expression> list = new ArrayList<Expression>();
 				list.add(expr);
 				do {
-					Location commaLocation = lexer.location();
+					Location commaLocation = in.location();
 					while(WHITESPACE());
 					Expression next = conditional_expression(null);
 					if (next != null) {
@@ -432,7 +431,7 @@ public class ExpressionParser extends Parser {
 	public Expression unary_expression() {
 		Expression primary;
 		while(WHITESPACE());
-		Location mark = lexer.location();
+		Location mark = in.location();
 		if (LA_equals("!=")) {
 			return null;
 		} else if (TOKEN("+-!~")) {
@@ -498,7 +497,7 @@ public class ExpressionParser extends Parser {
 
 	public Value character_constant() {
 		// Note: simple C character constants only - no prefixed character constants
-		Location mark = lexer.location();
+		Location mark = in.location();
 		if (CHAR_SEQUENCE('\'')) {
 			String text = last.CHAR_SEQUENCE();
 			String value = decodeCharSequence(text, '\'', '\'');
@@ -516,7 +515,7 @@ public class ExpressionParser extends Parser {
 	}
 
 	public Value string_literal() {
-		Location mark = lexer.location();
+		Location mark = in.location();
 		if (CHAR_SEQUENCE('"')) {
 			String text = last.CHAR_SEQUENCE();
 			String value = decodeCharSequence(text, '"', '"');
@@ -526,7 +525,7 @@ public class ExpressionParser extends Parser {
 	}
 
 	private Expression identifier() {
-		Location mark = lexer.location();
+		Location mark = in.location();
 		if (IDENTIFIER()) {
 			return new PPUndefinedIdentifier(interval(mark), last.IDENTIFIER());
 		}
@@ -544,7 +543,7 @@ public class ExpressionParser extends Parser {
 	}
 	
 	public Expression number() {
-		Location mark = lexer.location();
+		Location mark = in.location();
 		
 		final String DEC_DIGITS = "0123456789";
 		final String HEX_DIGITS = "0123456789abcdefABCDEF";
