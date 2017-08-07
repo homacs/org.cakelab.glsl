@@ -2,7 +2,6 @@ package org.cakelab.glsl.pp;
 
 import java.util.Stack;
 
-import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
 
@@ -74,12 +73,6 @@ public class LexerManager implements ILexer {
 	}
 
 	@Override
-	public String getText(LexerLocation start, LexerLocation end) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public boolean atColumnStart() {
 		// TODO Auto-generated method stub
 		return false;
@@ -93,12 +86,6 @@ public class LexerManager implements ILexer {
 
 	@Override
 	public Location nextLocation(Location location) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getText(Interval interval) {
 		// TODO Auto-generated method stub
 		return null;
 	}

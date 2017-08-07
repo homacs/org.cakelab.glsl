@@ -204,14 +204,10 @@ public class ExpansionRescanLexer extends Lexer {
 	
 	
 	private Lexer append;
-	private LexerLocation appendixStart;
-	private MacroInvocation macroInvocation;
 
 	ExpansionRescanLexer(MacroInvocation macroInvocation, InputStream prepend, Lexer append) {
 		super(new MacroExpandedLocation(macroInvocation), prepend);
-		this.macroInvocation = macroInvocation;
 		this.append = append;
-		appendixStart = append.location();
 	}
 
 	@Override

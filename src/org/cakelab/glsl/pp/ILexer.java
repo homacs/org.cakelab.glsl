@@ -1,6 +1,5 @@
 package org.cakelab.glsl.pp;
 
-import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
 
@@ -27,16 +26,12 @@ public interface ILexer {
 	public void setVirtualLocation(int line);
 
 	public void setVirtualLocation(String id, int line);
-
-	public String getText(LexerLocation start, LexerLocation end);
 	
 	public boolean atColumnStart();
 
 	public void next(LexerLocation location);
 
 	public Location nextLocation(Location location);
-
-	public String getText(Interval interval);
 
 	public Location nextLocation();
 }
