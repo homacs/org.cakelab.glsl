@@ -7,8 +7,14 @@ public class TestConditionalInclusion extends TestingPPBase {
 	public static void main(String[] args) {
 		test();
 	}
+
 	
 	public static void test() {
+		TestConditionalInclusion tester = new TestConditionalInclusion();
+		tester.testConditionalInclusions();
+	}
+	
+	public void testConditionalInclusions() {
 
 		assertValid("#if 1\n"
 				+ "success\n"

@@ -9,16 +9,17 @@ public class TestMacros extends TestingPPBase {
 	}
 	
 	public static void test() {
-		testObjectMacros();
-		testFunctionMacros();
-		testStringify();
-		testConcatenation();
-		testDefUndef();
-		testVariadicMacros();
+		TestMacros tester = new TestMacros();
+		tester.testObjectMacros();
+		tester.testFunctionMacros();
+		tester.testStringify();
+		tester.testConcatenation();
+		tester.testDefUndef();
+		tester.testVariadicMacros();
 	}
 	
 	
-	public static void testObjectMacros() {
+	public void testObjectMacros() {
 		assertValid("#define A", "");
 		assertValid("#define A x\n"
 				+ "A\n", 
@@ -69,7 +70,7 @@ public class TestMacros extends TestingPPBase {
 	}
 
 	
-	public static void testFunctionMacros() {
+	public void testFunctionMacros() {
 		
 		assertValid("#define A() x\n"
 				+ "A()\n", 
@@ -203,7 +204,7 @@ public class TestMacros extends TestingPPBase {
 	}
 	
 	
-	public static void testStringify() {
+	public void testStringify() {
 		
 		assertValid("#define A(x) #x\n"
 				+ "A(d)\n", 
@@ -246,7 +247,7 @@ public class TestMacros extends TestingPPBase {
 		
 	}
 	
-	private static void testConcatenation() {
+	private void testConcatenation() {
 		assertValid("#define A(x,y) x ## y\n"
 				+ "A( succ , ess )\n", 
 				"success\n");
@@ -315,7 +316,7 @@ public class TestMacros extends TestingPPBase {
 	}
 
 
-	public static void testDefUndef() {
+	public void testDefUndef() {
 		
 		assertValid("#define A\n"
 				+ "#ifdef A\n"
@@ -389,7 +390,7 @@ public class TestMacros extends TestingPPBase {
 	}
 	
 	
-	public static void testVariadicMacros() {
+	public void testVariadicMacros() {
 
 		assertError("#define A(...,x)\n", "0:1:14: missing ')'");
 		

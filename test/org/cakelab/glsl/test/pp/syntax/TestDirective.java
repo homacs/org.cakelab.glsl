@@ -5,21 +5,22 @@ import org.cakelab.glsl.test.pp.TestingPPBase;
 public class TestDirective extends TestingPPBase {
 
 	public static void test() {
-		testNonDirective();
-		testMacros();
-		testConditions();
-		testInclude();
-		testLine();
-		testError();
-		testGLSLExtensions();
+		TestDirective tester = new TestDirective();
+		tester.testNonDirective();
+		tester.testMacros();
+		tester.testConditions();
+		tester.testInclude();
+		tester.testLine();
+		tester.testError();
+		tester.testGLSLExtensions();
 	}
 
-	private static void testNonDirective() {
+	private void testNonDirective() {
 		assertValid("#\n");
 		assertInvalid("# illegal");
 	}
 
-	private static void testLine() {
+	private void testLine() {
 		assertValid("#line 1\n");
 		assertValid("#line 1 0 \n");
 		assertValid("#line 1 /* commentar */\n");
@@ -28,7 +29,7 @@ public class TestDirective extends TestingPPBase {
 		assertInvalid("#line\n");
 	}
 
-	private static void testError() {
+	private void testError() {
 		// #error is supposed to produce an error message
 		// so we need to invert the logic here
 		assertInvalid("#error my error message 0.0: \n");
@@ -36,7 +37,7 @@ public class TestDirective extends TestingPPBase {
 		assertValid("// error my error\\\n message 0.0: \n");
 	}
 
-	private static void testInclude() {
+	private void testInclude() {
 		assertValid("#include <stdio.glsl>\n");
 		assertValid("\t#include <stdio.glsl>\n");
 		assertValid("# include <stdio.glsl>\n");
@@ -47,7 +48,7 @@ public class TestDirective extends TestingPPBase {
 		
 	}
 
-	private static void testGLSLExtensions() {
+	private void testGLSLExtensions() {
 		
 		assertValid("#version 450 core\n");
 		assertValid("#version 450 es\n");
@@ -67,7 +68,7 @@ public class TestDirective extends TestingPPBase {
 		assertValid("/* enable ARB_anything : enable*/\n");
 	}
 
-	private static void testMacros() {
+	private void testMacros() {
 		assertValid(" #define A\n");
 		assertValid(" #define A any thing making sense here\nA");
 		assertValid(" #define A\n");
@@ -104,7 +105,7 @@ public class TestDirective extends TestingPPBase {
 	
 	
 
-	private static void testConditions() {
+	private void testConditions() {
 
 		assertValid("#if 1\n"
 				+ "#endif\n");

@@ -6,7 +6,7 @@ import org.cakelab.glsl.ParserErrorHandler;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Node;
 
-public class ParserBase {
+public abstract class Parser {
 	
 	public static class StandardErrorHandler implements ParserErrorHandler {
 
@@ -125,10 +125,8 @@ public class ParserBase {
 
 
 
-
-	
 	protected Lexer lexer;
-	private ParserErrorHandler errorHandler = new StandardErrorHandler();
+	protected ParserErrorHandler errorHandler = new StandardErrorHandler();
 	protected LastToken last = new LastToken();
 
 	
@@ -196,6 +194,11 @@ public class ParserBase {
 		return stop;
 	}
 
+	
+	public abstract void parse();
+	
+	
+	
 	protected Interval interval(Location start) {
 		return new Interval(lexer.nextLocation(start), lexer.location());
 	}
