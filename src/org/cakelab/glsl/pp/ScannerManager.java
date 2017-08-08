@@ -1,5 +1,7 @@
 package org.cakelab.glsl.pp;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Stack;
 
 import org.cakelab.glsl.Location;
@@ -7,30 +9,16 @@ import org.cakelab.glsl.pp.ast.MacroInvocation;
 
 public class ScannerManager implements IScanner {
 
-	public class EofHandler implements Runnable {
-
-		private IScanner scanner;
-
-		public EofHandler(IScanner scanner) {
-			this.scanner = scanner;
-		}
-		
-		@Override
-		public void run() {
-			ScannerManager.this.onEof(scanner);
-		}
-
-	}
-
 	private Stack<IScanner> scanners = new Stack<IScanner>();
 	private IScanner top;
-	private int lastConsumed;
+	private IScanner lastConsumed;
 	
-	public ScannerManager() {
+	public ScannerManager(IScanner scanner) {
+		push(scanner);
 	}
 	
-	private void onEof(IScanner scanner) {
-		assert (scanner == scanners.peek());
+	private void pop() {
+		assert(!scanners.isEmpty());
 		scanners.pop();
 		if (!scanners.isEmpty()) top = scanners.peek();
 		else top = null;
@@ -41,29 +29,23 @@ public class ScannerManager implements IScanner {
 	 * @param scanner
 	 */
 	public void push(IScanner scanner) {
-		// TODO we might not need a handler for this, since we are 
-		// observing EOFs in consume(n).
-		scanner.addOnEofHandler(new EofHandler(scanner));
 		scanners.push(scanner);
+		top = scanner;
 	}
 
-	@Override
-	public IScanner createPreprocessedOutputScanner(Location origin, String text) {
-		// TODO This will be a new scanner, which gets the output of the 
-		// preprocessor and considers original locations from preprocessing
-		// when reporting errors.
-		return top.createPreprocessedOutputScanner(origin, text);
+	public static IScanner createPreprocessedOutputScanner(Location origin, String text) {
+		origin = new Location(origin.getSourceIdentifier(), Location.POS_START, origin.getLine(), origin.getColumn());
+		ByteArrayInputStream in = new ByteArrayInputStream(text.getBytes());
+		return new Scanner(origin, in);
 	}
 
-	@Override
-	public IScanner createPrependScanner(MacroInvocation expr, String prepend) {
-		// TODO this will be a common scanner with a MacroExpandedLocation just
-		return top.createPrependScanner(expr, prepend);
+	public static IScanner createPrependScanner(MacroInvocation macroInvocation, String prepend) {
+		return new Scanner(new MacroExpandedLocation(macroInvocation), new ByteArrayInputStream(prepend.getBytes()));
 	}
 
 	@Override
 	public int current() {
-		return lastConsumed;
+		return lastConsumed.current();
 	}
 
 	@Override
@@ -72,21 +54,41 @@ public class ScannerManager implements IScanner {
 	}
 
 	@Override
-	public int lookahead(int i) {
-		int c = top.lookahead(i);
-		return c;
+	public int lookahead(int n) {
+		int i = scanners.size()-1;
+		if (i<0) return IScanner.EOF;
+		IScanner scanner = scanners.get(i);
+		i--;
+		for (int remain = scanner.remaining(); remain < n && i >= 0; n -= remain, i--, remain = scanner.remaining()) {
+			scanner = scanners.get(i);
+		}
+		return scanner.lookahead(n);
 	}
 
 	@Override
 	public void consume(int n) {
-		lastConsumed = lookahead(n);
+		assert (!eof()); 
+		for (int remain = top.remaining(); remain < n && scanners.size() > 1; n -= remain, remain = top.remaining()) {
+			top.consume(remain);
+			top.consume(); // read to EOF
+			assert (top.eof()) : "internal error: EOF hasn't been read";
+			pop();
+		}
+		// should not happen, because parser checks lookahead before it reads
+		assert (top != null) : "internal error: parser reading beyond EOF";
+		
+		lastConsumed = top;
 		top.consume(n);
+		while (top != null && (top.eof())) {
+			pop();
+			if (scanners.size() > 1 && top.remaining() == 0) top.consume();
+		}
 	}
 
 	@Override
 	public int consume() {
-		lastConsumed = lookahead(1);
-		return top.consume();
+		consume(1);
+		return lastConsumed.current();
 	}
 
 	@Override
@@ -106,17 +108,22 @@ public class ScannerManager implements IScanner {
 
 	@Override
 	public boolean atColumnStart() {
+		if (scanners.isEmpty()) return false;
 		return top.atColumnStart();
 	}
 
 	@Override
 	public Location nextLocation(Location location) {
-		return top.nextLocation(location);
+		if (top != null) return top.nextLocation(location);
+		else if (lastConsumed != null) return lastConsumed.nextLocation(location);
+		else return null;
 	}
 
 	@Override
 	public Location nextLocation() {
-		return top.nextLocation();
+		if (top != null) return top.nextLocation();
+		else if (lastConsumed != null) return lastConsumed.nextLocation();
+		else return null;
 	}
 
 	@Override
@@ -140,6 +147,19 @@ public class ScannerManager implements IScanner {
 	public void addOnEofHandler(Runnable runnable) {
 		// not needed
 		throw new Error("not implemented");
+	}
+
+	@Override
+	public int remaining() {
+		int remaining = 0;
+		for (IScanner scanner : scanners) {
+			remaining += scanner.remaining();
+		}
+		return remaining;
+	}
+
+	public static IScanner createScanner(String identifier, InputStream data) {
+		return new Scanner(identifier, data);
 	}
 
 }

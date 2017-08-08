@@ -1,13 +1,11 @@
 package org.cakelab.glsl.pp;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.pp.ast.MacroInvocation;
 
 
 public class Scanner implements IScanner {
@@ -116,16 +114,6 @@ public class Scanner implements IScanner {
 			return length;
 		}
 
-		public String getText(int start, int end) {
-			if (dismissed) return "";
-			if (start < 0) throw new IndexOutOfBoundsException();
-			StringBuffer s = new StringBuffer();
-			for (int i = start; i <= end; i++) {
-				s.append((char)get(i));
-			}
-			return s.toString();
-		}
-
 		public void dismiss(int startingFrom) {
 			dismissed = true;
 			tokens[startingFrom] = EOF;
@@ -157,31 +145,10 @@ public class Scanner implements IScanner {
 	 * @param origin
 	 * @param in
 	 */
-	protected Scanner(Location origin, InputStream in) {
+	public Scanner(Location origin, InputStream in) {
 		this.buffer = new InputStreamBuffer(in);
 		// FIXME [2] position may be misinterpreted as actual position by location map!
 		this.location = origin;
-	}
-
-	/**
-	 * Used to parse macro expanded text (preprocessed) which originates 
-	 * from origin.
-	 * 
-	 * 
-	 * @param origin
-	 * @param text
-	 * @return
-	 */
-	public Scanner createPreprocessedOutputScanner(Location origin, String text) {
-		// TODO [1] scanner for parsing #if condition needs location map
-		// to determine probably expanded locations of errors
-		origin = new Location(origin.getSourceIdentifier(), Location.POS_START, origin.getLine(), origin.getColumn());
-		ByteArrayInputStream in = new ByteArrayInputStream(text.getBytes());
-		return new Scanner(origin, in);
-	}
-	
-	public Scanner createPrependScanner(MacroInvocation expr, String prepend) {
-		return new ExpansionRescanScanner(expr, new ByteArrayInputStream(prepend.getBytes()), this);
 	}
 
 	public int current() {
@@ -201,7 +168,7 @@ public class Scanner implements IScanner {
 
 	/** if line end reached, then read next line */
 	private void consumed(int n) {
-		if (eof()) return;
+		if (n == 0 || eof()) return;
 		for (int i = 0; i < n; i++) next(location);
 		if (eof()) runEofHandlers();
 	}
@@ -229,6 +196,7 @@ public class Scanner implements IScanner {
 
 	public void dismiss() {
 		buffer.dismiss(location.getLexerPosition());
+		runEofHandlers();
 	}
 
 	public Location location() {
@@ -280,8 +248,15 @@ public class Scanner implements IScanner {
 
 	@Override
 	public void addOnEofHandler(Runnable runnable) {
-		eofHandlers .add(runnable);
+		eofHandlers.add(runnable);
 	}
 
+	@Override
+	public int remaining() {
+		return buffer.size() - (location.getLexerPosition()+1);
+	}
+
+	
+	
 
 }

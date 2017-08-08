@@ -13,6 +13,7 @@ import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.impl.StandardFileManager;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.*;
+import org.cakelab.glsl.pp.IScanner.EofFuture;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.ast.MacroCallExpression;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
@@ -34,6 +35,7 @@ public class Preprocessor extends Parser {
 	// TODO [1] managing macro expansion locations (especially with overlapping macro invocations through rescan)
 	
 	private ResourceManager resourceManager;
+	
 	/** this is where only valid preprocessed output goes. */
 	private PreprocessedOutputSink outputStream;
 	/** this is where valid and invalid/hidden preprocessed output goes. 
@@ -50,6 +52,8 @@ public class Preprocessor extends Parser {
 	// TODO [1] create preprocessor ast output
 	private List<PPGroupScope> groups;
 	private PPGroupScope globalScope;
+	
+	
 	
 	/**
 	 * Construct a preprocessor for standalone preprocessing (without language parsing).
@@ -70,7 +74,7 @@ public class Preprocessor extends Parser {
 		macros = new MacroMap();
 		globalScope = new PPGroupScope(null);
 		pushScope(globalScope);
-		swapScanner(new Scanner(sourceIdentifier, in));
+		super.in = new ScannerManager(new Scanner(sourceIdentifier, in));
 	}
 
 	/** sets the resource manager, which is used to lookup resources
@@ -133,14 +137,16 @@ public class Preprocessor extends Parser {
 	 */
 	public void addDefine(String define) {
 		define = "#define " + define;
-		ByteArrayInputStream in = new ByteArrayInputStream(define.getBytes());
-		IScanner previous = swapScanner(new Scanner("-- predefined --", in));
 		
-		try {
-			define();
-		} finally {
-			swapScanner(previous);
-		}
+		ByteArrayInputStream in = new ByteArrayInputStream(define.getBytes());
+		Scanner scanner = new Scanner("-- predefined --", in);
+		IScanner.EofFuture eof = new IScanner.EofFuture();
+		scanner.addOnEofHandler(eof);
+		pushScanner(scanner);
+		
+		define();
+		assert eof.occurred();
+		// TODO: maybe check for errors in predefinitions before proceeding
 	}
 	
 	public void addDefine(Macro macro) {
@@ -148,11 +154,9 @@ public class Preprocessor extends Parser {
 	}
 	
 	
-	protected IScanner swapScanner(IScanner lexer) {
-		IScanner previous = this.in;
-		this.in = lexer;
-		out.reportLocationSwitch(lexer.location());
-		return previous;
+	protected void pushScanner(IScanner scanner) {
+		((ScannerManager)in).push(scanner);
+		out.reportLocationSwitch(scanner.location());
 	}
 	
 	private void setScopeVisibility() {
@@ -187,7 +191,6 @@ public class Preprocessor extends Parser {
 				syntaxError("illegal token");
 				break;
 			}
-			commit_scans();
 		}
 		
 		// check if all scopes of conditional inclusion are complete
@@ -196,11 +199,6 @@ public class Preprocessor extends Parser {
 			syntaxError("missing #endif");
 		}
 		return groups;
-	}
-
-	private void commit_scans() {
-		IScanner proceed = in.commit();
-		if (proceed != in) swapScanner(proceed);
 	}
 
 	/**
@@ -321,7 +319,7 @@ public class Preprocessor extends Parser {
 			// rescan happens after removing '#' and '##'. Any remaining 
 			// '#' and '##' will be treated as common pp-token.
 			if (prependingText == null || prependingText.isEmpty()) return;
-			swapScanner(in.createPrependScanner(macroInvocation, prependingText));
+			pushScanner(ScannerManager.createPrependScanner(macroInvocation, prependingText));
 
 		} catch (EvaluationException e) {
 			syntaxError(e);
@@ -821,6 +819,37 @@ public class Preprocessor extends Parser {
 
 
 	/**
+	 * Check if identifier lies in a macro expanded section of a macro with 
+	 * the same name.
+	 * <p>
+	 * Recursive macro calls are basically not possible. Thus, inside of 
+	 * a section expanded from a macro invocation, the same macro cannot 
+	 * be called again. This method checks it and returns true if the given
+	 * identifier would be a recursive call.
+	 * </p>
+	 * @param location
+	 * @param identifier
+	 * @return
+	 */
+	private boolean macro_recursion_check(Location location, String identifier) {
+		if (location instanceof MacroExpandedLocation) {
+			MacroExpandedLocation mloc = (MacroExpandedLocation)location;
+			Macro macro = mloc.getMacroInvocation().getMacro();
+			if (macro.getName().equals(last.IDENTIFIER())) {
+				return true;
+			} else {
+				// we need to recursively check if this macro invocation was already in
+				// a macro expanded section of another macro invocation.
+				return macro_recursion_check(mloc.getMacroInvocation().getStart(), identifier);
+			}
+		} else {
+			return false;
+		}
+	}
+
+
+
+	/**
 	 * Called during macro invocation to expand arguments on demand (if required).
 	 * <p>
 	 * Macro arguments cannot be expanded the usual way, because only the text 
@@ -833,11 +862,20 @@ public class Preprocessor extends Parser {
 	 */
 	public String macro_expand_argument(Location origin, String argument) {
 		// and parse that macro expanded text for the expression
-		IScanner previous = swapScanner(in.createPreprocessedOutputScanner(origin, argument));
+		// TODO: macro arg expansion requires isolated scanner (+ parser?) (input is not preprocessed)
+		IScanner previous = in;
 		try {
-			return text(false, true);
+			IScanner scanner = ScannerManager.createPreprocessedOutputScanner(origin, argument);
+			IScanner.EofFuture eof = new IScanner.EofFuture();
+			scanner.addOnEofHandler(eof);
+			in = new ScannerManager(scanner);
+			String s = text(false, true);
+			scanner.consume();
+			assert (!CRLF()) : "internal error: ENDL has to be replaced by ' ' during argument parsing";
+			assert (eof.occurred());
+			return s;
 		} finally {
-			if (previous != null) swapScanner(previous);
+			in = previous;
 		}
 	}
 
@@ -982,7 +1020,8 @@ public class Preprocessor extends Parser {
 		String text = text(false, true);
 		
 		// and parse that macro expanded text for the expression
-		ExpressionParser parser = new ExpressionParser(in.createPreprocessedOutputScanner(textOrigin, text), errorHandler);
+		// FIXME condition parsing requires preprocessed output scanner
+		ExpressionParser parser = new ExpressionParser(ScannerManager.createPreprocessedOutputScanner(textOrigin, text), errorHandler);
 		return parser.expression();
 	}
 	
@@ -1036,63 +1075,34 @@ public class Preprocessor extends Parser {
 			// exec include
 			
 			Location mark = in.location(); // <-- points to start of next line in current input (or EOF)
-			IScanner includeScanner = new Scanner(resource.getIdentifier(), resource.getData());
-			IScanner previous = swapScanner(includeScanner);
-			try {
-				if (insertLineDirectives) {
-					out.println("#line 1 " + resource.getIdentifier());
-					includeScanner.addOnEofHandler(new Runnable() {
-						@Override
-						public void run() {
-							// insert CRLF if necessary
-							if (includeScanner.current() != '\n') out.println();
-							out.println("#line " + mark.getLine() + ' ' + mark.getSourceIdentifier());
-						}
-						
-					});
-				}
-				parse();
-			} finally {
-				if (previous != null) {
-					swapScanner(previous);
-				}
+			IScanner includeScanner = ScannerManager.createScanner(resource.getIdentifier(), resource.getData());
+			pushScanner(includeScanner);
+			EofFuture eof = null;
+			if (insertLineDirectives) {
+				out.println("#line 1 " + resource.getIdentifier());
+				eof = new IScanner.EofFuture() {
+					@Override
+					public void run() {
+						// insert CRLF if necessary
+						if (includeScanner.current() != '\n') out.println();
+						out.println("#line " + mark.getLine() + ' ' + mark.getSourceIdentifier());
+						super.run();
+					}
+					
+				};
+				includeScanner.addOnEofHandler(eof);
 			}
+			// FIXME we don't need to call process for include, because parsing will proceed at next line anyway
+			// and newline will be added automatically by the eofHandler above.
+			process();
+			
+			assert (eof == null || eof.occurred());
 		}
 		
 		return result;
 	}
 	
 	
-
-	/**
-	 * Check if identifier lies in a macro expanded section of a macro with 
-	 * the same name.
-	 * <p>
-	 * Recursive macro calls are basically not possible. Thus, inside of 
-	 * a section expanded from a macro invocation, the same macro cannot 
-	 * be called again. This method checks it and returns true if the given
-	 * identifier would be a recursive call.
-	 * </p>
-	 * @param location
-	 * @param identifier
-	 * @return
-	 */
-	private boolean macro_recursion_check(Location location, String identifier) {
-		if (location instanceof MacroExpandedLocation) {
-			MacroExpandedLocation mloc = (MacroExpandedLocation)location;
-			Macro macro = mloc.getMacroInvocation().getMacro();
-			if (macro.getName().equals(last.IDENTIFIER())) {
-				return true;
-			} else {
-				// we need to recursively check if this macro invocation was already in
-				// a macro expanded section of another macro invocation.
-				return macro_recursion_check(mloc.getMacroInvocation().getStart(), identifier);
-			}
-		} else {
-			return false;
-		}
-	}
-
 
 	
 }

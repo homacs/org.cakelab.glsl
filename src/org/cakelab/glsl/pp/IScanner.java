@@ -1,16 +1,24 @@
 package org.cakelab.glsl.pp;
 
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.pp.ast.MacroInvocation;
 
 public interface IScanner {
 
+	public class EofFuture implements Runnable {
+		boolean hasRun = false;
+		
+		@Override
+		public void run() {
+			hasRun = true;
+		}
+		
+		public boolean occurred() {
+			return hasRun;
+		}
+	}
+
 	public static final int EOF = -1;
 
-	public IScanner createPreprocessedOutputScanner(Location origin, String text);
-	
-	public IScanner createPrependScanner(MacroInvocation expr, String prepend);
-	
 	public int current();
 	
 	public boolean eof();
@@ -38,4 +46,10 @@ public interface IScanner {
 	public IScanner commit();
 
 	public void addOnEofHandler(Runnable runnable);
+
+	/**
+	 * Number of remaining bytes from current position.
+	 * @return
+	 */
+	public int remaining();
 }
