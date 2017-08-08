@@ -138,12 +138,6 @@ public class ScannerManager implements IScanner {
 	}
 
 	@Override
-	public IScanner commit() {
-		// TODO [1] remove
-		return top.commit();
-	}
-
-	@Override
 	public void addOnEofHandler(Runnable runnable) {
 		// not needed
 		throw new Error("not implemented");

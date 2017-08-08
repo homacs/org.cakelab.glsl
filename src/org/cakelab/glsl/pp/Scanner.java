@@ -211,13 +211,6 @@ public class Scanner implements IScanner {
 		location = new Location(id, location.getLexerPosition(), line, Location.FIRST_COLUMN);
 	}
 
-	/** signals that previously scanned input will not be rewound. 
-	 * @return */
-	public Scanner commit() {
-		// intentionally empty
-		return this;
-	}
-
 	public boolean atColumnStart() {
 		return location.getColumn() == Location.FIRST_COLUMN;
 	}
