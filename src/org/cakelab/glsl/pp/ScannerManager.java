@@ -67,7 +67,7 @@ public class ScannerManager implements IScanner {
 
 	@Override
 	public void consume(int n) {
-		assert (!eof()); 
+		assert (!eof());
 		for (int remain = top.remaining(); remain < n && scanners.size() > 1; n -= remain, remain = top.remaining()) {
 			top.consume(remain);
 			top.consume(); // read to EOF
@@ -93,7 +93,9 @@ public class ScannerManager implements IScanner {
 
 	@Override
 	public Location location() {
-		return top.location();
+		if (top != null) return top.location();
+		else if (lastConsumed != null) return lastConsumed.location();
+		else throw new Error("internal error: input not initialised");
 	}
 
 	@Override

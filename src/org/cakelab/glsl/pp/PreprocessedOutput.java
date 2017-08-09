@@ -1,36 +1,34 @@
 package org.cakelab.glsl.pp;
 
 import java.io.OutputStream;
+import java.io.PrintStream;
 
-import org.cakelab.glsl.Location;
-import org.cakelab.glsl.pp.ast.MacroInvocation;
+import org.cakelab.glsl.Interval;
 
-public class PreprocessedOutput extends PreprocessedOutputSink {
+public class PreprocessedOutput implements PreprocessedOutputSink {
 
+
+	PrintStream out;
+	
 	public PreprocessedOutput(OutputStream out) {
-		super(out);
+		this.out = new PrintStream(out, true);
 	}
 
 	@Override
-	public int getPosition() {
-		return -1;
+	public void print(Interval origin, String s) {
+		out.print(s);
+	}
+	
+	@Override
+	public void println(Interval origin) {
+		print(origin, "\n");
 	}
 
 	@Override
-	public void reportLocationSwitch(Location location) {
+	public void println(Interval origin, String string) {
+		print(origin, string);
+		println(origin);
 	}
-
-	@Override
-	public int reportMacroExpansionStart() {
-		return 0;
-	}
-
-	@Override
-	public void reportMacroExpansionEnd(int startOutputPos, MacroInvocation macroCall) {
-	}
-
-	@Override
-	public void reportMacroExpansion(String text, MacroInvocation expr) {
-	}
-
+	
+	
 }

@@ -65,7 +65,7 @@ public class Preprocessor extends Parser {
 		this(sourceIdentifier, in, new PreprocessedOutput(out));
 	}
 
-	Preprocessor(String sourceIdentifier, InputStream in, PreprocessedOutputSink out) {
+	public Preprocessor(String sourceIdentifier, InputStream in, PreprocessedOutputSink out) {
 		allowInclude = true;
 		insertLineDirectives = true;
 		
@@ -156,7 +156,6 @@ public class Preprocessor extends Parser {
 	
 	protected void pushScanner(IScanner scanner) {
 		((ScannerManager)in).push(scanner);
-		out.reportLocationSwitch(scanner.location());
 	}
 	
 	private void setScopeVisibility() {
@@ -192,7 +191,7 @@ public class Preprocessor extends Parser {
 				break;
 			}
 		}
-		
+		if (!in.eof()) in.consume(); // consume EOF
 		// check if all scopes of conditional inclusion are complete
 		if (currentScope != globalScope) 
 		{
@@ -215,11 +214,12 @@ public class Preprocessor extends Parser {
 			String output = text(true, true);
 			if (output == null) {
 				return false;
-			} else if(!ENDL()) {
-				syntaxError("unexpected tokens at end of text line");
-				return false;
 			} else {
-				out.println();
+				Location mark = in.location();
+				if (CRLF()) out.println(interval(mark));
+				else if (LA1() != IScanner.EOF) {
+					syntaxError("invalid tokens");
+				}
 				return true;
 			}
 		}
@@ -297,7 +297,7 @@ public class Preprocessor extends Parser {
 			// store and forward output
 			if (s != null) {
 				result.append(s);
-				if (print) out.print(s);
+				if (print) out.print(interval(mark), s);
 			} else {
 				break;
 			}
@@ -312,8 +312,6 @@ public class Preprocessor extends Parser {
 		try {
 			// execute macro expansion
 			prependingText = ((Expression)macroInvocation).eval().value().getValue().toString();
-			
-			if (print) out.reportMacroExpansion(prependingText, macroInvocation);
 			
 			// rescan for more macro expansions
 			// rescan happens after removing '#' and '##'. Any remaining 
@@ -1079,13 +1077,18 @@ public class Preprocessor extends Parser {
 			pushScanner(includeScanner);
 			EofFuture eof = null;
 			if (insertLineDirectives) {
-				out.println("#line 1 " + resource.getIdentifier());
+				out.println(interval(mark), "#line 1 " + resource.getIdentifier());
 				eof = new IScanner.EofFuture() {
 					@Override
 					public void run() {
 						// insert CRLF if necessary
-						if (includeScanner.current() != '\n') out.println();
-						out.println("#line " + mark.getLine() + ' ' + mark.getSourceIdentifier());
+						if (includeScanner.current() != '\n') {
+							out.println(new Interval(in.location(), in.location()));
+						}
+						// add another #line directive iff we will resume parsing
+						if (!in.eof()) {
+							out.println(interval(mark), "#line " + mark.getLine() + ' ' + mark.getSourceIdentifier());
+						}
 						super.run();
 					}
 					

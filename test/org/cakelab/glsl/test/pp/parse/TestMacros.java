@@ -128,17 +128,17 @@ public class TestMacros extends TestingPPBase {
 		assertValid("#define A(x) B(x)\n"
 				+ "#define B(y) y + 1\n"
 				+ "A(z)", 
-				"z + 1\n");
+				"z + 1");
 		
 		assertValid("#define A(x) B(x)\n"
 				+ "#define B(y) A(y) + 1\n"
 				+ "A(z)", 
-				"A(z) + 1\n");
+				"A(z) + 1");
 		
 		assertValid("#define A(x) B(x)\n"
 				+ "#define B(y) A(y) + 1\n"
 				+ "A(z)", 
-				"A(z) + 1\n");
+				"A(z) + 1");
 
 		//
 		// empty arguments
@@ -146,19 +146,19 @@ public class TestMacros extends TestingPPBase {
 		
 		assertValid("#define A(x) x\n"
 				+ "A()", 
-				"\n");
+				"");
 
 		assertValid("#define A(x,y) x\n"
 				+ "A(,)", 
-				"\n");
+				"");
 
 		assertValid("#define A(x,y) x\n"
 				+ "A(a,)", 
-				"a\n");
+				"a");
 
 		assertValid("#define A(x,y) x y\n"
 				+ "A(,a)", 
-				"a\n");
+				"a");
 
 		
 		
@@ -240,7 +240,7 @@ public class TestMacros extends TestingPPBase {
 		
 		assertValid("#define A(x) #x\n"
 				+ "A()", 
-				"\"\"\n");
+				"\"\"");
 
 
 		

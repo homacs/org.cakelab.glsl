@@ -2,6 +2,7 @@ package org.cakelab.glsl.pp;
 
 import java.io.ByteArrayOutputStream;
 
+import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
 
@@ -20,7 +21,7 @@ import org.cakelab.glsl.pp.ast.MacroInvocation;
  * @author homac
  *
  */
-public class PreprocessedOutputBuffer extends PreprocessedOutputSink {
+public class PreprocessedOutputBuffer extends PreprocessedOutput {
 
 	private static class Buffer extends ByteArrayOutputStream {
 		
@@ -82,23 +83,8 @@ public class PreprocessedOutputBuffer extends PreprocessedOutputSink {
 	}
 
 	@Override
-	public void reportLocationSwitch(Location location) {
-		lastLocation = new Location(location);
-		locations.reportLocationSwitch(lastLocation, getPosition()+1);
-	}
-	
-	public int reportMacroExpansionStart() {
-		inMacroExpansion++;
-		return getPosition();
-	}
-	public void reportMacroExpansionEnd(int outputStart, MacroInvocation macroCall) {
-		inMacroExpansion--;
-		if (macroCall != null) locations.reportMacroCall(macroCall, outputStart, getPosition());
-	}
-
-	@Override
-	public void reportMacroExpansion(String text, MacroInvocation expr) {
-		// TODO [1] implement macro expansion mapping in location map
+	public void print(Interval origin, String s) {
+		super.print(origin, s);
 	}
 	
 }

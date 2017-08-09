@@ -3,7 +3,7 @@ package org.cakelab.glsl.pp.ast;
 import org.cakelab.glsl.lang.ast.Scope;
 
 public class PPGroupScope extends Scope {
-	// FIXME: PPGroupScope is not a language Scope!
+	// FIXME: PPGroupScope is not a symbol table Scope!
 	protected boolean visible = true;
 	protected PPGroupScope parentGroup;
 	
