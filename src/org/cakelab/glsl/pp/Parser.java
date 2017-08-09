@@ -4,6 +4,8 @@ import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Node;
+import org.cakelab.glsl.pp.ast.Macro;
+import org.cakelab.glsl.pp.ast.MacroInvocation;
 
 public abstract class Parser {
 
@@ -38,6 +40,20 @@ public abstract class Parser {
 
 	public static class StandardErrorHandler implements ErrorHandler {
 
+		
+		protected void printError(Location origin, String msg) {
+			System.err.println(origin.toString() + ": error: " + msg);
+		}
+
+		protected void printNote(Location origin, String msg) {
+			System.out.println(origin.toString() + ": note: " + msg);
+		}
+
+		protected void printWarning(Location origin, String msg) {
+			System.out.println(origin.toString() + ": warn: " + msg);
+		}
+
+
 		/**
 		 * @param location
 		 * @param errMsg
@@ -45,13 +61,35 @@ public abstract class Parser {
 		 */
 		@Override
 		public boolean error(Location location, String errMsg) {
-			System.err.println(location.toString() + ": " + errMsg);
+			Location origin = getMacroOrigin(location);
+			printError(origin, errMsg);
+			handleMacroOrigin(location);
 			return true;
+		}
+
+		private void handleMacroOrigin(Location location) {
+			while (location instanceof MacroExpandedLocation) {
+				MacroInvocation invocation = ((MacroExpandedLocation) location).getMacroInvocation();
+				location = invocation.getStart();
+				Location origin = getMacroOrigin(location);
+				printNote(origin, "in expansion of macro ´" + invocation.getMacro().getName() + "´");
+			}
+		}
+
+		protected Location getMacroOrigin(Location location) {
+			if (location instanceof MacroExpandedLocation) {
+				MacroExpandedLocation macroLocation = ((MacroExpandedLocation)location);
+				MacroInvocation invocation = macroLocation.getMacroInvocation();
+				Macro macro = invocation.getMacro();
+				Location macroStart = macro.getStart();
+				location = macroStart.add(location);
+			}
+			return location;
 		}
 
 		@Override
 		public boolean warning(Location location, String warningMsg) {
-			System.err.println(location.toString() + ": " + warningMsg);
+			printWarning(getMacroOrigin(location), warningMsg);
 			return false;
 		}
 
@@ -362,7 +400,7 @@ public abstract class Parser {
 					// general case: anything not an escape sequence
 					
 					if (LA1() == '\n') {
-						syntaxError("missing terminating \"");
+						syntaxError("missing terminating " + endDelimiter);
 						// it was a string, just terminator missing
 						break;
 					}
@@ -424,7 +462,7 @@ public abstract class Parser {
 				string.append(c);
 			} else {
 				// special case: escape sequence
-				
+				if (i>= text.length()) return string.toString();
 				i++;
 				c = text.charAt(i);
 				assert (c != '\n') : "internal error: char sequence containing '\n'"; // has to be removed by preprocessor
@@ -453,14 +491,18 @@ public abstract class Parser {
 						StringBuffer upto_four_hex_digits = new StringBuffer();
 						int max = Math.min(i+4, text.length()-1);
 						for (; isHexDigit(c) && i < max ; i++, c = text.charAt(i)) upto_four_hex_digits.append(c);
-						// 1-3 octal digits
-						i--;  // for loop will at the last
+						// 1-4 hex digits
+						i--;  // for loop will add the last
 						try {
 							int oct = Integer.decode("0x" + upto_four_hex_digits.toString());
 							string.append((char)oct);
 						} catch (IllegalArgumentException e) {
 							syntaxError("illegal unicode code sequence in character sequence (\\" + prefix + upto_four_hex_digits.toString() + ")");
+							return string.toString();
 						}
+					} else {
+						// error recovery
+						i--;
 					}
 					break;
 				}
@@ -470,15 +512,17 @@ public abstract class Parser {
 						int max = Math.min(i+3, text.length()-1);
 						for (; isOctDigit(c) && i < max ; i++, c = text.charAt(i)) upto_three_oct_digits.append(c);
 						// 1-3 octal digits
-						i--;  // for loop will at the last
+						i--;  // for loop will add the last
 						try {
 							int oct = Integer.decode("0" + upto_three_oct_digits.toString());
 							string.append((char)oct);
 						} catch (IllegalArgumentException e) {
 							syntaxError("illegal octal sequence in character sequence (\\" + upto_three_oct_digits + ")");
+							return string.toString();
 						}
 					} else {
 						syntaxError("undefined escape sequence '\\" + (char)c + "'");
+						i--;
 					}
 					break;
 				}

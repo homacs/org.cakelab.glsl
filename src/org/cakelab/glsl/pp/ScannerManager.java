@@ -12,6 +12,7 @@ public class ScannerManager implements IScanner {
 	private Stack<IScanner> scanners = new Stack<IScanner>();
 	private IScanner top;
 	private IScanner lastConsumed;
+	private boolean dismissed;
 	
 	public ScannerManager(IScanner scanner) {
 		push(scanner);
@@ -67,6 +68,7 @@ public class ScannerManager implements IScanner {
 
 	@Override
 	public void consume(int n) {
+		if (dismissed) return;
 		assert (!eof());
 		for (int remain = top.remaining(); remain < n && scanners.size() > 1; n -= remain, remain = top.remaining()) {
 			top.consume(remain);
@@ -137,6 +139,7 @@ public class ScannerManager implements IScanner {
 		// remove all from stack
 		scanners.clear();
 		top = null;
+		dismissed = true;
 	}
 
 	@Override

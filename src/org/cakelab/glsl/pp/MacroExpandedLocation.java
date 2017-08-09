@@ -39,19 +39,10 @@ import org.cakelab.glsl.pp.ast.MacroInvocation;
  */
 public class MacroExpandedLocation extends Location {
 
-	private int macroExpandedOffset;
 	private MacroInvocation invocation;
-
-	// TODO [6] check whether we can drop some of the constructors
-	public MacroExpandedLocation(Location that, int macroExpandedOffset, MacroInvocation macroInvocation) {
-		super(that);
-		this.macroExpandedOffset = macroExpandedOffset;
-		this.invocation = macroInvocation;
-	}
 
 	public MacroExpandedLocation(MacroExpandedLocation that) {
 		super(that);
-		this.macroExpandedOffset = that.macroExpandedOffset;
 		this.invocation = that.invocation;
 	}
 
@@ -62,39 +53,13 @@ public class MacroExpandedLocation extends Location {
 	 * @param macroInvocation
 	 */
 	public MacroExpandedLocation(MacroInvocation macroInvocation) {
-		super(macroInvocation.getStart());
-		this.macroExpandedOffset = ScannerLocation.POS_START;
+		super("");
 		this.invocation = macroInvocation;
-	}
-
-	public int getMacroExpandedOffset() {
-		return macroExpandedOffset;
 	}
 
 	public MacroInvocation getMacroInvocation() {
 		return invocation;
 	}
-	
-	@Override
-	public int getLexerPosition() {
-		return macroExpandedOffset;
-	}
-
-	@Override
-	protected void nextLine() {
-		nextColumn();
-	}
-
-	@Override
-	protected void nextColumn() {
-		macroExpandedOffset++;
-	}
-
-	@Override
-	protected void setLexerPosition(int lastConsumedPos) {
-		macroExpandedOffset = lastConsumedPos;
-	}
-	
 
 	public MacroExpandedLocation clone() {
 		return new MacroExpandedLocation(this);

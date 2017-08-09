@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
-import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Expression;
@@ -13,7 +12,7 @@ import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.pp.Parser;
 import org.cakelab.glsl.pp.Parser.ErrorHandler;
 
-public abstract class TestingParserBase {
+public abstract class TestingBase {
 
 	protected String error;
 	protected String warning;
@@ -49,34 +48,20 @@ public abstract class TestingParserBase {
 			tee.write(b);
 			pipe.write(b);
 		}
-	
 	}
 	
-	protected ErrorHandler errorHandler = new ErrorHandler() {
-
-
-		@Override
-		public boolean error(Location location, String message) {
+	protected ErrorHandler errorHandler = new Parser.StandardErrorHandler() {
+		protected void printError(Location location, String message) {
 			if (error == null && warning == null) error = location.getSourceIdentifier() + ':' + location.getLine() + ':' + location.getColumn() + ": " + message;
-			return false;
 		}
 
-		@Override
-		public boolean warning(Location location, String message) {
+		protected void printWarning(Location location, String message) {
 			if (warning == null && error == null && !ignoreWarning) warning = location.getSourceIdentifier() + ':' + location.getLine() + ':' + location.getColumn() + ": " + message;
-			return false;
-		}
-
-		@Override
-		public boolean error(Node node, String message) {
-			return error(node.getStart(), message);
-		}
-
-		@Override
-		public boolean warning(Interval interval, String message) {
-			return warning(interval.getStart(), message);
 		}
 		
+		protected void printNote(Location location, String message) {
+		}
+
 	};
 
 	protected OutputStream output(OutputStream out) {
@@ -210,7 +195,7 @@ public abstract class TestingParserBase {
 	
 	private StackTraceElement getCallSite() {
 		String baseClassNamePrefix = "Testing";
-		assert (TestingParserBase.class.getSimpleName().startsWith(baseClassNamePrefix)) : "need to adjust prefix of the base class names to make tests work again";
+		assert (TestingBase.class.getSimpleName().startsWith(baseClassNamePrefix)) : "need to adjust prefix of the base class names to make tests work again";
 		
 		for (StackTraceElement stackElem : Thread.currentThread().getStackTrace()) {
 			String className = stackElem.getClassName().replaceAll("[^\\.]*\\.", "");

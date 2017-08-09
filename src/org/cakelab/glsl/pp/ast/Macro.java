@@ -6,19 +6,21 @@ import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.Value;
+import org.cakelab.glsl.lang.ast.impl.NodeImpl;
 
-public class Macro {
+public class Macro extends NodeImpl {
 	String name;
 	private List<MacroParameter> params;
 	private List<Expression> replacement_list;
 
-	public Macro(String macroName, List<MacroParameter> params) {
+	public Macro(String macroName, List<MacroParameter> params, Interval interval) {
+		super(interval);
 		this.name = macroName;
 		this.params = params;
 	}
 
-	public Macro(String name) {
-		this(name, null);
+	public Macro(String name, Interval interval) {
+		this(name, null, interval);
 	}
 	
 	public boolean equals(Macro that) {
@@ -82,6 +84,9 @@ public class Macro {
 	public void setReplacementList(List<Expression> expressions) {
 		// TODO [6] really a list of expressions in macros?
 		this.replacement_list = expressions;
+		if (expressions != null && expressions.size() > 0) {
+			super.interval.setEnd(expressions.get(expressions.size()-1).getEnd());
+		}
 	}
 	
 
@@ -153,5 +158,6 @@ public class Macro {
 	public int numParameters() {
 		return params.size();
 	}
+
 
 }

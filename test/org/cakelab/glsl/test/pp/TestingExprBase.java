@@ -7,7 +7,7 @@ import org.cakelab.glsl.pp.ExpressionParser;
 import org.cakelab.glsl.pp.Scanner;
 import org.cakelab.glsl.pp.Parser;
 
-public class TestingExprBase extends TestingParserBase {
+public class TestingExprBase extends TestingBase {
 
 	public Parser p(String source) {
 		try {

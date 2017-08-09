@@ -125,7 +125,7 @@ public class Scanner implements IScanner {
 	
 
 	protected InputStreamBuffer buffer;
-	protected ScannerLocation location;
+	protected Location location;
 
 
 	private ArrayList<Runnable> eofHandlers = new ArrayList<Runnable>();
@@ -152,16 +152,16 @@ public class Scanner implements IScanner {
 	}
 
 	public int current() {
-		return buffer.get(location.getLexerPosition());
+		return buffer.get(location.getPosition());
 	}
 
 	public boolean eof() {
-		return location.getLexerPosition() != Location.POS_START && buffer.get(location.getLexerPosition()) == EOF;
+		return location.getPosition() != Location.POS_START && buffer.get(location.getPosition()) == EOF;
 	}
 	
 	public int lookahead(int i) {
 		if (eof()) return EOF;
-		int pos = location.getLexerPosition()+i;
+		int pos = location.getPosition()+i;
 		if (pos > buffer.size()) throw new Error("lookahead exceeds end of file");
 		return buffer.get(pos);
 	}
@@ -181,13 +181,13 @@ public class Scanner implements IScanner {
 
 	/** consume n tokens and return the consumed string. */
 	public void consume(int n) {
-		int stop = location.getLexerPosition()+n;
+		int stop = location.getPosition()+n;
 		assert(buffer.size() >= stop);
 		consumed(n);
 	}
 
 	public int consume() {
-		int stop = location.getLexerPosition()+1;
+		int stop = location.getPosition()+1;
 		assert(buffer.size() >= stop);
 		int consumed = buffer.get(stop);
 		consumed(1);
@@ -195,7 +195,7 @@ public class Scanner implements IScanner {
 	}
 
 	public void dismiss() {
-		buffer.dismiss(location.getLexerPosition());
+		buffer.dismiss(location.getPosition());
 		runEofHandlers();
 	}
 
@@ -208,18 +208,18 @@ public class Scanner implements IScanner {
 	}
 
 	public void setVirtualLocation(String id, int line) {
-		location = new Location(id, location.getLexerPosition(), line, Location.FIRST_COLUMN);
+		location = new Location(id, location.getPosition(), line, Location.FIRST_COLUMN);
 	}
 
 	public boolean atColumnStart() {
 		return location.getColumn() == Location.FIRST_COLUMN;
 	}
 
-	public void next(ScannerLocation location) {
-		int i = location.getLexerPosition()+1;
+	public void next(Location location) {
+		int i = location.getPosition()+1;
 		int c = buffer.get(i);
 		if (c == EOF) {
-			location.setLexerPosition(i);
+			location.setPosition(i);
 		} else {
 			if (c == '\n') {
 				location.nextLine();
@@ -246,7 +246,7 @@ public class Scanner implements IScanner {
 
 	@Override
 	public int remaining() {
-		return buffer.size() - (location.getLexerPosition()+1);
+		return buffer.size() - (location.getPosition()+1);
 	}
 
 	

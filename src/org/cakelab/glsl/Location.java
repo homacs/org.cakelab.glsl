@@ -1,50 +1,129 @@
 package org.cakelab.glsl;
 
-import org.cakelab.glsl.pp.ScannerLocation;
-
-/** 
- * Representation of a source code location.
- * <p>
+import org.cakelab.glsl.Location;
+import org.cakelab.glsl.pp.MacroExpandedLocation;
+/** Source code location of the cursor.
+ * 
  * Source code resource (e.g. file or source string) is
  * identified by the resource identifier 
  * (see {@link Resource#getIdentifier()}.
- * </p>
- * The position in the resource is expressed as tuple: <br/>
+ * 
+ * The exact cursor position is either <br/>
  * <pre>
- *    line : column
+ *    line + column
  * </pre>
  * <br/>
- * <p>
+ * or 
+ * <br/>
+ * <pre>
+ *    position
+ * </pre>
+ * <br/>
+ * which marks the cursor position in bytes 
+ * from the start.
+ * 
  * A location can be influenced by <code>#line</code> 
  * preprocessing directives. In this case, 
  * the location is virtually overridden. Getter methods
  * will always return the location of the cursor according 
- * to the last #line directive. The actual position in
- * an input streams is only needed by the lexer and 
- * therefore hidden inside.
- * </p>
+ * to the last #line directive. The actual location in
+ * the set of input streams is only needed by the 
+ * lexer itself and therefore hidden inside.
  * 
+ * @see Location
+ * @see MacroExpandedLocation
  * @author homac
  *
  */
-public class Location extends ScannerLocation {
-	// TODO [5] untangle location classes
+public class Location {
 	public static final Location NONE = new Location("",-1,-1,-1);
 
+	public static final int POS_START = -1; // indicates: no input read so far
+	public static final int FIRST_POSITION = 0;
+	public static final int FIRST_COLUMN = 0; // yes, columns start at 0 and lines at 1
+	public static final int FIRST_LINE = 1;
+	/** position in bytes from start */
+	private int pos;
+	/** line number */
+	private int line;
+	/** column */
+	private int column;
+	/** identifier (for GLSL this is the source string number) */
+	private String identifier;
 	
-	public Location(Location that) {
-		super(that);
-	}
-
 	public Location(String sourceIdentifier, int pos, int line, int column) {
-		super(sourceIdentifier, pos, line, column);
+		this.identifier = sourceIdentifier;
+		this.line = line;
+		this.column = column;
+		this.pos = pos;
 	}
 
+	public Location(Location that) {
+		this(that.identifier, that.pos, that.line, that.column);
+	}
+
+	/** constructing an instance pointing to the start of the resource identified by sourceIdentifier.*/
 	public Location(String sourceIdentifier) {
-		super(sourceIdentifier);
+		this(sourceIdentifier, POS_START, FIRST_LINE, FIRST_COLUMN);
 	}
 
+	public int getLine() {
+		return line;
+	}
+	
+	public int getColumn() {
+		return column;
+	}
+	
+	public String getSourceIdentifier() {
+		return identifier;
+	}
+
+	public int getPosition() {
+		return pos;
+	}
+	
+	public void nextLine() {
+		pos++;
+		line++;
+		column = FIRST_COLUMN;
+	}
+	
+	public void nextColumn() {
+		pos++;
+		column++;
+	}
+
+	public void setPosition(int lastConsumedPos) {
+		pos = lastConsumedPos;
+	}
+
+	public void setColumn(int column) {
+		int diff = column - this.column;
+		setPosition(getPosition() + diff);
+		this.column = column;
+	}
+
+	
+	public String toString() {
+		return identifier + ':' + line + ':' + column;
+	}
+	
 	public Location clone() {
 		return new Location(this);
 	}
+
+	public Location add(Location offset) {
+		Location result = this.clone();
+		result.pos += offset.pos-POS_START;
+		if (offset.line == Location.FIRST_LINE) {
+			result.column += offset.column;
+		} else {
+			result.line += offset.line - Location.FIRST_LINE;
+			result.column = offset.column;
+		}
+		return result;
+	}
+	
+	
 }

@@ -17,4 +17,12 @@ public class Interval {
 		return start;
 	}
 
+	public void setEnd(Location end) {
+		this.end = end;
+	}
+
+	public void setStart(Location start) {
+		this.start = start;
+	}
+
 }

@@ -507,10 +507,10 @@ public class Preprocessor extends Parser {
 		boolean result = false;
 		if (optionalIDENTIFIER("define")) {
 			result = true;
-			Location start = in.location();
 			while(WHITESPACE());
+			Location start = in.location();
 			if (!IDENTIFIER()) {
-				syntaxError(line_start(start), "no macro name given in #define directive");
+				syntaxError(start, "no macro name given in #define directive");
 				return result;
 			}
 			String macroName = last.IDENTIFIER();
@@ -547,14 +547,14 @@ public class Preprocessor extends Parser {
 			while(WHITESPACE());
 			
 			
-			currentMacroDefinition = new Macro(macroName, params);
+			currentMacroDefinition = new Macro(macroName, params, interval(start));
 			List<Expression> tokens = replacement_list();
 			
 			currentMacroDefinition.setReplacementList(tokens);
 			
 			Macro previousDefinition = macros.get(macroName);
 			if (previousDefinition != null && !previousDefinition.equals(currentMacroDefinition)) {
-				syntaxWarning(line_start(start), "\"" + macroName + "\" redefined");
+				syntaxWarning(start, "\"" + macroName + "\" redefined");
 			}
 
 			macros.put(macroName, currentMacroDefinition);

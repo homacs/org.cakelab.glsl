@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import org.cakelab.glsl.pp.Parser;
 import org.cakelab.glsl.pp.Preprocessor;
 
-public class TestingPPBase extends TestingParserBase {
+public class TestingPPBase extends TestingBase {
 
 	public Parser p(String source, OutputStream out) {
 		try {

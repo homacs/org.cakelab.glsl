@@ -178,33 +178,10 @@ public class LocationMap {
 		}
 	}
 	
-	public Interval getInterval(int outputStart, int outputEnd) {
-		return new Interval(getStartLocation(outputStart), getEndLocation(outputEnd));
-	}
-
-	public Location getStartLocation(int outputPos) {
-		Entry entry = find(outputPos);
-		if (entry instanceof MacroCallEntry) {
-			int macroExpandedOffset =  outputPos - entry.outputPos;
-			return new MacroExpandedLocation(entry.loc, macroExpandedOffset, ((MacroCallEntry)entry).macroInvokation);
-		} else {
-			return textLocation(entry, outputPos);
-		}
-	}
-	
-	public Location getEndLocation(int outputPos) {
-		Entry entry = find(outputPos);
-		if (entry instanceof MacroCallEntry) {
-			int macroExpandedOffset =  outputPos - entry.outputPos;
-			return new MacroExpandedLocation(((MacroCallEntry)entry).macroInvokation.getEnd(), macroExpandedOffset, ((MacroCallEntry)entry).macroInvokation);
-		} else {
-			return textLocation(entry, outputPos);
-		}
-	}
 	
 	private Location textLocation(Entry entry, int outputPos) {
 		int offset = entry.outputPos - outputPos;
-		int pos = ((ScannerLocation)entry.loc).getLexerPosition() + offset;
+		int pos = ((Location)entry.loc).getPosition() + offset;
 		int column = entry.loc.getColumn() + offset;
 		int line = entry.loc.getLine();
 		return new Location(entry.loc.getSourceIdentifier(), pos, line, column);
