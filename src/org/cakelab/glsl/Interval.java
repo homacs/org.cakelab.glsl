@@ -16,4 +16,5 @@ public class Interval {
 	public Location getStart() {
 		return start;
 	}
+
 }

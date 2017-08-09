@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.pp.ast.MacroInvocation;
 
 /**
  * A preprocessor output buffer is used as intermediate between preprocessor
