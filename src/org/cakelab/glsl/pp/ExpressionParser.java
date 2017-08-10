@@ -36,6 +36,7 @@ import org.cakelab.glsl.lang.ast.Value;
 import org.cakelab.glsl.lang.ast.XorExpression;
 import org.cakelab.glsl.pp.ast.PPDefinedExpression;
 import org.cakelab.glsl.pp.ast.StringConstant;
+import org.cakelab.glsl.pp.tokens.TAtom;
 
 public class ExpressionParser extends Parser {
 	// TODO [1] managing macro expansion locations (especially with overlapping macro invocations through rescan)
@@ -377,8 +378,8 @@ public class ExpressionParser extends Parser {
 			// syntax error already reported
 		} else {
 			while(WHITESPACE());
-			if (TOKEN("+-")) {
-				int op = last.TOKEN();
+			if (ATOM("+-")) {
+				char op = getAtom();
 				while(WHITESPACE());
 				Expression operand2 = multiplicative_expression(null);
 				Expression add = null;
@@ -386,11 +387,11 @@ public class ExpressionParser extends Parser {
 					switch(op) {
 					case '+': add = new PlusExpression(operand1, operand2); break;
 					case '-': add = new MinusExpression(operand1, operand2); break;
-					default: throw new Error("internal error: unhandled multiplicative operator " + (char)last.TOKEN());
+					default: throw new Error("internal error: unhandled multiplicative operator " + op);
 					}
 					return additive_expression(add);
 				} else {
-					return expressionError("missing second operand to operator " + (char)last.TOKEN());
+					return expressionError("missing second operand to operator " + op);
 				}
 			} else {
 				return operand1;
@@ -399,14 +400,19 @@ public class ExpressionParser extends Parser {
 		return null;
 	}
 	
+	private char getAtom() {
+		return ((TAtom)token).getChar();
+	}
+
+
 	public Expression multiplicative_expression(Expression operand1) {
 		if (operand1 == null) operand1 = unary_expression();
 		if (operand1 == null) {
 			// syntax error already reported
 		} else {
 			while(WHITESPACE());
-			if (TOKEN("*/%")) {
-				int operator = last.TOKEN();
+			if (ATOM("*/%")) {
+				char operator = getAtom();
 				while(WHITESPACE());
 				Expression operand2 = unary_expression();
 				if (operand2 != null) {
@@ -415,11 +421,11 @@ public class ExpressionParser extends Parser {
 					case '*': mul = new MulExpression(operand1, operand2); break;
 					case '/': mul =  new DivExpression(operand1, operand2); break;
 					case '%': mul =  new ModExpression(operand1, operand2); break;
-					default: throw new Error("internal error: unhandled multiplicative operator " + (char)last.TOKEN());
+					default: throw new Error("internal error: unhandled multiplicative operator " + operator);
 					}
 					return multiplicative_expression(mul);
 				} else {
-					return expressionError("missing second operand to operand " + (char)last.TOKEN());
+					return expressionError("missing second operand to operand " + operator);
 				}
 			} else {
 				return operand1;
@@ -434,17 +440,17 @@ public class ExpressionParser extends Parser {
 		Location mark = in.location();
 		if (LA_equals("!=")) {
 			return null;
-		} else if (TOKEN("+-!~")) {
-			int op = last.TOKEN();
+		} else if (ATOM("+-!~")) {
+			char op = getAtom();
 			if (null == (primary = unary_expression())) {
-				return expressionError("missing expression after unary operator '" + (char)last.TOKEN() + "'");
+				return expressionError("missing expression after unary operator '" + op + "'");
 			}
 			switch(op) {
 			case '+': return new PosExpression(mark, primary);
 			case '-': return new NegExpression(mark, primary);
 			case '!': return new LogicalNotExpression(mark, primary);
 			case '~': return new NotExpression(mark, primary);
-			default: throw new Error("internal error: unhandled unary operator " + (char)last.TOKEN());
+			default: throw new Error("internal error: unhandled unary operator " + op);
 			}
 		} else if(optional("defined")) {
 			if (null != (primary = unary_expression())) {
@@ -499,7 +505,7 @@ public class ExpressionParser extends Parser {
 		// Note: simple C character constants only - no prefixed character constants
 		Location mark = in.location();
 		if (CHAR_SEQUENCE('\'')) {
-			String text = last.CHAR_SEQUENCE();
+			String text = token.getText();
 			String value = decodeCharSequence(text, '\'', '\'');
 			if (value.length() > 1) 
 			{
@@ -517,7 +523,7 @@ public class ExpressionParser extends Parser {
 	public Value string_literal() {
 		Location mark = in.location();
 		if (CHAR_SEQUENCE('"')) {
-			String text = last.CHAR_SEQUENCE();
+			String text = token.getText();
 			String value = decodeCharSequence(text, '"', '"');
 			return new StringConstant(interval(mark), value, text);
 		}
@@ -527,7 +533,7 @@ public class ExpressionParser extends Parser {
 	private Expression identifier() {
 		Location mark = in.location();
 		if (IDENTIFIER()) {
-			return new PPUndefinedIdentifier(interval(mark), last.IDENTIFIER());
+			return new PPUndefinedIdentifier(interval(mark), token.getText());
 		}
 		return null;
 	}
@@ -561,16 +567,16 @@ public class ExpressionParser extends Parser {
 		}
 
 		if (ANYTHING_IN(digits)) {
-			num.append(last.ANYTHING());
+			num.append(token.getText());
 			if (optional('.')) {
 				isReal = true;
 				num.append('.');
-				if (ANYTHING_IN(digits)) num.append(last.ANYTHING());
+				if (ANYTHING_IN(digits)) num.append(token.getText());
 			}
 		} else if (optional('.')) {
 			isReal = true;
 			num.append('.');
-			if (ANYTHING_IN(digits)) num.append(last.ANYTHING());
+			if (ANYTHING_IN(digits)) num.append(token.getText());
 			else {
 				return expressionError("number format error: missing digits after '.'");
 			}
@@ -582,31 +588,31 @@ public class ExpressionParser extends Parser {
 		}
 
 		if (num.length() > 0) {
-			if (TOKEN(exponentPrefixes)) {
+			if (ATOM(exponentPrefixes)) {
 				isReal = true;
-				num.append(last.TOKEN());
-				if (TOKEN("+-")) num.append(last.TOKEN());
+				num.append(token.getText());
+				if (ATOM("+-")) num.append(token.getText());
 				// exponent always decimal digits
 				if (!NUMBER_DEC()) {
 					return expressionError(mark, "missing value of exponent");
 				}
-				num.append(last.NUMBER());
+				num.append(token.getText());
 			}
 			
 			// postfixes
 			if (isReal) {
-				if (TOKEN("fF")) {
+				if (ATOM("fF")) {
 					// float
-				} else if (TOKEN("lL")) {
+				} else if (ATOM("lL")) {
 					// double
 				}
 			} else {
-				if (TOKEN("fF")) {
+				if (ATOM("fF")) {
 					isReal = true;
 					// float again
 				} else {
-					TOKEN("uU"); // unsigned
-					TOKEN("lL"); // long
+					ATOM("uU"); // unsigned
+					ATOM("lL"); // long
 				}
 			}
 			

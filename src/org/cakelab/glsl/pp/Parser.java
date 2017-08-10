@@ -6,6 +6,16 @@ import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
+import org.cakelab.glsl.pp.tokens.TAny;
+import org.cakelab.glsl.pp.tokens.TCharSequence;
+import org.cakelab.glsl.pp.tokens.TComment;
+import org.cakelab.glsl.pp.tokens.TEndl;
+import org.cakelab.glsl.pp.tokens.TIdentifier;
+import org.cakelab.glsl.pp.tokens.TAtom;
+import org.cakelab.glsl.pp.tokens.TLineContinuation;
+import org.cakelab.glsl.pp.tokens.TNumber;
+import org.cakelab.glsl.pp.tokens.TWhitespace;
+import org.cakelab.glsl.pp.tokens.Token;
 
 public abstract class Parser {
 
@@ -105,95 +115,10 @@ public abstract class Parser {
 	}
 	
 
-	public class LastToken {
-		private String IDENTIFIER;
-		/** contains the string only, not including the limiters (e.g. '"') */
-		private String CHAR_SEQUENCE;
-		private String ANYTHING;
-		private String NUMBER;
-		private int TOKEN;
-		private String WHITESPACE;
-		private String ENDL;
-		
-		public void erase() {
-			IDENTIFIER = null;
-			CHAR_SEQUENCE = null;
-			ANYTHING = null;
-			NUMBER = null;
-			TOKEN = -1;
-			WHITESPACE = null;
-			ENDL = null;
-		}
-		
-		public String IDENTIFIER() {
-			return IDENTIFIER;
-		}
-		
-		public void IDENTIFIER(String iDENTIFIER) {
-			erase();
-			IDENTIFIER = iDENTIFIER;
-		}
-		
-		public String CHAR_SEQUENCE() {
-			return CHAR_SEQUENCE;
-		}
-
-		public void CHAR_SEQUENCE(String chars) {
-			erase();
-			CHAR_SEQUENCE = chars;
-		}
-		
-		public String ANYTHING() {
-			return ANYTHING;
-		}
-
-		public void ANYTHING(String aNYTHING) {
-			erase();
-			ANYTHING = aNYTHING;
-		}
-
-		public String NUMBER() {
-			return NUMBER;
-		}
-
-		public void NUMBER(String nUMBER) {
-			erase();
-			NUMBER = nUMBER;
-		}
-
-		public int TOKEN() {
-			return TOKEN;
-		}
-
-		public void TOKEN(int token) {
-			erase();
-			TOKEN = token;
-		}
-
-		public String WHITESPACE() {
-			return WHITESPACE;
-		}
-		
-		public void WHITESPACE(String c) {
-			erase();
-			WHITESPACE = c;
-		}
-
-		public void ENDL(String endl) {
-			erase();
-			ENDL = endl;
-		}
-		public String ENDL() {
-			return ENDL;
-		}
-		
-	}
-
-
 
 	protected IScanner in;
 	protected ErrorHandler errorHandler = new StandardErrorHandler();
-	protected LastToken last = new LastToken();
+	protected Token token = null;
 
 	
 	public void setErrorHandler(ErrorHandler errorHandler) {
@@ -344,10 +269,14 @@ public abstract class Parser {
 	}
 
 
-	
-	protected boolean TOKEN(String set) {
+	/** single input item (single character) */
+	protected boolean ATOM(String set) {
+		token = null;
 		if (0 <= set.indexOf(in.lookahead(1))) {
-			last.TOKEN(in.consume());
+			Location start = in.location();
+			int c = in.consume();
+			
+			token = new TAtom(interval(start), String.valueOf((char)c));
 			return true;
 		}
 		return false;
@@ -359,15 +288,17 @@ public abstract class Parser {
 	 * @return
 	 */
 	protected boolean ENDL() {
+		token = null;
+		Location start = in.location();
 		if (optional("\r\n")) {
-			last.ENDL("\r\n");
+			token = new TEndl(interval(start), "\r\n");
 			return true;
 		} else if (optional('\n')) {
-			last.ENDL("\n");
+			token = new TEndl(interval(start), "\n");
 			return true;
 		} else if (LA1() == Scanner.EOF) {
 			in.consume();
-			last.ENDL("");
+			token = new TEndl(interval(start), "");
 			return true;
 		} else {
 			return false;
@@ -389,7 +320,8 @@ public abstract class Parser {
 	 * will not be decoded!
 	 * */
 	protected boolean CHAR_SEQUENCE(char startDelimiter, char endDelimiter) {
-		last.CHAR_SEQUENCE(null);
+		token = null;
+		Location start = in.location();
 		boolean result = false;
 		if (optional(startDelimiter)){
 			result = true;
@@ -422,7 +354,7 @@ public abstract class Parser {
 						string.append((char)in.consume());
 						if (NUMBER_HEX(4)) {
 							// TODO [3] support 8 byte hex
-							string.append(last.NUMBER());
+							string.append(token.getText());
 						} else {
 							syntaxError("missing digits to unicode escape sequence");
 						}
@@ -431,7 +363,7 @@ public abstract class Parser {
 					default:
 						if (NUMBER_OCT(3)) {
 							// 1-3 octal digits
-							string.append(last.NUMBER());
+							string.append(token.getText());
 						} else {
 							// any other escape sequence (or non-escape sequence)
 							string.append((char)in.consume());
@@ -441,7 +373,7 @@ public abstract class Parser {
 			}
 			mandatory(endDelimiter);
 			string.append(endDelimiter);
-			last.CHAR_SEQUENCE(string.toString());
+			token = new TCharSequence(interval(start), string.toString());
 		}
 		return result;
 	}
@@ -558,7 +490,8 @@ public abstract class Parser {
 	 */
 	protected boolean ANYTHING_IN(String set, int max) {
 		assert(max > 1);
-		last.ANYTHING(null);
+		token = null;
+		Location start = in.location();
 		int c = LA1();
 		if (set.indexOf(c) >= 0) {
 			StringBuffer anything = new StringBuffer();
@@ -568,14 +501,15 @@ public abstract class Parser {
 				c = LA1();
 				max--;
 			} while (set.indexOf(c) >= 0 && max > 0);
-			last.ANYTHING(anything.toString());
+			token = new TAny(interval(start), anything.toString());
 			return true;
 		}
 		return false;
 	}
 
 	protected boolean ANYTHING_UNTIL(char limiter) {
-		last.ANYTHING(null);
+		token = null;
+		Location start = in.location();
 		int c = LA1();
 		if (c != limiter) {
 			StringBuffer anything = new StringBuffer();
@@ -584,7 +518,7 @@ public abstract class Parser {
 				anything.append((char)c);
 				c = LA1();
 			} while(c != limiter);
-			last.ANYTHING(anything.toString());
+			token = new TAny(interval(start), anything.toString());
 			return true;
 		} else {
 			return false;
@@ -597,9 +531,9 @@ public abstract class Parser {
 
 	protected boolean NUMBER_DEC(int max) {
 		assert (max > 0);
-		last.NUMBER(null);
+		token = null;
 		if (ANYTHING_IN("0123456789", max)) {
-			last.NUMBER(last.ANYTHING());
+			token = new TNumber(token.getInterval(), token.getText());
 			return true;
 		} else {
 			return false;
@@ -612,9 +546,8 @@ public abstract class Parser {
 
 	protected boolean NUMBER_OCT(int max) {
 		assert (max > 0);
-		last.NUMBER(null);
 		if (ANYTHING_IN("01234567", max)) {
-			last.NUMBER(last.ANYTHING());
+			token = new TNumber(token.getInterval(), token.getText());
 			return true;
 		} else {
 			return false;
@@ -627,9 +560,8 @@ public abstract class Parser {
 
 	protected boolean NUMBER_HEX(int max) {
 		assert (max > 0);
-		last.NUMBER(null);
 		if (ANYTHING_IN("0123456789abcdefABCDEF", max)) {
-			last.NUMBER(last.ANYTHING());
+			token = new TNumber(token.getInterval(), token.getText());
 			return true;
 		} else {
 			return false;
@@ -644,13 +576,15 @@ public abstract class Parser {
 
 	protected boolean IDENTIFIER() {
 		int c = LA1();
+		Location start = in.location();
+		token = null;
 		if (isAlpha(c)||c == '_') {
 			StringBuffer identifier = new StringBuffer();
 			do {
 				identifier.append((char)in.consume());
 				c = LA1();
 			} while(isAlpha(c)||isDigit(c)||c == '_');
-			last.IDENTIFIER(identifier.toString());
+			token = new TIdentifier(interval(start), identifier.toString());
 			return true;
 		} else {
 			return false;
@@ -666,9 +600,11 @@ public abstract class Parser {
 	 */
 	protected boolean WHITESPACE() {
 		int la = in.lookahead(1);
+		Location start = in.location();
+		token = null;
 		if (isWhite(la)) {
 			in.consume();
-			last.WHITESPACE(Character.toString((char)la));
+			token = new TWhitespace(interval(start), Character.toString((char)la));
 			return true;
 		} else if (line_continuation()) {
 			// To keep the same number of line in the output,
@@ -676,7 +612,7 @@ public abstract class Parser {
 			// sequences. Because it does not matter for 
 			// preprocessors, whether it is \r\n or just \n
 			// we use the shorter one.
-			last.WHITESPACE("\\\n");
+			token = new TLineContinuation(interval(start), "\\\n");
 			return true;
 		} else if (optional("/*")) {
 			// Multiline comments might contain CRLF
@@ -695,7 +631,7 @@ public abstract class Parser {
 			{
 				comment.append("*/");
 			}
-			last.WHITESPACE(comment.toString());
+			token = new TComment(interval(start), comment.toString());
 			return true;
 		} else if (optional("//")) {
 			StringBuffer comment = new StringBuffer("//");
@@ -707,7 +643,7 @@ public abstract class Parser {
 			// The comment is either a text line or at the end of a directive line.
 			// In both types of rules , it is necessary to be able to 
 			// check for the line end (anyway).
-			last.WHITESPACE(comment.toString());
+			token = new TComment(interval(start), comment.toString());
 			return true;
 		} else {
 			return false;
@@ -805,7 +741,7 @@ public abstract class Parser {
 		while (true) {
 			if (WHITESPACE()) {
 				result = true;
-				whites.append(last.WHITESPACE());
+				whites.append(token.getText());
 			} else if (CRLF()) {
 				result = true;
 				whites.append('\n');
@@ -875,8 +811,9 @@ public abstract class Parser {
 			if (isAlpha(next) || isDigit(next) || next == '_' ) {
 				return false;
 			} else {
+				Location start = in.location();
 				in.consume(id.length());
-				last.IDENTIFIER(id);
+				token = new TIdentifier(interval(start), id);
 				return true;
 			}
 		} else {

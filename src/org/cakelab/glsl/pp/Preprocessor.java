@@ -244,9 +244,9 @@ public class Preprocessor extends Parser {
 			
 			Location mark = in.location();
 			if (WHITESPACE()) {
-				s = last.WHITESPACE();
+				s = token.getText();
 			} else if (IDENTIFIER()) {
-				String id = last.IDENTIFIER();
+				String id = token.getText();
 				Macro macro = macros.get(id);
 				if (macro != null) {
 					if (macro_recursion_check(mark, id)) {
@@ -451,7 +451,7 @@ public class Preprocessor extends Parser {
 	private boolean error() {
 		if (optionalIDENTIFIER("error")) {
 			StringBuffer message = new StringBuffer("#error");
-			while(WHITESPACE()) message.append(last.WHITESPACE());
+			while(WHITESPACE()) message.append(token.getText());
 			message.append(read_remaining_line());
 			syntaxError(message.toString());
 			return true;
@@ -468,7 +468,7 @@ public class Preprocessor extends Parser {
 			int line = -1;
 			if (NUMBER_DEC()) {
 				try {
-					line = Integer.valueOf(last.NUMBER());
+					line = Integer.valueOf(token.getText());
 					if (line < 0) throw new NumberFormatException("signed integer");
 				} catch (NumberFormatException e) {
 					syntaxError("not a valid line number. Positive integer allowed only");
@@ -482,7 +482,7 @@ public class Preprocessor extends Parser {
 			int id = -1;
 			if (NUMBER_DEC()) {
 				try {
-					id = Integer.valueOf(last.NUMBER());
+					id = Integer.valueOf(token.getText());
 					if (id < 0) throw new NumberFormatException("signed integer");
 				} catch (NumberFormatException e) {
 					syntaxError("not a valid source identifier. Positive integer allowed only");
@@ -513,7 +513,7 @@ public class Preprocessor extends Parser {
 				syntaxError(start, "no macro name given in #define directive");
 				return result;
 			}
-			String macroName = last.IDENTIFIER();
+			String macroName = token.getText();
 			
 			List<MacroParameter> params = null;
 			if (optional('(')) {
@@ -527,10 +527,10 @@ public class Preprocessor extends Parser {
 						params.add(new MacroParameter(MacroParameter.__VA_ARGS__, this));
 						break;
 					} else if (IDENTIFIER()) {
-						if (last.IDENTIFIER().equals(MacroParameter.__VA_ARGS__)) {
+						if (token.getText().equals(MacroParameter.__VA_ARGS__)) {
 							syntaxWarning(interval(tokenStart), "__VA_ARGS__ can only appear in the expansion of a variadic macro");
 						}
-						params.add(new MacroParameter(last.IDENTIFIER(), this));
+						params.add(new MacroParameter(token.getText(), this));
 					} else if (firstIteration) {
 						// empty parameter list
 						break;
@@ -580,7 +580,7 @@ public class Preprocessor extends Parser {
 	private Text whitespace() {
 		Location start = in.location();
 		if (WHITESPACE()) {
-			return new PPWhitespace(interval(start),last.WHITESPACE());
+			return new PPWhitespace(interval(start),token.getText());
 		} else {
 			return null;
 		}
@@ -591,7 +591,7 @@ public class Preprocessor extends Parser {
 		Location start = in.location();
 		expr = single_hash_expression();
 		if (expr == null && IDENTIFIER()) {
-			String id = last.IDENTIFIER();
+			String id = token.getText();
 			expr = macro_parameter_reference(id);
 			if (expr == null) {
 				expr = new Text(interval(start), id);
@@ -672,7 +672,7 @@ public class Preprocessor extends Parser {
 				MacroParameterReference param = null;
 				while (WHITESPACE());
 				if (IDENTIFIER()) {
-					String id = last.IDENTIFIER();
+					String id = token.getText();
 					param = macro_parameter_reference(id);
 				}
 				
@@ -696,10 +696,10 @@ public class Preprocessor extends Parser {
 	private String preprocessing_token(boolean acceptHashes) {
 		// TODO [3] improve performance by parsing numbers as full token
 		if (IDENTIFIER()) {
-			return last.IDENTIFIER();
+			return token.getText();
 		} else if (CHAR_SEQUENCE('"') || CHAR_SEQUENCE('\'')) {
 			// strings and character constants are not parsed for macro invocations
-			return last.CHAR_SEQUENCE();
+			return token.getText();
 		} else if (!isWhite(LA1()) && !isEndl(LA1()) && !(LA_equals('#') && !acceptHashes)) {
 			int c = in.consume();
 			return String.valueOf((char)c);
@@ -805,9 +805,9 @@ public class Preprocessor extends Parser {
 			} else if (macro_arg_parenthesised(arg)) {
 				// another pair of parenthesis
 			} else if (CHAR_SEQUENCE('"')) {
-				arg.append(last.CHAR_SEQUENCE());
+				arg.append(token.getText());
 			} else if (CHAR_SEQUENCE('\'')) {
-				arg.append(last.CHAR_SEQUENCE());
+				arg.append(token.getText());
 			} else {
 				arg.append((char)in.consume());
 			}
@@ -833,7 +833,7 @@ public class Preprocessor extends Parser {
 		if (location instanceof MacroExpandedLocation) {
 			MacroExpandedLocation mloc = (MacroExpandedLocation)location;
 			Macro macro = mloc.getMacroInvocation().getMacro();
-			if (macro.getName().equals(last.IDENTIFIER())) {
+			if (macro.getName().equals(token.getText())) {
 				return true;
 			} else {
 				// we need to recursively check if this macro invocation was already in
@@ -886,7 +886,7 @@ public class Preprocessor extends Parser {
 				syntaxError("missing identifier to #undef directive");
 				return result;
 			}
-			String macro = last.IDENTIFIER();
+			String macro = token.getText();
 			while(WHITESPACE());
 			if (mandatory_endl()) {
 				macros.remove(macro);
@@ -1026,12 +1026,12 @@ public class Preprocessor extends Parser {
 	private Expression identifier() {
 		Location mark = in.location();
 		if (IDENTIFIER()) {
-			String id = last.IDENTIFIER();
+			String id = token.getText();
 			Macro macro = macros.get(id);
 			if (macro == null) {
-				return new PPUndefinedIdentifier(interval(mark), last.IDENTIFIER());
+				return new PPUndefinedIdentifier(interval(mark), token.getText());
 			} else {
-				return new MacroReference(interval(mark), macros.get(last.IDENTIFIER()));
+				return new MacroReference(interval(mark), macros.get(token.getText()));
 			}
 		}
 		return null;
@@ -1050,9 +1050,9 @@ public class Preprocessor extends Parser {
 			while(WHITESPACE());
 			String path;
 			if (CHAR_SEQUENCE('<','>')) {
-				path = decodeCharSequence(last.CHAR_SEQUENCE(), '<', '>');
+				path = decodeCharSequence(token.getText(), '<', '>');
 			} else if (CHAR_SEQUENCE('"')){
-				path = decodeCharSequence(last.CHAR_SEQUENCE(), '"', '"');
+				path = decodeCharSequence(token.getText(), '"', '"');
 			} else {
 				syntaxError("missing include file path");
 				return result;
