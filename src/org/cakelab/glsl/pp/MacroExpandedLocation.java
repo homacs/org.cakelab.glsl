@@ -38,7 +38,7 @@ import org.cakelab.glsl.pp.ast.MacroInvocation;
  *
  */
 public class MacroExpandedLocation extends Location {
-
+	
 	private MacroInvocation invocation;
 
 	public MacroExpandedLocation(MacroExpandedLocation that) {

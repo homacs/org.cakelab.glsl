@@ -191,7 +191,7 @@ public abstract class Parser {
 	
 	
 	protected Interval interval(Location start) {
-		return new Interval(in.nextLocation(start), in.location());
+		return new Interval(start, in.location());
 	}
 
 	protected Location line_start(Location start) {
@@ -273,7 +273,7 @@ public abstract class Parser {
 	protected boolean ATOM(String set) {
 		token = null;
 		if (0 <= set.indexOf(in.lookahead(1))) {
-			Location start = in.location();
+			Location start = in.nextLocation();
 			int c = in.consume();
 			
 			token = new TAtom(interval(start), String.valueOf((char)c));
@@ -289,7 +289,7 @@ public abstract class Parser {
 	 */
 	protected boolean ENDL() {
 		token = null;
-		Location start = in.location();
+		Location start = in.nextLocation();
 		if (optional("\r\n")) {
 			token = new TEndl(interval(start), "\r\n");
 			return true;
@@ -321,7 +321,7 @@ public abstract class Parser {
 	 * */
 	protected boolean CHAR_SEQUENCE(char startDelimiter, char endDelimiter) {
 		token = null;
-		Location start = in.location();
+		Location start = in.nextLocation();
 		boolean result = false;
 		if (optional(startDelimiter)){
 			result = true;
@@ -483,7 +483,7 @@ public abstract class Parser {
 		return ANYTHING_IN(set, Integer.MAX_VALUE);
 	}
 	
-	/** a following sequence of maximum max characters which does contain characters
+	/** a following sequence of maximum 'max' characters which does contain characters
 	 * of the given set only.
 	 * @param set
 	 * @return
@@ -491,7 +491,7 @@ public abstract class Parser {
 	protected boolean ANYTHING_IN(String set, int max) {
 		assert(max > 1);
 		token = null;
-		Location start = in.location();
+		Location start = in.nextLocation();
 		int c = LA1();
 		if (set.indexOf(c) >= 0) {
 			StringBuffer anything = new StringBuffer();
@@ -509,7 +509,7 @@ public abstract class Parser {
 
 	protected boolean ANYTHING_UNTIL(char limiter) {
 		token = null;
-		Location start = in.location();
+		Location start = in.nextLocation();
 		int c = LA1();
 		if (c != limiter) {
 			StringBuffer anything = new StringBuffer();
@@ -525,6 +525,97 @@ public abstract class Parser {
 		}
 	}
 
+	
+
+
+	protected boolean NUMBER() {
+		Location mark = in.nextLocation();
+		
+		final String DEC_DIGITS = "0123456789";
+		final String HEX_DIGITS = "0123456789abcdefABCDEF";
+		final String DEC_EXPONENT = "eE";
+		final String HEX_EXPONENT = "pP";
+		String exponentPrefixes = DEC_EXPONENT;
+		boolean isReal = false;
+		String digits = DEC_DIGITS;
+		StringBuffer num = new StringBuffer();
+
+		if (optional("0x")) {
+			num.append("0x");
+			digits = HEX_DIGITS;
+			exponentPrefixes = HEX_EXPONENT;
+		} else if (optional("0X")) {
+			num.append("0X");
+			digits = HEX_DIGITS;
+			exponentPrefixes = HEX_EXPONENT;
+		}
+
+
+		if (ANYTHING_IN(digits)) {
+			num.append(token.getText());
+			if (optional('.')) {
+				isReal = true;
+				num.append('.');
+				if (ANYTHING_IN(digits)) num.append(token.getText());
+			}
+		} else if (optional('.')) {
+			isReal = true;
+			num.append('.');
+			if (ANYTHING_IN(digits)) num.append(token.getText());
+			else {
+				syntaxError("number format error: missing digits after '.'");
+				token = new TNumber(interval(mark), num.toString());
+				return true;
+			}
+		} else if (digits == HEX_DIGITS) {
+			syntaxError(mark, "missing number after hex prefix");
+			token = new TNumber(interval(mark), num.toString());
+			return true;
+		} else {
+			// not a number
+			return false;
+		}
+
+		if (num.length() > 0) {
+			if (ATOM(exponentPrefixes)) {
+				isReal = true;
+				num.append(token.getText());
+				if (ATOM("+-")) num.append(token.getText());
+				// exponent always decimal digits
+				if (!NUMBER_DEC()) {
+					syntaxError(mark, "missing value of exponent");
+					token = new TNumber(interval(mark), num.toString());
+					return true;
+				}
+				num.append(token.getText());
+			}
+			
+			// postfixes
+			if (isReal) {
+				if (ATOM("fF")) {
+					// float
+					num.append(token.getText());
+				} else if (ATOM("lL")) {
+					// double
+					num.append(token.getText());
+				}
+			} else {
+				if (ATOM("fF")) {
+					isReal = true;
+					// float again
+					num.append(token.getText());
+				} else {
+					if (ATOM("uU")) num.append(token.getText()); // unsigned
+					if (ATOM("lL")) num.append(token.getText()); // long
+				}
+			}
+			token = new TNumber(interval(mark), num.toString());
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	protected boolean NUMBER_DEC() {
 		return NUMBER_DEC(Integer.MAX_VALUE);
 	}
@@ -576,7 +667,7 @@ public abstract class Parser {
 
 	protected boolean IDENTIFIER() {
 		int c = LA1();
-		Location start = in.location();
+		Location start = in.nextLocation();
 		token = null;
 		if (isAlpha(c)||c == '_') {
 			StringBuffer identifier = new StringBuffer();
@@ -600,7 +691,7 @@ public abstract class Parser {
 	 */
 	protected boolean WHITESPACE() {
 		int la = in.lookahead(1);
-		Location start = in.location();
+		Location start = in.nextLocation();
 		token = null;
 		if (isWhite(la)) {
 			in.consume();
@@ -811,7 +902,7 @@ public abstract class Parser {
 			if (isAlpha(next) || isDigit(next) || next == '_' ) {
 				return false;
 			} else {
-				Location start = in.location();
+				Location start = in.nextLocation();
 				in.consume(id.length());
 				token = new TIdentifier(interval(start), id);
 				return true;

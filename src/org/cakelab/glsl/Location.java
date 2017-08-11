@@ -113,6 +113,7 @@ public class Location {
 		return new Location(this);
 	}
 
+	
 	public Location add(Location offset) {
 		Location result = this.clone();
 		result.pos += offset.pos-POS_START;

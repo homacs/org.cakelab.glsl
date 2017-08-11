@@ -18,7 +18,9 @@ public abstract class TestingBase {
 	protected String warning;
 	protected boolean ignoreWarning = true;
 	protected boolean mirrorToStdout = false;
-
+	protected boolean usePPBuffer = true;
+	
+	
 	protected Parser parser;
 
 	protected final OutputStream DEV_NULL = new OutputStream() {

@@ -37,6 +37,7 @@ import org.cakelab.glsl.lang.ast.XorExpression;
 import org.cakelab.glsl.pp.ast.PPDefinedExpression;
 import org.cakelab.glsl.pp.ast.StringConstant;
 import org.cakelab.glsl.pp.tokens.TAtom;
+import org.cakelab.glsl.pp.tokens.TNumber;
 
 public class ExpressionParser extends Parser {
 	// TODO [1] managing macro expansion locations (especially with overlapping macro invocations through rescan)
@@ -503,7 +504,7 @@ public class ExpressionParser extends Parser {
 
 	public Value character_constant() {
 		// Note: simple C character constants only - no prefixed character constants
-		Location mark = in.location();
+		Location mark = in.nextLocation();
 		if (CHAR_SEQUENCE('\'')) {
 			String text = token.getText();
 			String value = decodeCharSequence(text, '\'', '\'');
@@ -521,7 +522,7 @@ public class ExpressionParser extends Parser {
 	}
 
 	public Value string_literal() {
-		Location mark = in.location();
+		Location mark = in.nextLocation();
 		if (CHAR_SEQUENCE('"')) {
 			String text = token.getText();
 			String value = decodeCharSequence(text, '"', '"');
@@ -531,7 +532,7 @@ public class ExpressionParser extends Parser {
 	}
 
 	private Expression identifier() {
-		Location mark = in.location();
+		Location mark = in.nextLocation();
 		if (IDENTIFIER()) {
 			return new PPUndefinedIdentifier(interval(mark), token.getText());
 		}
@@ -549,7 +550,92 @@ public class ExpressionParser extends Parser {
 	}
 	
 	public Expression number() {
-		Location mark = in.location();
+		if (NUMBER()) {
+			return decodeNumber((TNumber)token);
+		} else {
+			return null;
+		}
+	}
+	
+	
+	private Expression decodeNumber(TNumber token) {
+		final int DEC = 0;
+		final int HEX = 1;
+		int type = DEC;
+		final String HEX_DIGITS = "0123456789abcdef";
+
+		boolean isReal = false;
+		
+		//
+		// Decode value
+		//
+		try {
+			
+			String text = token.getText().toLowerCase();
+			
+
+			
+			if (text.startsWith("0x")) {
+				type = HEX;
+			}
+
+			isReal = (text.indexOf('.') >= 0) ;
+			
+			if (type != HEX && text.endsWith("f")) {
+				isReal = true;
+				text = text.substring(0, text.length()-1);
+			}
+			
+			
+			if (isReal) {
+				// postfix 'f' was removed above
+				if (text.endsWith("l")) text = text.substring(0, text.length()-1);
+				
+				Double value;
+				if (type == HEX) {
+					// hexadecimal with fracture
+					// not supported by Java, so we need to decode it manually
+					String[] part = text.split("p");
+					double exp;
+					if (part.length == 2) exp = Double.valueOf(part[1]);
+					else exp = 0;
+
+					String base = part[0];
+					part = base.split("\\.");
+					if (base.startsWith("0x.")) {
+						value = 0.0;
+					} else {
+						value = (double)Long.decode(part[0]); // intpart
+					}
+					if (part.length == 2) {
+						String fract = part[1];
+						double pow = 1.0/16;
+						for (int i = 0; i < fract.length(); i++) {
+							value += HEX_DIGITS.indexOf(fract.charAt(i)) * pow;
+							pow /= 16;
+						}
+					}
+					
+					value *= Math.pow(2.0, exp);
+				} else {
+					value = Double.parseDouble(text);
+				}
+				return new ConstantValue<Double>(token.getInterval(), value);
+			} else {
+				if (text.endsWith("l")) text = text.substring(0, text.length()-1);
+				if (text.endsWith("u")) text = text.substring(0, text.length()-1);
+				Long value = Long.decode(text);
+				return new ConstantValue<Long>(token.getInterval(), value, false);
+			}
+		} catch (NumberFormatException e) {
+			// this should not occur at this stage, because the preprocessor already checked the syntax
+			return expressionError(token.getStart(), "not a valid number '" + token.getText() + "'");
+		}
+	}
+
+
+	public Expression number_old() {
+		Location mark = in.nextLocation();
 		
 		final String DEC_DIGITS = "0123456789";
 		final String HEX_DIGITS = "0123456789abcdefABCDEF";
@@ -560,8 +646,12 @@ public class ExpressionParser extends Parser {
 		String digits = DEC_DIGITS;
 		StringBuffer num = new StringBuffer();
 		
-		if (optional("0x")|| optional("0X")) {
+		if (optional("0x")) {
 			num.append("0x");
+			digits = HEX_DIGITS;
+			exponentPrefixes = HEX_EXPONENT;
+		} else if (optional("0X")) {
+			num.append("0X");
 			digits = HEX_DIGITS;
 			exponentPrefixes = HEX_EXPONENT;
 		}

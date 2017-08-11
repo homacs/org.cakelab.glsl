@@ -4,6 +4,8 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 
 import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.pp.tokens.TEndl;
+import org.cakelab.glsl.pp.tokens.Token;
 
 public class PreprocessedOutput implements PreprocessedOutputSink {
 
@@ -15,19 +17,19 @@ public class PreprocessedOutput implements PreprocessedOutputSink {
 	}
 
 	@Override
-	public void print(Interval origin, String s) {
-		out.print(s);
+	public void print(Token t) {
+		out.print(t.getText());
 	}
 	
 	@Override
-	public void println(Interval origin) {
-		print(origin, "\n");
+	public void println(Interval interval) {
+		print(new TEndl(interval, "\n"));
 	}
 
 	@Override
-	public void println(Interval origin, String string) {
-		print(origin, string);
-		println(origin);
+	public void println(Token t) {
+		print(t);
+		println(new Interval(t.getEnd(),t.getEnd()));
 	}
 	
 	

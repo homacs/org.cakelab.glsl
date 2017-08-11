@@ -4,29 +4,17 @@ import java.util.Arrays;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.pp.LocationMap.SimpleArrayList.Comparator;
-import org.cakelab.glsl.pp.ast.MacroInvocation;
+import org.cakelab.glsl.pp.tokens.TAny;
+import org.cakelab.glsl.pp.tokens.TEndl;
+import org.cakelab.glsl.pp.tokens.Token;
 
 public class LocationMap {
-
-	public class Mark {
-
-		private int lines;
-		private int macros;
-
-		public Mark(int lines, int macros) {
-			this.lines = lines;
-			this.macros = macros;
-		}
-
-	}
 
 	public static class SimpleArrayList<T> {
 
 		public interface Comparator<K, T> {
 			int compare(K key, T obj);
 		}
-
 
 		private static final int CAPACITY_INCREASE = 512;
 		int size = 0;
@@ -77,114 +65,101 @@ public class LocationMap {
 	}
 
 	
-	public static class Entry {
-		Location loc;
-		int outputPos;
-		
-		public Entry(Location loc, int outputPos) {
-			this.loc = loc;
-			this.outputPos = outputPos;
+	static class Range {
+		public Range(Interval interval, int start) {
+			in = interval;
+			outStart = start;
 		}
-		
+		Interval in;
+		int outStart;
 	}
 	
+	int outEnd = 0;
+	SimpleArrayList<Range> ranges = new SimpleArrayList<Range>();
+	Range previous = null;
 	
-	public static class TextLineEntry extends Entry {
-		public TextLineEntry(Location loc, int outputPos) {
-			super(loc, outputPos);
-		}
-		
-	}
-
-	public static class MacroCallEntry extends Entry {
-		
-		MacroInvocation macroInvokation;
-		int outputEnd; // end position in preprocessor output
-
-		public MacroCallEntry(MacroInvocation call, int outputStart, int outputEnd) {
-			super(call.getStart(), outputStart);
-			this.outputEnd = outputEnd;
-			this.macroInvokation = call;
-		}
-
-		public boolean contains(int outputPos) {
-			return outputPos >= this.outputPos && outputPos <= this.outputEnd;
-		}
-		
-	}
-
-	SimpleArrayList<TextLineEntry> lines = new SimpleArrayList<TextLineEntry>();
-	
-	SimpleArrayList<MacroCallEntry> macros = new SimpleArrayList<MacroCallEntry>();
-
-	public void reportLineEnd(Location loc, int outputPosition) {
-		lines.add(new TextLineEntry(loc, outputPosition+1));
-	}
-	
-	public void reportMacroCall(MacroInvocation call, int outputStart, int outputEnd) {
-		macros.add(new MacroCallEntry(call, outputStart, outputEnd));
-	}
-	
-	/**
-	 * Report a switch of location (input source and/or line number).
-	 * 
-	 * A location switch may override a previous text line start.
-	 * 
-	 * @param location
-	 * @param outputPos
-	 */
-	public void reportLocationSwitch(Location location, int outputPos) {
-		int lastLine = lines.size()-1;
-		if (lastLine>=0 && lines.get(lastLine).outputPos == outputPos) {
-			// if report refers to the same location then
-			// --> overwrite last text line entry
-			lines.discardAll(lastLine);
-		}
-		
-	}
-
-	
-	public Mark mark() {
-		return new Mark(lines.size(), macros.size());
-	}
-	
-	public void rewind(Mark mark) {
-		lines.discardAll(mark.lines);
-		macros.discardAll(mark.macros);
-	}
-	
-	
-	private Entry find(int outputPos) {
-		Comparator<Integer, MacroCallEntry> compM = new SimpleArrayList.Comparator<Integer,MacroCallEntry>() {
-			@Override
-			public int compare(Integer key, MacroCallEntry obj) {
-				return obj.outputPos - key;
-			}
-		};
-		Comparator<Integer, TextLineEntry> compT = new SimpleArrayList.Comparator<Integer,TextLineEntry>() {
-			@Override
-			public int compare(Integer key, TextLineEntry obj) {
-				return obj.outputPos - key;
-			}
-		};
-		int index = macros.find(outputPos, compM);
-		
-		MacroCallEntry macroCallEntry = macros.get(index);
-		if (macroCallEntry.contains(outputPos)) {
-			return macroCallEntry;
+	public void report(Token t, int end) {
+		Interval interval = t.getInterval();
+		assert (sameSource(interval.getStart(), interval.getEnd()));
+		if (!sameLine(interval.getStart(), interval.getEnd())) {
+			split(t, end);
+			return;
 		} else {
-			index = lines.find(outputPos, compT);
-			return lines.get(index);
+			if (previous == null || !adjacent(interval.getStart())) {
+				appendNew(interval, end);
+			} else {
+				extendPrevious(interval, end);
+			}
+			
+			if (t instanceof TEndl) {
+				// cut at each newline
+				previous = null;
+			}
 		}
 	}
-	
-	
-	private Location textLocation(Entry entry, int outputPos) {
-		int offset = entry.outputPos - outputPos;
-		int pos = ((Location)entry.loc).getPosition() + offset;
-		int column = entry.loc.getColumn() + offset;
-		int line = entry.loc.getLine();
-		return new Location(entry.loc.getSourceIdentifier(), pos, line, column);
+
+	private void split(Token t, int end) {
+		String text = t.getText();
+		String[] lines = text.split("\n");
+		Location inStart = t.getStart();
+		int outEnd = end - t.length();
+		int last = lines.length-1;
+		for (int i = 0; i <= last; i++) {
+			String line = lines[i];
+			if (i != last) line += "\n";
+			if (line.length()>0) {
+				Location inEnd = inStart.clone();
+				locationAdd(inEnd, line.length());
+				if ( i == last && lessthan(inEnd, t.getEnd())) inEnd = t.getEnd();
+				outEnd += line.length();
+				Interval interval = new Interval(inStart, inEnd);
+				report(new TAny(interval, line), outEnd);
+				inStart = inEnd;
+				inStart.nextLine();
+			}
+		}
+		assert (outEnd == end);
 	}
 
+	private boolean lessthan(Location l1, Location l2) {
+		if (l1.getLine() < l2.getLine()) return true;
+		if (l1.getColumn() < l2.getColumn()) return true;
+		return false;
+	}
+
+	private void locationAdd(Location loc, int n) {
+		loc.setColumn(loc.getColumn()+n);
+	}
+
+	private void extendPrevious(Interval interval, int end) {
+		previous.in.setEnd(interval.getEnd());
+		outEnd = end+1;
+	}
+
+	private void appendNew(Interval interval, int end) {
+		previous = new Range(interval, outEnd);
+		ranges.add(previous);
+		outEnd = end+1;
+	}
+
+	private boolean sameLine(Location start, Location end) {
+		return start.getLine() == end.getLine();
+	}
+
+	private boolean sameSource(Location start, Location end) {
+		if (start.getClass() != end.getClass()) {
+			return false;
+		} else if (start instanceof MacroExpandedLocation) {
+			return ((MacroExpandedLocation)start).getMacroInvocation() == ((MacroExpandedLocation)end).getMacroInvocation();
+		} else {
+			return start.getSourceIdentifier().equals(end.getSourceIdentifier());
+		}
+	}
+
+	private boolean adjacent(Location start) {
+		Location previousEnd = previous.in.getEnd();
+		return (sameSource(previousEnd, start) && previousEnd.getPosition()+1 == start.getPosition());
+	}
+	
+	
 }

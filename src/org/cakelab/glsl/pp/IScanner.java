@@ -63,7 +63,6 @@ public interface IScanner {
 	
 	public boolean atColumnStart();
 
-	public Location nextLocation(Location location);
 
 	public Location nextLocation();
 

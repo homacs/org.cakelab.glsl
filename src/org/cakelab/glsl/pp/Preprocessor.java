@@ -29,6 +29,10 @@ import org.cakelab.glsl.pp.ast.PPIfdefScope;
 import org.cakelab.glsl.pp.ast.PPIfndefScope;
 import org.cakelab.glsl.pp.ast.PPStringifyExpression;
 import org.cakelab.glsl.pp.ast.Text;
+import org.cakelab.glsl.pp.tokens.TAny;
+import org.cakelab.glsl.pp.tokens.TAtom;
+import org.cakelab.glsl.pp.tokens.TIdentifier;
+import org.cakelab.glsl.pp.tokens.Token;
 import org.cakelab.glsl.pp.ast.PPWhitespace;
 
 public class Preprocessor extends Parser {
@@ -215,7 +219,7 @@ public class Preprocessor extends Parser {
 			if (output == null) {
 				return false;
 			} else {
-				Location mark = in.location();
+				Location mark = in.nextLocation();
 				if (CRLF()) out.println(interval(mark));
 				else if (LA1() != IScanner.EOF) {
 					syntaxError("invalid tokens");
@@ -236,22 +240,23 @@ public class Preprocessor extends Parser {
 	 * 
 	 * 
 	 */
-	private String text(boolean print, boolean acceptHashes) {
-		StringBuffer result = new StringBuffer();
-		String s;
+	private List<Token> text_tokens(boolean print, boolean acceptHashes) {
+		List<Token> result = new ArrayList<Token>();
+		Token t;
 		do {
-			s = null;
+			t = null;
 			
-			Location mark = in.location();
+			Location mark = in.nextLocation();
 			if (WHITESPACE()) {
-				s = token.getText();
+				t = token;
 			} else if (IDENTIFIER()) {
-				String id = token.getText();
-				Macro macro = macros.get(id);
+				
+				TIdentifier id = (TIdentifier) token;
+				Macro macro = macros.get(id.getText());
 				if (macro != null) {
-					if (macro_recursion_check(mark, id)) {
+					if (macro_recursion_check(mark, id.getText())) {
 						// macro cannot call itself, so its just a string
-						s = id;
+						t = id;
 					} else {
 						MacroReference reference = new MacroReference(interval(mark), macro);
 						
@@ -276,7 +281,7 @@ public class Preprocessor extends Parser {
 							} else {
 								// not a function macro invocation, just an identifier.
 								invocation = null;
-								s = id;
+								t = id;
 							}
 						}
 						
@@ -287,23 +292,33 @@ public class Preprocessor extends Parser {
 						}
 					}
 				} else {
-					s = id;
+					t = id;
 				}
 			} else {
-				s = preprocessing_token(acceptHashes);
+				t = preprocessing_token(acceptHashes);
 			}
 
 			
 			// store and forward output
-			if (s != null) {
-				result.append(s);
-				if (print) out.print(interval(mark), s);
+			if (t != null) {
+				result.add(t);
+				if (print) out.print(t);
 			} else {
 				break;
 			}
 			
 		} while (true);
 		
+		return result;
+	}
+
+	
+	private String text(boolean print, boolean acceptHashes) {
+		StringBuffer result = new StringBuffer();
+		List<Token> tokens = text_tokens(print,acceptHashes);
+		for (Token t : tokens) {
+			result.append(t.getText());
+		}
 		return result.toString();
 	}
 
@@ -434,13 +449,13 @@ public class Preprocessor extends Parser {
 	private boolean pragma() {
 		// TODO [1] implement pragma
 		if (optionalIDENTIFIER("pragma")) {
-			String s;
 			// all preprocessing tokens except whitespace
-			ArrayList<String> tokens = new ArrayList<String>();
+			Token t;
+			ArrayList<Token> tokens = new ArrayList<Token>();
 			do {
-				s = preprocessing_token(true);
-				if (s != null) tokens.add(s);
-			} while(s != null || WHITESPACE());
+				t = preprocessing_token(true);
+				if (t != null) tokens.add(t);
+			} while(t != null || WHITESPACE());
 			mandatory_endl();
 			return true;
 		} else {
@@ -508,7 +523,7 @@ public class Preprocessor extends Parser {
 		if (optionalIDENTIFIER("define")) {
 			result = true;
 			while(WHITESPACE());
-			Location start = in.location();
+			Location start = in.nextLocation();
 			if (!IDENTIFIER()) {
 				syntaxError(start, "no macro name given in #define directive");
 				return result;
@@ -522,7 +537,7 @@ public class Preprocessor extends Parser {
 				boolean firstIteration = true;
 				do {
 					while(WHITESPACE());
-					Location tokenStart = in.location();
+					Location tokenStart = in.nextLocation();
 					if (DOTS()) {
 						params.add(new MacroParameter(MacroParameter.__VA_ARGS__, this));
 						break;
@@ -578,7 +593,7 @@ public class Preprocessor extends Parser {
 	}
 
 	private Text whitespace() {
-		Location start = in.location();
+		Location start = in.nextLocation();
 		if (WHITESPACE()) {
 			return new PPWhitespace(interval(start),token.getText());
 		} else {
@@ -588,7 +603,7 @@ public class Preprocessor extends Parser {
 
 	private Expression non_concat_expression() {
 		Expression expr;
-		Location start = in.location();
+		Location start = in.nextLocation();
 		expr = single_hash_expression();
 		if (expr == null && IDENTIFIER()) {
 			String id = token.getText();
@@ -599,9 +614,9 @@ public class Preprocessor extends Parser {
 		}
 		if (expr == null) {
 			// TODO [6] can be optimised
-			String s = preprocessing_token(false); // anything not CRLF
+			Token s = preprocessing_token(false); // anything not CRLF
 			if (s != null) {
-				expr = new Text(new Interval(start, in.location()), s);
+				expr = new Text(s.getInterval(), s.getText());
 			}
 		}
 		return expr;
@@ -612,11 +627,11 @@ public class Preprocessor extends Parser {
 	 *  
 	 */
 	private Expression concat_expression(List<Expression> replacement_list) {
-		Location operatorStart = in.location();
+		Location operatorStart = in.nextLocation();
 		if (optional("##")) {
 			Location operatorEnd = in.location();
 			//
-			// find last non whitespace token sequence
+			// rewind to last non whitespace token in replacement list
 			//
 			Expression left = null;
 			for (int i = replacement_list.size()-1; i >= 0; i--) {
@@ -648,7 +663,7 @@ public class Preprocessor extends Parser {
 
 
 	private MacroParameterReference macro_parameter_reference(String id) {
-		Location mark = in.location();
+		Location mark = in.nextLocation();
 		MacroParameter param = currentMacroDefinition.getParameter(id);
 		if (param != null) {
 			return new MacroParameterReference(interval(mark), param);
@@ -659,7 +674,7 @@ public class Preprocessor extends Parser {
 	}
 
 	private Expression single_hash_expression() {
-		Location mark = in.location();
+		Location mark = in.nextLocation();
 		if (optional('#')) {
 			assert !LA_equals('#') : "reminder: scanning for ## has to appear before # scanning";
 			
@@ -693,21 +708,22 @@ public class Preprocessor extends Parser {
 	
 
 	
-	private String preprocessing_token(boolean acceptHashes) {
-		// TODO [3] improve performance by parsing numbers as full token
+	private Token preprocessing_token(boolean acceptHashes) {
 		if (IDENTIFIER()) {
-			return token.getText();
+			return token;
 		} else if (CHAR_SEQUENCE('"') || CHAR_SEQUENCE('\'')) {
 			// strings and character constants are not parsed for macro invocations
-			return token.getText();
+			return token;
+		} else if (NUMBER()) {
+			return token;
 		} else if (!isWhite(LA1()) && !isEndl(LA1()) && !(LA_equals('#') && !acceptHashes)) {
+			Location start = in.nextLocation();
 			int c = in.consume();
-			return String.valueOf((char)c);
+			return new TAtom(interval(start), String.valueOf((char)c));
 		} else {
 			return null;
 		}
 	}
-
 
 	private List<Text> macro_argument_list(Macro macro) {
 		
@@ -721,7 +737,7 @@ public class Preprocessor extends Parser {
 			if (!LA_equals(')')) {
 				do {
 					while(whitespace_crlf_sequence());
-					Location paramStart = in.location();
+					Location paramStart = in.nextLocation();
 					if (hasVarArgs && arguments.size() == numParameters-1) {
 						StringBuffer varargs = new StringBuffer();
 						macro_variadic_arguments(varargs);
@@ -808,6 +824,8 @@ public class Preprocessor extends Parser {
 				arg.append(token.getText());
 			} else if (CHAR_SEQUENCE('\'')) {
 				arg.append(token.getText());
+			} else if (NUMBER()) {
+				arg.append(token.getText());
 			} else {
 				arg.append((char)in.consume());
 			}
@@ -869,7 +887,7 @@ public class Preprocessor extends Parser {
 			in = new ScannerManager(scanner);
 			String s = text(false, true);
 			scanner.consume();
-			assert (!CRLF()) : "internal error: ENDL has to be replaced by ' ' during argument parsing";
+			assert (!CRLF()) : "internal error: CRLF has to be replaced by ' ' during argument parsing";
 			assert (eof.occurred());
 			return s;
 		} finally {
@@ -1011,27 +1029,23 @@ public class Preprocessor extends Parser {
 	 */
 	public Expression directive_condition() {
 
-		// get *macro expanded* remainder of current line
-		Location textOrigin = in.location();
-		
 		// retrieve macro expanded remainder of current line 
-		String text = text(false, true);
+		List<Token> tokens = text_tokens(false, true);
 		
 		// and parse that macro expanded text for the expression
 		// FIXME condition parsing requires preprocessed output scanner
-		ExpressionParser parser = new ExpressionParser(ScannerManager.createPreprocessedOutputScanner(textOrigin, text), errorHandler);
+		ExpressionParser parser = new ExpressionParser(ScannerManager.createPreprocessedTokensScanner(tokens), errorHandler);
 		return parser.expression();
 	}
 	
 	private Expression identifier() {
-		Location mark = in.location();
 		if (IDENTIFIER()) {
 			String id = token.getText();
 			Macro macro = macros.get(id);
 			if (macro == null) {
-				return new PPUndefinedIdentifier(interval(mark), token.getText());
+				return new PPUndefinedIdentifier(token.getInterval(), token.getText());
 			} else {
-				return new MacroReference(interval(mark), macros.get(token.getText()));
+				return new MacroReference(token.getInterval(), macros.get(token.getText()));
 			}
 		}
 		return null;
@@ -1044,15 +1058,18 @@ public class Preprocessor extends Parser {
 			if (allowInclude) {
 				result = true;
 			} else {
-				syntaxError("Directive #include is disabled.");
+				syntaxError(token.getStart(), "Directive #include is disabled.");
 				result = false;
 			}
 			while(WHITESPACE());
 			String path;
+			Token tpath = null;
 			if (CHAR_SEQUENCE('<','>')) {
-				path = decodeCharSequence(token.getText(), '<', '>');
+				tpath = token;
+				path = decodeCharSequence(tpath.getText(), '<', '>');
 			} else if (CHAR_SEQUENCE('"')){
-				path = decodeCharSequence(token.getText(), '"', '"');
+				tpath = token;
+				path = decodeCharSequence(tpath.getText(), '"', '"');
 			} else {
 				syntaxError("missing include file path");
 				return result;
@@ -1061,7 +1078,7 @@ public class Preprocessor extends Parser {
 			
 			Resource resource = resourceManager.resolve(path);
 			if (resource == null) {
-				syntaxWarning("resource '" + path + "' not found");
+				syntaxWarning(tpath.getStart(), "resource '" + path + "' not found");
 				return result;
 			}
 			
@@ -1072,12 +1089,12 @@ public class Preprocessor extends Parser {
 
 			// exec include
 			
-			Location mark = in.location(); // <-- points to start of next line in current input (or EOF)
+			Location mark = in.nextLocation(); // <-- points to start of next line in current input (or EOF)
 			IScanner includeScanner = ScannerManager.createScanner(resource.getIdentifier(), resource.getData());
 			pushScanner(includeScanner);
 			EofFuture eof = null;
 			if (insertLineDirectives) {
-				out.println(interval(mark), "#line 1 " + resource.getIdentifier());
+				out.println(new TAny(interval(mark), "#line 1 " + resource.getIdentifier()));
 				eof = new IScanner.EofFuture() {
 					@Override
 					public void run() {
@@ -1087,7 +1104,7 @@ public class Preprocessor extends Parser {
 						}
 						// add another #line directive iff we will resume parsing
 						if (!in.eof()) {
-							out.println(interval(mark), "#line " + mark.getLine() + ' ' + mark.getSourceIdentifier());
+							out.println(new TAny(interval(mark), "#line " + mark.getLine() + ' ' + mark.getSourceIdentifier()));
 						}
 						super.run();
 					}

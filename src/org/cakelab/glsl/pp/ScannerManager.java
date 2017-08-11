@@ -2,10 +2,13 @@ package org.cakelab.glsl.pp;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Stack;
 
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
+import org.cakelab.glsl.pp.tokens.Token;
 
 public class ScannerManager implements IScanner {
 
@@ -51,7 +54,7 @@ public class ScannerManager implements IScanner {
 
 	@Override
 	public boolean eof() {
-		return (scanners.isEmpty());
+		return (scanners.isEmpty() || scanners.size() == 1 && top.eof());
 	}
 
 	@Override
@@ -78,13 +81,9 @@ public class ScannerManager implements IScanner {
 		}
 		// should not happen, because parser checks lookahead before it reads
 		assert (top != null) : "internal error: parser reading beyond EOF";
-		
-		lastConsumed = top;
+		if (top.eof()) pop();
 		top.consume(n);
-		while (top != null && (top.eof())) {
-			pop();
-			if (scanners.size() > 1 && top.remaining() == 0) top.consume();
-		}
+		lastConsumed = top;
 	}
 
 	@Override
@@ -95,11 +94,25 @@ public class ScannerManager implements IScanner {
 
 	@Override
 	public Location location() {
-		if (top != null) return top.location();
-		else if (lastConsumed != null) return lastConsumed.location();
+		if (lastConsumed != null) return lastConsumed.location();
+		else if (top != null) return top.location();
 		else throw new Error("internal error: input not initialised");
 	}
 
+	@Override
+	public Location nextLocation() {
+		if (top != null) {
+			ListIterator<IScanner> iterator = scanners.listIterator(scanners.size()-1);
+			IScanner s = top;
+			while (s.remaining() == 0 && iterator.hasPrevious()) {
+				s = iterator.previous();
+			}
+			return s.nextLocation();
+		}
+		else if (lastConsumed != null) return lastConsumed.nextLocation();
+		else return null;
+	}
+	
 	@Override
 	public void setVirtualLocation(int line) {
 		top.setVirtualLocation(line);
@@ -116,19 +129,6 @@ public class ScannerManager implements IScanner {
 		return top.atColumnStart();
 	}
 
-	@Override
-	public Location nextLocation(Location location) {
-		if (top != null) return top.nextLocation(location);
-		else if (lastConsumed != null) return lastConsumed.nextLocation(location);
-		else return null;
-	}
-
-	@Override
-	public Location nextLocation() {
-		if (top != null) return top.nextLocation();
-		else if (lastConsumed != null) return lastConsumed.nextLocation();
-		else return null;
-	}
 
 	@Override
 	public void dismiss() {
@@ -159,6 +159,10 @@ public class ScannerManager implements IScanner {
 
 	public static IScanner createScanner(String identifier, InputStream data) {
 		return new Scanner(identifier, data);
+	}
+
+	public static IScanner createPreprocessedTokensScanner(List<Token> tokens) {
+		return new PPTokenScanner(tokens);
 	}
 
 }
