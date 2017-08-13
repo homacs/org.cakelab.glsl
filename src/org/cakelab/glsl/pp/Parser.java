@@ -2,7 +2,11 @@ package org.cakelab.glsl.pp;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
+import org.cakelab.glsl.Resource;
+import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.lang.EvaluationException;
+import org.cakelab.glsl.lang.ast.ConstantValue;
+import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
@@ -14,6 +18,7 @@ import org.cakelab.glsl.pp.tokens.TIdentifier;
 import org.cakelab.glsl.pp.tokens.TAtom;
 import org.cakelab.glsl.pp.tokens.TLineContinuation;
 import org.cakelab.glsl.pp.tokens.TNumber;
+import org.cakelab.glsl.pp.tokens.TPunctuator;
 import org.cakelab.glsl.pp.tokens.TWhitespace;
 import org.cakelab.glsl.pp.tokens.Token;
 
@@ -49,18 +54,28 @@ public abstract class Parser {
 
 
 	public static class StandardErrorHandler implements ErrorHandler {
+		protected ResourceManager resources;
 
 		
 		protected void printError(Location origin, String msg) {
-			System.err.println(origin.toString() + ": error: " + msg);
+			System.err.println(toString(origin) + ": error: " + msg);
+		}
+
+		private String toString(Location location) {
+			String resource = location.getSourceIdentifier();
+			if (resources != null) {
+				Resource r = resources.getResourceById(resource);
+				if (r != null) resource = r.getPath();
+			}
+			return resource + ':' + location.getLine() + ':' + location.getColumn();
 		}
 
 		protected void printNote(Location origin, String msg) {
-			System.out.println(origin.toString() + ": note: " + msg);
+			System.out.println(toString(origin) + ": note: " + msg);
 		}
 
 		protected void printWarning(Location origin, String msg) {
-			System.out.println(origin.toString() + ": warn: " + msg);
+			System.out.println(toString(origin) + ": warn: " + msg);
 		}
 
 
@@ -465,6 +480,80 @@ public abstract class Parser {
 		return string.toString();
 	}
 
+	protected Expression decodeNumber(TNumber token) {
+		final int DEC = 0;
+		final int HEX = 1;
+		int type = DEC;
+		final String HEX_DIGITS = "0123456789abcdef";
+
+		boolean isReal = false;
+		
+		//
+		// Decode value
+		//
+		try {
+			
+			String text = token.getText().toLowerCase();
+			
+
+			
+			if (text.startsWith("0x")) {
+				type = HEX;
+			}
+
+			isReal = (text.indexOf('.') >= 0) ;
+			
+			if (type != HEX && text.endsWith("f")) {
+				isReal = true;
+				text = text.substring(0, text.length()-1);
+			}
+			
+			
+			if (isReal) {
+				// postfix 'f' was removed above
+				if (text.endsWith("l")) text = text.substring(0, text.length()-1);
+				
+				Double value;
+				if (type == HEX) {
+					// hexadecimal with fracture
+					// not supported by Java, so we need to decode it manually
+					String[] part = text.split("p");
+					double exp;
+					if (part.length == 2) exp = Double.valueOf(part[1]);
+					else exp = 0;
+
+					String base = part[0];
+					part = base.split("\\.");
+					if (base.startsWith("0x.")) {
+						value = 0.0;
+					} else {
+						value = (double)Long.decode(part[0]); // intpart
+					}
+					if (part.length == 2) {
+						String fract = part[1];
+						double pow = 1.0/16;
+						for (int i = 0; i < fract.length(); i++) {
+							value += HEX_DIGITS.indexOf(fract.charAt(i)) * pow;
+							pow /= 16;
+						}
+					}
+					
+					value *= Math.pow(2.0, exp);
+				} else {
+					value = Double.parseDouble(text);
+				}
+				return new ConstantValue<Double>(token.getInterval(), value);
+			} else {
+				if (text.endsWith("l")) text = text.substring(0, text.length()-1);
+				if (text.endsWith("u")) text = text.substring(0, text.length()-1);
+				Long value = Long.decode(text);
+				return new ConstantValue<Long>(token.getInterval(), value, false);
+			}
+		} catch (NumberFormatException e) {
+			// this should not occur at this stage, because the preprocessor already checked the syntax
+			return expressionError(token.getStart(), "not a valid number '" + token.getText() + "'");
+		}
+	}
 
 	private boolean isOctDigit(char c) {
 		return '0' <= c  && c <= '7';
@@ -659,11 +748,43 @@ public abstract class Parser {
 		}
 	}
 
+	
+	
 	protected boolean DOTS() {
 		return optional("...");
 	}
 
-
+	protected boolean PUNCTUATOR(boolean acceptHashes) {
+		token = null;
+		Location start = in.nextLocation();
+		
+		final String[] punctuators = {"[","]","(",")","{","}",".","->",
+		"++", "--", "&", "*", "+", "-", "~", "!",
+		"/","%","<<",">>","<",">","<=",">=","==","!=","^","|","&&","||",
+		"?",":",";","...",
+		"=","*=","/=", "%=", "+=", "-=", "<<=", ">>=", "&=", "^=", "|=",
+		/* # ## see blow */ ",",
+		"<:", ":>", "<%", "%>", "%:", "%:%:"};
+		
+		for (String punctuator : punctuators) {
+			if (optional(punctuator)) {
+				token = new TPunctuator(interval(start),punctuator);
+				return true;
+			}
+		}
+		
+		if (acceptHashes) {
+			if (optional("##")) {
+				
+				token = new TPunctuator(interval(start), "##");
+				return true;
+			} else if (optional('#')) {
+				token = new TPunctuator(interval(start), "#");
+				return true;
+			}
+		}
+		return false;
+	}
 
 	protected boolean IDENTIFIER() {
 		int c = LA1();

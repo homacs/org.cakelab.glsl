@@ -15,7 +15,7 @@ public class PPConcatExpression extends BinaryExpression {
 
 	@Override
 	public PrimaryExpression eval() throws EvaluationException {
-		return new Text(this.interval, leftOperand.eval().value().getValue().toString() + rightOperand.eval().value().getValue().toString());
+		return new Text(this.interval, leftOperand.eval().value().getNativeValue().toString() + rightOperand.eval().value().getNativeValue().toString());
 	}
 
 	public Value value() throws EvaluationException {

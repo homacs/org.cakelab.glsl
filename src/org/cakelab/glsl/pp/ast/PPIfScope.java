@@ -4,13 +4,12 @@ import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.BooleanExpression;
 import org.cakelab.glsl.lang.ast.Expression;
-import org.cakelab.glsl.lang.ast.Scope;
 
 public class PPIfScope extends PPGroupScope {
 
 	protected BooleanExpression condition;
 
-	public PPIfScope(Scope parent) {
+	public PPIfScope(PPGroupScope parent) {
 		super(parent);
 	}
 

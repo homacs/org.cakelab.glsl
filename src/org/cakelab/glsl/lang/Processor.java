@@ -23,18 +23,18 @@ public class Processor {
 		right = Type.cast(right, resultType);
 		switch(Type.Rank.of(resultType)) {
 		case BOOL:
-			Boolean leftBool = (Boolean)left.getValue();
-			Boolean rightBool = (Boolean)right.getValue();
+			Boolean leftBool = (Boolean)left.getNativeValue();
+			Boolean rightBool = (Boolean)right.getNativeValue();
 			return new Value(interval, Type._int, Long.valueOf(tolong(leftBool)*tolong(rightBool)));
 		case DOUBLE:
-			return new Value(interval, resultType, ((Double)left.getValue())*((Double)right.getValue()));
+			return new Value(interval, resultType, ((Double)left.getNativeValue())*((Double)right.getNativeValue()));
 		case FLOAT:
-			return new Value(interval, resultType, ((Float)left.getValue())*((Float)right.getValue()));
+			return new Value(interval, resultType, ((Float)left.getNativeValue())*((Float)right.getNativeValue()));
 		case CHAR:
-			return new Value(interval, resultType, ((Character)left.getValue())*((Character)right.getValue()));
+			return new Value(interval, resultType, ((Character)left.getNativeValue())*((Character)right.getNativeValue()));
 		case INT:
 		case UINT:
-			return new Value(interval, resultType, ((Long)left.getValue())*((Long)right.getValue()));
+			return new Value(interval, resultType, ((Long)left.getNativeValue())*((Long)right.getNativeValue()));
 		case NON_SCALAR:
 			return new Value(interval, resultType, null);
 		}
@@ -49,18 +49,18 @@ public class Processor {
 			right = Type.cast(right, resultType);
 			switch(Type.Rank.of(resultType)) {
 			case BOOL:
-				Boolean leftBool = (Boolean)left.getValue();
-				Boolean rightBool = (Boolean)right.getValue();
+				Boolean leftBool = (Boolean)left.getNativeValue();
+				Boolean rightBool = (Boolean)right.getNativeValue();
 				return new Value(interval, Type._int, Long.valueOf(tolong(leftBool)/tolong(rightBool)));
 			case DOUBLE:
-				return new Value(interval, resultType, ((Double)left.getValue())/((Double)right.getValue()));
+				return new Value(interval, resultType, ((Double)left.getNativeValue())/((Double)right.getNativeValue()));
 			case FLOAT:
-				return new Value(interval, resultType, ((Float)left.getValue())/((Float)right.getValue()));
+				return new Value(interval, resultType, ((Float)left.getNativeValue())/((Float)right.getNativeValue()));
 			case CHAR:
-				return new Value(interval, resultType, ((Character)left.getValue())/((Character)right.getValue()));
+				return new Value(interval, resultType, ((Character)left.getNativeValue())/((Character)right.getNativeValue()));
 			case INT:
 			case UINT:
-				return new Value(interval, resultType, ((Long)left.getValue())/((Long)right.getValue()));
+				return new Value(interval, resultType, ((Long)left.getNativeValue())/((Long)right.getNativeValue()));
 			case NON_SCALAR:
 				return new Value(interval, resultType, null);
 			}
@@ -77,18 +77,18 @@ public class Processor {
 		right = Type.cast(right, resultType);
 		switch(Type.Rank.of(resultType)) {
 		case BOOL:
-			Boolean leftBool = (Boolean)left.getValue();
-			Boolean rightBool = (Boolean)right.getValue();
+			Boolean leftBool = (Boolean)left.getNativeValue();
+			Boolean rightBool = (Boolean)right.getNativeValue();
 			return new Value(interval, Type._int, Long.valueOf(tolong(leftBool)%tolong(rightBool)));
 		case DOUBLE:
-			return new Value(interval, resultType, ((Double)left.getValue())%((Double)right.getValue()));
+			return new Value(interval, resultType, ((Double)left.getNativeValue())%((Double)right.getNativeValue()));
 		case FLOAT:
-			return new Value(interval, resultType, ((Float)left.getValue())%((Float)right.getValue()));
+			return new Value(interval, resultType, ((Float)left.getNativeValue())%((Float)right.getNativeValue()));
 		case CHAR:
-			return new Value(interval, resultType, ((Character)left.getValue())%((Character)right.getValue()));
+			return new Value(interval, resultType, ((Character)left.getNativeValue())%((Character)right.getNativeValue()));
 		case INT:
 		case UINT:
-			return new Value(interval, resultType, ((Long)left.getValue())%((Long)right.getValue()));
+			return new Value(interval, resultType, ((Long)left.getNativeValue())%((Long)right.getNativeValue()));
 		case NON_SCALAR:
 			return new Value(interval, resultType, null);
 		}
@@ -102,18 +102,18 @@ public class Processor {
 		right = Type.cast(right, resultType);
 		switch(Type.Rank.of(resultType)) {
 		case BOOL:
-			Boolean leftBool = (Boolean)left.getValue();
-			Boolean rightBool = (Boolean)right.getValue();
+			Boolean leftBool = (Boolean)left.getNativeValue();
+			Boolean rightBool = (Boolean)right.getNativeValue();
 			return new Value(interval, Type._int, Long.valueOf(tolong(leftBool)+tolong(rightBool)));
 		case DOUBLE:
-			return new Value(interval, resultType, ((Double)left.getValue())+((Double)right.getValue()));
+			return new Value(interval, resultType, ((Double)left.getNativeValue())+((Double)right.getNativeValue()));
 		case FLOAT:
-			return new Value(interval, resultType, ((Float)left.getValue())+((Float)right.getValue()));
+			return new Value(interval, resultType, ((Float)left.getNativeValue())+((Float)right.getNativeValue()));
 		case CHAR:
-			return new Value(interval, resultType, ((Character)left.getValue())+((Character)right.getValue()));
+			return new Value(interval, resultType, ((Character)left.getNativeValue())+((Character)right.getNativeValue()));
 		case INT:
 		case UINT:
-			return new Value(interval, resultType, ((Long)left.getValue())+((Long)right.getValue()));
+			return new Value(interval, resultType, ((Long)left.getNativeValue())+((Long)right.getNativeValue()));
 		case NON_SCALAR:
 			return new Value(interval, resultType, null);
 		}
@@ -128,18 +128,18 @@ public class Processor {
 		long v;
 		switch(Type.Rank.of(resultType)) {
 		case BOOL:
-			Boolean leftBool = (Boolean)left.getValue();
-			Boolean rightBool = (Boolean)right.getValue();
+			Boolean leftBool = (Boolean)left.getNativeValue();
+			Boolean rightBool = (Boolean)right.getNativeValue();
 			return new Value(interval, Type._int, Long.valueOf(tolong(leftBool)-tolong(rightBool)));
 		case DOUBLE:
-			return new Value(interval, resultType, ((Double)left.getValue())-((Double)right.getValue()));
+			return new Value(interval, resultType, ((Double)left.getNativeValue())-((Double)right.getNativeValue()));
 		case FLOAT:
-			return new Value(interval, resultType, ((Float)left.getValue())-((Float)right.getValue()));
+			return new Value(interval, resultType, ((Float)left.getNativeValue())-((Float)right.getNativeValue()));
 		case CHAR:
-			return new Value(interval, resultType, ((Character)left.getValue())-((Character)right.getValue()));
+			return new Value(interval, resultType, ((Character)left.getNativeValue())-((Character)right.getNativeValue()));
 		case INT:
 		case UINT:
-			v = ((Long)left.getValue())-((Long)right.getValue());
+			v = ((Long)left.getNativeValue())-((Long)right.getNativeValue());
 			return new Value(interval, resultType, v);
 		case NON_SCALAR:
 			return new Value(interval, resultType, null);
@@ -153,16 +153,16 @@ public class Processor {
 		Type resultType = value.getType();
 		switch(Type.Rank.of(resultType)) {
 		case BOOL:
-			return new Value(interval, Type._int, Long.valueOf(-tolong((Boolean)value.getValue())));
+			return new Value(interval, Type._int, Long.valueOf(-tolong((Boolean)value.getNativeValue())));
 		case DOUBLE:
-			return new Value(interval, resultType, -((Double)value.getValue()));
+			return new Value(interval, resultType, -((Double)value.getNativeValue()));
 		case FLOAT:
-			return new Value(interval, resultType, -((Float)value.getValue()));
+			return new Value(interval, resultType, -((Float)value.getNativeValue()));
 		case CHAR:
-			return new Value(interval, resultType, -((Character)value.getValue()));
+			return new Value(interval, resultType, -((Character)value.getNativeValue()));
 		case INT:
 		case UINT:
-			return new Value(interval, resultType, -((Long)value.getValue()));
+			return new Value(interval, resultType, -((Long)value.getNativeValue()));
 		case NON_SCALAR:
 		}
 		throw new Error("internal error: unhandled type in arithmetic operation");
@@ -227,7 +227,7 @@ public class Processor {
 			if (rank.lt(Type.Rank.UINT)) value = Type.cast(value, Type._int);
 			Type type = value.getType();
 			if (Type.Rank.of(type).equals(Type.Rank.UINT) || Type.Rank.of(type).equals(Type.Rank.INT)) {
-				return ((Long)(value.getValue())).intValue();
+				return ((Long)(value.getNativeValue())).intValue();
 			}
 		}
 		throw new ProcessingException("bit operations undefined for " + value.getType().getName());
@@ -241,18 +241,18 @@ public class Processor {
 		right = Type.cast(right, maxType);
 		switch(Type.Rank.of(maxType)) {
 		case BOOL:
-			Boolean leftBool = (Boolean)left.getValue();
-			Boolean rightBool = (Boolean)right.getValue();
+			Boolean leftBool = (Boolean)left.getNativeValue();
+			Boolean rightBool = (Boolean)right.getNativeValue();
 			return new Value(interval, Type._bool, tolong(leftBool) == tolong(rightBool));
 		case CHAR:
-			return new Value(interval, Type._bool, ((Character)left.getValue()) == ((Character)right.getValue()));
+			return new Value(interval, Type._bool, ((Character)left.getNativeValue()) == ((Character)right.getNativeValue()));
 		case INT:
 		case UINT:
-			return new Value(interval, Type._bool, ((Long)left.getValue()) == ((Long)right.getValue()));
+			return new Value(interval, Type._bool, ((Long)left.getNativeValue()) == ((Long)right.getNativeValue()));
 		case DOUBLE:
-			return new Value(interval, Type._bool, ((Double)left.getValue()) == ((Double)right.getValue()));
+			return new Value(interval, Type._bool, ((Double)left.getNativeValue()) == ((Double)right.getNativeValue()));
 		case FLOAT:
-			return new Value(interval, Type._bool, ((Float)left.getValue()) == ((Float)right.getValue()));
+			return new Value(interval, Type._bool, ((Float)left.getNativeValue()) == ((Float)right.getNativeValue()));
 		case NON_SCALAR:
 			throw new ProcessingException("logical operations undefined for non-scalar types");
 		}
@@ -266,18 +266,18 @@ public class Processor {
 		right = Type.cast(right, maxType);
 		switch(Type.Rank.of(maxType)) {
 		case BOOL:
-			Boolean leftBool = (Boolean)left.getValue();
-			Boolean rightBool = (Boolean)right.getValue();
+			Boolean leftBool = (Boolean)left.getNativeValue();
+			Boolean rightBool = (Boolean)right.getNativeValue();
 			return new Value(interval, Type._bool, tolong(leftBool) != tolong(rightBool));
 		case CHAR:
-			return new Value(interval, Type._bool, ((Character)left.getValue()) != ((Character)right.getValue()));
+			return new Value(interval, Type._bool, ((Character)left.getNativeValue()) != ((Character)right.getNativeValue()));
 		case INT:
 		case UINT:
-			return new Value(interval, Type._bool, ((Long)left.getValue()) != ((Long)right.getValue()));
+			return new Value(interval, Type._bool, ((Long)left.getNativeValue()) != ((Long)right.getNativeValue()));
 		case DOUBLE:
-			return new Value(interval, Type._bool, ((Double)left.getValue()) != ((Double)right.getValue()));
+			return new Value(interval, Type._bool, ((Double)left.getNativeValue()) != ((Double)right.getNativeValue()));
 		case FLOAT:
-			return new Value(interval, Type._bool, ((Float)left.getValue()) != ((Float)right.getValue()));
+			return new Value(interval, Type._bool, ((Float)left.getNativeValue()) != ((Float)right.getNativeValue()));
 		case NON_SCALAR:
 			throw new ProcessingException("logical operations undefined for non-scalar types");
 		}
@@ -292,18 +292,18 @@ public class Processor {
 		right = Type.cast(right, maxType);
 		switch(Type.Rank.of(maxType)) {
 		case BOOL:
-			Boolean leftBool = (Boolean)left.getValue();
-			Boolean rightBool = (Boolean)right.getValue();
+			Boolean leftBool = (Boolean)left.getNativeValue();
+			Boolean rightBool = (Boolean)right.getNativeValue();
 			return new Value(interval, Type._bool, tolong(leftBool) >= tolong(rightBool));
 		case CHAR:
-			return new Value(interval, Type._bool, ((Character)left.getValue()) >= ((Character)right.getValue()));
+			return new Value(interval, Type._bool, ((Character)left.getNativeValue()) >= ((Character)right.getNativeValue()));
 		case INT:
 		case UINT:
-			return new Value(interval, Type._bool, ((Long)left.getValue()) >= ((Long)right.getValue()));
+			return new Value(interval, Type._bool, ((Long)left.getNativeValue()) >= ((Long)right.getNativeValue()));
 		case DOUBLE:
-			return new Value(interval, Type._bool, ((Double)left.getValue()) >= ((Double)right.getValue()));
+			return new Value(interval, Type._bool, ((Double)left.getNativeValue()) >= ((Double)right.getNativeValue()));
 		case FLOAT:
-			return new Value(interval, Type._bool, ((Float)left.getValue()) >= ((Float)right.getValue()));
+			return new Value(interval, Type._bool, ((Float)left.getNativeValue()) >= ((Float)right.getNativeValue()));
 		case NON_SCALAR:
 			throw new ProcessingException("logical operations undefined for non-scalar types");
 		}
@@ -317,18 +317,18 @@ public class Processor {
 		right = Type.cast(right, maxType);
 		switch(Type.Rank.of(maxType)) {
 		case BOOL:
-			Boolean leftBool = (Boolean)left.getValue();
-			Boolean rightBool = (Boolean)right.getValue();
+			Boolean leftBool = (Boolean)left.getNativeValue();
+			Boolean rightBool = (Boolean)right.getNativeValue();
 			return new Value(interval, Type._bool, tolong(leftBool) <= tolong(rightBool));
 		case DOUBLE:
-			return new Value(interval, Type._bool, ((Double)left.getValue()) <= ((Double)right.getValue()));
+			return new Value(interval, Type._bool, ((Double)left.getNativeValue()) <= ((Double)right.getNativeValue()));
 		case FLOAT:
-			return new Value(interval, Type._bool, ((Float)left.getValue()) <= ((Float)right.getValue()));
+			return new Value(interval, Type._bool, ((Float)left.getNativeValue()) <= ((Float)right.getNativeValue()));
 		case CHAR:
-			return new Value(interval, Type._bool, ((Character)left.getValue()) <= ((Character)right.getValue()));
+			return new Value(interval, Type._bool, ((Character)left.getNativeValue()) <= ((Character)right.getNativeValue()));
 		case INT:
 		case UINT:
-			return new Value(interval, Type._bool, ((Long)left.getValue()) <= ((Long)right.getValue()));
+			return new Value(interval, Type._bool, ((Long)left.getNativeValue()) <= ((Long)right.getNativeValue()));
 		case NON_SCALAR:
 			throw new ProcessingException("logical operations undefined for non-scalar types");
 		}
@@ -342,18 +342,18 @@ public class Processor {
 		right = Type.cast(right, maxType);
 		switch(Type.Rank.of(maxType)) {
 		case BOOL:
-			Boolean leftBool = (Boolean)left.getValue();
-			Boolean rightBool = (Boolean)right.getValue();
+			Boolean leftBool = (Boolean)left.getNativeValue();
+			Boolean rightBool = (Boolean)right.getNativeValue();
 			return new Value(interval, Type._bool, tolong(leftBool) > tolong(rightBool));
 		case DOUBLE:
-			return new Value(interval, Type._bool, ((Double)left.getValue()) > ((Double)right.getValue()));
+			return new Value(interval, Type._bool, ((Double)left.getNativeValue()) > ((Double)right.getNativeValue()));
 		case FLOAT:
-			return new Value(interval, Type._bool, ((Float)left.getValue()) > ((Float)right.getValue()));
+			return new Value(interval, Type._bool, ((Float)left.getNativeValue()) > ((Float)right.getNativeValue()));
 		case CHAR:
-			return new Value(interval, Type._bool, ((Character)left.getValue()) > ((Character)right.getValue()));
+			return new Value(interval, Type._bool, ((Character)left.getNativeValue()) > ((Character)right.getNativeValue()));
 		case INT:
 		case UINT:
-			return new Value(interval, Type._bool, ((Long)left.getValue()) > ((Long)right.getValue()));
+			return new Value(interval, Type._bool, ((Long)left.getNativeValue()) > ((Long)right.getNativeValue()));
 		case NON_SCALAR:
 			throw new ProcessingException("logical operations undefined for non-scalar types");
 		}
@@ -367,18 +367,18 @@ public class Processor {
 		right = Type.cast(right, maxType);
 		switch(Type.Rank.of(maxType)) {
 		case BOOL:
-			Boolean leftBool = (Boolean)left.getValue();
-			Boolean rightBool = (Boolean)right.getValue();
+			Boolean leftBool = (Boolean)left.getNativeValue();
+			Boolean rightBool = (Boolean)right.getNativeValue();
 			return new Value(interval, Type._bool, tolong(leftBool) < tolong(rightBool));
 		case DOUBLE:
-			return new Value(interval, Type._bool, ((Double)left.getValue()) < ((Double)right.getValue()));
+			return new Value(interval, Type._bool, ((Double)left.getNativeValue()) < ((Double)right.getNativeValue()));
 		case FLOAT:
-			return new Value(interval, Type._bool, ((Float)left.getValue()) < ((Float)right.getValue()));
+			return new Value(interval, Type._bool, ((Float)left.getNativeValue()) < ((Float)right.getNativeValue()));
 		case CHAR:
-			return new Value(interval, Type._bool, ((Character)left.getValue()) < ((Character)right.getValue()));
+			return new Value(interval, Type._bool, ((Character)left.getNativeValue()) < ((Character)right.getNativeValue()));
 		case INT:
 		case UINT:
-			return new Value(interval, Type._bool, ((Long)left.getValue()) < ((Long)right.getValue()));
+			return new Value(interval, Type._bool, ((Long)left.getNativeValue()) < ((Long)right.getNativeValue()));
 		case NON_SCALAR:
 			throw new ProcessingException("logical operations undefined for non-scalar types");
 		}
@@ -389,8 +389,8 @@ public class Processor {
 		Interval interval = new Interval(left.getStart(), right.getEnd());
 		left = Type.cast(left, Type._bool);
 		right = Type.cast(right, Type._bool);
-		Boolean leftBool = (Boolean)left.getValue();
-		Boolean rightBool = (Boolean)right.getValue();
+		Boolean leftBool = (Boolean)left.getNativeValue();
+		Boolean rightBool = (Boolean)right.getNativeValue();
 		return new Value(interval, Type._bool, leftBool && rightBool);
 	}
 	
@@ -398,8 +398,8 @@ public class Processor {
 		Interval interval = new Interval(left.getStart(), right.getEnd());
 		left = Type.cast(left, Type._bool);
 		right = Type.cast(right, Type._bool);
-		Boolean leftBool = (Boolean)left.getValue();
-		Boolean rightBool = (Boolean)right.getValue();
+		Boolean leftBool = (Boolean)left.getNativeValue();
+		Boolean rightBool = (Boolean)right.getNativeValue();
 		return new Value(interval, Type._bool, leftBool != rightBool);
 	}
 	
@@ -407,15 +407,15 @@ public class Processor {
 		Interval interval = new Interval(left.getStart(), right.getEnd());
 		left = Type.cast(left, Type._bool);
 		right = Type.cast(right, Type._bool);
-		Boolean leftBool = (Boolean)left.getValue();
-		Boolean rightBool = (Boolean)right.getValue();
+		Boolean leftBool = (Boolean)left.getNativeValue();
+		Boolean rightBool = (Boolean)right.getNativeValue();
 		return new Value(interval, Type._bool, leftBool || rightBool);
 	}
 
 	
 	public static Value logNot(Value value) {
 		value = Type.cast(value, Type._bool);
-		Boolean bool = (Boolean)value.getValue();
+		Boolean bool = (Boolean)value.getNativeValue();
 		return new Value(value.getInterval(), Type._bool, !bool);
 	}
 

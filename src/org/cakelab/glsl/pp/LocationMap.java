@@ -65,6 +65,45 @@ public class LocationMap {
 	}
 
 	
+	public Interval getInterval(int start, int end) {
+		return new Interval(getLocation(start), getLocation(end));
+	}
+	
+	public Location getLocation(int pos) {
+		int index = ranges.find(pos, new SimpleArrayList.Comparator<Integer, Range>() {
+
+			@Override
+			public int compare(Integer key, Range r) {
+				return key - r.outStart;
+			}
+			
+		});
+		
+		Range r = ranges.get(index);
+		Location loc = applyOffset(r, pos);
+		return loc;
+	}
+	
+
+	
+	private Location applyOffset(Range r, int pos) {
+		int diff = pos - r.outStart;
+		assert (diff >= 0);
+		if (diff == 0) {
+			return r.in.getStart();
+		} else {
+			Location loc = r.in.getStart().clone();
+			locationAdd(loc,diff);
+			if (lessthan(loc, r.in.getEnd())) {
+				return loc;
+			} else {
+				return r.in.getEnd();
+			}
+		}
+	}
+
+
+
 	static class Range {
 		public Range(Interval interval, int start) {
 			in = interval;
@@ -160,6 +199,6 @@ public class LocationMap {
 		Location previousEnd = previous.in.getEnd();
 		return (sameSource(previousEnd, start) && previousEnd.getPosition()+1 == start.getPosition());
 	}
-	
+
 	
 }

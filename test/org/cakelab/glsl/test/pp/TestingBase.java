@@ -175,7 +175,7 @@ public abstract class TestingBase {
 	public void assertEval(Expression e, Object result, Class<? extends Expression> clazz) {
 		assertValid(e, clazz);
 		try {
-			Object value = e.eval().value().getValue();
+			Object value = e.eval().value().getNativeValue();
 			if (!value.equals(result)) {
 				error("result " + value.toString() + " does not equal " + result.toString());
 			}

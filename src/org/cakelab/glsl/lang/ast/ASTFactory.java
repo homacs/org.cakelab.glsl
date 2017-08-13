@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLParser.*;
 import org.cakelab.glsl.Interval;
@@ -15,11 +16,14 @@ import org.cakelab.glsl.lang.ast.Qualifier.LayoutQualifier;
 // TODO [2] supposed to be an interface in parser package
 public class ASTFactory {
 
-	private SymbolTable symbolTable;
+	private SymbolTable symbols;
+	private GLSLErrorHandler errorHandler;
 
-	public ASTFactory(SymbolTable symbolTable) {
-		this.symbolTable = symbolTable;
+	public ASTFactory(SymbolTable symbols, GLSLErrorHandler errorHandler) {
+		this.errorHandler = errorHandler;
+		this.symbols = symbols;
 	}
+	
 	
 	public ConstantExpression create(GlslConstantExpressionContext ctx) {
 		return new ConstantExpression(create(ctx.glslConditionalExpression()));
@@ -182,25 +186,29 @@ public class ASTFactory {
 	public Expression create(GlslPrimaryExpressionContext primary) {
 		GlslIdentifierContext identifier = primary.glslIdentifier();
 		if (identifier != null) {
-			Object obj = symbolTable.resolve(identifier.getText());
 			Interval interval = createInterval(identifier);
-			if (obj instanceof Type) {
-				return new TypeReference(interval, (Type)obj);
-			} else if (obj instanceof Variable) {
-				return new VariableReference(interval, (Variable)obj);
-			} else if (obj instanceof Function) {
-				return new FunctionReference(interval, (Function)obj);
-			} else {
-				return new PPUndefinedIdentifier(interval, identifier.getText());
-			}
+			String id = identifier.getText();
+			Variable var = symbols.getVariable(id);
+			if (var != null) return new VariableReference(interval, var);
+
+			Type type = symbols.getType(id);
+			if (type != null) return new TypeReference(interval, type);
+			
+			Function fun = symbols.getFunction(id);
+			if (fun != null) return new FunctionReference(interval, (Function)fun);
+			
+			
+			// non of the above
+			errorHandler.error(identifier, "symbol " + id + " not found");
+			return new PPUndefinedIdentifier(interval, identifier.getText());
 		}
 		
 		GlslBuiltinTypeContext builtinType = primary.glslBuiltinType();
 		if (builtinType != null) {
 			String name = builtinType.getText();
-			Object obj = symbolTable.resolve(name);
-			if (obj instanceof Type) {
-				return new BuiltinTypeReference(createInterval(builtinType), (Type)obj);
+			Type type = symbols.getType(name);
+			if (type != null) {
+				return new BuiltinTypeReference(createInterval(builtinType), type);
 			} else {
 				throw new Error("internal error: builtin type '" + name + "' not found in symbol table");
 			}
@@ -284,16 +292,15 @@ public class ASTFactory {
 	}
 
 	public Struct create(GlslStructSpecifierContext context) {
-		Scope scope = symbolTable.scope();
 		String name = context.IDENTIFIER().getText();
-		Struct struct = new Struct(scope, name);
-		symbolTable.enter(struct.body);
+		Struct struct = new Struct(symbols.getScope(), name);
+		symbols.enterScope(struct.body);
 		GlslStructBodyContext members = context.glslStructBody();
 		List<GlslStructMemberGroupContext> groups = members.glslStructMemberGroup();
 		for (GlslStructMemberGroupContext group : groups) {
 			addMembers(struct, group);
 		}
-		symbolTable.leave(struct.body);
+		symbols.leaveScope();
 		return struct;
 	}
 
@@ -318,6 +325,20 @@ public class ASTFactory {
 		}
 	}
 	
+	private Type create(GlslFullySpecifiedTypeContext ctx) {
+		return create(ctx.glslTypeQualifier(), ctx.glslTypeSpecifier());
+	}
+
+	
+	private Type create(GlslTypeQualifierContext qualifierCtx, GlslTypeSpecifierContext specifierCtx) {
+		Qualifier[] qualifiers = getQualifiers(qualifierCtx);
+		Type type = getType(specifierCtx);
+		if (qualifiers != null && qualifiers.length > 0) {
+			type = Type._qualified(type, qualifiers);
+		}
+		return type;
+	}
+
 
 	private Type getType(GlslTypeSpecifierContext context) {
 		if (context == null) return null;
@@ -326,10 +347,10 @@ public class ASTFactory {
 		String typeName = null;
 		if (basic.glslBuiltinType() != null) {
 			typeName = basic.glslBuiltinType().getText();
-			type = symbolTable.resolve(Type.class, typeName);
+			type = symbols.getType(typeName);
 		} else if (basic.glslTypeName() != null) {
 			typeName = basic.glslTypeName().getText();
-			type = symbolTable.resolve(Type.class, typeName);
+			type = symbols.getType(typeName);
 		} else if (basic.glslStructSpecifier() != null) {
 			GlslStructSpecifierContext specifier = basic.glslStructSpecifier();
 			type = create(specifier);
@@ -340,7 +361,7 @@ public class ASTFactory {
 
 		List<GlslArrayDimensionContext> arrayDims = context.glslArrayDimension();
 		
-		if (arrayDims != null) {
+		if (arrayDims != null && arrayDims.size() > 0) {
 			type = createArrayType(type, arrayDims);
 		}
 		
@@ -394,7 +415,7 @@ public class ASTFactory {
 					Function[] function = new Function[names.size()];
 					for (int i = 0; i < function.length; i++) {
 						GlslFunctionNameContext n = names.get(i);
-						function[i] = symbolTable.resolve(Function.class, n.getText());
+						function[i] = symbols.getFunction(n.getText());
 					}
 					return Qualifier._subroutine();
 				} else {
@@ -425,6 +446,7 @@ public class ASTFactory {
 	}
 
 	
+	
 	private Location createStartLocation(ParserRuleContext context) {
 		Token start = context.getStart();
 		return new Location(start.getInputStream().getSourceName(), start.getStartIndex(), start.getLine(), start.getCharPositionInLine());
@@ -438,5 +460,44 @@ public class ASTFactory {
 	public Interval createInterval(ParserRuleContext context) {
 		return new Interval(createStartLocation(context), createEndLocation(context));
 	}
+
+
+	public Function create(GlslFunctionPrototypeContext ctx) {
+		Type type = create(ctx.glslFullySpecifiedType());
+		
+		String name = ctx.glslFunctionName().getText();
+		ParameterDeclaration[] params = create(ctx.glslFunctionParameters());
+		if (params == null) return new Function(type, name);
+		else return new Function(type, name, params);
+	}
+
+
+	private ParameterDeclaration[] create(GlslFunctionParametersContext ctx) {
+		if (ctx == null) return null;
+		List<GlslParameterDeclarationContext> paramCtx = ctx.glslParameterDeclaration();
+		int length = paramCtx != null ? paramCtx.size() : 0;
+		if (length > 0) {
+			ParameterDeclaration[] params = new ParameterDeclaration[length];
+			int i = 0;
+			for (GlslParameterDeclarationContext p : ctx.glslParameterDeclaration()) {
+				Type type = create(p.glslTypeQualifier(), p.glslTypeSpecifier());
+				String name = getName(p.glslVariableIdentifier());
+				List<GlslArrayDimensionContext> dims = p.glslArrayDimension();
+				if (dims != null && !dims.isEmpty()) {
+					type = createArrayType(type, dims);
+				}
+				ParameterDeclaration param = new ParameterDeclaration(type, name);
+				params[i] = param;
+				i++;
+			}
+		}
+		return null;
+	}
+
+
+	private String getName(GlslVariableIdentifierContext ident) {
+		return ident != null ? ident.getText() : null;
+	}
+
 
 }

@@ -1,18 +1,15 @@
 package org.cakelab.glsl.pp.ast;
 
-import org.cakelab.glsl.lang.ast.Scope;
+import java.util.ArrayList;
 
-public class PPGroupScope extends Scope {
-	// FIXME: PPGroupScope is not a symbol table Scope!
+public class PPGroupScope {
 	protected boolean visible = true;
 	protected PPGroupScope parentGroup;
+	protected ArrayList<PPGroupScope> children = new ArrayList<PPGroupScope>();
 	
 	
-	public PPGroupScope(Scope parent) {
-		super(parent);
-		Scope group;
-		for (group = parent; group != null && !(group instanceof PPGroupScope); group = group.getParent());
-		parentGroup = (PPGroupScope) group;
+	public PPGroupScope(PPGroupScope parent) {
+		parentGroup = parent;
 	}
 
 	/**
@@ -29,8 +26,12 @@ public class PPGroupScope extends Scope {
 		}
 	}
 
-	public PPGroupScope getParentGroup() {
+	public PPGroupScope getParent() {
 		return parentGroup;
+	}
+
+	public void add(PPGroupScope scope) {
+		children.add(scope);
 	}
 	
 }

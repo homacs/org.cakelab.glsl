@@ -36,7 +36,7 @@ public class ConstantValue<T> extends Value {
 
 	
 	@SuppressWarnings("unchecked")
-	public T getValue() {
+	public T getNativeValue() {
 		return (T) value;
 	}
 	

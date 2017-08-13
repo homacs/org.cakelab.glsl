@@ -20,7 +20,7 @@ public class TestStatement extends TestingBase {
 		autoTearDown = false;
 		validator.addDeclaredType("MyStruct", null);
 		validator.addDeclaredVariable("var", null);
-		validator.addDeclaredFunction("func", null);
+		validator.addDeclaredFunction("func");
 	}
 	
 	public static void tearDownMultiTest() {

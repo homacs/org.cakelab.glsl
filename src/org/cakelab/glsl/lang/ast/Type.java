@@ -283,6 +283,8 @@ public class Type implements Comparable<Type> {
 
 	
 	public static Type[] BUILTIN_TYPES = new Type[] {
+			_void,
+			
 			_atomic_uint,
 			
 			_float,

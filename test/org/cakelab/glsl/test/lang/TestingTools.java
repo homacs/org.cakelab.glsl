@@ -4,6 +4,8 @@ import java.io.PrintStream;
 import java.util.BitSet;
 
 import org.antlr.v4.runtime.ANTLRErrorListener;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
@@ -16,6 +18,7 @@ import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNodeImpl;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
+import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLLexer;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.lang.ASTBuilder;
@@ -24,7 +27,7 @@ public class TestingTools {
 
 	protected static GLSLParser parser;
 
-	protected static ASTBuilder validator = new ASTBuilder();
+	protected static ASTBuilder validator;
 
 	protected static boolean autoTearDown = true;
 
@@ -32,7 +35,7 @@ public class TestingTools {
 	protected static boolean ALLOW_FULL_CONTEXT = false;
 	protected static boolean IGNORE_CONTEXT_SENSITIVITY = false;
 	
-	public static class ParserError implements ANTLRErrorListener {
+	public static class ParserError extends GLSLErrorHandler {
 		public String message;
 		
 		public String getMessage() {
@@ -258,12 +261,17 @@ public class TestingTools {
 		return parser.getTokenStream().getText(interval);
 	}
 
-	public static void setup(GLSLParser parser, GLSLLexer lexer) {
+	public static void setup(CharStream input) {
+		GLSLLexer lexer = new GLSLLexer(input);
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		parser = new GLSLParser(tokens);
+		error.setLocations(tokens, null);
 		error.listenTo(parser, lexer);
+		validator = new ASTBuilder(tokens, null, error);
 	}
 
 	public static void tearDown() {
-		validator.reset();
+
 	}
 
 

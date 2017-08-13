@@ -145,9 +145,9 @@ public class Macro extends NodeImpl {
 		if (replacement_list != null) {
 			for (Expression replacement : replacement_list) {
 				Value v = replacement.eval().value();
-				if (v == null || v.getValue() == null) throw new Error("internal error: replacement expression evaluated to null value");
+				if (v == null || v.getNativeValue() == null) throw new Error("internal error: replacement expression evaluated to null value");
 				
-				String s = v.getValue().toString();
+				String s = v.getNativeValue().toString();
 				result.append(s);
 			}
 		}

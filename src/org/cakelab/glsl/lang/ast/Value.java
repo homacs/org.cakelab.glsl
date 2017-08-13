@@ -22,7 +22,7 @@ public class Value extends PrimaryExpression {
 		return type;
 	}
 	
-	public Object getValue() {
+	public Object getNativeValue() {
 		return value;
 	}
 

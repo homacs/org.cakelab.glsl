@@ -14,6 +14,10 @@ public class Token extends NodeImpl {
 	public String getText() {
 		return text;
 	}
+
+	public int length() {
+		return text.length();
+	}
 	
 	
 	

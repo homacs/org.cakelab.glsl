@@ -1,18 +1,23 @@
 package org.cakelab.glsl.pp;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cakelab.glsl.GLSLExtension;
+import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.impl.StandardFileManager;
 import org.cakelab.glsl.lang.EvaluationException;
-import org.cakelab.glsl.lang.ast.*;
+import org.cakelab.glsl.lang.ast.ConstantValue;
+import org.cakelab.glsl.lang.ast.Expression;
+import org.cakelab.glsl.lang.ast.PPUndefinedIdentifier;
 import org.cakelab.glsl.pp.IScanner.EofFuture;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.ast.MacroCallExpression;
@@ -28,15 +33,15 @@ import org.cakelab.glsl.pp.ast.PPIfScope;
 import org.cakelab.glsl.pp.ast.PPIfdefScope;
 import org.cakelab.glsl.pp.ast.PPIfndefScope;
 import org.cakelab.glsl.pp.ast.PPStringifyExpression;
+import org.cakelab.glsl.pp.ast.PPWhitespace;
 import org.cakelab.glsl.pp.ast.Text;
 import org.cakelab.glsl.pp.tokens.TAny;
 import org.cakelab.glsl.pp.tokens.TAtom;
 import org.cakelab.glsl.pp.tokens.TIdentifier;
+import org.cakelab.glsl.pp.tokens.TNumber;
 import org.cakelab.glsl.pp.tokens.Token;
-import org.cakelab.glsl.pp.ast.PPWhitespace;
 
 public class Preprocessor extends Parser {
-	// TODO [1] managing macro expansion locations (especially with overlapping macro invocations through rescan)
 	
 	private ResourceManager resourceManager;
 	
@@ -56,6 +61,12 @@ public class Preprocessor extends Parser {
 	// TODO [1] create preprocessor ast output
 	private List<PPGroupScope> groups;
 	private PPGroupScope globalScope;
+
+	private GLSLVersion glslVersion;
+
+	private ArrayList<GLSLExtension> extensions;
+
+	private boolean seenCodeLine;
 	
 	
 	
@@ -79,6 +90,10 @@ public class Preprocessor extends Parser {
 		globalScope = new PPGroupScope(null);
 		pushScope(globalScope);
 		super.in = new ScannerManager(new Scanner(sourceIdentifier, in));
+		
+		extensions = new ArrayList<GLSLExtension>();
+		
+		seenCodeLine = false;
 	}
 
 	/** sets the resource manager, which is used to lookup resources
@@ -175,7 +190,7 @@ public class Preprocessor extends Parser {
 	}
 	
 	private void popScope() {
-		PPGroupScope parent = currentScope.getParentGroup();
+		PPGroupScope parent = currentScope.getParent();
 		currentScope = parent;
 		setScopeVisibility();
 	}
@@ -250,7 +265,7 @@ public class Preprocessor extends Parser {
 			if (WHITESPACE()) {
 				t = token;
 			} else if (IDENTIFIER()) {
-				
+				seenCodeLine = true;
 				TIdentifier id = (TIdentifier) token;
 				Macro macro = macros.get(id.getText());
 				if (macro != null) {
@@ -296,6 +311,7 @@ public class Preprocessor extends Parser {
 				}
 			} else {
 				t = preprocessing_token(acceptHashes);
+				if (t != null) seenCodeLine = true;
 			}
 
 			
@@ -326,7 +342,7 @@ public class Preprocessor extends Parser {
 		String prependingText;
 		try {
 			// execute macro expansion
-			prependingText = ((Expression)macroInvocation).eval().value().getValue().toString();
+			prependingText = ((Expression)macroInvocation).eval().value().getNativeValue().toString();
 			
 			// rescan for more macro expansions
 			// rescan happens after removing '#' and '##'. Any remaining 
@@ -393,6 +409,7 @@ public class Preprocessor extends Parser {
 			} else {
 				syntaxError("unknown directive #" + read_remaining_line());
 			}
+			seenCodeLine = true;
 		}
 		return result;
 	}
@@ -401,19 +418,41 @@ public class Preprocessor extends Parser {
 	private boolean version() {
 		boolean result = false;
 		if (optionalIDENTIFIER("version")) {
+			Location start = token.getStart();
 			result = true;
 			while(WHITESPACE());
 			if (!NUMBER_DEC()) {
 				syntaxError("missing version number");
 			} else {
+				Expression decoded = decodeNumber((TNumber) token);
+				int number = -1;
+				if (decoded instanceof ConstantValue) {
+					@SuppressWarnings("unchecked")
+					ConstantValue<Long> intVal = ((ConstantValue<Long>)decoded);
+					number = ((Long) intVal.value().getNativeValue()).intValue();
+				}
 				while(WHITESPACE());
-				if (optionalIDENTIFIER("core")
-					|| optionalIDENTIFIER("compatibility")
-					|| optionalIDENTIFIER("es")
-					) 
-				{
+				GLSLVersion.Profile profile = null;
+				if (optionalIDENTIFIER("core")) {
+					profile = GLSLVersion.Profile.CORE;
+				} else if (optionalIDENTIFIER("compatibility")) {
+					profile = GLSLVersion.Profile.COMPATIBILITY;
+				} else if (optionalIDENTIFIER("es")) {
+					profile = GLSLVersion.Profile.ES;
+				} else {
 					while(WHITESPACE());
-					mandatory_endl();
+					String s = text(false, true);
+					if (s.length() > 0) syntaxError(decoded.getEnd(), "invalid profile identifier '" + s + "'");
+				}
+				while(WHITESPACE());
+				mandatory_endl();
+
+				
+				if (glslVersion == null) {
+					if (seenCodeLine) syntaxWarning(start, "#version directive can not be preceeded by code lines");
+					if (number > 0) glslVersion = new GLSLVersion(interval(start), number, profile);
+				} else {
+					syntaxWarning(start, "version redefined");
 				}
 			}
 		}
@@ -423,24 +462,36 @@ public class Preprocessor extends Parser {
 	private boolean extension() {
 		boolean result = false;
 		if (optionalIDENTIFIER("extension")) {
+			Location start = token.getStart();
 			result = true;
 			while(WHITESPACE());
 			if (!IDENTIFIER()) {
 				syntaxError("missing extension name");
 			} else {
+				TIdentifier identifier = (TIdentifier)token;
 				while(WHITESPACE());
 				mandatory(':');
 				while(WHITESPACE());
-				if (optionalIDENTIFIER("require")
-					|| optionalIDENTIFIER("enable")
-					|| optionalIDENTIFIER("warn")
-					|| optionalIDENTIFIER("disable")
-					) {
-					while(WHITESPACE());
-					mandatory_endl();
+				
+				GLSLExtension.Behaviour behaviour = null;
+				if (optionalIDENTIFIER("require")) {
+					behaviour = GLSLExtension.Behaviour.REQUIRE;
+				} else if (optionalIDENTIFIER("enable")) {
+					behaviour = GLSLExtension.Behaviour.ENABLE;
+				} else if (optionalIDENTIFIER("warn")) {
+					behaviour = GLSLExtension.Behaviour.WARN;
+				} else if (optionalIDENTIFIER("disable")) {
+					behaviour = GLSLExtension.Behaviour.DISABLE;
 				} else {
 					syntaxError("missing extension behaviour (one of [require, enable, warn, disable])");
 				}
+				while(WHITESPACE());
+				mandatory_endl();
+				
+				if (identifier != null && behaviour != null) {
+					extensions.add(new GLSLExtension(interval(start), identifier.getText(), behaviour));
+				}
+				
 			}
 		}
 		return result;
@@ -467,8 +518,9 @@ public class Preprocessor extends Parser {
 		if (optionalIDENTIFIER("error")) {
 			StringBuffer message = new StringBuffer("#error");
 			while(WHITESPACE()) message.append(token.getText());
+			Location loc = in.location();
 			message.append(read_remaining_line());
-			syntaxError(message.toString());
+			syntaxError(line_start(loc), message.toString());
 			return true;
 		} else {
 			return false;
@@ -714,6 +766,8 @@ public class Preprocessor extends Parser {
 		} else if (CHAR_SEQUENCE('"') || CHAR_SEQUENCE('\'')) {
 			// strings and character constants are not parsed for macro invocations
 			return token;
+		} else if (PUNCTUATOR(acceptHashes)) {
+			return token;
 		} else if (NUMBER()) {
 			return token;
 		} else if (!isWhite(LA1()) && !isEndl(LA1()) && !(LA_equals('#') && !acceptHashes)) {
@@ -823,6 +877,8 @@ public class Preprocessor extends Parser {
 			} else if (CHAR_SEQUENCE('"')) {
 				arg.append(token.getText());
 			} else if (CHAR_SEQUENCE('\'')) {
+				arg.append(token.getText());
+			} else if (PUNCTUATOR(true)) {
 				arg.append(token.getText());
 			} else if (NUMBER()) {
 				arg.append(token.getText());
@@ -1075,10 +1131,11 @@ public class Preprocessor extends Parser {
 				return result;
 			}
 
-			
-			Resource resource = resourceManager.resolve(path);
-			if (resource == null) {
-				syntaxWarning(tpath.getStart(), "resource '" + path + "' not found");
+			Resource resource;
+			try {
+				resource = resourceManager.resolve(path);
+			} catch (IOException e) {
+				syntaxWarning(tpath.getStart(), e.getMessage());
 				return result;
 			}
 			

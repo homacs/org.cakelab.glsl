@@ -1,12 +1,11 @@
 package org.cakelab.glsl.pp.ast;
 
 import org.cakelab.glsl.lang.ast.Expression;
-import org.cakelab.glsl.lang.ast.Scope;
 import org.cakelab.glsl.lang.ast.PPUndefinedIdentifier;
 
 public class PPIfdefScope extends PPIfScope {
 
-	public PPIfdefScope(Scope parent) {
+	public PPIfdefScope(PPGroupScope parent) {
 		super(parent);
 	}
 

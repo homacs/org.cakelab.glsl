@@ -50,6 +50,7 @@ public class Struct extends Type {
 
 	
 	public static class Body extends Scope {
+		// FIXME: this is supposed to translate declarations into member declarations
 		ArrayList<Member> members = new ArrayList<Member>();
 		
 		public Body(Scope parent) {

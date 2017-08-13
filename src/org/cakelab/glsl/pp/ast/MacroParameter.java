@@ -39,7 +39,7 @@ public class MacroParameter {
 		if (value == null) {
 			throw new Error("internal error: parameter was not assigned");
 		}
-		return value.getValue().toString();
+		return value.getNativeValue().toString();
 	}
 
 	public String getName() {
@@ -48,7 +48,7 @@ public class MacroParameter {
 
 	public String getExpandedValue() {
 		if (expanded == null) {
-			expanded = preprocessor.macro_expand_argument(value.getStart(), this.value.getValue().toString());
+			expanded = preprocessor.macro_expand_argument(value.getStart(), this.value.getNativeValue().toString());
 		}
 		return expanded;
 	}

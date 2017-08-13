@@ -40,7 +40,7 @@ public class Scanner implements IScanner {
 		void append(int token) {
 			tokens[length] = token;
 			length++;
-			if (tokens.length<length) {
+			if (tokens.length<=length) {
 				tokens = Arrays.copyOf(tokens, tokens.length<<1);
 			}
 		}

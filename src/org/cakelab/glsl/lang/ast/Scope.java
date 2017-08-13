@@ -1,8 +1,10 @@
 package org.cakelab.glsl.lang.ast;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class Scope {
@@ -13,7 +15,7 @@ public class Scope {
 				types.put(t.signature, t);
 			}
 			for (Function f : Function.BUILTIN_FUNCTIONS) {
-				super.addFunction(f.name, f);
+				super.addFunction(f);
 			}
 		}
 	}
@@ -46,29 +48,19 @@ public class Scope {
 	}
 	
 	public boolean containsType(String name) {
-		if (types.containsKey(name)) return true;
-		else if (parent != null) return parent.containsType(name);
-		return false;
+		return types.containsKey(name);
 	}
 	
 	public boolean containsFunction(String name) {
-		if (functions.containsKey(name)) return true;
-		else if (parent != null) return parent.containsFunction(name);
-		return false;
+		return functions.containsKey(name);
 	}
 
 	public boolean containsVariable(String name) {
-		if (variables.containsKey(name)) return true;
-		else if (parent != null) return parent.containsVariable(name);
-		return false;
+		return variables.containsKey(name);
 	}
 
 	public Type getType(String name) {
-		Type type = types.get(name);
-		if (type == null && parent != null) {
-			type = parent.getType(name);
-		}
-		return type;
+		return types.get(name);
 	}
 
 
@@ -78,7 +70,6 @@ public class Scope {
 		if (group != null) {
 			return group.get(0);
 		}
-		else if (parent != null) return getFunction(name);
 		else return null;
 	}
 	
@@ -90,13 +81,18 @@ public class Scope {
 		return parent;
 	}
 
-	public void addFunction(String name, Function func) {
+	
+	private List<Function> getFunctionGroup(String name) {
 		ArrayList<Function> functionGroup = functions.get(name);
 		if (functionGroup == null) {
 			functionGroup = new ArrayList<Function>(1);
 			functions.put(name, functionGroup);
 		}
-		
+		return functionGroup;
+	}
+	
+	public void addFunction(Function func) {
+		List<Function> functionGroup = getFunctionGroup(func.name);
 		int i = Collections.binarySearch(functionGroup, func);
 		if (i >= 0) {
 			// exists
@@ -106,6 +102,20 @@ public class Scope {
 		}
 	}
 
+	public void addFunctionDefinition(Function function) {
+		List<Function> group = getFunctionGroup(function.name);
+		int i = Collections.binarySearch(group, function);
+		if (i >= 0) {
+			// exists in this scope -> ignore error here, just override
+			group.set(i, function);
+		} else {
+			i = (-(i) - 1);
+			group.add(i, function);
+		}
+		
+	}
+
+	
 	public void addVariable(String name, Variable var) {
 		variables.put(name, var);
 	}
@@ -115,11 +125,7 @@ public class Scope {
 	}
 
 	public Variable getVariable(String identifier) {
-		Variable var = variables.get(identifier);
-		if (var == null && parent != null) {
-			var = parent.getVariable(identifier);
-		}
-		return var;
+		return variables.get(identifier);
 	}
 
 	
@@ -127,18 +133,11 @@ public class Scope {
 		return children;
 	}
 
-	public Object get(String identifier) {
-		Object result = types.get(identifier);
-		if (result != null) return result;
-		
-		result = functions.get(identifier);
-		if (result != null) return result;
-		
-		result = variables.get(identifier);
-		if (result != null) return result;
-		
-		return null;
+	public Collection<Type> getTypes() {
+		return types.values();
 	}
+
+
 
 
 }
