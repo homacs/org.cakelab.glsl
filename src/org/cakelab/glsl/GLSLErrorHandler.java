@@ -12,7 +12,7 @@ import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cakelab.glsl.pp.LocationMap;
-import org.cakelab.glsl.pp.Parser.StandardErrorHandler;
+import org.cakelab.glsl.pp.error.StandardErrorHandler;
 
 public class GLSLErrorHandler extends StandardErrorHandler implements ANTLRErrorListener {
 	

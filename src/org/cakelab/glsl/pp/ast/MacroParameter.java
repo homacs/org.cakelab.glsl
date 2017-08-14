@@ -1,6 +1,6 @@
 package org.cakelab.glsl.pp.ast;
 
-import org.cakelab.glsl.pp.Preprocessor;
+import org.cakelab.glsl.pp.MacroInterpreter;
 
 /** Parameter in a macro declaration.
  *  <p>
@@ -20,9 +20,9 @@ public class MacroParameter {
 	/** parameter value */
 	private Text value;
 	private String expanded;
-	private Preprocessor preprocessor;
+	private MacroInterpreter preprocessor;
 
-	public MacroParameter(String identifier, Preprocessor preprocessor) {
+	public MacroParameter(String identifier, MacroInterpreter preprocessor) {
 		this.identifier = identifier;
 		this.preprocessor = preprocessor;
 	}

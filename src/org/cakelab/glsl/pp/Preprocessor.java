@@ -18,7 +18,6 @@ import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.ConstantValue;
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.PPUndefinedIdentifier;
-import org.cakelab.glsl.pp.IScanner.EofFuture;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.ast.MacroCallExpression;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
@@ -35,13 +34,18 @@ import org.cakelab.glsl.pp.ast.PPIfndefScope;
 import org.cakelab.glsl.pp.ast.PPStringifyExpression;
 import org.cakelab.glsl.pp.ast.PPWhitespace;
 import org.cakelab.glsl.pp.ast.Text;
+import org.cakelab.glsl.pp.error.ExpressionError;
+import org.cakelab.glsl.pp.scanner.IScanner;
+import org.cakelab.glsl.pp.scanner.StreamScanner;
+import org.cakelab.glsl.pp.scanner.ScannerManager;
+import org.cakelab.glsl.pp.scanner.IScanner.EofFuture;
 import org.cakelab.glsl.pp.tokens.TAny;
 import org.cakelab.glsl.pp.tokens.TAtom;
 import org.cakelab.glsl.pp.tokens.TIdentifier;
 import org.cakelab.glsl.pp.tokens.TNumber;
 import org.cakelab.glsl.pp.tokens.Token;
 
-public class Preprocessor extends Parser {
+public class Preprocessor extends Parser implements MacroInterpreter {
 	
 	private ResourceManager resourceManager;
 	
@@ -89,7 +93,7 @@ public class Preprocessor extends Parser {
 		macros = new MacroMap();
 		globalScope = new PPGroupScope(null);
 		pushScope(globalScope);
-		super.in = new ScannerManager(new Scanner(sourceIdentifier, in));
+		super.in = new ScannerManager(new StreamScanner(sourceIdentifier, in));
 		
 		extensions = new ArrayList<GLSLExtension>();
 		
@@ -158,7 +162,7 @@ public class Preprocessor extends Parser {
 		define = "#define " + define;
 		
 		ByteArrayInputStream in = new ByteArrayInputStream(define.getBytes());
-		Scanner scanner = new Scanner("-- predefined --", in);
+		StreamScanner scanner = new StreamScanner("-- predefined --", in);
 		IScanner.EofFuture eof = new IScanner.EofFuture();
 		scanner.addOnEofHandler(eof);
 		pushScanner(scanner);
@@ -204,7 +208,7 @@ public class Preprocessor extends Parser {
 	public List<PPGroupScope> process() {
 		
 		// main parser loop
-		while(LA1() != Scanner.EOF) {
+		while(LA1() != StreamScanner.EOF) {
 			if (!directive_line() && !text_line()) {
 				syntaxError("illegal token");
 				break;

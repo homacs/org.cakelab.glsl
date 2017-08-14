@@ -10,7 +10,8 @@ import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.pp.Parser;
-import org.cakelab.glsl.pp.Parser.ErrorHandler;
+import org.cakelab.glsl.pp.error.ErrorHandler;
+import org.cakelab.glsl.pp.error.StandardErrorHandler;
 
 public abstract class TestingBase {
 
@@ -52,7 +53,7 @@ public abstract class TestingBase {
 		}
 	}
 	
-	protected ErrorHandler errorHandler = new Parser.StandardErrorHandler() {
+	protected ErrorHandler errorHandler = new StandardErrorHandler() {
 		protected void printError(Location location, String message) {
 			if (error == null && warning == null) error = location.getSourceIdentifier() + ':' + location.getLine() + ':' + location.getColumn() + ": " + message;
 		}

@@ -4,8 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
 
 import org.cakelab.glsl.pp.ExpressionParser;
-import org.cakelab.glsl.pp.Scanner;
 import org.cakelab.glsl.pp.Parser;
+import org.cakelab.glsl.pp.scanner.StreamScanner;
 
 public class TestingExprBase extends TestingBase {
 
@@ -13,7 +13,7 @@ public class TestingExprBase extends TestingBase {
 		try {
 			error = null;
 			warning = null;
-			parser = new ExpressionParser(new Scanner("0", new ByteArrayInputStream(source.getBytes())), errorHandler);
+			parser = new ExpressionParser(new StreamScanner("0", new ByteArrayInputStream(source.getBytes())), errorHandler);
 		} catch (Throwable e) {
 			// will never happen
 			throw new Error(e);

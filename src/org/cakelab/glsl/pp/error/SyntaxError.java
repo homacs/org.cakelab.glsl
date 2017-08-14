@@ -1,4 +1,4 @@
-package org.cakelab.glsl.pp;
+package org.cakelab.glsl.pp.error;
 
 import org.cakelab.glsl.Location;
 

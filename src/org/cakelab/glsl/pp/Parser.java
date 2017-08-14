@@ -2,20 +2,21 @@ package org.cakelab.glsl.pp;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.Resource;
-import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.ConstantValue;
 import org.cakelab.glsl.lang.ast.Expression;
-import org.cakelab.glsl.lang.ast.Node;
-import org.cakelab.glsl.pp.ast.Macro;
-import org.cakelab.glsl.pp.ast.MacroInvocation;
+import org.cakelab.glsl.pp.error.ErrorHandler;
+import org.cakelab.glsl.pp.error.ExpressionError;
+import org.cakelab.glsl.pp.error.StandardErrorHandler;
+import org.cakelab.glsl.pp.error.SyntaxError;
+import org.cakelab.glsl.pp.scanner.IScanner;
+import org.cakelab.glsl.pp.scanner.StreamScanner;
 import org.cakelab.glsl.pp.tokens.TAny;
+import org.cakelab.glsl.pp.tokens.TAtom;
 import org.cakelab.glsl.pp.tokens.TCharSequence;
 import org.cakelab.glsl.pp.tokens.TComment;
 import org.cakelab.glsl.pp.tokens.TEndl;
 import org.cakelab.glsl.pp.tokens.TIdentifier;
-import org.cakelab.glsl.pp.tokens.TAtom;
 import org.cakelab.glsl.pp.tokens.TLineContinuation;
 import org.cakelab.glsl.pp.tokens.TNumber;
 import org.cakelab.glsl.pp.tokens.TPunctuator;
@@ -24,111 +25,6 @@ import org.cakelab.glsl.pp.tokens.Token;
 
 public abstract class Parser {
 
-	public static interface ErrorHandler {
-		/**
-		 * @param node malicious node
-		 * @param string
-		 * @return whether to stop processing or not
-		 */
-		public boolean error(Node node, String message);
-		/**
-		 * @param expression
-		 * @param string
-		 * @return whether to stop processing or not
-		 */
-		public boolean error(Location start, String message);
-		/**
-		 * @param location
-		 * @param string
-		 * @return whether to stop processing or not
-		 */
-		public boolean warning(Location location, String message);
-		/**
-		 * 
-		 * @param interval interval containing the malicious tokens
-		 * @param message
-		 * @return
-		 */
-		public boolean warning(Interval interval, String message);
-	}
-
-
-	public static class StandardErrorHandler implements ErrorHandler {
-		protected ResourceManager resources;
-
-		
-		protected void printError(Location origin, String msg) {
-			System.err.println(toString(origin) + ": error: " + msg);
-		}
-
-		private String toString(Location location) {
-			String resource = location.getSourceIdentifier();
-			if (resources != null) {
-				Resource r = resources.getResourceById(resource);
-				if (r != null) resource = r.getPath();
-			}
-			return resource + ':' + location.getLine() + ':' + location.getColumn();
-		}
-
-		protected void printNote(Location origin, String msg) {
-			System.out.println(toString(origin) + ": note: " + msg);
-		}
-
-		protected void printWarning(Location origin, String msg) {
-			System.out.println(toString(origin) + ": warn: " + msg);
-		}
-
-
-		/**
-		 * @param location
-		 * @param errMsg
-		 * @return whether to stop processing or not
-		 */
-		@Override
-		public boolean error(Location location, String errMsg) {
-			Location origin = getMacroOrigin(location);
-			printError(origin, errMsg);
-			handleMacroOrigin(location);
-			return true;
-		}
-
-		private void handleMacroOrigin(Location location) {
-			while (location instanceof MacroExpandedLocation) {
-				MacroInvocation invocation = ((MacroExpandedLocation) location).getMacroInvocation();
-				location = invocation.getStart();
-				Location origin = getMacroOrigin(location);
-				printNote(origin, "in expansion of macro ´" + invocation.getMacro().getName() + "´");
-			}
-		}
-
-		protected Location getMacroOrigin(Location location) {
-			if (location instanceof MacroExpandedLocation) {
-				MacroExpandedLocation macroLocation = ((MacroExpandedLocation)location);
-				MacroInvocation invocation = macroLocation.getMacroInvocation();
-				Macro macro = invocation.getMacro();
-				Location macroStart = macro.getStart();
-				location = macroStart.add(location);
-			}
-			return location;
-		}
-
-		@Override
-		public boolean warning(Location location, String warningMsg) {
-			printWarning(getMacroOrigin(location), warningMsg);
-			return false;
-		}
-
-		@Override
-		public boolean error(Node node, String errMsg) {
-			return error(node.getStart(), errMsg);
-		}
-
-		@Override
-		public boolean warning(Interval interval, String message) {
-			return warning(interval.getStart(), message);
-		}
-	}
-	
 
 
 	protected IScanner in;
@@ -141,7 +37,7 @@ public abstract class Parser {
 	}
 
 	public boolean atEOF() {
-		return in.eof() || LA1() == Scanner.EOF;
+		return in.eof() || LA1() == StreamScanner.EOF;
 	}
 
 
@@ -311,7 +207,7 @@ public abstract class Parser {
 		} else if (optional('\n')) {
 			token = new TEndl(interval(start), "\n");
 			return true;
-		} else if (LA1() == Scanner.EOF) {
+		} else if (LA1() == StreamScanner.EOF) {
 			in.consume();
 			token = new TEndl(interval(start), "");
 			return true;
@@ -832,7 +728,7 @@ public abstract class Parser {
 			// can spread over multiple lines even without line
 			// continuation markers.
 			StringBuffer comment = new StringBuffer("/*");
-			while (! LA_equals("*/") && LA1() != Scanner.EOF) {
+			while (! LA_equals("*/") && LA1() != StreamScanner.EOF) {
 				if (line_continuation()) comment.append("\\\n");
 				else comment.append((char)in.consume());
 			}
@@ -864,7 +760,7 @@ public abstract class Parser {
 
 	protected int nextTokenLookahead(int from, boolean skipCRLF) {
 		int i = from;
-		for (; in.lookahead(i) != Scanner.EOF;) {
+		for (; in.lookahead(i) != StreamScanner.EOF;) {
 			int next = skipNextWhite(i, skipCRLF);
 			if (i == next) return i;
 			else i = next;
@@ -898,7 +794,7 @@ public abstract class Parser {
 			return i+1;
 		} else if (LA_equals(i, "/*")) {
 			i += 2;
-			while (! LA_equals(i, "*/") && LA1() != Scanner.EOF) {
+			while (! LA_equals(i, "*/") && LA1() != StreamScanner.EOF) {
 				i++;
 			}
 			if (!LA_equals(i, "*/")) {
@@ -968,21 +864,21 @@ public abstract class Parser {
 	
 	
 	protected boolean isEndl(int c) {
-		return c == '\n' || c == Scanner.EOF;
+		return c == '\n' || c == StreamScanner.EOF;
 	}
 
 	protected boolean isDigit(int c) {
-		if (c == Scanner.EOF) return false;
+		if (c == StreamScanner.EOF) return false;
 		return '0' <= c && c <= '9';
 	}
 
 	protected boolean isAlpha(int c) {
-		if (c == Scanner.EOF) return false;
+		if (c == StreamScanner.EOF) return false;
 		return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z');
 	}
 	
 	protected boolean isWhite(int c) {
-		if (c == Scanner.EOF) return false;
+		if (c == StreamScanner.EOF) return false;
 		else return c == ' ' || c == '\t' || c == '\r';
 	}
 

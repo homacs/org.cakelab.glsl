@@ -1,14 +1,14 @@
-package org.cakelab.glsl.pp;
+package org.cakelab.glsl.pp.scanner;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.cakelab.glsl.Location;
+import org.cakelab.glsl.pp.error.SyntaxError;
 
 
-public class Scanner implements IScanner {
+public class StreamScanner extends IScanner {
 
 	public static class InputStreamBuffer {
 		private static final int INIT_CAPACITY = 1024;
@@ -121,18 +121,15 @@ public class Scanner implements IScanner {
 		}
 	}
 	
-	public static final int EOF = -1;
 	
 
 	protected InputStreamBuffer buffer;
 	protected Location location;
 
 
-	private ArrayList<Runnable> eofHandlers = new ArrayList<Runnable>();
-
 
 	/** Create a lexer scanning giving input stream. */
-	public Scanner(String sourceIdentifier, InputStream in) throws SyntaxError {
+	public StreamScanner(String sourceIdentifier, InputStream in) throws SyntaxError {
 		this.buffer = new InputStreamBuffer(in);
 		this.location = new Location(sourceIdentifier);
 	}
@@ -145,7 +142,7 @@ public class Scanner implements IScanner {
 	 * @param origin
 	 * @param in
 	 */
-	public Scanner(Location origin, InputStream in) {
+	public StreamScanner(Location origin, InputStream in) {
 		this.buffer = new InputStreamBuffer(in);
 		// FIXME [2] position may be misinterpreted as actual position by location map!
 		this.location = origin;
@@ -239,10 +236,6 @@ public class Scanner implements IScanner {
 		return nextLocation((Location) location);
 	}
 
-	@Override
-	public void addOnEofHandler(Runnable runnable) {
-		eofHandlers.add(runnable);
-	}
 
 	@Override
 	public int remaining() {

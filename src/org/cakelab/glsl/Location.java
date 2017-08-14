@@ -125,6 +125,12 @@ public class Location {
 		}
 		return result;
 	}
+
+	public Location getLineStart() {
+		Location lineStart = this.clone();
+		lineStart.setColumn(FIRST_COLUMN);
+		return lineStart;
+	}
 	
 	
 }

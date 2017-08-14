@@ -1,11 +1,11 @@
-package org.cakelab.glsl.pp;
+package org.cakelab.glsl.pp.scanner;
 
 import java.util.List;
 
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.tokens.Token;
 
-public class PPTokenScanner implements IScanner {
+public class PPTokenScanner extends IScanner {
 
 	private List<Token> tokens;
 
@@ -135,6 +135,7 @@ public class PPTokenScanner implements IScanner {
 
 	@Override
 	public void setVirtualLocation(int line) {
+		// TODO: virtual location needs another solution when switching to token scanner
 		throw new Error("not implemented");
 	}
 

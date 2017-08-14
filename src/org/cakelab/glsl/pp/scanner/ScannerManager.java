@@ -1,4 +1,4 @@
-package org.cakelab.glsl.pp;
+package org.cakelab.glsl.pp.scanner;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -7,10 +7,11 @@ import java.util.ListIterator;
 import java.util.Stack;
 
 import org.cakelab.glsl.Location;
+import org.cakelab.glsl.pp.MacroExpandedLocation;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
 import org.cakelab.glsl.pp.tokens.Token;
 
-public class ScannerManager implements IScanner {
+public class ScannerManager extends IScanner {
 
 	private Stack<IScanner> scanners = new Stack<IScanner>();
 	private IScanner top;
@@ -40,11 +41,11 @@ public class ScannerManager implements IScanner {
 	public static IScanner createPreprocessedOutputScanner(Location origin, String text) {
 		origin = new Location(origin.getSourceIdentifier(), Location.POS_START, origin.getLine(), origin.getColumn());
 		ByteArrayInputStream in = new ByteArrayInputStream(text.getBytes());
-		return new Scanner(origin, in);
+		return new StreamScanner(origin, in);
 	}
 
 	public static IScanner createPrependScanner(MacroInvocation macroInvocation, String prepend) {
-		return new Scanner(new MacroExpandedLocation(macroInvocation), new ByteArrayInputStream(prepend.getBytes()));
+		return new StreamScanner(new MacroExpandedLocation(macroInvocation), new ByteArrayInputStream(prepend.getBytes()));
 	}
 
 	@Override
@@ -158,7 +159,7 @@ public class ScannerManager implements IScanner {
 	}
 
 	public static IScanner createScanner(String identifier, InputStream data) {
-		return new Scanner(identifier, data);
+		return new StreamScanner(identifier, data);
 	}
 
 	public static IScanner createPreprocessedTokensScanner(List<Token> tokens) {

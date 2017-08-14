@@ -3,9 +3,9 @@ package org.cakelab.glsl.test.pp.scan;
 import java.io.ByteArrayInputStream;
 
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.pp.IScanner;
-import org.cakelab.glsl.pp.Scanner;
-import org.cakelab.glsl.pp.ScannerManager;
+import org.cakelab.glsl.pp.scanner.IScanner;
+import org.cakelab.glsl.pp.scanner.StreamScanner;
+import org.cakelab.glsl.pp.scanner.ScannerManager;
 
 public class TestScannerManager {
 	
@@ -74,7 +74,7 @@ public class TestScannerManager {
 
 	private static IScanner createScanner(int i, String text) {
 		Location origin = new Location(Integer.toString(i));
-		return new Scanner(origin, new ByteArrayInputStream(text.getBytes()));
+		return new StreamScanner(origin, new ByteArrayInputStream(text.getBytes()));
 	}
 	
 }
