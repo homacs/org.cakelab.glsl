@@ -16,6 +16,7 @@ import org.cakelab.glsl.pp.tokens.TAtom;
 import org.cakelab.glsl.pp.tokens.TCharSequence;
 import org.cakelab.glsl.pp.tokens.TComment;
 import org.cakelab.glsl.pp.tokens.TEndl;
+import org.cakelab.glsl.pp.tokens.THeaderPath;
 import org.cakelab.glsl.pp.tokens.TIdentifier;
 import org.cakelab.glsl.pp.tokens.TLineContinuation;
 import org.cakelab.glsl.pp.tokens.TNumber;
@@ -216,6 +217,22 @@ public abstract class Parser {
 		}
 	}
 
+	
+	protected boolean HEADER_PATH() {
+		Location start = in.nextLocation();
+		if (optional('<')) {
+			StringBuffer text = new StringBuffer('<');
+			int c;
+			for (c = in.LA1(); c != IScanner.EOF && c != '>'; c = in.LA1()) {
+				text.append((char)in.consume());
+			}
+			mandatory('>');
+			token = new THeaderPath(interval(start), text.toString());
+			return true;
+		}
+		return false;
+	}
+	
 	/** 
 	 * Preprocessed text of a string started and terminated by given delimiter.
 	 * @see #CHAR_SEQUENCE(char, char)*/

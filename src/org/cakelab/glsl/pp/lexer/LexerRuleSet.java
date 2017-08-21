@@ -10,6 +10,7 @@ public class LexerRuleSet extends LexerRule {
 	
 	public LexerRuleSet(IScanner in, ErrorHandler handler, LexerRule ... ruleSet) {
 		super(in, handler);
+		this.ruleSet = ruleSet;
 	}
 
 	@Override

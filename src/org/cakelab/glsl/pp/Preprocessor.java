@@ -41,6 +41,7 @@ import org.cakelab.glsl.pp.scanner.ScannerManager;
 import org.cakelab.glsl.pp.scanner.IScanner.EofFuture;
 import org.cakelab.glsl.pp.tokens.TAny;
 import org.cakelab.glsl.pp.tokens.TAtom;
+import org.cakelab.glsl.pp.tokens.THeaderPath;
 import org.cakelab.glsl.pp.tokens.TIdentifier;
 import org.cakelab.glsl.pp.tokens.TNumber;
 import org.cakelab.glsl.pp.tokens.Token;
@@ -1124,9 +1125,9 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			while(WHITESPACE());
 			String path;
 			Token tpath = null;
-			if (CHAR_SEQUENCE('<','>')) {
+			if (HEADER_PATH()) {
 				tpath = token;
-				path = decodeCharSequence(tpath.getText(), '<', '>');
+				path = ((THeaderPath)tpath).getPath();
 			} else if (CHAR_SEQUENCE('"')){
 				tpath = token;
 				path = decodeCharSequence(tpath.getText(), '"', '"');
