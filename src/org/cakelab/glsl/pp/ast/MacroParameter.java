@@ -1,6 +1,7 @@
 package org.cakelab.glsl.pp.ast;
 
 import org.cakelab.glsl.pp.MacroInterpreter;
+import org.cakelab.glsl.pp.tokens.TokenList;
 
 /** Parameter in a macro declaration.
  *  <p>
@@ -18,8 +19,8 @@ public class MacroParameter {
 	/** parameter name */
 	private String identifier;
 	/** parameter value */
-	private Text value;
-	private String expanded;
+	private TokenList value;
+	private TokenList expanded;
 	private MacroInterpreter preprocessor;
 
 	public MacroParameter(String identifier, MacroInterpreter preprocessor) {
@@ -27,7 +28,7 @@ public class MacroParameter {
 		this.preprocessor = preprocessor;
 	}
 	
-	public void setValue(Text value) {
+	public void setValue(TokenList value) {
 		if (value == null) {
 			throw new Error("internal error: trying to assign a null parameter");
 		}
@@ -35,20 +36,20 @@ public class MacroParameter {
 		this.value = value;
 	}
 	
-	public String getValue() {
+	public TokenList getValue() {
 		if (value == null) {
 			throw new Error("internal error: parameter was not assigned");
 		}
-		return value.getNativeValue().toString();
+		return value;
 	}
 
 	public String getName() {
 		return identifier;
 	}
 
-	public String getExpandedValue() {
+	public TokenList getExpandedValue() {
 		if (expanded == null) {
-			expanded = preprocessor.macro_expand_argument(value.getStart(), this.value.getNativeValue().toString());
+			expanded = preprocessor.macro_expand_argument(this.value);
 		}
 		return expanded;
 	}

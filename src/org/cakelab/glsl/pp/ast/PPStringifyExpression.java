@@ -1,25 +1,30 @@
 package org.cakelab.glsl.pp.ast;
 
-import org.cakelab.glsl.Location;
+import java.util.List;
+
+import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.EvaluationException;
-import org.cakelab.glsl.lang.ast.PrefixExpression;
-import org.cakelab.glsl.lang.ast.PrimaryExpression;
+import org.cakelab.glsl.lang.ast.Node;
+import org.cakelab.glsl.pp.tokens.TStringLiteral;
+import org.cakelab.glsl.pp.tokens.Token;
 
 /** converts any character sequence (text) into a string.
  * Replaces " and \ with escape sequences.
  * @author homac
  *
  */
-public class PPStringifyExpression extends PrefixExpression {
+public class PPStringifyExpression extends PPExpression {
 
-	public PPStringifyExpression(Location start, MacroParameterReference operand) {
-		super(start, operand);
+	private MacroParameterReference operand;
+
+	public PPStringifyExpression(Interval interval, MacroParameterReference operand) {
+		super(interval);
+		this.operand = operand;
 	}
 
-	@Override
-	public PrimaryExpression eval() throws EvaluationException {
+	public void eval(List<Token> appendHere) throws EvaluationException {
 		
-		String text = ((MacroParameterReference)operand).getParameter().getValue();
+		String text = toString(operand.getParameter().getValue());
 		
 		
 		StringBuffer str = new StringBuffer();
@@ -42,7 +47,19 @@ public class PPStringifyExpression extends PrefixExpression {
 				break;
 			}
 		}
-		return new Text(this.interval, "\"" + str.toString() + "\"");
+		appendHere.add(new TStringLiteral(this.interval, "\"" + str.toString() + "\""));
+	}
+
+	private String toString(List<Token> value) {
+		StringBuffer string = new StringBuffer();
+		for (Token t : value) {
+			string.append(t.getText());
+		}
+		return string.toString();
+	}
+
+	public Node getOperand() {
+		return operand;
 	}
 
 }

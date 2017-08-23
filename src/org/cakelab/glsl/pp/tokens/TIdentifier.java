@@ -8,4 +8,13 @@ public class TIdentifier extends Token {
 		super(interval, text);
 	}
 
+	public TIdentifier(TIdentifier that) {
+		super(that);
+	}
+
+	@Override
+	public Token clone() {
+		return new TIdentifier(this);
+	}
+
 }

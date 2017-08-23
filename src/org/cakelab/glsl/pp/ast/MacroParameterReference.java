@@ -1,8 +1,9 @@
 package org.cakelab.glsl.pp.ast;
 
+import java.util.List;
+
 import org.cakelab.glsl.Interval;
-import org.cakelab.glsl.lang.ast.PrimaryExpression;
-import org.cakelab.glsl.lang.ast.Value;
+import org.cakelab.glsl.pp.tokens.Token;
 
 /**
  * Reference on a macro parameter in the expansion list of a macro.
@@ -15,7 +16,7 @@ import org.cakelab.glsl.lang.ast.Value;
  * @author homac
  *
  */
-public class MacroParameterReference extends PrimaryExpression {
+public class MacroParameterReference extends PPExpression {
 	private MacroParameter param;
 	private boolean expand = true;
 
@@ -25,15 +26,9 @@ public class MacroParameterReference extends PrimaryExpression {
 	}
 
 	@Override
-	public PrimaryExpression eval() {
-		return this;
-	}
-
-	@Override
-	public Value value() {
-		String v = param.getValue();
-		if (expand) v = param.getExpandedValue();
-		return new Text(this.interval, v);
+	public void eval(List<Token> result) {
+		if (expand) result.addAll(param.getExpandedValue());
+		else result.addAll(param.getValue());
 	}
 
 	public MacroParameter getParameter() {
@@ -46,9 +41,14 @@ public class MacroParameterReference extends PrimaryExpression {
 	 * 
 	 * @param enable
 	 */
-	public void expand(boolean enable) {
+	public void setRequireExpansion(boolean enable) {
 		this.expand = enable;
 	}
+	
+	public boolean requiresExpansion() {
+		return expand;
+	}
+	
 
 	public boolean same(MacroParameterReference that) {
 		return this.param.same(that.param);

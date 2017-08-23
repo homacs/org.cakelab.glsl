@@ -8,4 +8,13 @@ public class TEof extends Token {
 		super(interval, "");
 	}
 
+	public TEof(TEof that) {
+		super(that);
+	}
+
+	@Override
+	public Token clone() {
+		return new TEof(this);
+	}
+
 }

@@ -17,13 +17,14 @@ import org.cakelab.glsl.impl.StandardFileManager;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.ConstantValue;
 import org.cakelab.glsl.lang.ast.Expression;
-import org.cakelab.glsl.lang.ast.PPUndefinedIdentifier;
+import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.ast.MacroCallExpression;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
 import org.cakelab.glsl.pp.ast.MacroParameter;
 import org.cakelab.glsl.pp.ast.MacroParameterReference;
 import org.cakelab.glsl.pp.ast.MacroReference;
+import org.cakelab.glsl.pp.ast.NodeList;
 import org.cakelab.glsl.pp.ast.PPConcatExpression;
 import org.cakelab.glsl.pp.ast.PPElifScope;
 import org.cakelab.glsl.pp.ast.PPElseScope;
@@ -32,19 +33,21 @@ import org.cakelab.glsl.pp.ast.PPIfScope;
 import org.cakelab.glsl.pp.ast.PPIfdefScope;
 import org.cakelab.glsl.pp.ast.PPIfndefScope;
 import org.cakelab.glsl.pp.ast.PPStringifyExpression;
-import org.cakelab.glsl.pp.ast.PPWhitespace;
-import org.cakelab.glsl.pp.ast.Text;
 import org.cakelab.glsl.pp.error.ExpressionError;
 import org.cakelab.glsl.pp.scanner.IScanner;
-import org.cakelab.glsl.pp.scanner.StreamScanner;
-import org.cakelab.glsl.pp.scanner.ScannerManager;
 import org.cakelab.glsl.pp.scanner.IScanner.EofFuture;
+import org.cakelab.glsl.pp.scanner.PPTokenScanner;
+import org.cakelab.glsl.pp.scanner.ScannerManager;
+import org.cakelab.glsl.pp.scanner.StreamScanner;
 import org.cakelab.glsl.pp.tokens.TAny;
 import org.cakelab.glsl.pp.tokens.TAtom;
 import org.cakelab.glsl.pp.tokens.THeaderPath;
 import org.cakelab.glsl.pp.tokens.TIdentifier;
 import org.cakelab.glsl.pp.tokens.TNumber;
+import org.cakelab.glsl.pp.tokens.TPunctuator;
+import org.cakelab.glsl.pp.tokens.TWhitespace;
 import org.cakelab.glsl.pp.tokens.Token;
+import org.cakelab.glsl.pp.tokens.TokenList;
 
 public class Preprocessor extends Parser implements MacroInterpreter {
 	
@@ -260,8 +263,8 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	 * 
 	 * 
 	 */
-	private List<Token> text_tokens(boolean print, boolean acceptHashes) {
-		List<Token> result = new ArrayList<Token>();
+	private TokenList text_tokens(boolean print, boolean acceptHashes) {
+		TokenList result = new TokenList();
 		Token t;
 		do {
 			t = null;
@@ -289,10 +292,10 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 								// and thereby skip to '('
 								in.consume(i-1);
 								assert(LA1() == '(');
-								List<Text> args = macro_argument_list(macro);
+								TokenList[] args = macro_argument_list(macro);
 								if (args != null) {
 									// it is an invocation of a function like macro
-									invocation = new MacroCallExpression(reference, args.toArray(new Text[0]), in.location());
+									invocation = new MacroCallExpression(reference, args, in.location());
 								} else {
 									// no or improper arguments
 									// error has been reported, just proceed to next token
@@ -336,7 +339,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	
 	private String text(boolean print, boolean acceptHashes) {
 		StringBuffer result = new StringBuffer();
-		List<Token> tokens = text_tokens(print,acceptHashes);
+		TokenList tokens = text_tokens(print,acceptHashes);
 		for (Token t : tokens) {
 			result.append(t.getText());
 		}
@@ -344,16 +347,16 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	}
 
 	private void macro_expansion(MacroInvocation macroInvocation, boolean print) {
-		String prependingText;
+		TokenList prependingText;
 		try {
 			// execute macro expansion
-			prependingText = ((Expression)macroInvocation).eval().value().getNativeValue().toString();
-			
+			prependingText = macroInvocation.eval();
+
 			// rescan for more macro expansions
 			// rescan happens after removing '#' and '##'. Any remaining 
 			// '#' and '##' will be treated as common pp-token.
 			if (prependingText == null || prependingText.isEmpty()) return;
-			pushScanner(ScannerManager.createPrependScanner(macroInvocation, prependingText));
+			pushScanner(new PPTokenScanner(prependingText));
 
 		} catch (EvaluationException e) {
 			syntaxError(e);
@@ -507,7 +510,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		if (optionalIDENTIFIER("pragma")) {
 			// all preprocessing tokens except whitespace
 			Token t;
-			ArrayList<Token> tokens = new ArrayList<Token>();
+			TokenList tokens = new TokenList();
 			do {
 				t = preprocessing_token(true);
 				if (t != null) tokens.add(t);
@@ -620,9 +623,9 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			
 			
 			currentMacroDefinition = new Macro(macroName, params, interval(start));
-			List<Expression> tokens = replacement_list();
+			NodeList<Node> list = replacement_list();
 			
-			currentMacroDefinition.setReplacementList(tokens);
+			currentMacroDefinition.setReplacementList(list);
 			
 			Macro previousDefinition = macros.get(macroName);
 			if (previousDefinition != null && !previousDefinition.equals(currentMacroDefinition)) {
@@ -637,44 +640,42 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		return result;
 	}
 
-	private List<Expression> replacement_list() {
-		List<Expression> result = new ArrayList<Expression>();
-		Expression expr;
+	private NodeList<Node> replacement_list() {
+		NodeList<Node> result = new NodeList<Node>();
+		Node expr;
 		do {
 			expr = concat_expression(result);
 			if (expr == null) expr = whitespace();
 			if (expr == null) expr = non_concat_expression();
 			if (expr != null) result.add(expr);
 		} while(null != expr);
+		
+		result.trim(NodeList.Filter_WHITESPACE);
 		return result;
 	}
 
-	private Text whitespace() {
-		Location start = in.nextLocation();
+	private Token whitespace() {
 		if (WHITESPACE()) {
-			return new PPWhitespace(interval(start),token.getText());
+			return token;
 		} else {
 			return null;
 		}
 	}
 
-	private Expression non_concat_expression() {
-		Expression expr;
-		Location start = in.nextLocation();
+	private Node non_concat_expression() {
+		Node expr;
 		expr = single_hash_expression();
 		if (expr == null && IDENTIFIER()) {
-			String id = token.getText();
+			Token ident = token;
+			String id = ident.getText();
 			expr = macro_parameter_reference(id);
 			if (expr == null) {
-				expr = new Text(interval(start), id);
+				// just an identifier
+				expr = ident;
 			}
 		}
 		if (expr == null) {
-			// TODO [6] can be optimised
-			Token s = preprocessing_token(false); // anything not CRLF
-			if (s != null) {
-				expr = new Text(s.getInterval(), s.getText());
-			}
+			expr = preprocessing_token(false); // anything not CRLF
 		}
 		return expr;
 	}
@@ -683,17 +684,17 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	 *  anything ## anything
 	 *  
 	 */
-	private Expression concat_expression(List<Expression> replacement_list) {
+	private Node concat_expression(List<Node> replacement_list) {
 		Location operatorStart = in.nextLocation();
 		if (optional("##")) {
 			Location operatorEnd = in.location();
 			//
 			// rewind to last non whitespace token in replacement list
 			//
-			Expression left = null;
+			Node left = null;
 			for (int i = replacement_list.size()-1; i >= 0; i--) {
-				Expression token = replacement_list.remove(i);
-				if (token instanceof PPWhitespace) {
+				Node token = replacement_list.remove(i);
+				if (token instanceof TWhitespace) {
 					// just whitespace or comment -> ignore
 					continue;
 				} else {
@@ -702,18 +703,19 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 				}
 			}
 			
+			// remove all following whitespace
 			while(WHITESPACE());
 			
-			Expression right = non_concat_expression();
+			Node right = non_concat_expression();
 			
 			if (left == null || right == null) {
 				syntaxError("'##' cannot appear at either end of a macro expansion");
 				if (left == null) left = new ExpressionError(new Interval(operatorStart, operatorStart), "missing left operand to concatenation in macro replacement list");
 				if (right == null) right = new ExpressionError(new Interval(operatorEnd, operatorEnd), "missing right operand to concatenation in macro replacement list");
 			}
-			if (left instanceof MacroParameterReference) ((MacroParameterReference)left).expand(false);
-			if (right instanceof MacroParameterReference) ((MacroParameterReference)right).expand(false);
-			return new PPConcatExpression(new Interval(left.getStart(), right.getEnd()), left, right);
+			if (left instanceof MacroParameterReference) ((MacroParameterReference)left).setRequireExpansion(false);
+			if (right instanceof MacroParameterReference) ((MacroParameterReference)right).setRequireExpansion(false);
+			return new PPConcatExpression(this, new Interval(operatorStart, operatorEnd), left, right);
 		}
 		return null;
 	}
@@ -730,7 +732,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		return null;
 	}
 
-	private Expression single_hash_expression() {
+	private Node single_hash_expression() {
 		Location mark = in.nextLocation();
 		if (optional('#')) {
 			assert !LA_equals('#') : "reminder: scanning for ## has to appear before # scanning";
@@ -741,23 +743,23 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			// Otherwise, it is an ordinary pp-token
 			if (currentMacroDefinition.isFunctionMacro()) {
 				// must be followed by a macro parameter
-				MacroParameterReference param = null;
+				MacroParameterReference paramRef = null;
 				while (WHITESPACE());
 				if (IDENTIFIER()) {
 					String id = token.getText();
-					param = macro_parameter_reference(id);
+					paramRef = macro_parameter_reference(id);
 				}
 				
-				if (param == null) {
+				if (paramRef == null) {
 					return expressionError(mark, "# is not followed by a macro parameter");
 				}
 				else 
 				{
-					param.expand(false);
-					return new PPStringifyExpression(mark, param);
+					paramRef.setRequireExpansion(false);
+					return new PPStringifyExpression(interval(mark), paramRef);
 				}
 			} else {
-				return new Text(interval(mark), "#");
+				return new TPunctuator(interval(mark), "#");
 			}
 		}
 		return null;
@@ -784,28 +786,28 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		}
 	}
 
-	private List<Text> macro_argument_list(Macro macro) {
+	private TokenList[] macro_argument_list(Macro macro) {
+		
+		
 		
 		if (optional('(')) {
 			while(whitespace_crlf_sequence());
 			
-			List<Text> arguments = new ArrayList<Text>();
+			List<TokenList> arguments = new ArrayList<TokenList>();
 			int numParameters = macro.numParameters();
 			boolean hasVarArgs = macro.hasVarArgs();
 			
 			if (!LA_equals(')')) {
 				do {
 					while(whitespace_crlf_sequence());
-					Location paramStart = in.nextLocation();
 					if (hasVarArgs && arguments.size() == numParameters-1) {
-						StringBuffer varargs = new StringBuffer();
+						TokenList varargs = new TokenList();
 						macro_variadic_arguments(varargs);
-						arguments.add(new Text(interval(paramStart), varargs.toString()));
+						arguments.add(varargs);
 						break;
 					}
-					String param = macro_arg();
-					if (param != null) arguments.add(new Text(interval(paramStart), param));
-					else arguments.add(Text.EMPTY);
+					TokenList param = macro_arg();
+					arguments.add(param);
 					while(whitespace_crlf_sequence());
 				} while (optional(','));
 			}
@@ -814,41 +816,42 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 
 			if (macro.numParameters() != arguments.size()) {
 				if (arguments.size() == 0 && macro.numParameters() == 1) {
-					arguments.add(Text.EMPTY);
+					arguments.add(new TokenList()); // add an empty argument
 				} else {
 					syntaxError(line_start(in.location()), "macro \"" + macro.getName() + "\" requires " + macro.numParameters() + " arguments, but only " + arguments.size() + " where given.");
 					return null;
 				}
 			}
 			
-			return arguments;
+			return arguments.toArray(new TokenList[0]);
 		} else {
 			return null;
 		}
 	}
 
-	private String macro_arg() {
+	private TokenList macro_arg() {
 		// macro parameters can contain anything, even CRLF, but not ',' or ')' alone.
 		// ',' can occur in parenthesised expressions though.
-		StringBuffer arg = new StringBuffer();
+		TokenList arg = new TokenList();
 		macro_arg_token_sequence(arg, ",)");
-		String result = arg.toString().trim();
-		return result;
+		arg.trim();
+		return arg;
 	}
 
-	private void macro_variadic_arguments(StringBuffer varargs) {
+	private void macro_variadic_arguments(TokenList varargs) {
 		// same rules as for macro_arg, but ',' is no longer a delimiter.
 		macro_arg_token_sequence(varargs, ")");
 	}
 
-	private boolean macro_arg_parenthesised(StringBuffer arg) {
-		if (LA1() == '(') {
-			arg.append((char)in.consume());
-			macro_arg_token_sequence(arg, ")");
-			int c = LA1();
-			if (c == ')') {
-				arg.append((char)c);
-				in.consume();
+	private boolean macro_arg_parenthesised(TokenList varargs) {
+		Location start = in.nextLocation();
+		if (optional('(')) {
+			
+			varargs.add(new TPunctuator(interval(start), "("));
+			macro_arg_token_sequence(varargs, ")");
+			start = in.nextLocation();
+			if (optional(')')) {
+				varargs.add(new TPunctuator(interval(start), ")"));
 			} else {
 				syntaxError("missing closing ')' in parenthesised macro argument");
 			}
@@ -870,25 +873,27 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	 * Delimiters occurring in strings, character constants 
 	 * or comments will be ignored.
 	 * </p>
-	 * @param arg
+	 * @param varargs
 	 */
-	private void macro_arg_token_sequence(StringBuffer arg, String delimiters) {
+	private void macro_arg_token_sequence(TokenList varargs, String delimiters) {
 		int c = LA1();
 		while (delimiters.indexOf(c) == -1 && !in.eof()) {
 			if (whitespace_crlf_sequence()) {
-				arg.append(' ');
-			} else if (macro_arg_parenthesised(arg)) {
+				TWhitespace blank = new TWhitespace(token.getInterval(), " ");
+				varargs.add(blank);
+			} else if (macro_arg_parenthesised(varargs)) {
 				// another pair of parenthesis
 			} else if (CHAR_SEQUENCE('"')) {
-				arg.append(token.getText());
+				varargs.add(token);
 			} else if (CHAR_SEQUENCE('\'')) {
-				arg.append(token.getText());
+				varargs.add(token);
 			} else if (PUNCTUATOR(true)) {
-				arg.append(token.getText());
+				varargs.add(token);
 			} else if (NUMBER()) {
-				arg.append(token.getText());
+				varargs.add(token);
 			} else {
-				arg.append((char)in.consume());
+				Location start = in.nextLocation();
+				varargs.add(new TAtom(interval(start), (char)in.consume()));
 			}
 			c = LA1();
 		}
@@ -937,25 +942,55 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	 * @param argument The arguments text to be expanded.
 	 * @return Expanded argument.
 	 */
-	public String macro_expand_argument(Location origin, String argument) {
+	@Override
+	public TokenList macro_expand_argument(TokenList tokens) {
 		// and parse that macro expanded text for the expression
 		// TODO: macro arg expansion requires isolated scanner (+ parser?) (input is not preprocessed)
 		IScanner previous = in;
 		try {
-			IScanner scanner = ScannerManager.createPreprocessedOutputScanner(origin, argument);
+			if (tokens.size() == 0) return tokens;
+			
+			IScanner scanner = new PPTokenScanner(tokens);
 			IScanner.EofFuture eof = new IScanner.EofFuture();
 			scanner.addOnEofHandler(eof);
 			in = new ScannerManager(scanner);
-			String s = text(false, true);
+			tokens = text_tokens(false, true);
 			scanner.consume();
 			assert (!CRLF()) : "internal error: CRLF has to be replaced by ' ' during argument parsing";
 			assert (eof.occurred());
-			return s;
+			return tokens;
 		} finally {
 			in = previous;
 		}
 	}
 
+	@Override
+	public Token macro_join_tokens(Token left, Token right) {
+		// join two tokens parse for a single new, legal preprocessing token
+		IScanner previous = in;
+		try {
+			TokenList tokens = new TokenList();
+			tokens.add(left);
+			tokens.add(right);
+			IScanner scanner = new PPTokenScanner(tokens);
+			IScanner.EofFuture eof = new IScanner.EofFuture();
+			scanner.addOnEofHandler(eof);
+			in = new ScannerManager(scanner);
+			Token token = preprocessing_token(true);
+			scanner.consume();
+			if (token == null || !eof.occurred()) {
+				syntaxError("pasting \"" + left.getText() + "\" and \"" + right.getText() + "\" does not give a valid preprocessing token");
+			}
+			return token;
+		} finally {
+			in = previous;
+		}
+	}
+	
+
+	
+	
+	
 	private boolean undef() {
 		boolean result = false;
 		if (optionalIDENTIFIER("undef")) {
@@ -981,7 +1016,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 
 	private boolean ifgroup() {
 		PPIfScope ifscope = null;
-		Expression condition = null;
+		Node condition = null;
 		if (optionalIDENTIFIER("if")) {
 			ifscope = new PPIfScope(currentScope);
 			while(WHITESPACE());
@@ -1030,7 +1065,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			
 			elifscope = new PPElifScope(currentScope, (PPIfScope)predecessor);
 			while(WHITESPACE());
-			Expression expr = directive_condition();
+			Node expr = directive_condition();
 			if (expr == null) {
 				expr = expressionError(in.location(), "missing condition to elif directive");
 			}
@@ -1091,7 +1126,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	public Expression directive_condition() {
 
 		// retrieve macro expanded remainder of current line 
-		List<Token> tokens = text_tokens(false, true);
+		TokenList tokens = text_tokens(false, true);
 		
 		// and parse that macro expanded text for the expression
 		// FIXME condition parsing requires preprocessed output scanner
@@ -1099,12 +1134,12 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		return parser.expression();
 	}
 	
-	private Expression identifier() {
+	private Node identifier() {
 		if (IDENTIFIER()) {
 			String id = token.getText();
 			Macro macro = macros.get(id);
 			if (macro == null) {
-				return new PPUndefinedIdentifier(token.getInterval(), token.getText());
+				return token;
 			} else {
 				return new MacroReference(token.getInterval(), macros.get(token.getText()));
 			}
@@ -1183,7 +1218,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		
 		return result;
 	}
-	
+
 	
 
 	

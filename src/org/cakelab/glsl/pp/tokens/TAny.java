@@ -9,4 +9,15 @@ public class TAny extends Token {
 		super(interval, text);
 	}
 
+	public TAny(TAny that) {
+		super(that);
+	}
+
+	@Override
+	public Token clone() {
+		return new TAny(this);
+	}
+
+	
+	
 }

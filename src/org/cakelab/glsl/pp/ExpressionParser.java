@@ -25,7 +25,6 @@ import org.cakelab.glsl.lang.ast.NeExpression;
 import org.cakelab.glsl.lang.ast.NegExpression;
 import org.cakelab.glsl.lang.ast.NotExpression;
 import org.cakelab.glsl.lang.ast.OrExpression;
-import org.cakelab.glsl.lang.ast.PPUndefinedIdentifier;
 import org.cakelab.glsl.lang.ast.PlusExpression;
 import org.cakelab.glsl.lang.ast.PosExpression;
 import org.cakelab.glsl.lang.ast.ShiftLeftExpression;
@@ -534,9 +533,11 @@ public class ExpressionParser extends Parser {
 	}
 
 	private Expression identifier() {
-		Location mark = in.nextLocation();
 		if (IDENTIFIER()) {
-			return new PPUndefinedIdentifier(interval(mark), token.getText());
+			// undefined identifiers (i.e. not a macro name)
+			// are replaced by 0 integer constant in
+			// preprocessor conditional expressions
+			return ConstantValue.ZERO;
 		}
 		return null;
 	}

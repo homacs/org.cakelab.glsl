@@ -88,8 +88,15 @@ public abstract class IScanner {
 		eofHandlers.add(runnable);
 	}
 
+	protected void runEofHandlers() {
+		for (Runnable handler : eofHandlers) {
+			handler.run();
+		}
+	}
+
+
 	/**
-	 * Number of remaining bytes from current position.
+	 * Number of remaining bytes from current position not including the EOF atom.
 	 * @return
 	 */
 	public abstract int remaining();

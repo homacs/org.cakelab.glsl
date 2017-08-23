@@ -16,8 +16,8 @@ public class StreamScanner extends IScanner {
 		
 		private InputStream in;
 
-		/** tokens read from stream */
-		private int[] tokens = new int[INIT_CAPACITY];
+		/** atoms read from stream. (atom = single char) */
+		private int[] atoms = new int[INIT_CAPACITY];
 		/** length of the current line, not the buffer */
 		protected int length;
 
@@ -34,14 +34,14 @@ public class StreamScanner extends IScanner {
 				throw new IndexOutOfBoundsException("buffer underflow: index " + pos);
 			}
 			if (dismissed || pos >= size()) return EOF;
-			return tokens[pos];
+			return atoms[pos];
 		}
 		
-		void append(int token) {
-			tokens[length] = token;
+		void append(int atom) {
+			atoms[length] = atom;
 			length++;
-			if (tokens.length<=length) {
-				tokens = Arrays.copyOf(tokens, tokens.length<<1);
+			if (atoms.length<=length) {
+				atoms = Arrays.copyOf(atoms, atoms.length<<1);
 			}
 		}
 		
@@ -116,7 +116,7 @@ public class StreamScanner extends IScanner {
 
 		public void dismiss(int startingFrom) {
 			dismissed = true;
-			tokens[startingFrom] = EOF;
+			atoms[startingFrom] = EOF;
 			length = startingFrom+1;
 		}
 	}
@@ -168,12 +168,6 @@ public class StreamScanner extends IScanner {
 		if (n == 0 || eof()) return;
 		for (int i = 0; i < n; i++) next(location);
 		if (eof()) runEofHandlers();
-	}
-
-	private void runEofHandlers() {
-		for (Runnable handler : eofHandlers) {
-			handler.run();
-		}
 	}
 
 	/** consume n tokens and return the consumed string. */

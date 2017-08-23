@@ -8,4 +8,14 @@ public class TCharacterConstant extends TCharSequence {
 		super(interval, text);
 	}
 
+	public TCharacterConstant(TCharacterConstant that) {
+		super(that);
+	}
+
+	@Override
+	public Token clone() {
+		return new TCharacterConstant(this);
+	}
+
+	
 }

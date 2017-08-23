@@ -118,46 +118,7 @@ public class LocationMap {
 	Range previous = null;
 	
 	public void report(Token t, int end) {
-		Interval interval = t.getInterval();
-		assert (sameSource(interval.getStart(), interval.getEnd()));
-		if (!sameLine(interval.getStart(), interval.getEnd())) {
-			split(t, end);
-			return;
-		} else {
-			if (previous == null || !adjacent(interval.getStart())) {
-				appendNew(interval, end);
-			} else {
-				extendPrevious(interval, end);
-			}
-			
-			if (t instanceof TEndl) {
-				// cut at each newline
-				previous = null;
-			}
-		}
-	}
-
-	private void split(Token t, int end) {
-		String text = t.getText();
-		String[] lines = text.split("\n");
-		Location inStart = t.getStart();
-		int outEnd = end - t.length();
-		int last = lines.length-1;
-		for (int i = 0; i <= last; i++) {
-			String line = lines[i];
-			if (i != last) line += "\n";
-			if (line.length()>0) {
-				Location inEnd = inStart.clone();
-				locationAdd(inEnd, line.length());
-				if ( i == last && lessthan(inEnd, t.getEnd())) inEnd = t.getEnd();
-				outEnd += line.length();
-				Interval interval = new Interval(inStart, inEnd);
-				report(new TAny(interval, line), outEnd);
-				inStart = inEnd;
-				inStart.nextLine();
-			}
-		}
-		assert (outEnd == end);
+		appendNew(t.getInterval(), end);
 	}
 
 	private boolean lessthan(Location l1, Location l2) {
@@ -170,34 +131,10 @@ public class LocationMap {
 		loc.setColumn(loc.getColumn()+n);
 	}
 
-	private void extendPrevious(Interval interval, int end) {
-		previous.in.setEnd(interval.getEnd());
-		outEnd = end+1;
-	}
-
 	private void appendNew(Interval interval, int end) {
 		previous = new Range(interval, outEnd);
 		ranges.add(previous);
 		outEnd = end+1;
-	}
-
-	private boolean sameLine(Location start, Location end) {
-		return start.getLine() == end.getLine();
-	}
-
-	private boolean sameSource(Location start, Location end) {
-		if (start.getClass() != end.getClass()) {
-			return false;
-		} else if (start instanceof MacroExpandedLocation) {
-			return ((MacroExpandedLocation)start).getMacroInvocation() == ((MacroExpandedLocation)end).getMacroInvocation();
-		} else {
-			return start.getSourceIdentifier().equals(end.getSourceIdentifier());
-		}
-	}
-
-	private boolean adjacent(Location start) {
-		Location previousEnd = previous.in.getEnd();
-		return (sameSource(previousEnd, start) && previousEnd.getPosition()+1 == start.getPosition());
 	}
 
 	

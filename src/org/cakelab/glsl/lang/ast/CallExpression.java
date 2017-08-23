@@ -42,8 +42,6 @@ public class CallExpression extends PostfixExpression {
 			return ((FunctionReference)addressed).getFunction().call(args);
 		} else if (addressed instanceof MemberReference) {
 			return ((MemberReference)addressed).getMethod().call(((MemberReference)addressed).getCompound(), args);
-		} else if (addressed instanceof MacroReference) {
-			throw new Error("internal error: macro should be called in a derived class.");
 		} else {
 			throw new Error("neither a function, method nor constructor call.");
 		}

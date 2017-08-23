@@ -13,8 +13,21 @@ public class TAtom extends Token {
 		super(interval, text);
 	}
 
+	public TAtom(Interval interval, char text) {
+		super(interval, String.valueOf(text));
+	}
+
+	public TAtom(TAtom that) {
+		super(that);
+	}
+
 	public char getChar() {
 		return super.text.charAt(0);
+	}
+
+	@Override
+	public Token clone() {
+		return new TAtom(this);
 	}
 
 }

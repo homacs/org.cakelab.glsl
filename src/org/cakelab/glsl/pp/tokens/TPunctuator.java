@@ -8,4 +8,15 @@ public class TPunctuator extends Token {
 		super(interval, text);
 	}
 
+	public TPunctuator(TPunctuator that) {
+		super(that);
+	}
+
+	@Override
+	public Token clone() {
+		return new TPunctuator(this);
+	}
+	
+	
+
 }

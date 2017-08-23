@@ -11,6 +11,11 @@ public abstract class Token extends NodeImpl {
 		this.text = text;
 	}
 
+	public Token(Token that) {
+		super(that);
+		this.text = that.text;
+	}
+
 	public String getText() {
 		return text;
 	}
@@ -20,5 +25,7 @@ public abstract class Token extends NodeImpl {
 	}
 	
 	
+	public abstract Token clone();
+
 	
 }

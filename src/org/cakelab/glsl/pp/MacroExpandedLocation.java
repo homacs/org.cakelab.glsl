@@ -57,6 +57,11 @@ public class MacroExpandedLocation extends Location {
 		this.invocation = macroInvocation;
 	}
 
+	public MacroExpandedLocation(MacroInvocation invocation, Location originalLocation) {
+		super(originalLocation);
+		this.invocation = invocation;
+	}
+
 	public MacroInvocation getMacroInvocation() {
 		return invocation;
 	}

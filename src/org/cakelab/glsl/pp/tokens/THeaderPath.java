@@ -8,6 +8,10 @@ public class THeaderPath extends Token {
 		super(interval, text);
 	}
 
+	public THeaderPath(THeaderPath that) {
+		super(that);
+	}
+
 	public String getPath() {
 		if (text.charAt(text.length()-1) == '>') {
 			// error recovery
@@ -15,6 +19,11 @@ public class THeaderPath extends Token {
 		} else {
 			return text.substring(1, text.length()-1);
 		}
+	}
+
+	@Override
+	public Token clone() {
+		return new THeaderPath(this);
 	}
 
 }

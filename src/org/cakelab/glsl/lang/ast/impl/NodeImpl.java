@@ -16,6 +16,10 @@ public class NodeImpl implements Node {
 		this.interval = new Interval(start, end);
 	}
 	
+	public NodeImpl(NodeImpl that) {
+		this.interval = that.interval;
+	}
+
 	@Override
 	public Interval getInterval() {
 		return interval;

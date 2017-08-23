@@ -200,7 +200,9 @@ public class ASTFactory {
 			
 			// non of the above
 			errorHandler.error(identifier, "symbol " + id + " not found");
-			return new PPUndefinedIdentifier(interval, identifier.getText());
+			// FIXME: lang parser undefined identifier in expression: needs solution
+			// return new UndefinedIdentifier(interval, identifier.getText());
+			return null;
 		}
 		
 		GlslBuiltinTypeContext builtinType = primary.glslBuiltinType();

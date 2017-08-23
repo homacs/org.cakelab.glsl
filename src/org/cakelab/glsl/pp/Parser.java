@@ -853,16 +853,8 @@ public abstract class Parser {
 	 */
 	protected boolean whitespace_crlf_sequence() {
 		boolean result = false;
-		while (WHITESPACE() || CRLF()) result = true;
-		return result;
-	}
-
-	/**
-	 * Sequence consisting of CRLF() and WHITESPACE()
-	 * @return
-	 */
-	protected boolean whitespace_crlf_sequence(StringBuffer whites) {
-		boolean result = false;
+		Location start = in.nextLocation();
+		StringBuffer whites = new StringBuffer();
 		while (true) {
 			if (WHITESPACE()) {
 				result = true;
@@ -870,15 +862,13 @@ public abstract class Parser {
 			} else if (CRLF()) {
 				result = true;
 				whites.append('\n');
-			} else {
-				break;
 			}
+			else break;
 		}
+		if (result)	token = new TWhitespace(interval(start), whites.toString());
 		return result;
 	}
 
-
-	
 	
 	protected boolean isEndl(int c) {
 		return c == '\n' || c == StreamScanner.EOF;

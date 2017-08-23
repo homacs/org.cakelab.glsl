@@ -13,9 +13,12 @@ public class PPTokenScanner extends IScanner {
 	private int offset;
 
 	private Location eofLocation;
+
+	private int remaining;
 	
 	public PPTokenScanner(List<Token> tokens) {
 		this.tokens = tokens;
+		this.remaining = calcTotalLength(tokens);
 		token = 0;
 		offset = 0;
 		if (tokens.isEmpty()) {
@@ -24,6 +27,14 @@ public class PPTokenScanner extends IScanner {
 			eofLocation = tokens.get(tokens.size()-1).getEnd();
 			eofLocation.nextColumn();
 		}
+	}
+
+	private int calcTotalLength(List<Token> tokens) {
+		int total = 0;
+		for (Token t : tokens) {
+			total += t.getText().length();
+		}
+		return total;
 	}
 
 	@Override
@@ -53,7 +64,7 @@ public class PPTokenScanner extends IScanner {
 				 if (t < tokens.size()) r = length(t);
 			}
 			if (t < tokens.size()) {
-				return atom(t,n-1);
+				return atom(t,n-1 + offset);
 			}
 		}
 		return EOF;
@@ -77,6 +88,9 @@ public class PPTokenScanner extends IScanner {
 				}
 			}
 		}
+		
+		remaining -= n;
+		if (remaining == 0) super.runEofHandlers();
 	}
 
 	private int atom(int token, int offset) {
@@ -156,13 +170,8 @@ public class PPTokenScanner extends IScanner {
 	}
 
 	@Override
-	public void addOnEofHandler(Runnable runnable) {
-		throw new Error("not implemented");
-	}
-
-	@Override
 	public int remaining() {
-		throw new Error("not implemented");
+		return remaining;
 	}
 
 }

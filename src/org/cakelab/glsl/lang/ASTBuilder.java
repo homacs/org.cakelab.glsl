@@ -23,7 +23,6 @@ import org.cakelab.glsl.lang.ast.Type;
 import org.cakelab.glsl.lang.ast.Variable;
 import org.cakelab.glsl.pp.LocationMap;
 
-
 public class ASTBuilder extends GLSLBaseListener {
 	
 	private ASTFactory factory;

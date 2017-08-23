@@ -4,14 +4,16 @@ import java.util.List;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.EvaluationException;
-import org.cakelab.glsl.lang.ast.Expression;
-import org.cakelab.glsl.lang.ast.Value;
+import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.lang.ast.impl.NodeImpl;
+import org.cakelab.glsl.pp.MacroExpandedLocation;
+import org.cakelab.glsl.pp.tokens.Token;
+import org.cakelab.glsl.pp.tokens.TokenList;
 
 public class Macro extends NodeImpl {
 	String name;
 	private List<MacroParameter> params;
-	private List<Expression> replacement_list;
+	private NodeList<Node> replacement_list;
 
 	public Macro(String macroName, List<MacroParameter> params, Interval interval) {
 		super(interval);
@@ -23,6 +25,13 @@ public class Macro extends NodeImpl {
 		this(name, null, interval);
 	}
 	
+	/**
+	 * Macros having the same signature and expansion list may be redefined.
+	 * This method compares two macros in this regard.
+	 * 
+	 * @param that
+	 * @return
+	 */
 	public boolean equals(Macro that) {
 		if (!this.name.equals(that.name)) return false;
 		
@@ -57,23 +66,17 @@ public class Macro extends NodeImpl {
 		return true;
 	}
 	
-	
-	
-	
-	
-	private boolean same(Expression e1, Expression e2) {
+	private boolean same(Node e1, Node e2) {
 		if (e1.getClass() != e2.getClass()) {
 			return false;
 		} else if (e1 instanceof PPConcatExpression) {
 			PPConcatExpression c1 = ((PPConcatExpression)e1);
 			PPConcatExpression c2 = ((PPConcatExpression)e2);
 			return same(c1.getLeftOperand(), c2.getLeftOperand()) && same(c1.getRightOperand(), c2.getRightOperand());
-		} else if (e1 instanceof PPWhitespace) {
-			return true;
 		} else if (e1 instanceof PPStringifyExpression) {
 			return same(((PPStringifyExpression)e1).getOperand(), ((PPStringifyExpression)e2).getOperand());
-		} else if (e1 instanceof Text) {
-			return ((Text)e1).same(((Text)e2));
+		} else if (e1 instanceof Token) {
+			return ((Token)e1).getText().equals(((Token)e2).getText());
 		} else if (e1 instanceof MacroParameterReference) {
 			return ((MacroParameterReference)e1).same(((MacroParameterReference)e2));
 		} else {
@@ -81,11 +84,11 @@ public class Macro extends NodeImpl {
 		}
 	}
 
-	public void setReplacementList(List<Expression> expressions) {
-		// TODO [6] really a list of expressions in macros?
-		this.replacement_list = expressions;
-		if (expressions != null && expressions.size() > 0) {
-			super.interval.setEnd(expressions.get(expressions.size()-1).getEnd());
+	public void setReplacementList(NodeList<Node> replacement_list) {
+		this.replacement_list = replacement_list;
+		
+		if (replacement_list != null && replacement_list.size() > 0) {
+			super.interval.setEnd(replacement_list.get(replacement_list.size()-1).getEnd());
 		}
 	}
 	
@@ -127,32 +130,54 @@ public class Macro extends NodeImpl {
 	 * @return
 	 * @throws EvaluationException 
 	 */
-	public Value call(Value[] args) throws EvaluationException {
+	public TokenList call(MacroInvocation invocation, TokenList[] args) throws EvaluationException {
 		// TODO [6] check if we still need to check number of macro arguments
 		
-		if (args != null) for (int i = 0; i < args.length; i++) {
-			Value arg = args[i];
-			if (arg instanceof Text) {
-				params.get(i).setValue((Text)arg);
-			} else {
-				throw new Error("internal error: argument expected to be source code text (instances of Text)");
-			}
-		}
+		
+		assignArguments(args);
+
+		
+		TokenList result = new TokenList();
 		
 		// execute concat and stringify expressions
 		// concatenate results in a string
-		StringBuffer result = new StringBuffer();
 		if (replacement_list != null) {
-			for (Expression replacement : replacement_list) {
-				Value v = replacement.eval().value();
-				if (v == null || v.getNativeValue() == null) throw new Error("internal error: replacement expression evaluated to null value");
-				
-				String s = v.getNativeValue().toString();
-				result.append(s);
+			for (Node replacement : replacement_list) {
+				if (replacement instanceof Token) {
+					result.add(((Token)replacement));
+				} else if (replacement instanceof PPExpression) {
+					((PPExpression)replacement).eval(result);
+				}
 			}
 		}
-		return new Text(Interval.NONE, result.toString().trim());
 		
+		result.trim();
+		
+		return createMacroExpandedCopy(invocation, result);
+		
+	}
+	
+	private TokenList createMacroExpandedCopy(MacroInvocation invocation, TokenList result) {
+		TokenList copy = new TokenList(result.size());
+		for (Token t : result) {
+			Token clone = t.clone();
+			createMacroExpandedLocation(invocation, clone);
+			copy.add(clone);
+		}
+		return copy;
+	}
+
+	private void createMacroExpandedLocation(MacroInvocation invocation, Token clone) {
+		MacroExpandedLocation start = new MacroExpandedLocation(invocation, clone.getStart());
+		MacroExpandedLocation end = new MacroExpandedLocation(invocation, clone.getEnd());
+		clone.setInterval(new Interval(start, end));
+	}
+
+	private void assignArguments(TokenList[] args) {
+		if (args != null) for (int i = 0; i < args.length; i++) {
+			TokenList arg = args[i];
+			params.get(i).setValue(arg);
+		}
 	}
 
 	public int numParameters() {

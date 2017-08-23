@@ -8,4 +8,14 @@ public class TLineContinuation extends TWhitespace {
 		super(interval, text);
 	}
 
+	public TLineContinuation(TLineContinuation that) {
+		super(that);
+	}
+
+	@Override
+	public Token clone() {
+		return new TLineContinuation(this);
+	}
+	
+
 }

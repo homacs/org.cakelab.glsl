@@ -1,26 +1,30 @@
 package org.cakelab.glsl.pp.ast;
 
+import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.EvaluationException;
-import org.cakelab.glsl.lang.ast.CallExpression;
-import org.cakelab.glsl.lang.ast.PrimaryExpression;
+import org.cakelab.glsl.lang.ast.impl.NodeImpl;
+import org.cakelab.glsl.pp.tokens.TokenList;
 
-public class MacroCallExpression extends CallExpression implements MacroInvocation {
+public class MacroCallExpression extends NodeImpl implements MacroInvocation {
 
-	public MacroCallExpression(MacroReference operand, Text[] arguments, Location end) {
-		super(operand, arguments, end);
+	private MacroReference operand;
+	private TokenList[] arguments;
+
+	public MacroCallExpression(MacroReference operand, TokenList[] arguments, Location end) {
+		super(new Interval(operand.getStart(), end));
+		this.operand = operand;
+		this.arguments = arguments;
+		
 	}
 
 	@Override
 	public Macro getMacro() {
-		return ((MacroReference)super.operand).getMacro();
+		return operand.getMacro();
 	}
 
-	@Override
-	public PrimaryExpression eval() throws EvaluationException {
-		// we know, we don't need to evaluate the arguments or operand so 
-		// directly invoke the macro
-		return ((MacroReference)operand).getMacro().call((Text[])arguments);
+	public TokenList eval() throws EvaluationException {
+		return operand.getMacro().call(this, arguments);
 	}
 
 	

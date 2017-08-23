@@ -8,4 +8,16 @@ public class TNumber extends Token {
 		super(interval, text);
 	}
 
+	public TNumber(TNumber that) {
+		super(that);
+	}
+
+	@Override
+	public Token clone() {
+		return new TNumber(this);
+	}
+
+	
+	
+	
 }

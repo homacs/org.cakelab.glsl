@@ -3,10 +3,10 @@ package org.cakelab.glsl.pp.ast;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Identifier;
-import org.cakelab.glsl.lang.ast.PrimaryExpression;
-import org.cakelab.glsl.lang.ast.Value;
+import org.cakelab.glsl.lang.ast.impl.NodeImpl;
+import org.cakelab.glsl.pp.tokens.TokenList;
 
-public class MacroReference extends PrimaryExpression implements Identifier, MacroInvocation {
+public class MacroReference extends NodeImpl implements Identifier, MacroInvocation {
 
 	Macro macro;
 
@@ -20,15 +20,13 @@ public class MacroReference extends PrimaryExpression implements Identifier, Mac
 		return macro.name;
 	}
 
-	@Override
-	public Value value() throws EvaluationException {
-		Value result = macro.call(null).value();
-		result.setInterval(this.interval);
-		return result;
-	}
-
 	public Macro getMacro() {
 		return macro;
+	}
+
+	@Override
+	public TokenList eval() throws EvaluationException {
+		return macro.call(this, null);
 	}
 
 	

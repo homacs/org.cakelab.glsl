@@ -276,9 +276,9 @@ public class TestMacros extends TestingPPBase {
 				+ "hash_hash\n",
 				"##\n");
 
-		assertValid("#define A(x,y) # x ## # y\n"
+		assertError("#define A(x,y) # x ## # y\n"
 				+ "A(a,b)\n",
-				"\"a\"\"b\"\n");
+				"pasting \"\"a\"\" and \"\"b\"\" does not give a valid preprocessing token");
 		
 		assertValid("#define A(x,y) x ## y\n"
 				+ "A(a,)\n",

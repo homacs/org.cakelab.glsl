@@ -4,6 +4,7 @@ import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.BooleanExpression;
 import org.cakelab.glsl.lang.ast.Expression;
+import org.cakelab.glsl.lang.ast.Node;
 
 public class PPIfScope extends PPGroupScope {
 
@@ -13,8 +14,8 @@ public class PPIfScope extends PPGroupScope {
 		super(parent);
 	}
 
-	public void setCondition(Expression condition) throws EvaluationException {
-		this.condition = new BooleanExpression(condition);
+	public void setCondition(Node condition) throws EvaluationException {
+		this.condition = new BooleanExpression((Expression)condition);
 		try {
 			Boolean value = this.condition.booleanValue();
 			if (value == null) {

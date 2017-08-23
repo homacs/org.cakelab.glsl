@@ -1,7 +1,7 @@
 package org.cakelab.glsl.pp.ast;
 
-import org.cakelab.glsl.lang.ast.Expression;
-import org.cakelab.glsl.lang.ast.PPUndefinedIdentifier;
+import org.cakelab.glsl.lang.ast.Node;
+import org.cakelab.glsl.pp.tokens.TIdentifier;
 
 public class PPIfdefScope extends PPIfScope {
 
@@ -10,11 +10,13 @@ public class PPIfdefScope extends PPIfScope {
 	}
 
 	
-	public void setCondition(Expression ident) {
-		if (ident instanceof PPUndefinedIdentifier) {
-			setCondition(ident.getInterval(), false);
-		} else if (ident instanceof MacroReference) {
+	public void setCondition(Node ident) {
+		if (ident instanceof MacroReference) {
 			setCondition(ident.getInterval(), true);
+		} else if (ident instanceof TIdentifier) {
+			setCondition(ident.getInterval(), false);
+		} else {
+			throw new Error("internal error: unexpected object type");
 		}
 	}
 

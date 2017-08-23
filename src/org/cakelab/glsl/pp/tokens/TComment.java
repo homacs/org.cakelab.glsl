@@ -8,4 +8,15 @@ public class TComment extends TWhitespace {
 		super(interval, text);
 	}
 
+	public TComment(TComment that) {
+		super(that);
+	}
+
+	@Override
+	public Token clone() {
+		return new TComment(this);
+	}
+
+	
+	
 }
