@@ -43,8 +43,8 @@ import org.cakelab.glsl.pp.tokens.TNumber;
 public class ExpressionParser extends Parser {
 	// TODO [1] managing macro expansion locations (especially with overlapping macro invocations through rescan)
 	
-	public ExpressionParser(IScanner lexer, ErrorHandler errorHandler) {
-		this.in = lexer;
+	public ExpressionParser(IScanner scanner, ErrorHandler errorHandler) {
+		this.in = scanner;
 		super.setErrorHandler(errorHandler);
 	}
 

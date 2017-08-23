@@ -9,11 +9,11 @@ public class ErrorHandling {
 	
 
 	protected ErrorHandler errorHandler = new StandardErrorHandler();
-	private IScanner input;
+	protected IScanner in;
 	
 	
 	public ErrorHandling(IScanner in) {
-		this.input = in;
+		this.in = in;
 	}
 	
 	public ErrorHandling(IScanner in, ErrorHandler handler) {
@@ -21,28 +21,33 @@ public class ErrorHandling {
 		errorHandler = handler;
 	}
 
-	public ErrorHandling() {
+	/**
+	 * Note: Error handling requires errorHandler and input to be set.
+	 * @see #setErrorHandler(ErrorHandler)
+	 * @see #setInputReference(IScanner)
+	 */
+	protected ErrorHandling() {
+		
 	}
-
 
 	public void setErrorHandler(ErrorHandler errorHandler) {
 		this.errorHandler = errorHandler;
 	}
 
 	public void setInputReference(IScanner input) {
-		this.input = input;
+		this.in = input;
 	}
 
 
 	/** reports an error on the next location to be scanned */
 	protected void syntaxError(String string) throws SyntaxError {
-		syntaxError(input.nextLocation(), string);
+		syntaxError(in.nextLocation(), string);
 	}
 
 	protected void syntaxError(Location location, String string) throws SyntaxError {
 		boolean stop = errorHandler.error(location, string);
 		if (stop) {
-			input.dismiss();
+			in.dismiss();
 		}
 	}
 
@@ -51,26 +56,26 @@ public class ErrorHandling {
 			// has not yet been reported -> report
 			boolean stop = errorHandler.error(e.getOrigin(), e.getMessage());
 			if (stop) {
-				input.dismiss();
+				in.dismiss();
 			}
 		}
 	}
 	
 	protected ExpressionError expressionError(String message) {
 		syntaxError(message);
-		Interval interval = new Interval(input.location(), input.location());
+		Interval interval = new Interval(in.location(), in.location());
 		return new ExpressionError(interval, message);
 	}
 
 
 	protected boolean syntaxWarning(String string) {
-		return syntaxWarning(input.location().getLineStart(), string);
+		return syntaxWarning(in.location().getLineStart(), string);
 	}
 
 	protected boolean syntaxWarning(Location location, String message) {
 		boolean stop = errorHandler.warning(location, message);
 		if (stop) {
-			input.dismiss();
+			in.dismiss();
 		}
 		return stop;
 	}
@@ -78,7 +83,7 @@ public class ErrorHandling {
 	protected boolean syntaxWarning(Interval interval, String message) {
 		boolean stop = errorHandler.warning(interval, message);
 		if (stop) {
-			input.dismiss();
+			in.dismiss();
 		}
 		return stop;
 	}

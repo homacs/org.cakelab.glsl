@@ -4,6 +4,7 @@ import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.ast.ConstantValue;
 import org.cakelab.glsl.lang.ast.Expression;
+import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.error.ErrorHandling;
 import org.cakelab.glsl.pp.error.ExpressionError;
 import org.cakelab.glsl.pp.scanner.IScanner;
@@ -23,7 +24,6 @@ import org.cakelab.glsl.pp.tokens.Token;
 
 public abstract class Parser extends ErrorHandling {
 
-	protected IScanner in;
 	protected Token token = null;
 	
 	

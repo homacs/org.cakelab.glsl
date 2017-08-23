@@ -99,6 +99,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		pushScope(globalScope);
 		super.in = new ScannerManager(new StreamScanner(sourceIdentifier, in));
 		
+		this.setInputReference(super.in);
 		extensions = new ArrayList<GLSLExtension>();
 		
 		seenCodeLine = false;
