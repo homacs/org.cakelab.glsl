@@ -2,6 +2,22 @@ package org.cakelab.glsl.pp.lexer;
 
 import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.error.ErrorHandling;
+import org.cakelab.glsl.pp.lexer.rules.LexerRule;
+import org.cakelab.glsl.pp.lexer.rules.LexerRuleSet;
+import org.cakelab.glsl.pp.lexer.rules.RAny;
+import org.cakelab.glsl.pp.lexer.rules.RCharacterConstant;
+import org.cakelab.glsl.pp.lexer.rules.RComment;
+import org.cakelab.glsl.pp.lexer.rules.RCrlf;
+import org.cakelab.glsl.pp.lexer.rules.REndl;
+import org.cakelab.glsl.pp.lexer.rules.REof;
+import org.cakelab.glsl.pp.lexer.rules.RHash;
+import org.cakelab.glsl.pp.lexer.rules.RHashHash;
+import org.cakelab.glsl.pp.lexer.rules.RHeaderPath;
+import org.cakelab.glsl.pp.lexer.rules.RIdentifier;
+import org.cakelab.glsl.pp.lexer.rules.RLineContinuation;
+import org.cakelab.glsl.pp.lexer.rules.RPunctuator;
+import org.cakelab.glsl.pp.lexer.rules.RStringLiteral;
+import org.cakelab.glsl.pp.lexer.rules.RWhitespace;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.Token;
 

@@ -1,32 +1,29 @@
-package org.cakelab.glsl.pp.lexer;
+package org.cakelab.glsl.pp.lexer.rules;
 
 import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.scanner.IScanner;
-import org.cakelab.glsl.pp.tokens.TEof;
+import org.cakelab.glsl.pp.tokens.TPunctuator;
 import org.cakelab.glsl.pp.tokens.Token;
 
-public class REof extends LexerRule {
-	
-	public REof(IScanner in, ErrorHandler handler) {
+public class RHash extends LexerRule {
+
+	public RHash(IScanner in, ErrorHandler handler) {
 		super(in, handler);
 	}
 
 	@Override
 	public Token consume() {
-		
-		in.consume();
-		return new TEof(interval(in.location()));
+		return new TPunctuator(interval(in.location()), "#");
 	}
 
 	@Override
 	public boolean match() {
-		return in.LA1() == IScanner.EOF;
+		return in.LA_equals('#');
 	}
 
 	@Override
 	public void skip() {
 		in.consume();
 	}
-
 
 }

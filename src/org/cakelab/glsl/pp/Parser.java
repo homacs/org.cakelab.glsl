@@ -2,13 +2,10 @@ package org.cakelab.glsl.pp;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.ConstantValue;
 import org.cakelab.glsl.lang.ast.Expression;
-import org.cakelab.glsl.pp.error.ErrorHandler;
+import org.cakelab.glsl.pp.error.ErrorHandling;
 import org.cakelab.glsl.pp.error.ExpressionError;
-import org.cakelab.glsl.pp.error.StandardErrorHandler;
-import org.cakelab.glsl.pp.error.SyntaxError;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.scanner.StreamScanner;
 import org.cakelab.glsl.pp.tokens.TAny;
@@ -24,46 +21,16 @@ import org.cakelab.glsl.pp.tokens.TPunctuator;
 import org.cakelab.glsl.pp.tokens.TWhitespace;
 import org.cakelab.glsl.pp.tokens.Token;
 
-public abstract class Parser {
-
-
+public abstract class Parser extends ErrorHandling {
 
 	protected IScanner in;
-	protected ErrorHandler errorHandler = new StandardErrorHandler();
 	protected Token token = null;
-
 	
-	public void setErrorHandler(ErrorHandler errorHandler) {
-		this.errorHandler = errorHandler;
-	}
-
+	
 	public boolean atEOF() {
 		return in.eof() || LA1() == StreamScanner.EOF;
 	}
 
-
-	/** reports an error on the next location to be scanned */
-	protected void syntaxError(String string) throws SyntaxError {
-		syntaxError(in.nextLocation(), string);
-	}
-
-	protected void syntaxError(Location location, String string) throws SyntaxError {
-		boolean stop = errorHandler.error(location, string);
-		if (stop) {
-			in.dismiss();
-		}
-	}
-
-	protected void syntaxError(EvaluationException e) throws SyntaxError {
-		if (!(e.getOrigin() instanceof ExpressionError)) {
-			// has not yet been reported -> report
-			boolean stop = errorHandler.error(e.getOrigin(), e.getMessage());
-			if (stop) {
-				in.dismiss();
-			}
-		}
-	}
-	
 	protected ExpressionError expressionError(Location mark, String message) {
 		syntaxError(message);
 		Interval interval = interval(mark);
@@ -76,31 +43,8 @@ public abstract class Parser {
 		return new ExpressionError(interval, message);
 	}
 
-
-	protected boolean syntaxWarning(String string) {
-		return syntaxWarning(line_start(in.location()), string);
-	}
-
-	protected boolean syntaxWarning(Location location, String message) {
-		boolean stop = errorHandler.warning(location, message);
-		if (stop) {
-			in.dismiss();
-		}
-		return stop;
-	}
-
-	protected boolean syntaxWarning(Interval interval, String message) {
-		boolean stop = errorHandler.warning(interval, message);
-		if (stop) {
-			in.dismiss();
-		}
-		return stop;
-	}
-
 	
 	public abstract void parse();
-	
-	
 	
 	protected Interval interval(Location start) {
 		return new Interval(start, in.location());
@@ -180,8 +124,7 @@ public abstract class Parser {
 		return (LA1() == c);
 	}
 
-
-	/** single input item (single character) */
+	/** Returns the single input item which equals one character of the given set */
 	protected boolean ATOM(String set) {
 		token = null;
 		if (0 <= set.indexOf(in.lookahead(1))) {

@@ -1,4 +1,4 @@
-package org.cakelab.glsl.pp.lexer;
+package org.cakelab.glsl.pp.lexer.rules;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.pp.error.ErrorHandler;
