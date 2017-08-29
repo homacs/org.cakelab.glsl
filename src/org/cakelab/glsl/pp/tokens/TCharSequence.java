@@ -8,9 +8,14 @@ public class TCharSequence extends Token {
 		super(interval, text);
 	}
 
+	public TCharSequence(String text) {
+		super(text);
+	}
+
 	public TCharSequence(TCharSequence that) {
 		super(that);
 	}
+
 
 	@Override
 	public Token clone() {

@@ -1,6 +1,5 @@
 package org.cakelab.glsl.pp.lexer.rules;
 
-import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.TWhitespace;
@@ -13,8 +12,8 @@ public class RCrlf extends LexerRuleEquals {
 	}
 
 	@Override
-	protected Token createToken(Interval interval, String match) {
-		return new TWhitespace(interval, match);
+	protected Token createToken(String match) {
+		return new TWhitespace(match);
 	}
 
 }

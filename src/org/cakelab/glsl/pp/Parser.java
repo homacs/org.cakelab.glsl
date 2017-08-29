@@ -4,9 +4,9 @@ import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.ast.ConstantValue;
 import org.cakelab.glsl.lang.ast.Expression;
-import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.error.ErrorHandling;
 import org.cakelab.glsl.pp.error.ExpressionError;
+import org.cakelab.glsl.pp.lexer.PullLexer;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.scanner.StreamScanner;
 import org.cakelab.glsl.pp.tokens.TAny;
@@ -25,8 +25,22 @@ import org.cakelab.glsl.pp.tokens.Token;
 public abstract class Parser extends ErrorHandling {
 
 	protected Token token = null;
+	protected PullLexer lexer;
 	
 	
+	public Parser(PullLexer lexer) {
+		setLexer(lexer);
+	}
+	
+	protected Parser() {}
+	
+	protected void setLexer(PullLexer lexer) {
+		this.lexer = lexer;
+		super.setErrorHandler(lexer.getErrorHandler());
+		super.setInputReference(lexer.getInputReference());
+	}
+
+
 	public boolean atEOF() {
 		return in.eof() || LA1() == StreamScanner.EOF;
 	}
@@ -619,7 +633,7 @@ public abstract class Parser extends ErrorHandling {
 		"/","%","<<",">>","<",">","<=",">=","==","!=","^","|","&&","||",
 		"?",":",";","...",
 		"=","*=","/=", "%=", "+=", "-=", "<<=", ">>=", "&=", "^=", "|=",
-		/* # ## see blow */ ",",
+		/* # ## see below */ ",",
 		"<:", ":>", "<%", "%>", "%:", "%:%:"};
 		
 		for (String punctuator : punctuators) {

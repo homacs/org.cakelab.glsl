@@ -12,6 +12,10 @@ public class THeaderPath extends Token {
 		super(that);
 	}
 
+	public THeaderPath(String text) {
+		super(text);
+	}
+
 	public String getPath() {
 		if (text.charAt(text.length()-1) == '>') {
 			// error recovery

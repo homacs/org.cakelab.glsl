@@ -151,4 +151,8 @@ public abstract class IScanner {
 		return (LA1() == c);
 	}
 
+	public boolean LA_equals(int n, char c) {
+		return LA(n) == c;
+	}
+
 }

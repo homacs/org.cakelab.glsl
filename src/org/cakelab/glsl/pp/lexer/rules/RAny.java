@@ -1,9 +1,10 @@
 package org.cakelab.glsl.pp.lexer.rules;
 
 import org.cakelab.glsl.pp.error.ErrorHandler;
+import org.cakelab.glsl.pp.lexer.LexerRule;
+import org.cakelab.glsl.pp.lexer.Lookahead;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.TAny;
-import org.cakelab.glsl.pp.tokens.Token;
 
 public class RAny extends LexerRule {
 
@@ -12,19 +13,15 @@ public class RAny extends LexerRule {
 	}
 
 	@Override
-	public Token consume() {
-		char c = (char) in.consume();
-		return new TAny(interval(in.location()), String.valueOf(c));
-	}
+	public Lookahead lookahead(int offset) {
+		super.setLookaheadStart(offset);
 
-	@Override
-	public boolean match() {
-		return in.LA1() != IScanner.EOF;
-	}
-
-	@Override
-	public void skip() {
-		in.consume();
+		if (!eof()) {
+			char c = (char) consume();
+			return createLookahead(new TAny(String.valueOf(c)));
+		} else {
+			return null;
+		}
 	}
 
 }

@@ -12,6 +12,10 @@ public class TIdentifier extends Token {
 		super(that);
 	}
 
+	public TIdentifier(String text) {
+		super(text);
+	}
+
 	@Override
 	public Token clone() {
 		return new TIdentifier(this);

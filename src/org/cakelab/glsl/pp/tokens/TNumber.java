@@ -12,6 +12,10 @@ public class TNumber extends Token {
 		super(that);
 	}
 
+	public TNumber(String text) {
+		super(text);
+	}
+
 	@Override
 	public Token clone() {
 		return new TNumber(this);

@@ -20,6 +20,9 @@ public class NodeImpl implements Node {
 		this.interval = that.interval;
 	}
 
+	
+	protected NodeImpl() {}
+	
 	@Override
 	public Interval getInterval() {
 		return interval;

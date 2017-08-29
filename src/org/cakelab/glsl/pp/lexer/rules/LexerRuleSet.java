@@ -1,12 +1,12 @@
 package org.cakelab.glsl.pp.lexer.rules;
 
 import org.cakelab.glsl.pp.error.ErrorHandler;
+import org.cakelab.glsl.pp.lexer.LexerRule;
+import org.cakelab.glsl.pp.lexer.Lookahead;
 import org.cakelab.glsl.pp.scanner.IScanner;
-import org.cakelab.glsl.pp.tokens.Token;
 
 public class LexerRuleSet extends LexerRule {
 	protected LexerRule[] ruleSet;
-	private LexerRule lastMatch;
 	
 	public LexerRuleSet(IScanner in, ErrorHandler handler, LexerRule ... ruleSet) {
 		super(in, handler);
@@ -14,32 +14,14 @@ public class LexerRuleSet extends LexerRule {
 	}
 
 	@Override
-	public Token consume() {
-		Token result = lastMatch.consume();
-		lastMatch = null;
+	public Lookahead lookahead(int offset) {
+		Lookahead result = null;
+		for (LexerRule r : ruleSet) {
+			result = r.lookahead(offset);
+			if (result != null) break;
+		}
 		return result;
 	}
 
-	@Override
-	public boolean match() {
-		lastMatch = null;
-		if (enabled) {
-			for (LexerRule r : ruleSet) {
-				if (r.match()) {
-					lastMatch = r;
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public void skip() {
-		lastMatch.skip();
-		lastMatch = null;
-	}
-
-	
 
 }

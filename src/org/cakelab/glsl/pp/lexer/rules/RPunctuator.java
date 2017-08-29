@@ -1,6 +1,5 @@
 package org.cakelab.glsl.pp.lexer.rules;
 
-import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.TPunctuator;
@@ -15,39 +14,16 @@ public class RPunctuator extends LexerRuleSequenceSelect {
 			"=","*=","/=", "%=", "+=", "-=", "<<=", ">>=", "&=", "^=", "|=",
 			/* # ## see blow */ ",",
 			"<:", ":>", "<%", "%>", "%:", "%:%:"};
-	private RHash hash;
-	private RHashHash hashhash;
 	
 	
-	
-	public RPunctuator(IScanner in, ErrorHandler handler, RHashHash hashhash, RHash hash) {
+	public RPunctuator(IScanner in, ErrorHandler handler) {
 		super(in, handler, punctuators);
-		this.hashhash = hashhash;
-		this.hash = hash;
 	}
 
-	@Override
-	public Token consume() {
-		Location start = in.nextLocation();
-		in.consume(lastMatch.length());
-		Token token = new TPunctuator(interval(start), lastMatch);
-		lastMatch = null;
-		return token;
-	}
 
 	@Override
-	public boolean match() {
-		if (super.match()) {
-			return true;
-		} else if (hashhash.match()) {
-			lastMatch = "##";
-			return true;
-		} else if (hash.match()) {
-			lastMatch = "#";
-			return true;
-		} else {
-			return false;
-		}
+	protected Token createToken(String text) {
+		return new TPunctuator(text);
 	}
 
 	

@@ -36,14 +36,16 @@ import org.cakelab.glsl.lang.ast.XorExpression;
 import org.cakelab.glsl.pp.ast.PPDefinedExpression;
 import org.cakelab.glsl.pp.ast.StringConstant;
 import org.cakelab.glsl.pp.error.ErrorHandler;
+import org.cakelab.glsl.pp.lexer.PullLexer;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.TAtom;
 import org.cakelab.glsl.pp.tokens.TNumber;
 
 public class ExpressionParser extends Parser {
-	// TODO [1] managing macro expansion locations (especially with overlapping macro invocations through rescan)
 	
 	public ExpressionParser(IScanner scanner, ErrorHandler errorHandler) {
+		super(new PullLexer(scanner, errorHandler));
+		// TODO: remove after refactoring
 		this.in = scanner;
 		super.setErrorHandler(errorHandler);
 	}

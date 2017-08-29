@@ -16,6 +16,10 @@ public abstract class Token extends NodeImpl {
 		this.text = that.text;
 	}
 
+	public Token(String text) {
+		this.text = text;
+	}
+
 	public String getText() {
 		return text;
 	}

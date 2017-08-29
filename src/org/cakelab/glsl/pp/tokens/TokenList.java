@@ -26,4 +26,8 @@ public class TokenList extends NodeList<Token> {
 		super.trimEnd(Filter_WHITESPACE);
 	}
 
+	public void removeFirst(int n) {
+		super.removeRange(0, n);
+	}
+
 }

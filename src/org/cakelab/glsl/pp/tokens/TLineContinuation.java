@@ -4,12 +4,16 @@ import org.cakelab.glsl.Interval;
 
 public class TLineContinuation extends TWhitespace {
 
-	public TLineContinuation(Interval interval, String text) {
-		super(interval, text);
+	public TLineContinuation(String text) {
+		super(text);
 	}
 
 	public TLineContinuation(TLineContinuation that) {
 		super(that);
+	}
+
+	public TLineContinuation(Interval interval, String text) {
+		super(interval, text);
 	}
 
 	@Override

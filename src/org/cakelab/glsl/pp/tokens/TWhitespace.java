@@ -4,12 +4,16 @@ import org.cakelab.glsl.Interval;
 
 public class TWhitespace extends Token {
 
-	public TWhitespace(Interval interval, String text) {
-		super(interval, text);
+	public TWhitespace(String text) {
+		super(text);
 	}
 
 	public TWhitespace(TWhitespace that) {
 		super(that);
+	}
+
+	public TWhitespace(Interval interval, String string) {
+		super(interval, string);
 	}
 
 	@Override

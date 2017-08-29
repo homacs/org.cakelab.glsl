@@ -1,9 +1,10 @@
 package org.cakelab.glsl.pp.lexer.rules;
 
 import org.cakelab.glsl.pp.error.ErrorHandler;
+import org.cakelab.glsl.pp.lexer.LexerRule;
+import org.cakelab.glsl.pp.lexer.Lookahead;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.TEof;
-import org.cakelab.glsl.pp.tokens.Token;
 
 public class REof extends LexerRule {
 	
@@ -12,20 +13,13 @@ public class REof extends LexerRule {
 	}
 
 	@Override
-	public Token consume() {
-		
-		in.consume();
-		return new TEof(interval(in.location()));
-	}
-
-	@Override
-	public boolean match() {
-		return in.LA1() == IScanner.EOF;
-	}
-
-	@Override
-	public void skip() {
-		in.consume();
+	public Lookahead lookahead(int offset) {
+		super.setLookaheadStart(offset);
+		if (LA1() == IScanner.EOF) {
+			consume();
+			return createLookahead(new TEof());
+		}
+		return null;
 	}
 
 

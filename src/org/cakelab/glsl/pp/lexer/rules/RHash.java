@@ -5,25 +5,16 @@ import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.TPunctuator;
 import org.cakelab.glsl.pp.tokens.Token;
 
-public class RHash extends LexerRule {
+public class RHash extends LexerRuleEquals {
 
 	public RHash(IScanner in, ErrorHandler handler) {
-		super(in, handler);
+		super(in, handler, "#");
 	}
 
 	@Override
-	public Token consume() {
-		return new TPunctuator(interval(in.location()), "#");
+	protected Token createToken(String match) {
+		return new TPunctuator(match);
 	}
 
-	@Override
-	public boolean match() {
-		return in.LA_equals('#');
-	}
-
-	@Override
-	public void skip() {
-		in.consume();
-	}
 
 }

@@ -34,6 +34,7 @@ import org.cakelab.glsl.pp.ast.PPIfdefScope;
 import org.cakelab.glsl.pp.ast.PPIfndefScope;
 import org.cakelab.glsl.pp.ast.PPStringifyExpression;
 import org.cakelab.glsl.pp.error.ExpressionError;
+import org.cakelab.glsl.pp.lexer.PullLexer;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.scanner.IScanner.EofFuture;
 import org.cakelab.glsl.pp.scanner.PPTokenScanner;
@@ -103,6 +104,8 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		extensions = new ArrayList<GLSLExtension>();
 		
 		seenCodeLine = false;
+		
+		super.setLexer(new PullLexer(super.in, super.errorHandler));
 	}
 
 	/** sets the resource manager, which is used to lookup resources
@@ -889,6 +892,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			} else if (CHAR_SEQUENCE('\'')) {
 				varargs.add(token);
 			} else if (PUNCTUATOR(true)) {
+				// FIXME: macro args actually cannot accept hashes
 				varargs.add(token);
 			} else if (NUMBER()) {
 				varargs.add(token);

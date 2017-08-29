@@ -34,11 +34,17 @@ public class ErrorHandling {
 		this.errorHandler = errorHandler;
 	}
 
+	public ErrorHandler getErrorHandler() {
+		return this.errorHandler;
+	}
+	
 	public void setInputReference(IScanner input) {
 		this.in = input;
 	}
 
-
+	public IScanner getInputReference() {
+		return this.in;
+	}
 	/** reports an error on the next location to be scanned */
 	protected void syntaxError(String string) throws SyntaxError {
 		syntaxError(in.nextLocation(), string);

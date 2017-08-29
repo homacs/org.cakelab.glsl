@@ -12,6 +12,10 @@ public class TPunctuator extends Token {
 		super(that);
 	}
 
+	public TPunctuator(String text) {
+		super(text);
+	}
+
 	@Override
 	public Token clone() {
 		return new TPunctuator(this);
