@@ -2,7 +2,6 @@ package org.cakelab.glsl.pp;
 
 import java.util.ArrayList;
 
-import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.ast.AndExpression;
 import org.cakelab.glsl.lang.ast.ConditionalExpression;
 import org.cakelab.glsl.lang.ast.ConstantValue;
@@ -33,24 +32,23 @@ import org.cakelab.glsl.lang.ast.Type;
 import org.cakelab.glsl.lang.ast.Type.Rank;
 import org.cakelab.glsl.lang.ast.Value;
 import org.cakelab.glsl.lang.ast.XorExpression;
+import org.cakelab.glsl.pp.ast.NodeList;
 import org.cakelab.glsl.pp.ast.PPDefinedExpression;
 import org.cakelab.glsl.pp.ast.StringConstant;
-import org.cakelab.glsl.pp.error.ErrorHandler;
+import org.cakelab.glsl.pp.lexer.FilteringLexer;
 import org.cakelab.glsl.pp.lexer.PPLexer;
-import org.cakelab.glsl.pp.scanner.IScanner;
-import org.cakelab.glsl.pp.tokens.TAtom;
+import org.cakelab.glsl.pp.parser.Parser_New;
+import org.cakelab.glsl.pp.tokens.TCharacterConstant;
 import org.cakelab.glsl.pp.tokens.TNumber;
+import org.cakelab.glsl.pp.tokens.TPunctuator;
+import org.cakelab.glsl.pp.tokens.TStringLiteral;
+import org.cakelab.glsl.pp.tokens.Token;
 
-public class ExpressionParser extends Parser {
+public class ExpressionParser_New extends Parser_New {
 	
 	
-	private IScanner in;
-	
-	public ExpressionParser(IScanner scanner, ErrorHandler errorHandler) {
-		super(new PPLexer(scanner, errorHandler));
-		// TODO: remove after refactoring
-		this.in = scanner;
-		super.setErrorHandler(errorHandler);
+	public ExpressionParser_New(PPLexer lexer) {
+		super(new FilteringLexer(lexer, NodeList.Filter_WHITESPACE));
 	}
 
 	
@@ -65,52 +63,52 @@ public class ExpressionParser extends Parser {
 	 * Evaluation of the last expression in the list gives the result value.
 	 */
 	public Expression expression() {
-		while(WHITESPACE());
 		Expression expr = conditional_expression(null);
 		if (expr == null) {
 			// syntax error
 		} else {
-			while(WHITESPACE());
-			if (optional(',')) {
+			if (PUNCTUATOR(',')) {
+				Token comma = token;
 				ArrayList<Expression> list = new ArrayList<Expression>();
 				list.add(expr);
 				do {
-					Location commaLocation = in.location();
-					while(WHITESPACE());
 					Expression next = conditional_expression(null);
 					if (next != null) {
 						list.add(next);
 					} else {
-						list.add(expressionError(commaLocation, "missing expression after ,"));
+						list.add(expressionError(comma.getInterval(), "missing expression after ,"));
 					}
-				} while(optional(','));
+				} while(PUNCTUATOR(','));
 				expr = new ExpressionList(list);
 			}
 		}
 		return expr;
 	}
 
+
+
 	public Expression conditional_expression(Expression operand1) {
 		if(operand1 == null) operand1 = logical_or_expression(null);
 		if (operand1 == null) {
 			// syntax error already reported
 		} else {
-			while(WHITESPACE());
-			if (optional('?')) {
-				while(WHITESPACE());
+			if (PUNCTUATOR('?')) {
+				Token questionMark = token;
 				Expression operand2 = expression();
 				if (operand2 != null) {
-					while(WHITESPACE());
-					if (mandatory(':')) {
+					if (PUNCTUATOR(':')) {
+						Token colon = token;
 						Expression operand3 = expression();
 						if (operand3 != null) {
 							return conditional_expression(new ConditionalExpression(operand1, operand2, operand3));
 						} else {
-							return expressionError("missing third operand to conditional expression after :");
+							return expressionError(colon.getInterval(), "missing third operand to conditional expression after :");
 						}
+					} else {
+						return expressionError(operand2.getInterval(), "missing ':' in conditional expression");
 					}
 				} else {
-					return expressionError("missing second operand to contional operator ? ");
+					return expressionError(questionMark.getInterval(), "missing second operand to contional operator ? ");
 				}
 			} else {
 				return operand1;
@@ -126,15 +124,14 @@ public class ExpressionParser extends Parser {
 		if (operand1 == null) {
 			// syntax error already reported
 		} else {
-			while(WHITESPACE());
 			String operator = "||";
-			if (optional(operator)) {
-				while(WHITESPACE());
+			if (PUNCTUATOR(operator)) {
+				Token opTok = token;
 				Expression operand2 = logical_xor_expression(null);
 				if (operand2 != null) {
 					return logical_or_expression(new LogicalOrExpression(operand1, operand2));
 				} else {
-					return expressionError("missing second operand to operator " + operator);
+					return expressionError(opTok.getInterval(), "missing second operand to operator " + operator);
 				}
 			} else {
 				return operand1;
@@ -150,15 +147,14 @@ public class ExpressionParser extends Parser {
 		if (operand1 == null) {
 			// syntax error already reported
 		} else {
-			while(WHITESPACE());
 			String operator = "^^";
-			if (optional(operator)) {
-				while(WHITESPACE());
+			if (PUNCTUATOR(operator)) {
+				Token opTok = token;
 				Expression operand2 = logical_and_expression(null);
 				if (operand2 != null) {
 					return logical_xor_expression(new LogicalXorExpression(operand1, operand2));
 				} else {
-					return expressionError("missing second operand to operator " + operator);
+					return expressionError(opTok.getInterval(), "missing second operand to operator " + operator);
 				}
 			} else {
 				return operand1;
@@ -174,15 +170,14 @@ public class ExpressionParser extends Parser {
 		if (operand1 == null) {
 			// syntax error already reported
 		} else {
-			while(WHITESPACE());
 
-			if (optional("&&")) {
-				while(WHITESPACE());
+			if (PUNCTUATOR("&&")) {
+				Token opTok = token;
 				Expression operand2 = or_expression(null);
 				if (operand2 != null) {
 					return logical_and_expression(new LogicalAndExpression(operand1, operand2));
 				} else {
-					return expressionError("missing second operand to operator &&");
+					return expressionError(opTok.getInterval(), "missing second operand to operator &&");
 				}
 			} else {
 				return operand1;
@@ -198,16 +193,13 @@ public class ExpressionParser extends Parser {
 		if (operand1 == null) {
 			// syntax error already reported
 		} else {
-			while(WHITESPACE());
-			if (LA_equals("||")) {
-				return operand1;
-			} else if (optional('|')) {
-				while(WHITESPACE());
+			if (PUNCTUATOR('|')) {
+				Token opTok = token;
 				Expression operand2 = xor_expression(null);
 				if (operand2 != null) {
 					return or_expression(new OrExpression(operand1, operand2));
 				} else {
-					return expressionError("missing second operand to operator |");
+					return expressionError(opTok.getInterval(), "missing second operand to operator |");
 				}
 			} else {
 				return operand1;
@@ -223,17 +215,13 @@ public class ExpressionParser extends Parser {
 		if (operand1 == null) {
 			// syntax error already reported
 		} else {
-			while(WHITESPACE());
-
-			if (LA_equals("^^")) {
-				return operand1;
-			} else if (optional('^')) {
-				while(WHITESPACE());
+			if (PUNCTUATOR('^')) {
+				Token opTok = token;
 				Expression operand2 = and_expression(null);
 				if (operand2 != null) {
 					return xor_expression(new XorExpression(operand1, operand2));
 				} else {
-					return expressionError("missing second operand to operator ^");
+					return expressionError(opTok.getInterval(), "missing second operand to operator ^");
 				}
 			} else {
 				return operand1;
@@ -250,16 +238,13 @@ public class ExpressionParser extends Parser {
 		if (operand1 == null) {
 			// syntax error already reported
 		} else {
-			while(WHITESPACE());
-			if (LA_equals("&&")) {
-				return operand1;
-			} else if (optional('&')) {
-				while(WHITESPACE());
+			if (PUNCTUATOR('&')) {
+				Token opTok = token;
 				Expression operand2 = equality_expression(null);
 				if (operand2 != null) {
 					return and_expression(new AndExpression(operand1, operand2));
 				} else {
-					return expressionError("missing second operand to operator &");
+					return expressionError(opTok.getInterval(), "missing second operand to operator &");
 				}
 			} else {
 				return operand1;
@@ -275,23 +260,21 @@ public class ExpressionParser extends Parser {
 		if (operand1 == null) {
 			// syntax error already reported
 		} else {
-			while(WHITESPACE());
-
-			if (optional("==")) {
-				while(WHITESPACE());
+			if (PUNCTUATOR("==")) {
+				Token opTok = token;
 				Expression operand2 = relational_expression(null);
 				if (operand2 != null) {
 					return equality_expression(new EqExpression(operand1, operand2));
 				} else {
-					return expressionError("missing second operand to operator ==");
+					return expressionError(opTok.getInterval(), "missing second operand to operator ==");
 				}
-			} else if (optional("!=")) {
-				while(WHITESPACE());
+			} else if (PUNCTUATOR("!=")) {
+				Token opTok = token;
 				Expression operand2 = relational_expression(null);
 				if (operand2 != null) {
 					return equality_expression(new NeExpression(operand1, operand2));
 				} else {
-					return expressionError("missing second operand to operator !=");
+					return expressionError(opTok.getInterval(), "missing second operand to operator !=");
 				}
 			} else {
 				return operand1;
@@ -308,38 +291,37 @@ public class ExpressionParser extends Parser {
 		if (operand1 == null) {
 			// syntax error already reported
 		} else {
-			while(WHITESPACE());
-			if (optional("<=")) {
-				while(WHITESPACE());
+			if (PUNCTUATOR("<=")) {
+				Token opTok = token;
 				Expression operand2 = shift_expression(null);
 				if (operand2 != null) {
 					return relational_expression(new LeExpression(operand1, operand2));
 				} else {
-					return expressionError("missing second operand to operator <=");
+					return expressionError(opTok.getInterval(), "missing second operand to operator <=");
 				}
-			} else if (optional(">=")) {
-				while(WHITESPACE());
+			} else if (PUNCTUATOR(">=")) {
+				Token opTok = token;
 				Expression operand2 = shift_expression(null);
 				if (operand2 != null) {
 					return relational_expression(new GeExpression(operand1, operand2));
 				} else {
-					return expressionError("missing second operand to operator >=");
+					return expressionError(opTok.getInterval(), "missing second operand to operator >=");
 				}
-			} else if (optional("<")) {
-				while(WHITESPACE());
+			} else if (PUNCTUATOR("<")) {
+				Token opTok = token;
 				Expression operand2 = shift_expression(null);
 				if (operand2 != null) {
 					return relational_expression(new LtExpression(operand1, operand2));
 				} else {
-					syntaxError("missing second operand to operator <");
+					return expressionError(opTok.getInterval(), "missing second operand to operator <");
 				}
-			} else if (optional(">")) {
-				while(WHITESPACE());
+			} else if (PUNCTUATOR(">")) {
+				Token opTok = token;
 				Expression operand2 = shift_expression(null);
 				if (operand2 != null) {
 					return relational_expression(new GtExpression(operand1, operand2));
 				} else {
-					return expressionError("missing second operand to operator >");
+					return expressionError(opTok.getInterval(), "missing second operand to operator >");
 				}
 			} else {
 				return operand1;
@@ -355,22 +337,21 @@ public class ExpressionParser extends Parser {
 		if (operand1 == null) {
 			// syntax error already reported
 		} else {
-			while(WHITESPACE());
-			if (optional("<<")) {
-				while(WHITESPACE());
+			if (PUNCTUATOR("<<")) {
+				Token opTok = token;
 				Expression operand2 = additive_expression(null);
 				if (operand2 != null) {
 					return shift_expression(new ShiftLeftExpression(operand1, operand2));
 				} else {
-					return expressionError("missing second operand to operator <<");
+					return expressionError(opTok.getInterval(), "missing second operand to operator <<");
 				}
-			} else if (optional(">>")) {
-				while(WHITESPACE());
+			} else if (PUNCTUATOR(">>")) {
+				Token opTok = token;
 				Expression operand2 = additive_expression(null);
 				if (operand2 != null) {
 					return shift_expression(new ShiftRightExpression(operand1, operand2));
 				} else {
-					return expressionError("missing second operand to operator >>");
+					return expressionError(opTok.getInterval(), "missing second operand to operator >>");
 				}
 			} else {
 				return operand1;
@@ -384,10 +365,10 @@ public class ExpressionParser extends Parser {
 		if (operand1 == null) {
 			// syntax error already reported
 		} else {
-			while(WHITESPACE());
-			if (ATOM("+-")) {
-				char op = getAtom();
-				while(WHITESPACE());
+			if (PUNCTUATOR_OUTOF("+-")) {
+				Token opTok = token;
+				char op = opTok.getText().charAt(0);
+
 				Expression operand2 = multiplicative_expression(null);
 				Expression add = null;
 				if (operand2 != null) {
@@ -398,7 +379,7 @@ public class ExpressionParser extends Parser {
 					}
 					return additive_expression(add);
 				} else {
-					return expressionError("missing second operand to operator " + op);
+					return expressionError(opTok.getInterval(), "missing second operand to operator " + op);
 				}
 			} else {
 				return operand1;
@@ -407,20 +388,14 @@ public class ExpressionParser extends Parser {
 		return null;
 	}
 	
-	private char getAtom() {
-		return ((TAtom)token).getChar();
-	}
-
-
 	public Expression multiplicative_expression(Expression operand1) {
 		if (operand1 == null) operand1 = unary_expression();
 		if (operand1 == null) {
 			// syntax error already reported
 		} else {
-			while(WHITESPACE());
-			if (ATOM("*/%")) {
-				char operator = getAtom();
-				while(WHITESPACE());
+			if (PUNCTUATOR_OUTOF("*/%")) {
+				Token opTok = token;
+				char operator = token.getText().charAt(0);
 				Expression operand2 = unary_expression();
 				if (operand2 != null) {
 					Expression mul = null;
@@ -432,7 +407,7 @@ public class ExpressionParser extends Parser {
 					}
 					return multiplicative_expression(mul);
 				} else {
-					return expressionError("missing second operand to operand " + operator);
+					return expressionError(opTok.getInterval(), "missing second operand to operand " + operator);
 				}
 			} else {
 				return operand1;
@@ -443,27 +418,25 @@ public class ExpressionParser extends Parser {
 	
 	public Expression unary_expression() {
 		Expression primary;
-		while(WHITESPACE());
-		Location mark = in.location();
-		if (LA_equals("!=")) {
-			return null;
-		} else if (ATOM("+-!~")) {
-			char op = getAtom();
+		if (PUNCTUATOR_OUTOF("+-!~")) {
+			Token opTok = token;
+			char op = token.getText().charAt(0);
 			if (null == (primary = unary_expression())) {
-				return expressionError("missing expression after unary operator '" + op + "'");
+				return expressionError(opTok.getInterval(), "missing expression after unary operator '" + op + "'");
 			}
 			switch(op) {
-			case '+': return new PosExpression(mark, primary);
-			case '-': return new NegExpression(mark, primary);
-			case '!': return new LogicalNotExpression(mark, primary);
-			case '~': return new NotExpression(mark, primary);
+			case '+': return new PosExpression(opTok.getStart(), primary);
+			case '-': return new NegExpression(opTok.getStart(), primary);
+			case '!': return new LogicalNotExpression(opTok.getStart(), primary);
+			case '~': return new NotExpression(opTok.getStart(), primary);
 			default: throw new Error("internal error: unhandled unary operator " + op);
 			}
-		} else if(optional("defined")) {
+		} else if(optionalIDENTIFIER("defined")) {
+			Token opTok = token;
 			if (null != (primary = unary_expression())) {
-				return new PPDefinedExpression(mark, primary);
+				return new PPDefinedExpression(opTok.getStart(), primary);
 			} else {
-				return expressionError("missing expression after unary operator 'defined'");
+				return expressionError(opTok.getInterval(), "missing expression after unary operator 'defined'");
 			}
 		} else {
 			return primary_expression();
@@ -471,8 +444,22 @@ public class ExpressionParser extends Parser {
 	}
 	
 	
+	private boolean PUNCTUATOR_OUTOF(String set) {
+		Token t = lexer.lookahead(1);
+		if (t instanceof TPunctuator) {
+			if (t.getText().length() != 1) return false;
+			
+			char c = t.getText().charAt(0);
+			if (set.indexOf(c) != -1) {
+				token = lexer.consume(1);
+				return true;
+			}
+		}
+		return false;
+	}
+
+
 	public Expression primary_expression() {
-		while(WHITESPACE());
 		Expression expr = number();
 		if (expr != null) {
 			Value v = (Value)expr;
@@ -483,8 +470,7 @@ public class ExpressionParser extends Parser {
 			case UINT:
 				break;
 			default:
-				syntaxError(v.getType().getName() + " in preprocessor expression");
-				break;
+				return expressionError(v.getInterval(), v.getType().getName() + " in preprocessor expression");
 			}
 			return expr;
 		}
@@ -498,11 +484,13 @@ public class ExpressionParser extends Parser {
 		expr = character_constant();
 		if (expr != null) return expr;
 
-		if (optional('(')) {
+		if (PUNCTUATOR('(')) {
+			Token bracket = token;
 			expr = expression();
-			while(WHITESPACE());
-			if (mandatory(')')) {
+			if (PUNCTUATOR(')')) {
 				return expr;
+			} else {
+				return expressionError(bracket.getInterval(), "missing closing bracket ')'");
 			}
 		}
 		return null;
@@ -510,29 +498,27 @@ public class ExpressionParser extends Parser {
 
 	public Value character_constant() {
 		// Note: simple C character constants only - no prefixed character constants
-		Location mark = in.nextLocation();
-		if (CHAR_SEQUENCE('\'')) {
-			String text = token.getText();
-			String value = decodeCharSequence(text, '\'', '\'');
+		if (optional(TCharacterConstant.class)) {
+			TCharacterConstant tCharConst = (TCharacterConstant) token;
+			String value = decodeCharSequence(tCharConst, '\'', '\'');
 			if (value.length() > 1) 
 			{
-				return expressionError(mark, "character constant contains more than one character");
+				return expressionError(token.getInterval(), "character constant contains more than one character");
 			}
 			else if (value.length() == 0) 
 			{
-				return expressionError(mark, "missing character");
+				return expressionError(token.getInterval(), "missing character");
 			}
-			return new ConstantValue<Character>(interval(mark), value.charAt(0));
+			return new ConstantValue<Character>(token.getInterval(), value.charAt(0));
 		}
 		return null;
 	}
 
 	public Value string_literal() {
-		Location mark = in.nextLocation();
-		if (CHAR_SEQUENCE('"')) {
-			String text = token.getText();
-			String value = decodeCharSequence(text, '"', '"');
-			return new StringConstant(interval(mark), value, text);
+		if (optional(TStringLiteral.class)) {
+			TStringLiteral tStringLit = (TStringLiteral) token;
+			String value = decodeCharSequence(tStringLit, '"', '"');
+			return new StringConstant(tStringLit.getInterval(), value, tStringLit.getText());
 		}
 		return null;
 	}
@@ -564,10 +550,6 @@ public class ExpressionParser extends Parser {
 			return null;
 		}
 	}
-	
-	
-
-
 
 	
 }

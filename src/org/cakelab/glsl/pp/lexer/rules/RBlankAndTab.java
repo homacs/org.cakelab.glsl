@@ -1,5 +1,6 @@
 package org.cakelab.glsl.pp.lexer.rules;
 
+import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.TWhitespace;
@@ -13,8 +14,8 @@ public class RBlankAndTab extends LexerRuleSequenceSelect {
 	}
 
 	@Override
-	protected Token createToken(String text) {
-		return new TWhitespace(text);
+	protected Token createToken(Interval interval, String text) {
+		return new TWhitespace(interval, text);
 	}
 	
 }

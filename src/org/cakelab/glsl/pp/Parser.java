@@ -6,7 +6,7 @@ import org.cakelab.glsl.lang.ast.ConstantValue;
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.pp.error.ErrorHandling;
 import org.cakelab.glsl.pp.error.ExpressionError;
-import org.cakelab.glsl.pp.lexer.PullLexer;
+import org.cakelab.glsl.pp.lexer.PPLexer;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.scanner.StreamScanner;
 import org.cakelab.glsl.pp.tokens.TAny;
@@ -25,16 +25,16 @@ import org.cakelab.glsl.pp.tokens.Token;
 public abstract class Parser extends ErrorHandling {
 
 	protected Token token = null;
-	protected PullLexer lexer;
+	protected PPLexer lexer;
 	
 	
-	public Parser(PullLexer lexer) {
+	public Parser(PPLexer lexer) {
 		setLexer(lexer);
 	}
 	
 	protected Parser() {}
 	
-	protected void setLexer(PullLexer lexer) {
+	protected void setLexer(PPLexer lexer) {
 		this.lexer = lexer;
 		super.setErrorHandler(lexer.getErrorHandler());
 		super.setInputReference(lexer.getInputReference());

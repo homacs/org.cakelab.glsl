@@ -1,10 +1,11 @@
 package org.cakelab.glsl.pp.lexer.rules;
 
+import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.lexer.LexerRule;
-import org.cakelab.glsl.pp.lexer.Lookahead;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.TComment;
+import org.cakelab.glsl.pp.tokens.Token;
 
 public class RComment extends LexerRule {
 	private static final String ML_START = "/*";
@@ -16,16 +17,15 @@ public class RComment extends LexerRule {
 	}
 	
 	@Override
-	public Lookahead lookahead(int offset) {
-		super.setLookaheadStart(offset);
+	public Token analyse() {
 		StringBuffer comment = null;
 		if (LA_equals(ML_START)) {
-			
+			tokenStart();
 			comment = new StringBuffer(ML_START);
 			consume(ML_START.length());
 			while (LA1() != IScanner.EOF && !LA_equals("*/")) {
-				if (skip(line_continuation)) continue;
-				else comment.append((char)consume());
+				if (line_continuation.analyse() != null) continue;
+				else comment.append((char)consumeChar());
 			}
 			if (LA1() == IScanner.EOF) {
 				syntaxError("missing '*/' to end the comment");
@@ -37,13 +37,19 @@ public class RComment extends LexerRule {
 			comment = new StringBuffer(SL_START);
 			consume(SL_START.length());
 			while (LA1() != IScanner.EOF && !LA_equals('\n')) {
-				if (skip(line_continuation)) continue;
-				else comment.append((char)consume());
+				if (line_continuation.analyse() != null) continue;
+				else comment.append((char)consumeChar());
 			}
 		} else {
 			return null;
 		}
-		return createLookahead(new TComment(comment.toString()));
+		return createToken(comment.toString());
 	}
+
+	@Override
+	protected Token createToken(Interval interval, String text) {
+		return new TComment(interval, text);
+	}
+
 
 }

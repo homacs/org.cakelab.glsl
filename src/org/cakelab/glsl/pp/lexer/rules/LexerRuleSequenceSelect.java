@@ -2,7 +2,6 @@ package org.cakelab.glsl.pp.lexer.rules;
 
 import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.lexer.LexerRule;
-import org.cakelab.glsl.pp.lexer.Lookahead;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.Token;
 
@@ -17,17 +16,15 @@ public abstract class LexerRuleSequenceSelect extends LexerRule {
 	}
 
 	@Override
-	public Lookahead lookahead(int offset) {
-		super.setLookaheadStart(offset);
+	public Token analyse() {
 		for (String s : set) {
 			if (LA_equals(s)) {
-				return createLookahead(createToken(s));
+				tokenStart();
+				return createToken(s);
 			}
 		}
 		return null;
 	}
-
-	protected abstract Token createToken(String s);
 
 
 

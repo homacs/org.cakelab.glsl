@@ -17,6 +17,7 @@ public interface ErrorHandler {
 	 * @return whether to stop processing or not
 	 */
 	public boolean error(Location start, String message);
+	
 	/**
 	 * @param location
 	 * @param string

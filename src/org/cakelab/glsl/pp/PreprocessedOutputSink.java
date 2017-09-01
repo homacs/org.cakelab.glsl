@@ -1,7 +1,7 @@
 package org.cakelab.glsl.pp;
 
-import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.pp.tokens.Token;
+import org.cakelab.glsl.pp.tokens.TokenList;
 
 
 public interface PreprocessedOutputSink {
@@ -18,21 +18,15 @@ public interface PreprocessedOutputSink {
 		}
 
 		@Override
-		public void println(Interval origin) {
+		public void print(TokenList tokens) {
 		}
 
-		@Override
-		public void println(Token t) {
-		}
 
 	};
 
 
 	void print(Token t);
-	
-	void println(Interval origin);
-
-	void println(Token t);
+	void print(TokenList tokens);
 	
 	
 	

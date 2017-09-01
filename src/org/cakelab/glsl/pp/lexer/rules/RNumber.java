@@ -1,10 +1,11 @@
 package org.cakelab.glsl.pp.lexer.rules;
 
+import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.lexer.LexerRule;
-import org.cakelab.glsl.pp.lexer.Lookahead;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.TNumber;
+import org.cakelab.glsl.pp.tokens.Token;
 
 public class RNumber extends LexerRule {
 	
@@ -13,9 +14,9 @@ public class RNumber extends LexerRule {
 	}
 	
 	@Override
-	public Lookahead lookahead(int offset) {
-		super.setLookaheadStart(offset);
+	public Token analyse() {
 		if (match()) {
+			tokenStart();
 			final String DEC_DIGITS = "0123456789";
 			final String HEX_DIGITS = "0123456789abcdefABCDEF";
 			final String DEC_EXPONENT = "eE";
@@ -26,8 +27,8 @@ public class RNumber extends LexerRule {
 			StringBuffer num = new StringBuffer();
 	
 			if (LA_equals("0x")||LA_equals("0X")) {
-				num.append(consume());
-				num.append(consume());
+				num.append(consumeChar());
+				num.append(consumeChar());
 
 				digits = HEX_DIGITS;
 				exponentPrefixes = HEX_EXPONENT;
@@ -37,21 +38,21 @@ public class RNumber extends LexerRule {
 			if (consume_from_set(digits, num)) {
 				if (LA1() == '.') {
 					isReal = true;
-					num.append(consume());
+					num.append(consumeChar());
 					consume_from_set(digits, num);
 				}
 			} else if (LA1() == '.') {
 				isReal = true;
-				num.append(consume());
+				num.append(consumeChar());
 				if (consume_from_set(digits, num)) {
 					// consumed above
 				} else {
 					syntaxError("number format error: missing digits after '.'");
-					return createLookahead(new TNumber(num.toString()));
+					return createToken(num.toString());
 				}
 			} else if (digits == HEX_DIGITS) {
 				syntaxError("missing number after hex prefix");
-				return createLookahead(new TNumber(num.toString()));
+				return createToken(num.toString());
 			}
 	
 			assert(num.length() > 0) : "internal error: token can only be consumed if match was positive!";
@@ -62,7 +63,7 @@ public class RNumber extends LexerRule {
 				// exponent always decimal digits
 				if (!consume_from_set("0123456789", num)) {
 					syntaxError("missing value of exponent");
-					return createLookahead(new TNumber(num.toString()));
+					return createToken(num.toString());
 				}
 			}
 			
@@ -82,7 +83,7 @@ public class RNumber extends LexerRule {
 					consume_from_set("lL", num); // long
 				}
 			}
-			return createLookahead(new TNumber(num.toString()));
+			return createToken(num.toString());
 		} else {
 			return null;
 		}
@@ -94,7 +95,7 @@ public class RNumber extends LexerRule {
 		if (set.indexOf(c) >= 0) {
 			do {
 				num.append((char)c);
-				consume();
+				consumeChar();
 				c = LA1();
 			} while (set.indexOf(c) >= 0);
 			return true;
@@ -105,6 +106,11 @@ public class RNumber extends LexerRule {
 	public boolean match() {
 		int c = LA1();
 		return (isDigit(c) || (c == '.' && isDigit(LA(2))));
+	}
+
+	@Override
+	protected Token createToken(Interval interval, String text) {
+		return new TNumber(interval, text);
 	}
 
 }

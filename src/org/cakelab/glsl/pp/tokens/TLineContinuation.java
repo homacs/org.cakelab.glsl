@@ -4,6 +4,8 @@ import org.cakelab.glsl.Interval;
 
 public class TLineContinuation extends TWhitespace {
 
+	public static final String[] TEXT_OPTIONS = new String[] { "\\\r\n", "\\\n"};
+
 	public TLineContinuation(String text) {
 		super(text);
 	}

@@ -4,8 +4,6 @@ import java.util.Arrays;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.pp.tokens.TAny;
-import org.cakelab.glsl.pp.tokens.TEndl;
 import org.cakelab.glsl.pp.tokens.Token;
 
 public class LocationMap {

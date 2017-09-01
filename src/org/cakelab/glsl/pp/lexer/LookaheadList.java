@@ -2,47 +2,35 @@ package org.cakelab.glsl.pp.lexer;
 
 import java.util.Vector;
 
-public class LookaheadList {
-	
-	Vector<Lookahead> entries = new Vector<Lookahead>();
-	
-	
-	
-	public LookaheadList() {
-	}
-	
+import org.cakelab.glsl.pp.tokens.Token;
 
-	public Lookahead popFront() {
-		Lookahead result = get(0);
-		entries.remove(0);
+public class LookaheadList {
+	private Vector<Token> lookaheads = new Vector<Token>();
+
+	public Token last() {
+		if (lookaheads.isEmpty()) return null;
+		return lookaheads.lastElement();
+	}
+
+	public int size() {
+		return lookaheads.size();
+	}
+
+	public void add(Token token) {
+		lookaheads.add(token);
+	}
+
+	public Token get(int i) {
+		return lookaheads.get(i);
+	}
+
+	public Token popFront() {
+		Token result = lookaheads.get(0);
+		lookaheads.remove(0);
 		return result;
 	}
 
-	
-	public Lookahead get(int index) {
-		Lookahead l = entries.get(index);
-		l.offset -= first().offset;
-		return l;
+	public void clear() {
+		lookaheads.clear();
 	}
-
-
-	private Lookahead first() {
-		return entries.firstElement();
-	}
-
-
-	public Lookahead last() {
-		return entries.lastElement();
-	}
-
-
-	public int size() {
-		return entries.size();
-	}
-
-
-	public void add(Lookahead last) {
-		entries.add(last);
-	}
-	
 }

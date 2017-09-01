@@ -1,5 +1,6 @@
 package org.cakelab.glsl.pp.lexer.rules;
 
+import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.TPunctuator;
@@ -12,8 +13,8 @@ public class RHashHash extends LexerRuleEquals {
 	}
 
 	@Override
-	protected Token createToken(String match) {
-		return new TPunctuator(match);
+	protected Token createToken(Interval interval, String match) {
+		return new TPunctuator(interval, match);
 	}
 
 

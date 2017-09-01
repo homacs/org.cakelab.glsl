@@ -21,6 +21,22 @@ public class TNumber extends Token {
 		return new TNumber(this);
 	}
 
+	public boolean isDecimalInteger() {
+		return !isFloatingPoint() && !isOctal() && !isHexadecimal();
+	}
+
+	private boolean isOctal() {
+		return text.startsWith("0");
+	}
+
+	public boolean isFloatingPoint() {
+		return text.contains(".") || text.endsWith("f") || text.endsWith("F");
+	}
+
+	public boolean isHexadecimal() {
+		return text.startsWith("0x") || text.startsWith("0X");
+	}
+
 	
 	
 	

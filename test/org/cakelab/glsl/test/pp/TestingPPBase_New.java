@@ -8,7 +8,7 @@ import org.cakelab.glsl.pp.Parser;
 import org.cakelab.glsl.pp.PreprocessedOutputBuffer;
 import org.cakelab.glsl.pp.Preprocessor;
 
-public class TestingPPBase extends TestingBase {
+public class TestingPPBase_New extends TestingBase {
 
 	public Parser p(String source, OutputStream out) {
 		try {

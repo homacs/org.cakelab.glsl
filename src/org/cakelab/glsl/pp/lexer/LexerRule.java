@@ -1,5 +1,7 @@
 package org.cakelab.glsl.pp.lexer;
 
+import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.error.ErrorHandling;
 import org.cakelab.glsl.pp.scanner.IScanner;
@@ -7,83 +9,68 @@ import org.cakelab.glsl.pp.tokens.Token;
 
 public abstract class LexerRule extends ErrorHandling {
 	private IScanner in;
-	protected int offset;
-	private int start;
-	
-	
+	private Location start;
 	
 	public LexerRule(IScanner in, ErrorHandler handler) {
 		super(in, handler);
 		this.in = in;
 	}
 	
-	protected void setLookaheadStart(int offset) {
-		this.offset = offset;
-		this.start = offset;
+	public abstract Token analyse();
+	
+	protected Location tokenStart() {
+		return this.start = in.nextLocation();
 	}
 	
-	protected Lookahead createLookahead(Token t) {
-		Lookahead l = new Lookahead(this, start, offset-start, t);
-		return l;
+	protected Interval interval(Location start) {
+		return new Interval(start, in.location());
 	}
 	
-	public abstract Lookahead lookahead(int offset);
+	protected final Token createToken(String text) {
+		return createToken(interval(start), text);
+	}
 	
-	
+	protected abstract Token createToken(Interval interval, String text);
+
 	protected boolean eof() {
-		return LA(offset) == IScanner.EOF;
+		return LA1() == IScanner.EOF;
 	}
 
 	protected int LA(int i) {
-		return in.lookahead(i+offset);
+		return in.lookahead(i);
 	}
 	
 	protected int LA1() {
-		return in.lookahead(1+offset);
+		return in.lookahead(1);
 	}
 	
 
 	protected boolean LA_equals(int n, String s) {
-		return in.LA_equals(n+offset, s);
+		return in.LA_equals(n, s);
 	}
 
 	protected boolean LA_equals(String s) {
-		return in.LA_equals(offset, s);
+		return in.LA_equals(s);
 	}
 
 	protected boolean LA_equals(int n, char c) {
-		return in.LA_equals(n+offset, c);
+		return in.LA_equals(n, c);
 	}
 	
 	protected boolean LA_equals(char c) {
-		return in.LA_equals(offset, c);
+		return in.LA_equals(c);
 	}
 
-	protected char consume(int n) {
-		int result = LA(n);
-		assert result != IScanner.EOF;
-		offset += n;
-		return (char)result;
+	protected void consume(int n) {
+		in.consume(n);
 	}
 	
 	/** Does not call consume on scanner. Advances internal lookahead position of this rule only. */
-	protected char consume() {
+	protected char consumeChar() {
 		int result = LA1();
 		assert result != IScanner.EOF;
-		offset += 1;
 		return (char)result;
 	}
-	
-	protected boolean skip(LexerRule rule) {
-		Lookahead l = rule.lookahead(offset);
-		if (l != null) {
-			consume(l.length());
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	
 	protected boolean isEndl(int c) {
 		return c == '\n' || c == IScanner.EOF;
