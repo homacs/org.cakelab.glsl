@@ -18,7 +18,7 @@ public class TestingPPBase extends TestingBase {
 			error = null;
 			warning = null;
 			IScanner scanner = new StreamScanner("0", new ByteArrayInputStream(source.getBytes()));
-			PPLexer pplexer = new PPLexer(scanner, errorHandler);
+			PPLexer pplexer = new PPLexer(scanner);
 			if (usePPBuffer) {
 				ByteArrayOutputStream outStream;
 				if (out instanceof ByteArrayOutputStream) {

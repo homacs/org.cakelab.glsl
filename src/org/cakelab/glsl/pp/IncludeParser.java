@@ -5,9 +5,9 @@ import java.io.IOException;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
-import org.cakelab.glsl.pp.error.ErrorHandler;
-import org.cakelab.glsl.pp.lexer.ILexer;
+import org.cakelab.glsl.pp.error.ErrorHandlingStrategy;
 import org.cakelab.glsl.pp.lexer.PPGLSLRuleSet;
+import org.cakelab.glsl.pp.lexer.PPLexer;
 import org.cakelab.glsl.pp.lexer.rules.LexerRuleSet;
 import org.cakelab.glsl.pp.lexer.rules.RHeaderPath;
 import org.cakelab.glsl.pp.scanner.IScanner;
@@ -26,17 +26,19 @@ public class IncludeParser extends Parser {
 	private Resource resource;
 	private PPGLSLRuleSet extendedRules;
 	private Interval interval;
-
-	public IncludeParser(boolean enabled, ResourceManager resourceManager, ILexer lexer) {
+	private boolean result;
+	
+	
+	
+	public IncludeParser(boolean enabled, ResourceManager resourceManager, PPLexer lexer) {
 		super();
 		this.enabled = enabled;
 		this.resourceManager = resourceManager;
 		
-		IScanner scanner = lexer.getInputReference();
-		ErrorHandler handler = lexer.getErrorHandler();
-		
-		this.extendedRules = new PPGLSLRuleSet(scanner, handler);
-		extendedRules.prependRule(new RHeaderPath(scanner, handler));
+		IScanner scanner = lexer.getScanner();
+		ErrorHandlingStrategy errorStrategy = lexer.getErrorHandlingStrategy();
+		this.extendedRules = new PPGLSLRuleSet(scanner, errorStrategy);
+		extendedRules.prependRule(new RHeaderPath(scanner, errorStrategy));
 	}
 	
 	
@@ -44,7 +46,7 @@ public class IncludeParser extends Parser {
 	@Override
 	public boolean parse() {
 
-		boolean result = false;
+		result = false;
 		
 		if (optionalIDENTIFIER("include")) {
 			this.interval = new Interval(token.getInterval());
@@ -113,6 +115,14 @@ public class IncludeParser extends Parser {
 
 	public Interval getInterval() {
 		return interval;
+	}
+
+
+
+	@Override
+	public void dismiss() {
+		result = false;
+		lexer.dismiss();
 	}
 
 	

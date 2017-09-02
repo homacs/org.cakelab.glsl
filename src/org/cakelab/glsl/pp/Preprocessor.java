@@ -32,7 +32,10 @@ import org.cakelab.glsl.pp.ast.PPIfScope;
 import org.cakelab.glsl.pp.ast.PPIfdefScope;
 import org.cakelab.glsl.pp.ast.PPIfndefScope;
 import org.cakelab.glsl.pp.ast.PPStringifyExpression;
+import org.cakelab.glsl.pp.error.ErrorHandler;
+import org.cakelab.glsl.pp.error.ErrorHandlingStrategy;
 import org.cakelab.glsl.pp.error.ExpressionError;
+import org.cakelab.glsl.pp.error.StandardErrorHandler;
 import org.cakelab.glsl.pp.lexer.ILexer;
 import org.cakelab.glsl.pp.lexer.PPLexer;
 import org.cakelab.glsl.pp.lexer.TokenListLexer;
@@ -92,6 +95,9 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	}
 
 	public Preprocessor(PPLexer lexer, PreprocessedOutputSink out) {
+		
+		setErrorHandlingStrategy(new ErrorHandlingStrategy(new StandardErrorHandler(), this));
+		
 		insertLineDirectives = true;
 		
 		outputStream = out;
@@ -107,6 +113,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		
 		
 		super.setLexer(lexer);
+		
 	}
 
 	/** sets the resource manager, which is used to lookup resources
@@ -175,9 +182,12 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		StreamScanner scanner = new StreamScanner("-- predefined --", in);
 		IScanner.EofFuture eof = new IScanner.EofFuture();
 		scanner.addOnEofHandler(eof);
+		
+		
 		ILexer previousLexer = super.lexer;
 		try {
-			super.setLexer(new PPLexer(scanner, errorHandler));
+			ErrorHandlingStrategy predefineErrStrat = new ErrorHandlingStrategy(getErrorHandlingStrategy().getErrorHandler(), this);
+			super.setLexer(new PPLexer(scanner, predefineErrStrat));
 			
 			define();
 			// TODO: eof handler still necessary on this level?
@@ -988,7 +998,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		ILexer previous = lexer;
 		try {
 			if (tokens.size() == 0) return tokens;
-			lexer = new TokenListLexer(tokens, errorHandler);
+			lexer = new TokenListLexer(tokens, getErrorHandlingStrategy());
 			tokens = text_tokens(false, true);
 			assert (!CRLF()) : "internal error: CRLF has to be replaced by ' ' during argument parsing";
 			assert (lexer.lookahead(1) instanceof TEof);
@@ -1005,7 +1015,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		try {
 			String text = left.getText() + right.getText();
 			IScanner rescanner = new StreamScanner("-- token join --", new ByteArrayInputStream(text.getBytes()));
-			lexer = new PPLexer(rescanner, errorHandler);
+			lexer = new PPLexer(rescanner, getErrorHandlingStrategy());
 			Token joined = preprocessing_token(true);
 			rescanner.consume();
 			if (joined == null || !rescanner.eof()) {
@@ -1179,7 +1189,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		}
 		// and parse that macro expanded text for the expression
 		// FIXME condition parsing requires preprocessed output scanner
-		ExpressionParser parser = new ExpressionParser(new TokenListLexer(tokens, errorHandler));
+		ExpressionParser parser = new ExpressionParser(new TokenListLexer(tokens, getErrorHandlingStrategy()), getErrorHandlingStrategy());
 		return parser.expression();
 	}
 	
@@ -1202,7 +1212,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 
 		includeParser.setLexer(lexer);
 		
-		
+		includeParser.setErrorHandlingStrategy(getErrorHandlingStrategy());
 		
 		if (includeParser.parse()) {
 			result = true;
@@ -1216,7 +1226,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 				Token next = lexer.lookahead(1);
 				
 				IScanner includeScanner = ScannerManager.createScanner(resource.getIdentifier(), resource.getData());
-				PPLexer includeLexer = new PPLexer(includeScanner, errorHandler);
+				PPLexer includeLexer = new PPLexer(includeScanner, getErrorHandlingStrategy());
 	
 				Location locationReference = line_start(includeParser.getInterval().getStart());
 				if (insertLineDirectives) {
@@ -1294,6 +1304,15 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		ref.setColumn(col += 1);
 
 		return tokens;
+	}
+
+	public void setErrorHandler(ErrorHandler errorHandler) {
+		getErrorHandlingStrategy().setErrorHandler(errorHandler);
+	}
+
+	@Override
+	public void dismiss() {
+		lexer.dismiss();
 	}
 
 	

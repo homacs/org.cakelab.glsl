@@ -4,6 +4,8 @@ public interface ErrorRecoveryHandler {
 
 	void dismiss();
 
-	void skip_to_next_line();
+	void recoverError();
+
+	void recoverWarning();
 
 }

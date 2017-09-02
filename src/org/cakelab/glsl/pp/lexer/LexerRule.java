@@ -2,7 +2,7 @@ package org.cakelab.glsl.pp.lexer;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.pp.error.ErrorHandler;
+import org.cakelab.glsl.pp.error.ErrorHandlingStrategy;
 import org.cakelab.glsl.pp.error.ErrorHandling;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.Token;
@@ -11,12 +11,17 @@ public abstract class LexerRule extends ErrorHandling {
 	private IScanner in;
 	private Location start;
 	
-	public LexerRule(IScanner in, ErrorHandler handler) {
-		super(in, handler);
+	public LexerRule(IScanner in, ErrorHandlingStrategy handler) {
+		super(handler);
 		this.in = in;
 	}
 	
 	public abstract Token analyse();
+
+	protected void syntaxError(String message) {
+		super.syntaxError(in.location(), message);
+	}
+
 	
 	protected Location tokenStart() {
 		return this.start = in.nextLocation();

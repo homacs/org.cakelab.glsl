@@ -3,7 +3,9 @@ package org.cakelab.glsl.pp;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.ast.ConstantValue;
 import org.cakelab.glsl.lang.ast.Expression;
-import org.cakelab.glsl.pp.error.ErrorHandling_New;
+import org.cakelab.glsl.pp.error.ErrorHandler;
+import org.cakelab.glsl.pp.error.ErrorHandlingStrategy;
+import org.cakelab.glsl.pp.error.ErrorHandling;
 import org.cakelab.glsl.pp.error.ErrorRecoveryHandler;
 import org.cakelab.glsl.pp.lexer.ILexer;
 import org.cakelab.glsl.pp.tokens.TCharSequence;
@@ -19,13 +21,14 @@ import org.cakelab.glsl.pp.tokens.TWhitespace;
 import org.cakelab.glsl.pp.tokens.Token;
 import org.cakelab.glsl.pp.tokens.TokenList;
 
-public abstract class Parser extends ErrorHandling_New implements ErrorRecoveryHandler {
+public abstract class Parser extends ErrorHandling implements ErrorRecoveryHandler {
 
 	protected Token token = null;
 	protected ILexer lexer;
 	
 	
-	public Parser(ILexer lexer) {
+	public Parser(ILexer lexer, ErrorHandlingStrategy errStrat) {
+		super(errStrat);
 		setLexer(lexer);
 	}
 	
@@ -33,8 +36,6 @@ public abstract class Parser extends ErrorHandling_New implements ErrorRecoveryH
 	
 	protected void setLexer(ILexer lexer) {
 		this.lexer = lexer;
-		super.setErrorHandler(lexer.getErrorHandler());
-		super.setRecoveryHandler(this);
 	}
 
 
@@ -461,23 +462,26 @@ public abstract class Parser extends ErrorHandling_New implements ErrorRecoveryH
 			syntaxError(lexer.lookahead(1).getStart(), "missing mandatory CRLF or end of file");
 			
 			// still here, then skip to next line end to recover from error
-			recoveryHandler.skip_to_next_line();
 			return false;
 		}
 		return true;
 	}
 
 	@Override
-	public void dismiss() {
-		lexer.dismiss();
+	public void recoverError() {
+		skip_remaining_line();
 	}
 
 	@Override
-	public void skip_to_next_line() {
+	public void recoverWarning() {
 		skip_remaining_line();
-		
 	}
 
+	public void setErrorHandler(ErrorHandler errorHandler) {
+		getErrorHandlingStrategy().setErrorHandler(errorHandler);
+	}
+
+	
 
 
 }

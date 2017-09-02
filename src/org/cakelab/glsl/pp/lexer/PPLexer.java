@@ -3,28 +3,38 @@ package org.cakelab.glsl.pp.lexer;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.pp.error.ErrorHandler;
+import org.cakelab.glsl.pp.error.ErrorHandlingStrategy;
 import org.cakelab.glsl.pp.error.ErrorHandling;
+import org.cakelab.glsl.pp.error.ErrorRecoveryHandler;
+import org.cakelab.glsl.pp.error.StandardErrorHandler;
 import org.cakelab.glsl.pp.lexer.rules.LexerRuleSet;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.TEof;
 import org.cakelab.glsl.pp.tokens.Token;
 import org.cakelab.glsl.pp.tokens.TokenList;
 
-public class PPLexer extends ErrorHandling implements ILexer {
+public class PPLexer extends ErrorHandling implements ILexer, ErrorRecoveryHandler {
 
 	
 	private LexerRuleSet rules;
 	protected TokenList prepended = new TokenList();
 	private TokenList lookaheads = new TokenList();
 	protected Token previous;
+	private IScanner in;
 
 
-	public PPLexer(IScanner scanner, ErrorHandler errorHandler) {
-		super(scanner, errorHandler);
-		this.rules = new PPGLSLRuleSet(scanner, errorHandler);
+	public PPLexer(IScanner scanner, ErrorHandlingStrategy errorStrategy) {
+		super(errorStrategy);
+		this.in = scanner;
+		this.rules = new PPGLSLRuleSet(scanner, errorStrategy);
 	}
 	
+
+	public PPLexer(IScanner scanner) {
+		this(scanner, new ErrorHandlingStrategy(new StandardErrorHandler(), null));
+		getErrorHandlingStrategy().setErrorRecoveryHandler(this);
+	}
+
 
 	@Override
 	public void setRules(LexerRuleSet rules) {
@@ -144,7 +154,23 @@ public class PPLexer extends ErrorHandling implements ILexer {
 	public LexerRuleSet getRules() {
 		return rules;
 	}
-	
+
+
+	public IScanner getScanner() {
+		return in;
+	}
+
+
+	@Override
+	public void recoverError() {
+		// does no recovery
+	}
+
+
+	@Override
+	public void recoverWarning() {
+		// does no recovery
+	}
 	
 	
 	

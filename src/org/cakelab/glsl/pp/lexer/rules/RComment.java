@@ -1,7 +1,7 @@
 package org.cakelab.glsl.pp.lexer.rules;
 
 import org.cakelab.glsl.Interval;
-import org.cakelab.glsl.pp.error.ErrorHandler;
+import org.cakelab.glsl.pp.error.ErrorHandlingStrategy;
 import org.cakelab.glsl.pp.lexer.LexerRule;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.TComment;
@@ -11,7 +11,7 @@ public class RComment extends LexerRule {
 	private static final String ML_START = "/*";
 	private static final String SL_START = "//";
 	private RLineContinuation line_continuation;
-	public RComment(IScanner in, ErrorHandler handler) {
+	public RComment(IScanner in, ErrorHandlingStrategy handler) {
 		super(in, handler);
 		line_continuation = new RLineContinuation(in, handler);
 	}

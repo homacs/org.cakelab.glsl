@@ -1,8 +1,6 @@
 package org.cakelab.glsl.pp.lexer;
 
-import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.lexer.rules.LexerRuleSet;
-import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.Token;
 
 public interface ILexer {
@@ -13,10 +11,6 @@ public interface ILexer {
 	Token consume(int n);
 
 	boolean eof();
-
-	ErrorHandler getErrorHandler();
-
-	IScanner getInputReference();
 
 	void dismiss();
 

@@ -3,7 +3,7 @@ package org.cakelab.glsl.pp.lexer.rules;
 import java.util.Arrays;
 
 import org.cakelab.glsl.Interval;
-import org.cakelab.glsl.pp.error.ErrorHandler;
+import org.cakelab.glsl.pp.error.ErrorHandlingStrategy;
 import org.cakelab.glsl.pp.lexer.LexerRule;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.Token;
@@ -11,7 +11,7 @@ import org.cakelab.glsl.pp.tokens.Token;
 public class LexerRuleSet extends LexerRule {
 	protected LexerRule[] ruleSet;
 	
-	public LexerRuleSet(IScanner in, ErrorHandler handler, LexerRule ... ruleSet) {
+	public LexerRuleSet(IScanner in, ErrorHandlingStrategy handler, LexerRule ... ruleSet) {
 		super(in, handler);
 		this.ruleSet = ruleSet;
 	}

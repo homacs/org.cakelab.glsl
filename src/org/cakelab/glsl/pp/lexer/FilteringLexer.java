@@ -45,7 +45,7 @@ public class FilteringLexer extends ErrorHandling implements ILexer {
 	
 	
 	public FilteringLexer(PPLexer lexer, Filter<Node> filterWhitespace) {
-		super(lexer.getInputReference(), lexer.getErrorHandler());
+		super(lexer.getErrorHandlingStrategy());
 		this.filter = filterWhitespace;
 		this.lexer = lexer;
 	}

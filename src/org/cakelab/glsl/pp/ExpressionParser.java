@@ -35,6 +35,7 @@ import org.cakelab.glsl.lang.ast.XorExpression;
 import org.cakelab.glsl.pp.ast.NodeList;
 import org.cakelab.glsl.pp.ast.PPDefinedExpression;
 import org.cakelab.glsl.pp.ast.StringConstant;
+import org.cakelab.glsl.pp.error.ErrorHandlingStrategy;
 import org.cakelab.glsl.pp.lexer.FilteringLexer;
 import org.cakelab.glsl.pp.lexer.PPLexer;
 import org.cakelab.glsl.pp.tokens.TCharacterConstant;
@@ -46,11 +47,17 @@ import org.cakelab.glsl.pp.tokens.Token;
 public class ExpressionParser extends Parser {
 	
 	
-	public ExpressionParser(PPLexer lexer) {
-		super(new FilteringLexer(lexer, NodeList.Filter_WHITESPACE));
+	public ExpressionParser(PPLexer lexer, ErrorHandlingStrategy errStrat) {
+		super(new FilteringLexer(lexer, NodeList.Filter_WHITESPACE), errStrat);
 	}
 
 	
+	public ExpressionParser(PPLexer pplexer) {
+		this(pplexer, pplexer.getErrorHandlingStrategy());
+		pplexer.getErrorHandlingStrategy().setErrorRecoveryHandler(this);
+	}
+
+
 	public boolean parse() {
 		Expression expr = expression();
 		return expr != null;
@@ -549,6 +556,11 @@ public class ExpressionParser extends Parser {
 		} else {
 			return null;
 		}
+	}
+
+
+	@Override
+	public void dismiss() {
 	}
 
 	

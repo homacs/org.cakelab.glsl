@@ -42,7 +42,7 @@ public class GLSL {
 
 	public CombinedAST parse(Resource resource) throws IOException {
 		PreprocessedOutputBuffer buffer = new PreprocessedOutputBuffer();
-		PPLexer pplexer = new PPLexer(new StreamScanner(resource.getIdentifier(), resource.getData()), errorHandler);
+		PPLexer pplexer = new PPLexer(new StreamScanner(resource.getIdentifier(), resource.getData()));
 		Preprocessor pp = new Preprocessor(pplexer, buffer);
 		
 		pp.setResourceManager(resourceManager);
