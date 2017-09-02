@@ -144,7 +144,6 @@ public class StreamScanner extends IScanner {
 	 */
 	public StreamScanner(Location origin, InputStream in) {
 		this.buffer = new InputStreamBuffer(in);
-		// FIXME [2] position may be misinterpreted as actual position by location map!
 		this.location = origin;
 	}
 

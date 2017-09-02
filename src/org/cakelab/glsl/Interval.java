@@ -10,6 +10,10 @@ public class Interval {
 		this.end = end;
 	}
 
+	public Interval(Interval interval) {
+		this(interval.start, interval.end);
+	}
+
 	public Location getEnd() {
 		return end;
 	}
@@ -24,5 +28,9 @@ public class Interval {
 	public void setStart(Location start) {
 		this.start = start;
 	}
+
+	
+	
+	
 
 }

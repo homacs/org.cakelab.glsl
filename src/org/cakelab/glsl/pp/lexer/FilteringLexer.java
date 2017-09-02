@@ -1,6 +1,6 @@
 package org.cakelab.glsl.pp.lexer;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.pp.ast.NodeList.Filter;
@@ -11,7 +11,7 @@ import org.cakelab.glsl.pp.tokens.Token;
 public class FilteringLexer extends ErrorHandling implements ILexer {
 
 	@SuppressWarnings("serial")
-	public class OffsetTable extends Vector<Integer> {
+	public class OffsetTable extends ArrayList<Integer> {
 		// TODO [3] performance: replace by ring buffer based on primitive int
 
 		public OffsetTable() {
@@ -39,7 +39,7 @@ public class FilteringLexer extends ErrorHandling implements ILexer {
 	}
 
 	private PPLexer lexer;
-	private OffsetTable offsetTable;
+	private OffsetTable offsetTable = new OffsetTable();
 	private Filter<Node> filter;
 	private Token previous;
 	
@@ -48,6 +48,10 @@ public class FilteringLexer extends ErrorHandling implements ILexer {
 		super(lexer.getInputReference(), lexer.getErrorHandler());
 		this.filter = filterWhitespace;
 		this.lexer = lexer;
+	}
+
+	public FilteringLexer(Filter<Node> filter) {
+		this.filter = filter;
 	}
 
 	@Override
@@ -59,7 +63,7 @@ public class FilteringLexer extends ErrorHandling implements ILexer {
 	public Token lookahead(int n) {
 		assert (offsetTable.size() >= (n-1));
 		if (!offsetTable.existsEntry(n)) {
-			int i = offsetTable.get(n-1);
+			int i = n-1>0 ? offsetTable.getOriginalOffset(n-1) : n-1;
 			Token t;
 			do {
 				i++;
@@ -105,6 +109,11 @@ public class FilteringLexer extends ErrorHandling implements ILexer {
 	@Override
 	public void setVirtualLocation(int line) {
 		lexer.setVirtualLocation(line);
+	}
+
+	@Override
+	public LexerRuleSet getRules() {
+		return lexer.getRules();
 	}
 
 }

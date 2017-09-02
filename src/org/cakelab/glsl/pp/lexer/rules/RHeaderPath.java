@@ -17,7 +17,7 @@ public class RHeaderPath extends LexerRule {
 		if (match()) {
 			tokenStart();
 			StringBuffer text = new StringBuffer();
-			consumeChar();
+			text.append(consumeChar());
 			while(LA1() != '>' && LA1() != IScanner.EOF) {
 				text.append(consumeChar());
 			}

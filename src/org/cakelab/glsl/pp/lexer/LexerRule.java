@@ -32,10 +32,6 @@ public abstract class LexerRule extends ErrorHandling {
 	
 	protected abstract Token createToken(Interval interval, String text);
 
-	protected boolean eof() {
-		return LA1() == IScanner.EOF;
-	}
-
 	protected int LA(int i) {
 		return in.lookahead(i);
 	}
@@ -61,6 +57,15 @@ public abstract class LexerRule extends ErrorHandling {
 		return in.LA_equals(c);
 	}
 
+	
+	/**
+	 * checks whether the EOF token has been read already.
+	 * @return
+	 */
+	protected boolean eof() {
+		return in.eof();
+	}
+	
 	protected void consume(int n) {
 		in.consume(n);
 	}
@@ -69,6 +74,7 @@ public abstract class LexerRule extends ErrorHandling {
 	protected char consumeChar() {
 		int result = LA1();
 		assert result != IScanner.EOF;
+		in.consume();
 		return (char)result;
 	}
 	

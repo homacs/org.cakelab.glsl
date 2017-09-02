@@ -1,19 +1,15 @@
 package org.cakelab.glsl.pp;
 
-import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.ast.ConstantValue;
 import org.cakelab.glsl.lang.ast.Expression;
-import org.cakelab.glsl.pp.error.ErrorHandling;
-import org.cakelab.glsl.pp.error.ExpressionError;
-import org.cakelab.glsl.pp.lexer.PPLexer;
-import org.cakelab.glsl.pp.scanner.IScanner;
-import org.cakelab.glsl.pp.scanner.StreamScanner;
-import org.cakelab.glsl.pp.tokens.TAny;
-import org.cakelab.glsl.pp.tokens.TAtom;
+import org.cakelab.glsl.pp.error.ErrorHandling_New;
+import org.cakelab.glsl.pp.error.ErrorRecoveryHandler;
+import org.cakelab.glsl.pp.lexer.ILexer;
 import org.cakelab.glsl.pp.tokens.TCharSequence;
 import org.cakelab.glsl.pp.tokens.TComment;
-import org.cakelab.glsl.pp.tokens.TEndl;
+import org.cakelab.glsl.pp.tokens.TCrlf;
+import org.cakelab.glsl.pp.tokens.TEof;
 import org.cakelab.glsl.pp.tokens.THeaderPath;
 import org.cakelab.glsl.pp.tokens.TIdentifier;
 import org.cakelab.glsl.pp.tokens.TLineContinuation;
@@ -21,49 +17,34 @@ import org.cakelab.glsl.pp.tokens.TNumber;
 import org.cakelab.glsl.pp.tokens.TPunctuator;
 import org.cakelab.glsl.pp.tokens.TWhitespace;
 import org.cakelab.glsl.pp.tokens.Token;
+import org.cakelab.glsl.pp.tokens.TokenList;
 
-public abstract class Parser extends ErrorHandling {
+public abstract class Parser extends ErrorHandling_New implements ErrorRecoveryHandler {
 
 	protected Token token = null;
-	protected PPLexer lexer;
+	protected ILexer lexer;
 	
 	
-	public Parser(PPLexer lexer) {
+	public Parser(ILexer lexer) {
 		setLexer(lexer);
 	}
 	
 	protected Parser() {}
 	
-	protected void setLexer(PPLexer lexer) {
+	protected void setLexer(ILexer lexer) {
 		this.lexer = lexer;
 		super.setErrorHandler(lexer.getErrorHandler());
-		super.setInputReference(lexer.getInputReference());
+		super.setRecoveryHandler(this);
 	}
 
 
 	public boolean atEOF() {
-		return in.eof() || LA1() == StreamScanner.EOF;
-	}
-
-	protected ExpressionError expressionError(Location mark, String message) {
-		syntaxError(message);
-		Interval interval = interval(mark);
-		return new ExpressionError(interval, message);
-	}
-
-	protected ExpressionError expressionError(String message) {
-		syntaxError(message);
-		Interval interval = new Interval(in.location(), in.location());
-		return new ExpressionError(interval, message);
+		return lexer.eof() || lexer.lookahead(1) instanceof TEof;
 	}
 
 	
-	public abstract void parse();
+	public abstract boolean parse();
 	
-	protected Interval interval(Location start) {
-		return new Interval(start, in.location());
-	}
-
 	protected Location line_start(Location start) {
 		Location l = start.clone();
 		l.setColumn(Location.FIRST_COLUMN);
@@ -78,10 +59,10 @@ public abstract class Parser extends ErrorHandling {
 	 * @see #read_remaining_line() 
 	 */
 	protected boolean skip_remaining_line() {
-		if (in.eof()) return false;
+		if (lexer.eof()) return false;
 		while (!ENDL()) {
 			if (!line_continuation()) {
-				in.consume();
+				lexer.consume(1);
 			}
 		}
 		return true;
@@ -93,81 +74,62 @@ public abstract class Parser extends ErrorHandling {
 	 * The sequence of characters, including the terminating CRLF or EOF
 	 * is returned as string.
 	 */
-	protected String read_remaining_line() {
+	protected TokenList read_remaining_line() {
 		// TODO [6] see if we really need this (consider methods above)
-		if (in.eof()) return null;
-		StringBuffer result = new StringBuffer();
+		if (lexer.eof()) return null;
+		TokenList result = new TokenList();
 		while(!ENDL()) {
 			if (!line_continuation()) {
-				result.append((char)in.consume());
+				result.add(lexer.consume(1));
 			}
 		}
-		return result.toString();
+		return result;
 	}
 
 	/** \\\r\n or \\\n */
 	protected boolean line_continuation() {
-		if (optional("\\\r\n") || optional("\\\n")) {
+		token = null;
+		if (optional(TLineContinuation.class)) {
 			return true;
 		}
 		return false;
 	}
 	
-	protected int LA1() {
-		return LA(1);
-	}
-
-	protected int LA(int i) {
-		return in.lookahead(i);
-	}
-
-	protected boolean LA_equals(String s) {
-		return LA_equals(1,s);
-	}
-
-	protected boolean LA_equals(int start, String s) {
-		assert(start > 0);
-		for (int i = 0, l = start; i < s.length(); i++, l++) {
-			char c = (char) in.lookahead(l);
-			if (c != s.charAt(i)) return false;
-		}
-		return true;
-	}
-
-	protected boolean LA_equals(char c) {
-		return (LA1() == c);
-	}
-
-	/** Returns the single input item which equals one character of the given set */
-	protected boolean ATOM(String set) {
-		token = null;
-		if (0 <= set.indexOf(in.lookahead(1))) {
-			Location start = in.nextLocation();
-			int c = in.consume();
-			
-			token = new TAtom(interval(start), String.valueOf((char)c));
+	protected boolean optional(Class<? extends Token> tokenType) {
+		if (tokenType.isInstance(lexer.lookahead(1))) {
+			token = lexer.consume(1);
 			return true;
 		}
 		return false;
 	}
 
+	protected boolean optional(Class<? extends Token> tokenType, String text) {
+		Token la = lexer.lookahead(1);
+		if (tokenType.isInstance(la) && text.equals(la.getText())) {
+			token = lexer.consume(1);
+			return true;
+		}
+		return false;
+	}
 
+	protected boolean mandatory(Class<? extends Token> tokenType, String text) {
+		if (!optional(tokenType, text)) {
+			syntaxError(lexer.lookahead(1).getStart(), "missing '" + text + "'");
+			return false;
+		}
+		return true;
+	}
+
+
+	
+	
 	/**
 	 * Either \r\n or \n or EOF
 	 * @return
 	 */
 	protected boolean ENDL() {
 		token = null;
-		Location start = in.nextLocation();
-		if (optional("\r\n")) {
-			token = new TEndl(interval(start), "\r\n");
-			return true;
-		} else if (optional('\n')) {
-			token = new TEndl(interval(start), "\n");
-			return true;
-		} else if (LA1() == StreamScanner.EOF) {
-			in.consume();
-			token = new TEndl(interval(start), "");
+		if (optional(TCrlf.class) || optional(TEof.class)) {
 			return true;
 		} else {
 			return false;
@@ -176,97 +138,21 @@ public abstract class Parser extends ErrorHandling {
 
 	
 	protected boolean HEADER_PATH() {
-		Location start = in.nextLocation();
-		if (optional('<')) {
-			StringBuffer text = new StringBuffer('<');
-			int c;
-			for (c = in.LA1(); c != IScanner.EOF && c != '>'; c = in.LA1()) {
-				text.append((char)in.consume());
-			}
-			mandatory('>');
-			token = new THeaderPath(interval(start), text.toString());
+		token = null;
+		// TODO: maybe use specific lexers e.g. for include
+		if (optional(THeaderPath.class)) {
 			return true;
 		}
+		
 		return false;
 	}
 	
-	/** 
-	 * Preprocessed text of a string started and terminated by given delimiter.
-	 * @see #CHAR_SEQUENCE(char, char)*/
-	protected boolean CHAR_SEQUENCE(char startAndEndDelimiter) {
-		return CHAR_SEQUENCE(startAndEndDelimiter, startAndEndDelimiter);
-	}
-	
 
-	/** Returns the preprocessed text of a string (or character) enclosed in 
-	 * the given start and end delimiters.
-	 * <h3>Note:</h3> Returned string contains start and end delimiter, 
-	 * and line continuations will be removed, but escape sequences 
-	 * will not be decoded!
-	 * */
-	protected boolean CHAR_SEQUENCE(char startDelimiter, char endDelimiter) {
-		token = null;
-		Location start = in.nextLocation();
-		boolean result = false;
-		if (optional(startDelimiter)){
-			result = true;
-			StringBuffer string = new StringBuffer();
-			string.append(startDelimiter);
-			while(!(LA_equals(endDelimiter)||in.eof())) {
-				if (LA1() != '\\') {
-					// general case: anything not an escape sequence
-					
-					if (LA1() == '\n') {
-						syntaxError("missing terminating " + endDelimiter);
-						// it was a string, just terminator missing
-						break;
-					}
-					string.append((char)in.consume());
-				} else if (line_continuation()) {
-					// "\\\n"
-					continue;
-				} else {
-					// special case: escape sequence
-					// we do not fully interpret escape sequences here
-					// just tracking whether there is a proper number of characters following the '\'
-
-					string.append((char)in.consume());
-					int c = LA1();
-					switch(c) {
-					case 'u': 
-					case 'x':
-					{
-						string.append((char)in.consume());
-						if (NUMBER_HEX(4)) {
-							// TODO [3] support 8 byte hex
-							string.append(token.getText());
-						} else {
-							syntaxError("missing digits to unicode escape sequence");
-						}
-						break;
-					}
-					default:
-						if (NUMBER_OCT(3)) {
-							// 1-3 octal digits
-							string.append(token.getText());
-						} else {
-							// any other escape sequence (or non-escape sequence)
-							string.append((char)in.consume());
-						}
-					}
-				}
-			}
-			mandatory(endDelimiter);
-			string.append(endDelimiter);
-			token = new TCharSequence(interval(start), string.toString());
-		}
-		return result;
-	}
 	
 	
-	
-	protected String decodeCharSequence(String text, char startDelimiter, char endDelimiter) {
+	protected String decodeCharSequence(TCharSequence token, char startDelimiter, char endDelimiter) {
 		int i = 0;
+		String text = token.getText();
 		char c = text.charAt(i);
 		assert(c == startDelimiter) : "internal error: missing start delimiter for char sequence";
 		StringBuffer string = new StringBuffer();
@@ -314,11 +200,12 @@ public abstract class Parser extends ErrorHandling {
 							int oct = Integer.decode("0x" + upto_four_hex_digits.toString());
 							string.append((char)oct);
 						} catch (IllegalArgumentException e) {
-							syntaxError("illegal unicode code sequence in character sequence (\\" + prefix + upto_four_hex_digits.toString() + ")");
+							syntaxError(token, "illegal unicode code sequence in character sequence (\\" + prefix + upto_four_hex_digits.toString() + ")");
 							return string.toString();
 						}
 					} else {
 						// error recovery
+						syntaxError(token, "illegal unicode code sequence in character sequence (\\" + prefix + c + ")");
 						i--;
 					}
 					break;
@@ -334,11 +221,11 @@ public abstract class Parser extends ErrorHandling {
 							int oct = Integer.decode("0" + upto_three_oct_digits.toString());
 							string.append((char)oct);
 						} catch (IllegalArgumentException e) {
-							syntaxError("illegal octal sequence in character sequence (\\" + upto_three_oct_digits + ")");
+							syntaxError(token, "illegal octal sequence in character sequence (\\" + upto_three_oct_digits + ")");
 							return string.toString();
 						}
 					} else {
-						syntaxError("undefined escape sequence '\\" + (char)c + "'");
+						syntaxError(token, "undefined escape sequence '\\" + (char)c + "'");
 						i--;
 					}
 					break;
@@ -421,7 +308,7 @@ public abstract class Parser extends ErrorHandling {
 			}
 		} catch (NumberFormatException e) {
 			// this should not occur at this stage, because the preprocessor already checked the syntax
-			return expressionError(token.getStart(), "not a valid number '" + token.getText() + "'");
+			return expressionError(token.getInterval(), "not a valid number '" + token.getText() + "'");
 		}
 	}
 
@@ -429,244 +316,62 @@ public abstract class Parser extends ErrorHandling {
 		return '0' <= c  && c <= '7';
 	}
 
+	private boolean isDigit(char c) {
+		return '0' <= c  && c <= '9';
+	}
+
 	private boolean isHexDigit(char c) {
 		return isDigit(c) || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F');
 	}
 
-	/** a following sequence of characters which does contain characters
-	 * of the given set only.
-	 * @param set
-	 * @return
-	 */
-	protected boolean ANYTHING_IN(String set) {
-		return ANYTHING_IN(set, Integer.MAX_VALUE);
-	}
-	
-	/** a following sequence of maximum 'max' characters which does contain characters
-	 * of the given set only.
-	 * @param set
-	 * @return
-	 */
-	protected boolean ANYTHING_IN(String set, int max) {
-		assert(max > 1);
-		token = null;
-		Location start = in.nextLocation();
-		int c = LA1();
-		if (set.indexOf(c) >= 0) {
-			StringBuffer anything = new StringBuffer();
-			do {
-				anything.append((char)c);
-				in.consume();
-				c = LA1();
-				max--;
-			} while (set.indexOf(c) >= 0 && max > 0);
-			token = new TAny(interval(start), anything.toString());
-			return true;
-		}
-		return false;
-	}
-
-	protected boolean ANYTHING_UNTIL(char limiter) {
-		token = null;
-		Location start = in.nextLocation();
-		int c = LA1();
-		if (c != limiter) {
-			StringBuffer anything = new StringBuffer();
-			do {
-				in.consume();
-				anything.append((char)c);
-				c = LA1();
-			} while(c != limiter);
-			token = new TAny(interval(start), anything.toString());
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	
-
-
 	protected boolean NUMBER() {
-		Location mark = in.nextLocation();
-		
-		final String DEC_DIGITS = "0123456789";
-		final String HEX_DIGITS = "0123456789abcdefABCDEF";
-		final String DEC_EXPONENT = "eE";
-		final String HEX_EXPONENT = "pP";
-		String exponentPrefixes = DEC_EXPONENT;
-		boolean isReal = false;
-		String digits = DEC_DIGITS;
-		StringBuffer num = new StringBuffer();
-
-		if (optional("0x")) {
-			num.append("0x");
-			digits = HEX_DIGITS;
-			exponentPrefixes = HEX_EXPONENT;
-		} else if (optional("0X")) {
-			num.append("0X");
-			digits = HEX_DIGITS;
-			exponentPrefixes = HEX_EXPONENT;
-		}
-
-
-		if (ANYTHING_IN(digits)) {
-			num.append(token.getText());
-			if (optional('.')) {
-				isReal = true;
-				num.append('.');
-				if (ANYTHING_IN(digits)) num.append(token.getText());
-			}
-		} else if (optional('.')) {
-			isReal = true;
-			num.append('.');
-			if (ANYTHING_IN(digits)) num.append(token.getText());
-			else {
-				syntaxError("number format error: missing digits after '.'");
-				token = new TNumber(interval(mark), num.toString());
-				return true;
-			}
-		} else if (digits == HEX_DIGITS) {
-			syntaxError(mark, "missing number after hex prefix");
-			token = new TNumber(interval(mark), num.toString());
-			return true;
-		} else {
-			// not a number
-			return false;
-		}
-
-		if (num.length() > 0) {
-			if (ATOM(exponentPrefixes)) {
-				isReal = true;
-				num.append(token.getText());
-				if (ATOM("+-")) num.append(token.getText());
-				// exponent always decimal digits
-				if (!NUMBER_DEC()) {
-					syntaxError(mark, "missing value of exponent");
-					token = new TNumber(interval(mark), num.toString());
-					return true;
-				}
-				num.append(token.getText());
-			}
-			
-			// postfixes
-			if (isReal) {
-				if (ATOM("fF")) {
-					// float
-					num.append(token.getText());
-				} else if (ATOM("lL")) {
-					// double
-					num.append(token.getText());
-				}
-			} else {
-				if (ATOM("fF")) {
-					isReal = true;
-					// float again
-					num.append(token.getText());
-				} else {
-					if (ATOM("uU")) num.append(token.getText()); // unsigned
-					if (ATOM("lL")) num.append(token.getText()); // long
-				}
-			}
-			token = new TNumber(interval(mark), num.toString());
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	protected boolean NUMBER_DEC() {
-		return NUMBER_DEC(Integer.MAX_VALUE);
-	}
-
-	protected boolean NUMBER_DEC(int max) {
-		assert (max > 0);
 		token = null;
-		if (ANYTHING_IN("0123456789", max)) {
-			token = new TNumber(token.getInterval(), token.getText());
+		if (optional(TNumber.class)) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-
-	protected boolean NUMBER_OCT() {
-		return NUMBER_OCT(Integer.MAX_VALUE);
-	}
-
-	protected boolean NUMBER_OCT(int max) {
-		assert (max > 0);
-		if (ANYTHING_IN("01234567", max)) {
-			token = new TNumber(token.getInterval(), token.getText());
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	protected boolean NUMBER_HEX() {
-		return NUMBER_HEX(Integer.MAX_VALUE);
-	}
-
-	protected boolean NUMBER_HEX(int max) {
-		assert (max > 0);
-		if (ANYTHING_IN("0123456789abcdefABCDEF", max)) {
-			token = new TNumber(token.getInterval(), token.getText());
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	
 	
 	protected boolean DOTS() {
-		return optional("...");
+		token = null;
+		return PUNCTUATOR("...");
 	}
 
 	protected boolean PUNCTUATOR(boolean acceptHashes) {
 		token = null;
-		Location start = in.nextLocation();
-		
-		final String[] punctuators = {"[","]","(",")","{","}",".","->",
-		"++", "--", "&", "*", "+", "-", "~", "!",
-		"/","%","<<",">>","<",">","<=",">=","==","!=","^","|","&&","||",
-		"?",":",";","...",
-		"=","*=","/=", "%=", "+=", "-=", "<<=", ">>=", "&=", "^=", "|=",
-		/* # ## see below */ ",",
-		"<:", ":>", "<%", "%>", "%:", "%:%:"};
-		
-		for (String punctuator : punctuators) {
-			if (optional(punctuator)) {
-				token = new TPunctuator(interval(start),punctuator);
-				return true;
+		Token t = lexer.lookahead(1);
+		if (t instanceof TPunctuator) {
+			if (!acceptHashes) {
+				// TODO [4] consider introduction of THash and THashHash
+				String text = t.getText();
+				if (!text.equals("#") && !text.equals("##")) {
+					token = t;
+				}
 			}
 		}
-		
-		if (acceptHashes) {
-			if (optional("##")) {
-				
-				token = new TPunctuator(interval(start), "##");
-				return true;
-			} else if (optional('#')) {
-				token = new TPunctuator(interval(start), "#");
-				return true;
-			}
-		}
-		return false;
+		return token != null;
+	}
+	
+	protected boolean PUNCTUATOR(char c) {
+		return PUNCTUATOR(String.valueOf(c));
 	}
 
-	protected boolean IDENTIFIER() {
-		int c = LA1();
-		Location start = in.nextLocation();
+	protected boolean PUNCTUATOR(String text) {
 		token = null;
-		if (isAlpha(c)||c == '_') {
-			StringBuffer identifier = new StringBuffer();
-			do {
-				identifier.append((char)in.consume());
-				c = LA1();
-			} while(isAlpha(c)||isDigit(c)||c == '_');
-			token = new TIdentifier(interval(start), identifier.toString());
+		Token t = lexer.lookahead(1);
+		if (t instanceof TPunctuator && text.equals(t.getText())) {
+			token = lexer.consume(1);
+		}
+		return token != null;
+	}
+
+
+
+	protected boolean IDENTIFIER() {
+		token = null;
+		if (optional(TIdentifier.class)) {
 			return true;
 		} else {
 			return false;
@@ -678,126 +383,41 @@ public abstract class Parser extends ErrorHandling {
 	/** WHITESPACE including traditional white space chars,
 	 * line continuation markers and comments but no pure
 	 * CRLF (except multi-line comments and line continuations).
-	 * Any whitespace read is stored in last.WHITESPACE .
+	 * Any whitespace read is stored in "this.token" .
 	 */
 	protected boolean WHITESPACE() {
-		int la = in.lookahead(1);
-		Location start = in.nextLocation();
 		token = null;
-		if (isWhite(la)) {
-			in.consume();
-			token = new TWhitespace(interval(start), Character.toString((char)la));
+		if (lexer.lookahead(1) instanceof TCrlf) {
+			return false;
+		} else if (optional(TWhitespace.class)) {
 			return true;
 		} else if (line_continuation()) {
-			// To keep the same number of line in the output,
-			// we will need to forward even line continuation
-			// sequences. Because it does not matter for 
-			// preprocessors, whether it is \r\n or just \n
-			// we use the shorter one.
-			token = new TLineContinuation(interval(start), "\\\n");
 			return true;
-		} else if (optional("/*")) {
-			// Multiline comments might contain CRLF
-			// which implicitly means, that a directive line with comments
-			// can spread over multiple lines even without line
-			// continuation markers.
-			StringBuffer comment = new StringBuffer("/*");
-			while (! LA_equals("*/") && LA1() != StreamScanner.EOF) {
-				if (line_continuation()) comment.append("\\\n");
-				else comment.append((char)in.consume());
-			}
-			if (!optional("*/")) {
-				syntaxError("missing '*/' to end the comment");
-			}
-			else 
-			{
-				comment.append("*/");
-			}
-			token = new TComment(interval(start), comment.toString());
-			return true;
-		} else if (optional("//")) {
-			StringBuffer comment = new StringBuffer("//");
-			while (!isEndl(LA1())) {
-				if (line_continuation()) comment.append("\\\n");
-				else comment.append((char)in.consume());
-			}
-			// The CRLF is not part of the comment in the preprocessor.
-			// The comment is either a text line or at the end of a directive line.
-			// In both types of rules , it is necessary to be able to 
-			// check for the line end (anyway).
-			token = new TComment(interval(start), comment.toString());
+		} else if (optional(TComment.class)) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-	protected int nextTokenLookahead(int from, boolean skipCRLF) {
+	protected int nextNonWhiteLookahead(int from, boolean skipCRLF) {
 		int i = from;
-		for (; in.lookahead(i) != StreamScanner.EOF;) {
-			int next = skipNextWhite(i, skipCRLF);
-			if (i == next) return i;
-			else i = next;
+		for (Token la = lexer.lookahead(i); !(la instanceof TEof); la = lexer.lookahead(i)) {
+			if (la instanceof TCrlf && !skipCRLF) {
+				break;
+			} else if (la instanceof TWhitespace) {
+				i++;
+			} else {
+				break;
+			}
 		}
 		return i;
 	}
 	
-	protected int skipLineContinuation(int start) {
-		if (LA_equals(start, "\\\n")) {
-			return start+2;
-		} else if (LA_equals(start, "\\\r\n")) {
-			return start+3;
-		} else {
-			return start;
-		}
-	}
-	
-	protected int skipNextWhite(int start, boolean includingCRLF) {
-		int i = start;
-		
-		
-		int next = skipLineContinuation(i);
-		if (next != i) {
-			return next;
-		}
-		
-		int la = in.lookahead(i);
-		if (isWhite(la)) {
-			return i+1;
-		} else if (includingCRLF && la == '\n') {
-			return i+1;
-		} else if (LA_equals(i, "/*")) {
-			i += 2;
-			while (! LA_equals(i, "*/") && LA1() != StreamScanner.EOF) {
-				i++;
-			}
-			if (!LA_equals(i, "*/")) {
-				syntaxError("missing '*/' to end the comment");
-			}
-			else 
-			{
-				i += 2;
-			}
-			return i;
-		} else if (LA_equals(i, "//")) {
-			i += 2;
-			while (!isEndl(in.lookahead(i))) {
-				next = skipLineContinuation(i);
-				if (next == i) {
-					i++;
-				} else {
-					i = next;
-				}
-			}
-			return i;
-		} else {
-			return i;
-		}
-	}
 	
 	protected boolean CRLF() {
-		if (LA1() == '\n') {
-			in.consume(); 
+		token = null;
+		if (optional(TCrlf.class)) {
 			return true;
 		} else {
 			return false;
@@ -810,64 +430,12 @@ public abstract class Parser extends ErrorHandling {
 	 */
 	protected boolean whitespace_crlf_sequence() {
 		boolean result = false;
-		Location start = in.nextLocation();
-		StringBuffer whites = new StringBuffer();
-		while (true) {
-			if (WHITESPACE()) {
-				result = true;
-				whites.append(token.getText());
-			} else if (CRLF()) {
-				result = true;
-				whites.append('\n');
-			}
-			else break;
+		while (optional(TCrlf.class) || optional(TWhitespace.class)) {
+			result = true;
 		}
-		if (result)	token = new TWhitespace(interval(start), whites.toString());
 		return result;
 	}
 
-	
-	protected boolean isEndl(int c) {
-		return c == '\n' || c == StreamScanner.EOF;
-	}
-
-	protected boolean isDigit(int c) {
-		if (c == StreamScanner.EOF) return false;
-		return '0' <= c && c <= '9';
-	}
-
-	protected boolean isAlpha(int c) {
-		if (c == StreamScanner.EOF) return false;
-		return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z');
-	}
-	
-	protected boolean isWhite(int c) {
-		if (c == StreamScanner.EOF) return false;
-		else return c == ' ' || c == '\t' || c == '\r';
-	}
-
-	/**
-	 * consumes if the following tokens equal string
-	 * @param string
-	 * @return
-	 */
-	protected boolean optional(String string) {
-		if (LA_equals(string)) {
-			in.consume(string.length());
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	protected boolean optional(char c) {
-		if (LA1() == c) {
-			in.consume();
-			return true;
-		} else {
-			return false;
-		}
-	}
 	
 	/**
 	 * Checks whether the following characters equal
@@ -878,48 +446,36 @@ public abstract class Parser extends ErrorHandling {
 	 * @return
 	 */
 	protected boolean optionalIDENTIFIER(String id) {
-		if (LA_equals(id)) {
-			int next = in.lookahead(id.length()+1);
-			if (isAlpha(next) || isDigit(next) || next == '_' ) {
-				return false;
-			} else {
-				Location start = in.nextLocation();
-				in.consume(id.length());
-				token = new TIdentifier(interval(start), id);
-				return true;
-			}
+		Token t = lexer.lookahead(1);
+		if (t instanceof TIdentifier && t.getText().equals(id)) {
+			token = lexer.consume(1);
+			return true;
 		} else {
 			return false;
 		}
 	}
 
-	protected boolean mandatory(char c) {
-		if (optional(c)) {
-			return true;
-		} else {
-			syntaxError(in.nextLocation(), "missing '" + c + "'");
-			return false;
-		}
-	}
-
-	protected boolean mandatory(String string) {
-		if (optional(string)) {
-			return true;
-		} else {
-			syntaxError("missing '" + string + "'");
-			return false;
-		}
-	}
-	
 
 	protected boolean mandatory_endl() {
 		if (!ENDL()) {
-			syntaxError("missing mandatory CRLF or end of file");
+			syntaxError(lexer.lookahead(1).getStart(), "missing mandatory CRLF or end of file");
+			
 			// still here, then skip to next line end to recover from error
-			while (!ENDL()) in.consume();
+			recoveryHandler.skip_to_next_line();
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public void dismiss() {
+		lexer.dismiss();
+	}
+
+	@Override
+	public void skip_to_next_line() {
+		skip_remaining_line();
+		
 	}
 
 

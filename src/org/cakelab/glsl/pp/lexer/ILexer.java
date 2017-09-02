@@ -26,5 +26,7 @@ public interface ILexer {
 
 	void setVirtualLocation(int line);
 
+	LexerRuleSet getRules();
+
 
 }

@@ -1,5 +1,7 @@
 package org.cakelab.glsl.pp.lexer.rules;
 
+import java.util.Arrays;
+
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.lexer.LexerRule;
@@ -29,5 +31,13 @@ public class LexerRuleSet extends LexerRule {
 		throw new Error("internal error: lexer rule set has to delegate lexical analysis");
 	}
 
+	public void prependRule(LexerRule rule) {
+		ruleSet = Arrays.copyOf(ruleSet, ruleSet.length+1);
+		ruleSet[0] = rule;
+	}
+
+
+	
+	
 
 }

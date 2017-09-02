@@ -20,12 +20,11 @@ public abstract class LexerRuleCharSequence extends LexerRule {
 	public Token analyse() {
 		if (LA1() == (startDelimiter)) {
 			tokenStart();
-			int c = consumeChar();
 			
 			StringBuffer string = new StringBuffer();
-			string.append(c);
+			string.append(consumeChar());
 			
-			while(!(LA_equals(endDelimiter)||eof())) {
+			while(!(LA_equals(endDelimiter) || LA1() == IScanner.EOF)) {
 				if (LA1() != '\\') {
 					// general case: anything not an escape sequence
 						
@@ -35,13 +34,22 @@ public abstract class LexerRuleCharSequence extends LexerRule {
 					}
 					string.append(consumeChar());
 				} else {
-					// special case: escape sequence
-					// just don't interpret next char as end delimiter
-					string.append(consumeChar());
-					string.append(consumeChar());
+					if (LA(2) == '\n') {
+						// line continuation -> remove
+						consume(2);
+					} else {
+						// special case: escape sequence
+						// just don't interpret next char as end delimiter
+						string.append(consumeChar());
+						string.append(consumeChar());
+					}
 				}
 			}
-			if (!LA_equals(endDelimiter)) syntaxError("missing end delimiter '" + "' in char sequence (string)");
+			if (!LA_equals(endDelimiter)) {
+				syntaxError("missing end delimiter '" + "' in char sequence (string)");
+			} else {
+				consume(1);
+			}
 			string.append(endDelimiter);
 			return createToken(string.toString());
 		} else {

@@ -20,6 +20,7 @@ public abstract class LexerRuleSequenceSelect extends LexerRule {
 		for (String s : set) {
 			if (LA_equals(s)) {
 				tokenStart();
+				consume(s.length());
 				return createToken(s);
 			}
 		}

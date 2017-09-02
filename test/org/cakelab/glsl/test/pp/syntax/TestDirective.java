@@ -71,8 +71,8 @@ public class TestDirective extends TestingPPBase {
 	private void testMacros() {
 		assertValid(" #define A\n");
 		assertValid(" #define A any thing making sense here\nA");
-		assertValid(" #define A\n");
-		assertValid(" #define A\n");
+		assertValid(" # define A\n");
+		assertValid(" #define A  \n");
 		assertValid("# define A(x) x+x\n");
 		assertValid("# define A(x,y) x+y\n");
 		assertValid("#\tdefine A(x,...) x+x\n");

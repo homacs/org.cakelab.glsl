@@ -2,7 +2,6 @@ package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.EvaluationException;
-import org.cakelab.glsl.pp.ast.MacroReference;
 
 
 public class CallExpression extends PostfixExpression {

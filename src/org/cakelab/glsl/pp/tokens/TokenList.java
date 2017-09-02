@@ -30,5 +30,10 @@ public class TokenList extends NodeList<Token> {
 		super.removeRange(0, n);
 	}
 
+	public Token last() {
+		if (isEmpty()) return null;
+		return get(size()-1);
+	}
+
 
 }

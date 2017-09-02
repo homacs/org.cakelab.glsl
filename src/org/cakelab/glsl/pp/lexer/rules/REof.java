@@ -15,6 +15,8 @@ public class REof extends LexerRule {
 
 	@Override
 	public Token analyse() {
+		assert (!eof()) : "lexer is not supposed to read beyond EOF";
+		
 		if (LA1() == IScanner.EOF) {
 			tokenStart();
 			consume(1);
@@ -22,6 +24,7 @@ public class REof extends LexerRule {
 		}
 		return null;
 	}
+
 
 	@Override
 	protected Token createToken(Interval interval, String text) {

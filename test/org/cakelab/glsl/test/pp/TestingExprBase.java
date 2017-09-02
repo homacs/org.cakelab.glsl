@@ -5,15 +5,19 @@ import java.io.OutputStream;
 
 import org.cakelab.glsl.pp.ExpressionParser;
 import org.cakelab.glsl.pp.Parser;
+import org.cakelab.glsl.pp.lexer.PPLexer;
+import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.scanner.StreamScanner;
 
 public class TestingExprBase extends TestingBase {
 
 	public Parser p(String source) {
 		try {
+			IScanner scanner = new StreamScanner("0", new ByteArrayInputStream(source.getBytes()));
+			PPLexer pplexer = new PPLexer(scanner, errorHandler);
 			error = null;
 			warning = null;
-			parser = new ExpressionParser(new StreamScanner("0", new ByteArrayInputStream(source.getBytes())), errorHandler);
+			parser = new ExpressionParser(pplexer);
 		} catch (Throwable e) {
 			// will never happen
 			throw new Error(e);

@@ -1,6 +1,8 @@
 package org.cakelab.glsl.pp.lexer;
 
 
+import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.error.ErrorHandling;
 import org.cakelab.glsl.pp.lexer.rules.LexerRuleSet;
@@ -11,16 +13,19 @@ import org.cakelab.glsl.pp.tokens.TokenList;
 
 public class PPLexer extends ErrorHandling implements ILexer {
 
+	
 	private LexerRuleSet rules;
 	protected TokenList prepended = new TokenList();
-	private LookaheadList lookaheads = new LookaheadList();
+	private TokenList lookaheads = new TokenList();
 	protected Token previous;
 
 
 	public PPLexer(IScanner scanner, ErrorHandler errorHandler) {
 		super(scanner, errorHandler);
+		this.rules = new PPGLSLRuleSet(scanner, errorHandler);
 	}
 	
+
 	@Override
 	public void setRules(LexerRuleSet rules) {
 		this.rules = rules;
@@ -35,7 +40,7 @@ public class PPLexer extends ErrorHandling implements ILexer {
 		// check if lookahead refers to prepended tokens
 		//
 		if (!prepended.isEmpty()) {
-			if (n < prepended.size()) {
+			if (n <= prepended.size()) {
 				return prepended.get(n-1);
 			} else {
 				n = n - prepended.size();
@@ -67,11 +72,12 @@ public class PPLexer extends ErrorHandling implements ILexer {
 	@Override
 	public Token consume(int n) {
 		assert n > 0 : "n is supposed to be larger than 0";
-		
+		assert (!eof());
 		if (!prepended.isEmpty()) {
 			if (n > prepended.size()) {
 				n -= prepended.size();
 				prepended.clear();
+				// fall through to lookahead list below
 			} else {
 				previous = prepended.get(n-1);
 				prepended.removeFirst(n);
@@ -92,6 +98,7 @@ public class PPLexer extends ErrorHandling implements ILexer {
 			}
 		} else {
 			previous = lookaheads.get(n-1);
+			lookaheads.removeFirst(n);
 		}
 		
 		return previous;
@@ -105,9 +112,12 @@ public class PPLexer extends ErrorHandling implements ILexer {
 
 	@Override
 	public void dismiss() {
+		Location l = in.location();
+		TEof eofTok = new TEof(new Interval(l,l));
 		in.dismiss();
 		prepended.clear();
 		lookaheads.clear();
+		prepended.add(eofTok);
 	}
 
 	public void prepend(TokenList prependingText) {
@@ -127,6 +137,12 @@ public class PPLexer extends ErrorHandling implements ILexer {
 	@Override
 	public void setVirtualLocation(int line) {
 		in.setVirtualLocation(line);
+	}
+
+
+	@Override
+	public LexerRuleSet getRules() {
+		return rules;
 	}
 	
 	

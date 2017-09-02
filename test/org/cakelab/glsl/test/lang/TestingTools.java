@@ -3,7 +3,6 @@ package org.cakelab.glsl.test.lang;
 import java.io.PrintStream;
 import java.util.BitSet;
 
-import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;

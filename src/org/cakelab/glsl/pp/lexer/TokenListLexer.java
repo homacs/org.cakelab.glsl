@@ -1,9 +1,8 @@
-package org.cakelab.glsl.pp;
+package org.cakelab.glsl.pp.lexer;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.error.ErrorHandler;
-import org.cakelab.glsl.pp.lexer.PPLexer;
 import org.cakelab.glsl.pp.lexer.rules.LexerRuleSet;
 import org.cakelab.glsl.pp.tokens.TEof;
 import org.cakelab.glsl.pp.tokens.Token;
@@ -20,7 +19,7 @@ public class TokenListLexer extends PPLexer {
 		assert (tokens.size() > 0);
 		
 		prepended.addAll(tokens);
-		Location end = prepended.get(prepended.size()-1).getEnd();
+		Location end = prepended.get(prepended.size()-1).getEnd().clone();
 		end.setColumn(end.getColumn()+1);
 		
 		this.EOF = new TEof(new Interval(end, end));
@@ -33,7 +32,7 @@ public class TokenListLexer extends PPLexer {
 
 	@Override
 	public Token lookahead(int n) {
-		if (n < prepended.size()) {
+		if (n <= prepended.size()) {
 			return prepended.get(n-1);
 		} else {
 			return EOF;
@@ -61,6 +60,11 @@ public class TokenListLexer extends PPLexer {
 	@Override
 	public void setVirtualLocation(int line) {
 		throw new Error("internal error: not supported");
+	}
+
+	@Override
+	public void dismiss() {
+		prepended.clear();
 	}
 
 	

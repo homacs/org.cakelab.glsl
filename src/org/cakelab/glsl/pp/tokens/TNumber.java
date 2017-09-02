@@ -22,11 +22,7 @@ public class TNumber extends Token {
 	}
 
 	public boolean isDecimalInteger() {
-		return !isFloatingPoint() && !isOctal() && !isHexadecimal();
-	}
-
-	private boolean isOctal() {
-		return text.startsWith("0");
+		return !isFloatingPoint() && !isHexadecimal();
 	}
 
 	public boolean isFloatingPoint() {

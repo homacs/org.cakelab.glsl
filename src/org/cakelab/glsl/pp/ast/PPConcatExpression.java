@@ -41,10 +41,6 @@ public class PPConcatExpression extends PPExpression {
 		if (leftToken != null && rightToken != null) {
 			Token joined = interpreter.macro_join_tokens(leftToken, rightToken);
 		
-			// joined token refers to the start of the left parameter and end of the right parameter in
-			// the expansion list. 
-			joined.setInterval(new Interval(left.getStart(), right.getEnd()));
-			
 			result.remove(index); // remove left token
 			result.set(index, joined); // replace right token with joined token
 		}

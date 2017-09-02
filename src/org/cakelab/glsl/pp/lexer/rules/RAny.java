@@ -16,7 +16,7 @@ public class RAny extends LexerRule {
 	@Override
 	public Token analyse() {
 
-		if (!eof()) {
+		if (LA1() != IScanner.EOF) {
 			tokenStart();
 			char c = (char) consumeChar();
 			return createToken(String.valueOf(c));

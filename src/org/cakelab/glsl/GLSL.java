@@ -13,6 +13,8 @@ import org.cakelab.glsl.lang.ast.Scope;
 import org.cakelab.glsl.pp.PreprocessedOutputBuffer;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.PPGroupScope;
+import org.cakelab.glsl.pp.lexer.PPLexer;
+import org.cakelab.glsl.pp.scanner.StreamScanner;
 
 public class GLSL {
 	
@@ -40,8 +42,8 @@ public class GLSL {
 
 	public CombinedAST parse(Resource resource) throws IOException {
 		PreprocessedOutputBuffer buffer = new PreprocessedOutputBuffer();
-		
-		Preprocessor pp = new Preprocessor(resource.getIdentifier(), resource.getData(), buffer);
+		PPLexer pplexer = new PPLexer(new StreamScanner(resource.getIdentifier(), resource.getData()), errorHandler);
+		Preprocessor pp = new Preprocessor(pplexer, buffer);
 		
 		pp.setResourceManager(resourceManager);
 		pp.setErrorHandler(errorHandler);
