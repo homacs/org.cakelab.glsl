@@ -3,9 +3,9 @@ package org.cakelab.glsl.test.pp;
 import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
 
-import org.cakelab.glsl.pp.ExpressionParser;
-import org.cakelab.glsl.pp.Parser;
 import org.cakelab.glsl.pp.lexer.PPLexer;
+import org.cakelab.glsl.pp.parser.ExpressionParser;
+import org.cakelab.glsl.pp.parser.Parser;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.scanner.StreamScanner;
 

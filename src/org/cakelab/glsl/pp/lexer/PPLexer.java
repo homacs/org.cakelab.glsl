@@ -3,8 +3,8 @@ package org.cakelab.glsl.pp.lexer;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.pp.error.ErrorHandlingStrategy;
-import org.cakelab.glsl.pp.error.ErrorHandling;
+import org.cakelab.glsl.pp.PPHelper;
+import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.error.ErrorRecoveryHandler;
 import org.cakelab.glsl.pp.error.StandardErrorHandler;
 import org.cakelab.glsl.pp.lexer.rules.LexerRuleSet;
@@ -13,7 +13,7 @@ import org.cakelab.glsl.pp.tokens.TEof;
 import org.cakelab.glsl.pp.tokens.Token;
 import org.cakelab.glsl.pp.tokens.TokenList;
 
-public class PPLexer extends ErrorHandling implements ILexer, ErrorRecoveryHandler {
+public class PPLexer extends PPHelper implements ILexer, ErrorRecoveryHandler {
 
 	
 	private LexerRuleSet rules;
@@ -23,16 +23,16 @@ public class PPLexer extends ErrorHandling implements ILexer, ErrorRecoveryHandl
 	private IScanner in;
 
 
-	public PPLexer(IScanner scanner, ErrorHandlingStrategy errorStrategy) {
-		super(errorStrategy);
+	public PPLexer(IScanner scanner, PPState state) {
+		super(state);
 		this.in = scanner;
-		this.rules = new PPGLSLRuleSet(scanner, errorStrategy);
+		this.rules = new PPGLSLRuleSet(state);
 	}
 	
 
 	public PPLexer(IScanner scanner) {
-		this(scanner, new ErrorHandlingStrategy(new StandardErrorHandler(), null));
-		getErrorHandlingStrategy().setErrorRecoveryHandler(this);
+		this(scanner, new PPState(new StandardErrorHandler(), null));
+		getState().setErrorRecoveryHandler(this);
 	}
 
 
@@ -67,7 +67,7 @@ public class PPLexer extends ErrorHandling implements ILexer, ErrorRecoveryHandl
 		Token last = lookaheads.last();
 		while (lookaheads.size() < n) {
 			if (last instanceof TEof) break;
-			last = rules.analyse();
+			last = rules.analyse(in);
 			lookaheads.add(last);
 		}
 		
@@ -103,7 +103,7 @@ public class PPLexer extends ErrorHandling implements ILexer, ErrorRecoveryHandl
 			lookaheads.clear();
 			while (n != 0) {
 				if (previous instanceof TEof) break;
-				previous = rules.analyse();
+				previous = rules.analyse(in);
 				n--;
 			}
 		} else {

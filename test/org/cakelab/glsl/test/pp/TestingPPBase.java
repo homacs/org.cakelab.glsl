@@ -4,10 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
-import org.cakelab.glsl.pp.Parser;
 import org.cakelab.glsl.pp.PreprocessedOutputBuffer;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.lexer.PPLexer;
+import org.cakelab.glsl.pp.parser.Parser;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.scanner.StreamScanner;
 

@@ -1,6 +1,6 @@
 package org.cakelab.glsl.pp.lexer.rules;
 
-import org.cakelab.glsl.pp.error.ErrorHandlingStrategy;
+import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.lexer.LexerRule;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.Token;
@@ -10,8 +10,8 @@ public abstract class LexerRuleCharSequence extends LexerRule {
 	private char startDelimiter;
 	private char endDelimiter;
 
-	public LexerRuleCharSequence(IScanner in, ErrorHandlingStrategy handler, char startDelimiter, char endDelimiter) {
-		super(in, handler);
+	public LexerRuleCharSequence(PPState state, char startDelimiter, char endDelimiter) {
+		super(state);
 		this.startDelimiter = startDelimiter;
 		this.endDelimiter = endDelimiter;
 	}

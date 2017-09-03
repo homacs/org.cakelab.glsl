@@ -33,12 +33,14 @@ import org.cakelab.glsl.pp.ast.PPIfdefScope;
 import org.cakelab.glsl.pp.ast.PPIfndefScope;
 import org.cakelab.glsl.pp.ast.PPStringifyExpression;
 import org.cakelab.glsl.pp.error.ErrorHandler;
-import org.cakelab.glsl.pp.error.ErrorHandlingStrategy;
 import org.cakelab.glsl.pp.error.ExpressionError;
 import org.cakelab.glsl.pp.error.StandardErrorHandler;
 import org.cakelab.glsl.pp.lexer.ILexer;
 import org.cakelab.glsl.pp.lexer.PPLexer;
 import org.cakelab.glsl.pp.lexer.TokenListLexer;
+import org.cakelab.glsl.pp.parser.ExpressionParser;
+import org.cakelab.glsl.pp.parser.IncludeParser;
+import org.cakelab.glsl.pp.parser.Parser;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.scanner.ScannerManager;
 import org.cakelab.glsl.pp.scanner.StreamScanner;
@@ -56,32 +58,20 @@ import org.cakelab.glsl.pp.tokens.TokenList;
 
 public class Preprocessor extends Parser implements MacroInterpreter {
 	
-	private ResourceManager resourceManager;
 	
 	/** this is where only valid preprocessed output goes. */
 	private PreprocessedOutputSink outputStream;
-	/** this is where valid and invalid/hidden preprocessed output goes. 
-	 * It will refer to DEV_NULL when an error occurred (i.e. invalid output). */
-	private PreprocessedOutputSink out;
-	private MacroMap macros;
-	private Macro currentMacroDefinition;
 
-	private boolean insertLineDirectives = false;
 
-	private PPGroupScope currentScope;
 
 	// TODO [1] create preprocessor ast output
 	private List<PPGroupScope> groups;
 	private PPGroupScope globalScope;
 
-	private GLSLVersion glslVersion;
-
-	private ArrayList<GLSLExtension> extensions;
-
-	private boolean seenCodeLineBeforeVersion;
 
 	private IncludeParser includeParser;
-	
+	private ExpressionParser expressionParser;
+
 	
 	
 	/**
@@ -95,24 +85,21 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	}
 
 	public Preprocessor(PPLexer lexer, PreprocessedOutputSink out) {
+		super(new PPState());
 		
-		setErrorHandlingStrategy(new ErrorHandlingStrategy(new StandardErrorHandler(), this));
+		state.setErrorHandler(new StandardErrorHandler());
+		state.setErrorRecoveryHandler(this);
 		
-		insertLineDirectives = true;
+		state.setLexer(lexer);
+		state.setInsertLineDirectives(true);
 		
 		outputStream = out;
-		resourceManager = new StandardFileManager();
-		macros = new MacroMap();
+		state.setResourceManager(new StandardFileManager());
 		globalScope = new PPGroupScope(null);
 		pushScope(globalScope);
-		extensions = new ArrayList<GLSLExtension>();
 		
-		seenCodeLineBeforeVersion = false;
-
-		includeParser = new IncludeParser(true, resourceManager, lexer);
-		
-		
-		super.setLexer(lexer);
+		includeParser = new IncludeParser(true, state);
+		expressionParser = new ExpressionParser(state);
 		
 	}
 
@@ -121,8 +108,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	 * @param resourceManager
 	 */
 	public void setResourceManager(ResourceManager resourceManager) {
-		this.resourceManager = resourceManager;
-		includeParser.setResouceManager(resourceManager);
+		state.setResourceManager(resourceManager);
 	}
 
 	
@@ -147,7 +133,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	 * 
 	 */
 	public void enableLineDirectiveInsertion(boolean enable) {
-		this.insertLineDirectives = enable;
+		state.setInsertLineDirectives(enable);
 	}
 
 	/**
@@ -184,40 +170,40 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		scanner.addOnEofHandler(eof);
 		
 		
-		ILexer previousLexer = super.lexer;
+		ILexer previousLexer = getLexer();
 		try {
-			ErrorHandlingStrategy predefineErrStrat = new ErrorHandlingStrategy(getErrorHandlingStrategy().getErrorHandler(), this);
-			super.setLexer(new PPLexer(scanner, predefineErrStrat));
+			PPState predefineErrStrat = new PPState(getState().getErrorHandler(), this);
+			state.setLexer(new PPLexer(scanner, predefineErrStrat));
 			
 			define();
 			// TODO: eof handler still necessary on this level?
-			assert eof.occurred() && lexer.eof();
+			assert eof.occurred() && getLexer().eof();
 			// TODO: maybe check for errors in predefinitions before proceeding
 		} finally {
-			setLexer(previousLexer);
+			state.setLexer(previousLexer);
 		}
 	}
 	
 	public void addDefine(Macro macro) {
-		macros.put(macro.getName(), macro);
+		state.getMacros().put(macro.getName(), macro);
 	}
 	
 	
 	private void setScopeVisibility() {
 		// TODO [3] scope visibility (skipping text lines), suspending output generation and location mapping is kind of redundant
-		if (currentScope.visible()) this.out = outputStream;
-		else this.out = PreprocessedOutputSink.DEV_NULL;
+		if (state.getGroupScope().visible()) state.setOutput(outputStream);
+		else state.setOutput(PreprocessedOutputSink.DEV_NULL);
 	}
 	
 	private void pushScope(PPGroupScope scope) {
-		if (currentScope != null) currentScope.add(scope);
-		currentScope = scope;
+		if (state.getGroupScope() != null) state.getGroupScope().add(scope);
+		state.setGroupScope(scope);
 		setScopeVisibility();
 	}
 	
 	private void popScope() {
-		PPGroupScope parent = currentScope.getParent();
-		currentScope = parent;
+		PPGroupScope parent = state.getGroupScope().getParent();
+		state.setGroupScope(parent);
 		setScopeVisibility();
 	}
 
@@ -229,18 +215,17 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	}
 	
 	public List<PPGroupScope> process() {
-		
 		// main parser loop
 		while(!atEOF()) {
 			if (!directive_line() && !text_line()) {
-				syntaxError(lexer.lookahead(1), "illegal token");
+				syntaxError(getLexer().lookahead(1), "illegal token");
 				break;
 			}
 		}
 		// check if all scopes of conditional inclusion are complete
-		if (currentScope != globalScope) 
+		if (state.getGroupScope() != globalScope) 
 		{
-			syntaxError(lexer.previous(), "missing #endif");
+			syntaxError(getLexer().previous(), "missing #endif");
 		}
 		return groups;
 	}
@@ -251,7 +236,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	 */
 	private boolean text_line() {
 		if (!has_directive_line_start()) {
-			if (!currentScope.visible()) {
+			if (!state.getGroupScope().visible()) {
 				skip_remaining_line();
 				return true;
 			}
@@ -261,12 +246,12 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 				return false;
 			} else {
 				if (ENDL()) {
-					if (token instanceof TCrlf) out.print(token);
+					if (token instanceof TCrlf) state.getOutput().print(token);
 					// TODO: not sure if we should add CRLF at EOF generally or not
 //					else out.print(new TCrlf(token.getInterval(), "\n"));
 					else assert token instanceof TEof;
-				} else if (!lexer.eof()) {
-					syntaxError(lexer.lookahead(1), "invalid tokens");
+				} else if (!getLexer().eof()) {
+					syntaxError(getLexer().lookahead(1), "invalid tokens");
 				}
 				return true;
 			}
@@ -293,9 +278,9 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			if (WHITESPACE()) {
 				t = token;
 			} else if (IDENTIFIER()) {
-				seenCodeLineBeforeVersion = true;
+				state.setSeenCodeLineBeforeVersion(true);
 				TIdentifier id = (TIdentifier) token;
-				Macro macro = macros.get(id.getText());
+				Macro macro = state.getMacros().get(id.getText());
 				if (macro != null) {
 					if (macro_recursion_check(id.getStart(), id.getText())) {
 						// macro cannot call itself, so its just a string
@@ -307,16 +292,16 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 						MacroInvocation invocation = reference;
 						if (macro.isFunctionMacro()) {
 							int i = nextNonWhiteLookahead(1, true);
-							Token nonWhite = lexer.lookahead(i);
+							Token nonWhite = getLexer().lookahead(i);
 							if (nonWhite instanceof TPunctuator && nonWhite.getText().equals("(")) {
 								// arguments following -> consume white spaces
 								// and thereby skip to '('
-								if (i > 1) lexer.consume(i-1);
-								assert(lexer.lookahead(1).getText().equals("("));
+								if (i > 1) getLexer().consume(i-1);
+								assert(getLexer().lookahead(1).getText().equals("("));
 								TokenList[] args = macro_argument_list(reference);
 								if (args != null) {
 									// it is an invocation of a function like macro
-									invocation = new MacroCallExpression(reference, args, lexer.previous().getEnd());
+									invocation = new MacroCallExpression(reference, args, getLexer().previous().getEnd());
 								} else {
 									// no or improper arguments
 									// error has been reported, just proceed to next token
@@ -340,14 +325,15 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 				}
 			} else {
 				t = preprocessing_token(acceptHashes);
-				if (t != null) seenCodeLineBeforeVersion = true;
+				if (t != null) state.setSeenCodeLineBeforeVersion(true);
+
 			}
 
 			
 			// store and forward output
 			if (t != null) {
 				result.add(t);
-				if (print) out.print(t);
+				if (print) state.getOutput().print(t);
 			} else {
 				break;
 			}
@@ -377,7 +363,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			// rescan happens after removing '#' and '##'. Any remaining 
 			// '#' and '##' will be treated as common pp-token.
 			if (prependingText == null || prependingText.isEmpty()) return;
-			((PPLexer)lexer).prepend(prependingText);
+			((PPLexer)getLexer()).prepend(prependingText);
 
 		} catch (EvaluationException e) {
 			syntaxError(e);
@@ -385,10 +371,10 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	}
 
 	private boolean has_directive_line_start() {
-		Token previous = lexer.previous();
+		Token previous = getLexer().previous();
 		if (previous == null || previous instanceof TCrlf) {
 			int i = nextNonWhiteLookahead(1, false);
-			Token la = lexer.lookahead(i);
+			Token la = getLexer().lookahead(i);
 			if (la instanceof THash) return true;
 		}
 		
@@ -417,7 +403,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 				// inclusion are always visible.
 				// They cannot be ignored, because we need to match
 				// #if and #endif directives properly
-			} else if (!currentScope.visible()) {
+			} else if (!state.getGroupScope().visible()) {
 				// if the current conditional scope is not visible
 				// the following directives will be ignored.
 				skip_remaining_line();
@@ -435,9 +421,9 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			{
 				// directive line has been processed;
 			} else {
-				syntaxError(lexer.lookahead(1), "unknown directive #" + read_remaining_line());
+				syntaxError(getLexer().lookahead(1), "unknown directive #" + read_remaining_line());
 			}
-			seenCodeLineBeforeVersion = true;
+			state.setSeenCodeLineBeforeVersion(true);
 		}
 		return result;
 	}
@@ -484,9 +470,9 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 				mandatory_endl();
 
 				
-				if (glslVersion == null) {
-					if (seenCodeLineBeforeVersion) syntaxWarning(start, "#version directive can not be preceeded by code lines");
-					if (number > 0) glslVersion = new GLSLVersion(new Interval(start, end), number, profile);
+				if (state.getGlslVersion() == null) {
+					if (state.isSeenCodeLineBeforeVersion()) syntaxWarning(start, "#version directive can not be preceeded by code lines");
+					if (number > 0) state.setGlslVersion(new GLSLVersion(new Interval(start, end), number, profile));
 				} else {
 					syntaxWarning(start, "version redefined");
 				}
@@ -527,13 +513,13 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 						syntaxError(ident.getStart(), "extension behaviour has to be one of [require, enable, warn, disable])");
 					}
 				} else {
-					syntaxError(lexer.lookahead(1).getStart(), "missing extension behaviour (one of [require, enable, warn, disable])");
+					syntaxError(getLexer().lookahead(1).getStart(), "missing extension behaviour (one of [require, enable, warn, disable])");
 				}
 				while(WHITESPACE());
 				mandatory_endl();
 				
 				if (extensionName != null && behaviour != null) {
-					extensions.add(new GLSLExtension(new Interval(start, end), extensionName.getText(), behaviour));
+					state.getExtensions().add(new GLSLExtension(new Interval(start, end), extensionName.getText(), behaviour));
 				}
 				
 			}
@@ -609,9 +595,9 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			while(WHITESPACE());
 			if (mandatory_endl()) {
 				if (id >= 0) {
-					lexer.setVirtualLocation(Integer.toString(id), line);
+					getLexer().setVirtualLocation(Integer.toString(id), line);
 				} else {
-					lexer.setVirtualLocation(line);
+					getLexer().setVirtualLocation(line);
 				}
 			}
 		}
@@ -627,7 +613,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			result = true;
 			while(WHITESPACE());
 			if (!IDENTIFIER()) {
-				syntaxError(lexer.lookahead(1), "no macro name given in #define directive");
+				syntaxError(getLexer().lookahead(1), "no macro name given in #define directive");
 				return result;
 			}
 			start = token.getStart();
@@ -653,7 +639,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 						// empty parameter list
 						break;
 					} else {
-						syntaxError(lexer.lookahead(1), "parameter name missing");
+						syntaxError(getLexer().lookahead(1), "parameter name missing");
 						return result;
 					}
 					while(WHITESPACE());
@@ -661,23 +647,23 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 				} while(PUNCTUATOR(','));
 
 				mandatory(TPunctuator.class, ")");
-				end = lexer.previous().getEnd();
+				end = getLexer().previous().getEnd();
 			}
 			while(WHITESPACE());
 			
-			
-			currentMacroDefinition = new Macro(macroName, params, new Interval(start, end));
+			Macro macroDefinition = new Macro(macroName, params, new Interval(start, end));
+			state.setCurrentMacroDefinition(macroDefinition);
 			NodeList<Node> list = replacement_list();
 			
-			currentMacroDefinition.setReplacementList(list);
+			macroDefinition.setReplacementList(list);
 			
-			Macro previousDefinition = macros.get(macroName);
-			if (previousDefinition != null && !previousDefinition.equals(currentMacroDefinition)) {
+			Macro previousDefinition = state.getMacros().get(macroName);
+			if (previousDefinition != null && !previousDefinition.equals(macroDefinition)) {
 				syntaxWarning(start, "\"" + macroName + "\" redefined");
 			}
 
-			macros.put(macroName, currentMacroDefinition);
-			currentMacroDefinition = null;
+			state.getMacros().put(macroName, macroDefinition);
+			state.setCurrentMacroDefinition(macroDefinition);
 			
 			mandatory_endl();
 		}
@@ -765,7 +751,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 
 
 	private MacroParameterReference macro_parameter_reference(TIdentifier ident) {
-		MacroParameter param = currentMacroDefinition.getParameter(ident.getText());
+		MacroParameter param = state.getCurrentMacroDefinition().getParameter(ident.getText());
 		if (param != null) {
 			return new MacroParameterReference(ident.getInterval(), param);
 		} else {
@@ -780,7 +766,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			// Iff macro has parameters, # has to be followed by 
 			// a macro parameter reference.
 			// Otherwise, it is an ordinary pp-token
-			if (currentMacroDefinition.isFunctionMacro()) {
+			if (state.getCurrentMacroDefinition().isFunctionMacro()) {
 				// must be followed by a macro parameter
 				MacroParameterReference paramRef = null;
 				while (WHITESPACE());
@@ -806,21 +792,21 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 
 	
 	private Token preprocessing_token(boolean acceptHashes) {
-		Token la = lexer.lookahead(1);
+		Token la = getLexer().lookahead(1);
 		if (la instanceof TIdentifier) {
-			return lexer.consume(1);
+			return getLexer().consume(1);
 		} else if (la instanceof TStringLiteral) {
-			return lexer.consume(1);
+			return getLexer().consume(1);
 		} else if (la instanceof TCharacterConstant) {
-			return lexer.consume(1);
+			return getLexer().consume(1);
 		} else if (la instanceof TPunctuator) {
 			if (!acceptHashes && la.getText().startsWith("#")) {
 				return null;
 			} else {
-				return lexer.consume(1);
+				return getLexer().consume(1);
 			}
 		} else if (la instanceof TNumber) {
-			return lexer.consume(1);
+			return getLexer().consume(1);
 		} else if (la instanceof TEof) {
 			return null;
 		} else if (la instanceof TCrlf) {
@@ -829,7 +815,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			return null;
 		} else {
 			// anything else but whitespace or crlf or eof
-			return lexer.consume(1);
+			return getLexer().consume(1);
 		}
 	}
 
@@ -843,7 +829,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			List<TokenList> arguments = new ArrayList<TokenList>();
 			int numParameters = macro.numParameters();
 			boolean hasVarArgs = macro.hasVarArgs();
-			Token la = lexer.lookahead(1);
+			Token la = getLexer().lookahead(1);
 			if (!(la instanceof TPunctuator && la.getText().equals(")"))) {
 				do {
 					while(whitespace_crlf_sequence());
@@ -860,7 +846,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			}
 			
 			if (!PUNCTUATOR(')')) {
-				syntaxError(lexer.lookahead(1), "missing closing ')'");
+				syntaxError(getLexer().lookahead(1), "missing closing ')'");
 			}
 
 			if (macro.numParameters() != arguments.size()) {
@@ -900,7 +886,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			if (PUNCTUATOR(')')) {
 				varargs.add(token);
 			} else {
-				syntaxError(lexer.lookahead(1).getStart(), "missing closing ')' in parenthesised macro argument");
+				syntaxError(getLexer().lookahead(1).getStart(), "missing closing ')' in parenthesised macro argument");
 			}
 			return true;
 		}
@@ -923,7 +909,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	 * @param varargs
 	 */
 	private void macro_arg_token_sequence(TokenList varargs, String delimiters) {
-		Token la = lexer.lookahead(1);
+		Token la = getLexer().lookahead(1);
 		while (!(la instanceof TEof) && delimiters.indexOf(la.getText().charAt(0)) == -1) {
 			if (whitespace_crlf_sequence()) {
 				// replace sequence with single blank
@@ -942,9 +928,9 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 				varargs.add(token);
 			} else {
 				// FIXME: macro args cannot accept unknown tokens (I belive)
-				varargs.add(lexer.consume(1));
+				varargs.add(getLexer().consume(1));
 			}
-			la = lexer.lookahead(1);
+			la = getLexer().lookahead(1);
 		}
 	}
 
@@ -995,27 +981,27 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	public TokenList macro_expand_argument(TokenList tokens) {
 		// and parse that macro expanded text for the expression
 		// TODO: macro arg expansion requires isolated scanner (+ parser?) (input is not preprocessed)
-		ILexer previous = lexer;
+		ILexer previous = getLexer();
 		try {
 			if (tokens.size() == 0) return tokens;
-			lexer = new TokenListLexer(tokens, getErrorHandlingStrategy());
+			state.setLexer(new TokenListLexer(tokens, getState()));
 			tokens = text_tokens(false, true);
 			assert (!CRLF()) : "internal error: CRLF has to be replaced by ' ' during argument parsing";
-			assert (lexer.lookahead(1) instanceof TEof);
+			assert (getLexer().lookahead(1) instanceof TEof);
 			return tokens;
 		} finally {
-			lexer = previous;
+			state.setLexer(previous);
 		}
 	}
 
 	@Override
 	public Token macro_join_tokens(Token left, Token right) {
 		// join two tokens parse for a single new, legal preprocessing token
-		ILexer previous = lexer;
+		ILexer previous = getLexer();
 		try {
 			String text = left.getText() + right.getText();
 			IScanner rescanner = new StreamScanner("-- token join --", new ByteArrayInputStream(text.getBytes()));
-			lexer = new PPLexer(rescanner, getErrorHandlingStrategy());
+			state.setLexer(new PPLexer(rescanner, getState()));
 			Token joined = preprocessing_token(true);
 			rescanner.consume();
 			if (joined == null || !rescanner.eof()) {
@@ -1028,7 +1014,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			}
 			return joined;
 		} finally {
-			lexer = previous;
+			state.setLexer(previous);
 		}
 	}
 	
@@ -1049,7 +1035,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			String macro = token.getText();
 			while(WHITESPACE());
 			if (mandatory_endl()) {
-				macros.remove(macro);
+				state.getMacros().remove(macro);
 				return result;
 			} else {
 				syntaxError(start, "unexpected tokens at end of undef directive");
@@ -1066,7 +1052,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		Token ifTok = null; 
 		if (optionalIDENTIFIER("if")) {
 			ifTok = token;
-			ifscope = new PPIfScope(currentScope);
+			ifscope = new PPIfScope(state.getGroupScope());
 			while(WHITESPACE());
 			condition = directive_condition();
 			if (condition == null) {
@@ -1074,7 +1060,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			}
 		} else if (optionalIDENTIFIER("ifdef")) {
 			ifTok = token;
-			ifscope = new PPIfdefScope(currentScope);
+			ifscope = new PPIfdefScope(state.getGroupScope());
 			while(WHITESPACE());
 			condition = identifier();
 			if (condition == null) {
@@ -1082,7 +1068,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			}
 		} else if (optionalIDENTIFIER("ifndef")) {
 			ifTok = token;
-			ifscope = new PPIfndefScope(currentScope);
+			ifscope = new PPIfndefScope(state.getGroupScope());
 			while(WHITESPACE());
 			condition = identifier();
 			if (condition == null) {
@@ -1111,11 +1097,11 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		Token ifTok = null;
 		if (optionalIDENTIFIER("elif")) {
 			ifTok = token;
-			PPGroupScope predecessor = currentScope;
+			PPGroupScope predecessor = state.getGroupScope();
 			if (predecessor == null || !(predecessor instanceof PPIfScope)) syntaxError(ifTok, "#elif must follow #if* or #elif group");
 			popScope();
 			
-			elifscope = new PPElifScope(currentScope, (PPIfScope)predecessor);
+			elifscope = new PPElifScope(state.getGroupScope(), (PPIfScope)predecessor);
 			while(WHITESPACE());
 			Node expr = directive_condition();
 			if (expr == null) {
@@ -1141,10 +1127,10 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		Token elseTok = null;
 		if (optionalIDENTIFIER("else")) {
 			elseTok = token;
-			PPGroupScope predecessor = currentScope;
+			PPGroupScope predecessor = state.getGroupScope();
 			if (predecessor == null || !(predecessor instanceof PPIfScope)) syntaxError(elseTok.getStart(), "#else must follow #if* or #elif group");
 			popScope();
-			elsescope = new PPElseScope(currentScope, (PPIfScope) predecessor);
+			elsescope = new PPElseScope(state.getGroupScope(), (PPIfScope) predecessor);
 			while(WHITESPACE());
 			mandatory_endl();
 			pushScope(elsescope);
@@ -1157,7 +1143,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		if (optionalIDENTIFIER("endif")) {
 			Token endifTok = token;
 			result = true;
-			PPGroupScope predecessor = currentScope;
+			PPGroupScope predecessor = state.getGroupScope();
 			if (predecessor == null) syntaxError(endifTok, "#endif must follow #if*, #elif or #else group");
 			popScope();
 			while(WHITESPACE());
@@ -1189,18 +1175,18 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		}
 		// and parse that macro expanded text for the expression
 		// FIXME condition parsing requires preprocessed output scanner
-		ExpressionParser parser = new ExpressionParser(new TokenListLexer(tokens, getErrorHandlingStrategy()), getErrorHandlingStrategy());
-		return parser.expression();
+		expressionParser.setup(tokens);
+		return expressionParser.expression();
 	}
 	
 	private Node identifier() {
 		if (IDENTIFIER()) {
 			String id = token.getText();
-			Macro macro = macros.get(id);
+			Macro macro = state.getMacros().get(id);
 			if (macro == null) {
 				return token;
 			} else {
-				return new MacroReference(token.getInterval(), macros.get(token.getText()));
+				return new MacroReference(token.getInterval(), state.getMacros().get(token.getText()));
 			}
 		}
 		return null;
@@ -1210,9 +1196,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	private boolean include()  {
 		boolean result = false;
 
-		includeParser.setLexer(lexer);
-		
-		includeParser.setErrorHandlingStrategy(getErrorHandlingStrategy());
+		includeParser.setState(state);
 		
 		if (includeParser.parse()) {
 			result = true;
@@ -1220,34 +1204,34 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			if (resource == null) return result;
 			
 			// exec include
-			ILexer previous = lexer;
+			ILexer previous = getLexer();
 			try {
 
-				Token next = lexer.lookahead(1);
+				Token next = getLexer().lookahead(1);
 				
 				IScanner includeScanner = ScannerManager.createScanner(resource.getIdentifier(), resource.getData());
-				PPLexer includeLexer = new PPLexer(includeScanner, getErrorHandlingStrategy());
+				PPLexer includeLexer = new PPLexer(includeScanner, getState());
 	
 				Location locationReference = line_start(includeParser.getInterval().getStart());
-				if (insertLineDirectives) {
-					out.print(createLineTokens(locationReference, 1, resource.getIdentifier()));
+				if (state.isInsertLineDirectives()) {
+					state.getOutput().print(createLineTokens(locationReference, 1, resource.getIdentifier()));
 				}
 				
 				
-				lexer = includeLexer;
+				state.setLexer(includeLexer);
 				process();
 				
 				
 				// insert CRLF if necessary
-				if (!(lexer.previous() instanceof TCrlf)) {
-					out.print(new TCrlf(lexer.lookahead(1).getInterval(), "\n"));
+				if (!(getLexer().previous() instanceof TCrlf)) {
+					state.getOutput().print(new TCrlf(getLexer().lookahead(1).getInterval(), "\n"));
 				}
-				if (insertLineDirectives) {
-					out.print(createLineTokens(locationReference, next.getStart().getLine(), next.getStart().getSourceIdentifier()));
+				if (state.isInsertLineDirectives()) {
+					state.getOutput().print(createLineTokens(locationReference, next.getStart().getLine(), next.getStart().getSourceIdentifier()));
 				}
 			
 			} finally {
-				lexer = previous;
+				state.setLexer(previous);
 			}
 			
 			
@@ -1307,12 +1291,12 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	}
 
 	public void setErrorHandler(ErrorHandler errorHandler) {
-		getErrorHandlingStrategy().setErrorHandler(errorHandler);
+		getState().setErrorHandler(errorHandler);
 	}
 
 	@Override
 	public void dismiss() {
-		lexer.dismiss();
+		getLexer().dismiss();
 	}
 
 	

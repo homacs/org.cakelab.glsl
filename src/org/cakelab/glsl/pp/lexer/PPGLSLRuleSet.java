@@ -1,6 +1,6 @@
 package org.cakelab.glsl.pp.lexer;
 
-import org.cakelab.glsl.pp.error.ErrorHandlingStrategy;
+import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.lexer.rules.LexerRuleSet;
 import org.cakelab.glsl.pp.lexer.rules.RBlankAndTab;
 import org.cakelab.glsl.pp.lexer.rules.RCharacterConstant;
@@ -18,24 +18,24 @@ import org.cakelab.glsl.pp.scanner.IScanner;
 
 public class PPGLSLRuleSet extends LexerRuleSet {
 
-	public PPGLSLRuleSet(IScanner scanner, ErrorHandlingStrategy errorStrategy) {
-		super(scanner, errorStrategy, 
-				new RLineContinuation(scanner, errorStrategy),
-				new RCrlf(scanner, errorStrategy),
+	public PPGLSLRuleSet(PPState state) {
+		super(state, 
+				new RLineContinuation(state),
+				new RCrlf(state),
 				
-				new RHashHash(scanner, errorStrategy),
-				new RHash(scanner, errorStrategy),
+				new RHashHash(state),
+				new RHash(state),
 				
-				new REof(scanner, errorStrategy),
+				new REof(state),
 				
-				new RBlankAndTab(scanner, errorStrategy),
-				new RComment(scanner, errorStrategy),
+				new RBlankAndTab(state),
+				new RComment(state),
 				
-				new RIdentifier(scanner, errorStrategy),
-				new RNumber(scanner, errorStrategy),
-				new RCharacterConstant(scanner, errorStrategy),
-				new RStringLiteral(scanner, errorStrategy),
-				new RPunctuator(scanner, errorStrategy)
+				new RIdentifier(state),
+				new RNumber(state),
+				new RCharacterConstant(state),
+				new RStringLiteral(state),
+				new RPunctuator(state)
 		);
 	}
 

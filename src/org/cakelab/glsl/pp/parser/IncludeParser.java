@@ -1,16 +1,13 @@
-package org.cakelab.glsl.pp;
+package org.cakelab.glsl.pp.parser;
 
 import java.io.IOException;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Resource;
-import org.cakelab.glsl.ResourceManager;
-import org.cakelab.glsl.pp.error.ErrorHandlingStrategy;
+import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.lexer.PPGLSLRuleSet;
-import org.cakelab.glsl.pp.lexer.PPLexer;
 import org.cakelab.glsl.pp.lexer.rules.LexerRuleSet;
 import org.cakelab.glsl.pp.lexer.rules.RHeaderPath;
-import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.TCharSequence;
 import org.cakelab.glsl.pp.tokens.THeaderPath;
 import org.cakelab.glsl.pp.tokens.TStringLiteral;
@@ -22,7 +19,6 @@ public class IncludeParser extends Parser {
 
 
 	private boolean enabled;
-	private ResourceManager resourceManager;
 	private Resource resource;
 	private PPGLSLRuleSet extendedRules;
 	private Interval interval;
@@ -30,29 +26,27 @@ public class IncludeParser extends Parser {
 	
 	
 	
-	public IncludeParser(boolean enabled, ResourceManager resourceManager, PPLexer lexer) {
-		super();
+	public IncludeParser(boolean enabled, PPState state) {
+		super(state);
 		this.enabled = enabled;
-		this.resourceManager = resourceManager;
 		
-		IScanner scanner = lexer.getScanner();
-		ErrorHandlingStrategy errorStrategy = lexer.getErrorHandlingStrategy();
-		this.extendedRules = new PPGLSLRuleSet(scanner, errorStrategy);
-		extendedRules.prependRule(new RHeaderPath(scanner, errorStrategy));
+		this.extendedRules = new PPGLSLRuleSet(state);
+		extendedRules.prependRule(new RHeaderPath(state));
 	}
 	
 	
 	
 	@Override
 	public boolean parse() {
-
+		
+		
 		result = false;
 		
 		if (optionalIDENTIFIER("include")) {
 			this.interval = new Interval(token.getInterval());
-			LexerRuleSet originalRules = lexer.getRules();
+			LexerRuleSet originalRules = getLexer().getRules();
 			try {
-				lexer.setRules(extendedRules);
+				getLexer().setRules(extendedRules);
 				Token incTok = token;
 				if (enabled) {
 					result  = true;
@@ -78,7 +72,7 @@ public class IncludeParser extends Parser {
 	
 				resource = null;
 				try {
-					resource = resourceManager.resolve(path);
+					resource = state.getResourceManager().resolve(path);
 				} catch (IOException e) {
 					syntaxWarning(tpath.getStart(), e.getMessage());
 					return result;
@@ -89,7 +83,7 @@ public class IncludeParser extends Parser {
 					return result;
 				}
 			} finally {
-				lexer.setRules(originalRules);
+				getLexer().setRules(originalRules);
 			}
 		}
 		return result;
@@ -98,13 +92,6 @@ public class IncludeParser extends Parser {
 	public Resource getResource() {
 		return resource;
 	}
-
-
-
-	public void setResouceManager(ResourceManager resourceManager2) {
-		resourceManager = resourceManager2;
-	}
-
 
 
 	public void setEnabled(boolean enable) {
@@ -122,7 +109,7 @@ public class IncludeParser extends Parser {
 	@Override
 	public void dismiss() {
 		result = false;
-		lexer.dismiss();
+		getLexer().dismiss();
 	}
 
 	

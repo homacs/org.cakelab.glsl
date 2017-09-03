@@ -1,11 +1,11 @@
-package org.cakelab.glsl.pp;
+package org.cakelab.glsl.pp.parser;
 
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.ast.ConstantValue;
 import org.cakelab.glsl.lang.ast.Expression;
+import org.cakelab.glsl.pp.PPHelper;
+import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.error.ErrorHandler;
-import org.cakelab.glsl.pp.error.ErrorHandlingStrategy;
-import org.cakelab.glsl.pp.error.ErrorHandling;
 import org.cakelab.glsl.pp.error.ErrorRecoveryHandler;
 import org.cakelab.glsl.pp.lexer.ILexer;
 import org.cakelab.glsl.pp.tokens.TCharSequence;
@@ -21,26 +21,19 @@ import org.cakelab.glsl.pp.tokens.TWhitespace;
 import org.cakelab.glsl.pp.tokens.Token;
 import org.cakelab.glsl.pp.tokens.TokenList;
 
-public abstract class Parser extends ErrorHandling implements ErrorRecoveryHandler {
+public abstract class Parser extends PPHelper implements ErrorRecoveryHandler {
 
 	protected Token token = null;
-	protected ILexer lexer;
 	
 	
-	public Parser(ILexer lexer, ErrorHandlingStrategy errStrat) {
-		super(errStrat);
-		setLexer(lexer);
-	}
 	
-	protected Parser() {}
-	
-	protected void setLexer(ILexer lexer) {
-		this.lexer = lexer;
+	public Parser(PPState state) {
+		super(state);
 	}
 
 
 	public boolean atEOF() {
-		return lexer.eof() || lexer.lookahead(1) instanceof TEof;
+		return getLexer().eof() || getLexer().lookahead(1) instanceof TEof;
 	}
 
 	
@@ -60,10 +53,10 @@ public abstract class Parser extends ErrorHandling implements ErrorRecoveryHandl
 	 * @see #read_remaining_line() 
 	 */
 	protected boolean skip_remaining_line() {
-		if (lexer.eof()) return false;
+		if (getLexer().eof()) return false;
 		while (!ENDL()) {
 			if (!line_continuation()) {
-				lexer.consume(1);
+				getLexer().consume(1);
 			}
 		}
 		return true;
@@ -77,11 +70,11 @@ public abstract class Parser extends ErrorHandling implements ErrorRecoveryHandl
 	 */
 	protected TokenList read_remaining_line() {
 		// TODO [6] see if we really need this (consider methods above)
-		if (lexer.eof()) return null;
+		if (getLexer().eof()) return null;
 		TokenList result = new TokenList();
 		while(!ENDL()) {
 			if (!line_continuation()) {
-				result.add(lexer.consume(1));
+				result.add(getLexer().consume(1));
 			}
 		}
 		return result;
@@ -97,17 +90,17 @@ public abstract class Parser extends ErrorHandling implements ErrorRecoveryHandl
 	}
 	
 	protected boolean optional(Class<? extends Token> tokenType) {
-		if (tokenType.isInstance(lexer.lookahead(1))) {
-			token = lexer.consume(1);
+		if (tokenType.isInstance(getLexer().lookahead(1))) {
+			token = getLexer().consume(1);
 			return true;
 		}
 		return false;
 	}
 
 	protected boolean optional(Class<? extends Token> tokenType, String text) {
-		Token la = lexer.lookahead(1);
+		Token la = getLexer().lookahead(1);
 		if (tokenType.isInstance(la) && text.equals(la.getText())) {
-			token = lexer.consume(1);
+			token = getLexer().consume(1);
 			return true;
 		}
 		return false;
@@ -115,7 +108,7 @@ public abstract class Parser extends ErrorHandling implements ErrorRecoveryHandl
 
 	protected boolean mandatory(Class<? extends Token> tokenType, String text) {
 		if (!optional(tokenType, text)) {
-			syntaxError(lexer.lookahead(1).getStart(), "missing '" + text + "'");
+			syntaxError(getLexer().lookahead(1).getStart(), "missing '" + text + "'");
 			return false;
 		}
 		return true;
@@ -342,7 +335,7 @@ public abstract class Parser extends ErrorHandling implements ErrorRecoveryHandl
 
 	protected boolean PUNCTUATOR(boolean acceptHashes) {
 		token = null;
-		Token t = lexer.lookahead(1);
+		Token t = getLexer().lookahead(1);
 		if (t instanceof TPunctuator) {
 			if (!acceptHashes) {
 				// TODO [4] consider introduction of THash and THashHash
@@ -361,9 +354,9 @@ public abstract class Parser extends ErrorHandling implements ErrorRecoveryHandl
 
 	protected boolean PUNCTUATOR(String text) {
 		token = null;
-		Token t = lexer.lookahead(1);
+		Token t = getLexer().lookahead(1);
 		if (t instanceof TPunctuator && text.equals(t.getText())) {
-			token = lexer.consume(1);
+			token = getLexer().consume(1);
 		}
 		return token != null;
 	}
@@ -388,7 +381,7 @@ public abstract class Parser extends ErrorHandling implements ErrorRecoveryHandl
 	 */
 	protected boolean WHITESPACE() {
 		token = null;
-		if (lexer.lookahead(1) instanceof TCrlf) {
+		if (getLexer().lookahead(1) instanceof TCrlf) {
 			return false;
 		} else if (optional(TWhitespace.class)) {
 			return true;
@@ -403,7 +396,7 @@ public abstract class Parser extends ErrorHandling implements ErrorRecoveryHandl
 
 	protected int nextNonWhiteLookahead(int from, boolean skipCRLF) {
 		int i = from;
-		for (Token la = lexer.lookahead(i); !(la instanceof TEof); la = lexer.lookahead(i)) {
+		for (Token la = getLexer().lookahead(i); !(la instanceof TEof); la = getLexer().lookahead(i)) {
 			if (la instanceof TCrlf && !skipCRLF) {
 				break;
 			} else if (la instanceof TWhitespace) {
@@ -447,9 +440,9 @@ public abstract class Parser extends ErrorHandling implements ErrorRecoveryHandl
 	 * @return
 	 */
 	protected boolean optionalIDENTIFIER(String id) {
-		Token t = lexer.lookahead(1);
+		Token t = getLexer().lookahead(1);
 		if (t instanceof TIdentifier && t.getText().equals(id)) {
-			token = lexer.consume(1);
+			token = getLexer().consume(1);
 			return true;
 		} else {
 			return false;
@@ -459,7 +452,7 @@ public abstract class Parser extends ErrorHandling implements ErrorRecoveryHandl
 
 	protected boolean mandatory_endl() {
 		if (!ENDL()) {
-			syntaxError(lexer.lookahead(1).getStart(), "missing mandatory CRLF or end of file");
+			syntaxError(getLexer().lookahead(1).getStart(), "missing mandatory CRLF or end of file");
 			
 			// still here, then skip to next line end to recover from error
 			return false;
@@ -478,7 +471,7 @@ public abstract class Parser extends ErrorHandling implements ErrorRecoveryHandl
 	}
 
 	public void setErrorHandler(ErrorHandler errorHandler) {
-		getErrorHandlingStrategy().setErrorHandler(errorHandler);
+		getState().setErrorHandler(errorHandler);
 	}
 
 	

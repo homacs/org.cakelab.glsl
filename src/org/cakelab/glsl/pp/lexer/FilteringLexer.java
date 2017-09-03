@@ -3,12 +3,13 @@ package org.cakelab.glsl.pp.lexer;
 import java.util.ArrayList;
 
 import org.cakelab.glsl.lang.ast.Node;
+import org.cakelab.glsl.pp.PPHelper;
+import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.ast.NodeList.Filter;
-import org.cakelab.glsl.pp.error.ErrorHandling;
 import org.cakelab.glsl.pp.lexer.rules.LexerRuleSet;
 import org.cakelab.glsl.pp.tokens.Token;
 
-public class FilteringLexer extends ErrorHandling implements ILexer {
+public class FilteringLexer extends PPHelper implements ILexer {
 
 	@SuppressWarnings("serial")
 	public class OffsetTable extends ArrayList<Integer> {
@@ -38,19 +39,19 @@ public class FilteringLexer extends ErrorHandling implements ILexer {
 		
 	}
 
-	private PPLexer lexer;
+	private ILexer lexer;
 	private OffsetTable offsetTable = new OffsetTable();
 	private Filter<Node> filter;
 	private Token previous;
 	
 	
-	public FilteringLexer(PPLexer lexer, Filter<Node> filterWhitespace) {
-		super(lexer.getErrorHandlingStrategy());
-		this.filter = filterWhitespace;
-		this.lexer = lexer;
+	public FilteringLexer(ILexer root, PPState state, Filter<Node> filter) {
+		this(state, filter);
+		this.lexer = root;
 	}
 
-	public FilteringLexer(Filter<Node> filter) {
+	public FilteringLexer(PPState state, Filter<Node> filter) {
+		super();
 		this.filter = filter;
 	}
 
@@ -114,6 +115,10 @@ public class FilteringLexer extends ErrorHandling implements ILexer {
 	@Override
 	public LexerRuleSet getRules() {
 		return lexer.getRules();
+	}
+
+	public void setRootLexer(ILexer lexer) {
+		this.lexer = lexer;
 	}
 
 }

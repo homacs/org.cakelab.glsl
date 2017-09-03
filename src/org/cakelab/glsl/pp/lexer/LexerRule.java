@@ -2,21 +2,31 @@ package org.cakelab.glsl.pp.lexer;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.pp.error.ErrorHandlingStrategy;
-import org.cakelab.glsl.pp.error.ErrorHandling;
+import org.cakelab.glsl.pp.PPHelper;
+import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.Token;
 
-public abstract class LexerRule extends ErrorHandling {
+public abstract class LexerRule extends PPHelper {
 	private IScanner in;
 	private Location start;
 	
-	public LexerRule(IScanner in, ErrorHandlingStrategy handler) {
-		super(handler);
-		this.in = in;
+	public LexerRule(PPState state) {
+		super(state);
 	}
 	
-	public abstract Token analyse();
+	
+	public final Token analyse(IScanner in) {
+		this.in = in;
+		return analyse();
+	}
+	
+	protected abstract Token analyse();
+	
+	protected IScanner getScanner() {
+		return in;
+	}
+	
 
 	protected void syntaxError(String message) {
 		super.syntaxError(in.location(), message);

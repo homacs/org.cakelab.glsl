@@ -1,8 +1,7 @@
 package org.cakelab.glsl.pp.lexer.rules;
 
 import org.cakelab.glsl.Interval;
-import org.cakelab.glsl.pp.error.ErrorHandlingStrategy;
-import org.cakelab.glsl.pp.scanner.IScanner;
+import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.tokens.TPunctuator;
 import org.cakelab.glsl.pp.tokens.Token;
 
@@ -38,8 +37,8 @@ public class RPunctuator extends LexerRuleSequenceSelect {
 	};
 	
 	
-	public RPunctuator(IScanner in, ErrorHandlingStrategy handler) {
-		super(in, handler, punctuators);
+	public RPunctuator(PPState state) {
+		super(state, punctuators);
 	}
 
 

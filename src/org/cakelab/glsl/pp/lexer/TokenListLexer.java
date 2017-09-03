@@ -2,7 +2,7 @@ package org.cakelab.glsl.pp.lexer;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.pp.error.ErrorHandlingStrategy;
+import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.lexer.rules.LexerRuleSet;
 import org.cakelab.glsl.pp.tokens.TEof;
 import org.cakelab.glsl.pp.tokens.Token;
@@ -13,7 +13,7 @@ public class TokenListLexer extends PPLexer {
 	private TEof EOF;
 	
 	
-	public TokenListLexer(TokenList tokens, ErrorHandlingStrategy errorHandler) {
+	public TokenListLexer(TokenList tokens, PPState errorHandler) {
 		super(null, errorHandler);
 		
 		assert (tokens.size() > 0);

@@ -1,4 +1,4 @@
-package org.cakelab.glsl.pp;
+package org.cakelab.glsl.pp.parser;
 
 import java.util.ArrayList;
 
@@ -32,36 +32,58 @@ import org.cakelab.glsl.lang.ast.Type;
 import org.cakelab.glsl.lang.ast.Type.Rank;
 import org.cakelab.glsl.lang.ast.Value;
 import org.cakelab.glsl.lang.ast.XorExpression;
+import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.ast.NodeList;
 import org.cakelab.glsl.pp.ast.PPDefinedExpression;
 import org.cakelab.glsl.pp.ast.StringConstant;
-import org.cakelab.glsl.pp.error.ErrorHandlingStrategy;
 import org.cakelab.glsl.pp.lexer.FilteringLexer;
+import org.cakelab.glsl.pp.lexer.ILexer;
 import org.cakelab.glsl.pp.lexer.PPLexer;
+import org.cakelab.glsl.pp.lexer.TokenListLexer;
 import org.cakelab.glsl.pp.tokens.TCharacterConstant;
 import org.cakelab.glsl.pp.tokens.TNumber;
 import org.cakelab.glsl.pp.tokens.TPunctuator;
 import org.cakelab.glsl.pp.tokens.TStringLiteral;
 import org.cakelab.glsl.pp.tokens.Token;
+import org.cakelab.glsl.pp.tokens.TokenList;
 
 public class ExpressionParser extends Parser {
 	
 	
-	public ExpressionParser(PPLexer lexer, ErrorHandlingStrategy errStrat) {
-		super(new FilteringLexer(lexer, NodeList.Filter_WHITESPACE), errStrat);
+	private FilteringLexer myLexer;
+
+
+	public ExpressionParser(PPState state) {
+		super(state);
+		myLexer = new FilteringLexer(state, NodeList.Filter_WHITESPACE);
 	}
 
 	
 	public ExpressionParser(PPLexer pplexer) {
-		this(pplexer, pplexer.getErrorHandlingStrategy());
-		pplexer.getErrorHandlingStrategy().setErrorRecoveryHandler(this);
+		super(pplexer.getState());
+		// FIXME: remove next line
+		state.setErrorRecoveryHandler(this);
+		myLexer = new FilteringLexer(pplexer, state, NodeList.Filter_WHITESPACE);
 	}
 
 
+	public ILexer getLexer() {
+		return myLexer;
+	}
+
+
+	public void setup(TokenList tokens) {
+		TokenListLexer tokenRelexer = new TokenListLexer(tokens, state);
+		myLexer.setRootLexer(tokenRelexer);
+	}
+	
 	public boolean parse() {
+		
 		Expression expr = expression();
 		return expr != null;
 	}
+	
+	
 	
 	
 	
@@ -70,6 +92,7 @@ public class ExpressionParser extends Parser {
 	 * Evaluation of the last expression in the list gives the result value.
 	 */
 	public Expression expression() {
+		
 		Expression expr = conditional_expression(null);
 		if (expr == null) {
 			// syntax error
@@ -95,6 +118,7 @@ public class ExpressionParser extends Parser {
 
 
 	public Expression conditional_expression(Expression operand1) {
+		
 		if(operand1 == null) operand1 = logical_or_expression(null);
 		if (operand1 == null) {
 			// syntax error already reported
@@ -127,6 +151,7 @@ public class ExpressionParser extends Parser {
 
 	
 	public Expression logical_or_expression(Expression operand1) {
+		
 		if(operand1 == null) operand1 = logical_xor_expression(null);
 		if (operand1 == null) {
 			// syntax error already reported
@@ -150,6 +175,7 @@ public class ExpressionParser extends Parser {
 	}
 
 	public Expression logical_xor_expression(Expression operand1) {
+		
 		if(operand1 == null) operand1 = logical_and_expression(null);
 		if (operand1 == null) {
 			// syntax error already reported
@@ -173,6 +199,7 @@ public class ExpressionParser extends Parser {
 	}
 
 	public Expression logical_and_expression(Expression operand1) {
+		
 		if(operand1 == null) operand1 = or_expression(null);
 		if (operand1 == null) {
 			// syntax error already reported
@@ -196,6 +223,7 @@ public class ExpressionParser extends Parser {
 	}
 	
 	public Expression or_expression(Expression operand1) {
+		
 		if(operand1 == null) operand1 = xor_expression(null);
 		if (operand1 == null) {
 			// syntax error already reported
@@ -218,6 +246,7 @@ public class ExpressionParser extends Parser {
 	}
 	
 	public Expression xor_expression(Expression operand1) {
+		
 		if(operand1 == null) operand1 = and_expression(null);
 		if (operand1 == null) {
 			// syntax error already reported
@@ -241,6 +270,7 @@ public class ExpressionParser extends Parser {
 	
 	
 	public Expression and_expression(Expression operand1) {
+		
 		if(operand1 == null) operand1 = equality_expression(null);
 		if (operand1 == null) {
 			// syntax error already reported
@@ -263,6 +293,7 @@ public class ExpressionParser extends Parser {
 	
 	
 	public Expression equality_expression(Expression operand1) {
+		
 		if(operand1 == null) operand1 = relational_expression(null);
 		if (operand1 == null) {
 			// syntax error already reported
@@ -294,6 +325,7 @@ public class ExpressionParser extends Parser {
 	
 	
 	public Expression relational_expression(Expression operand1) {
+		
 		if(operand1 == null) operand1 = shift_expression(null);
 		if (operand1 == null) {
 			// syntax error already reported
@@ -340,6 +372,7 @@ public class ExpressionParser extends Parser {
 	
 	
 	public Expression shift_expression(Expression operand1) {
+		
 		if(operand1 == null) operand1 = additive_expression(null);
 		if (operand1 == null) {
 			// syntax error already reported
@@ -368,6 +401,7 @@ public class ExpressionParser extends Parser {
 	}	
 
 	public Expression additive_expression(Expression operand1) {
+		
 		if (operand1 == null) operand1 = multiplicative_expression(null);
 		if (operand1 == null) {
 			// syntax error already reported
@@ -396,6 +430,7 @@ public class ExpressionParser extends Parser {
 	}
 	
 	public Expression multiplicative_expression(Expression operand1) {
+		
 		if (operand1 == null) operand1 = unary_expression();
 		if (operand1 == null) {
 			// syntax error already reported
@@ -424,6 +459,7 @@ public class ExpressionParser extends Parser {
 	}	
 	
 	public Expression unary_expression() {
+		
 		Expression primary;
 		if (PUNCTUATOR_OUTOF("+-!~")) {
 			Token opTok = token;
@@ -452,13 +488,14 @@ public class ExpressionParser extends Parser {
 	
 	
 	private boolean PUNCTUATOR_OUTOF(String set) {
-		Token t = lexer.lookahead(1);
+		
+		Token t = myLexer.lookahead(1);
 		if (t instanceof TPunctuator) {
 			if (t.getText().length() != 1) return false;
 			
 			char c = t.getText().charAt(0);
 			if (set.indexOf(c) != -1) {
-				token = lexer.consume(1);
+				token = myLexer.consume(1);
 				return true;
 			}
 		}
@@ -467,6 +504,7 @@ public class ExpressionParser extends Parser {
 
 
 	public Expression primary_expression() {
+		
 		Expression expr = number();
 		if (expr != null) {
 			Value v = (Value)expr;
@@ -504,6 +542,7 @@ public class ExpressionParser extends Parser {
 	}
 
 	public Value character_constant() {
+		
 		// Note: simple C character constants only - no prefixed character constants
 		if (optional(TCharacterConstant.class)) {
 			TCharacterConstant tCharConst = (TCharacterConstant) token;
@@ -522,6 +561,7 @@ public class ExpressionParser extends Parser {
 	}
 
 	public Value string_literal() {
+		
 		if (optional(TStringLiteral.class)) {
 			TStringLiteral tStringLit = (TStringLiteral) token;
 			String value = decodeCharSequence(tStringLit, '"', '"');
@@ -541,6 +581,7 @@ public class ExpressionParser extends Parser {
 	}
 
 	public Expression constant_boolean() {
+		
 		if (optionalIDENTIFIER("true")) {
 			return ConstantValue.TRUE;
 		} else if (optionalIDENTIFIER("false")) {
@@ -551,6 +592,7 @@ public class ExpressionParser extends Parser {
 	}
 	
 	public Expression number() {
+		
 		if (NUMBER()) {
 			return decodeNumber((TNumber)token);
 		} else {
