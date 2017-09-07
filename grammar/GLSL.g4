@@ -355,7 +355,7 @@ glslIntegerConstant
 	: INTCONSTANT
 	;
 
-/** any positive integer postponed by [uU] */
+/** any positive integer with postfix [uU] */
 glslUnsignedIntegerConstant
 	: UINTCONSTANT
 	;

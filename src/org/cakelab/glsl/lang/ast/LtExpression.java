@@ -2,7 +2,7 @@ package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ProcessingException;
-import org.cakelab.glsl.lang.Processor;
+import org.cakelab.glsl.lang.InstructionProcessor;
 
 public class LtExpression extends BinaryExpression {
 
@@ -15,7 +15,7 @@ public class LtExpression extends BinaryExpression {
 	@Override
 	public PrimaryExpression eval() throws EvaluationException {
 		try {
-			return Processor.logLt(leftOperand.eval().value(), rightOperand.eval().value());
+			return InstructionProcessor.logLt(leftOperand.eval().value(), rightOperand.eval().value());
 		} catch (ProcessingException e) {
 			throw new EvaluationException(this, e);
 		}

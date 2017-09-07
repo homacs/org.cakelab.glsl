@@ -3,7 +3,7 @@ package org.cakelab.glsl.lang.ast;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ProcessingException;
-import org.cakelab.glsl.lang.Processor;
+import org.cakelab.glsl.lang.InstructionProcessor;
 
 /**
  * <pre>
@@ -22,7 +22,7 @@ public class NegExpression extends PrefixExpression {
 	@Override
 	public PrimaryExpression eval() throws EvaluationException {
 		try {
-			return Processor.neg(operand.eval().value());
+			return InstructionProcessor.neg(operand.eval().value());
 		} catch (ProcessingException e) {
 			throw new EvaluationException(this, e);
 		}

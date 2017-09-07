@@ -669,7 +669,7 @@ Resource Manager   <-------    Preprocessor   --------->   Parser  -->  Output G
       ||                             |                       ||
       \/*                            |                       \/1
    Resource                    Symbol Table                 Lexer
-                                                             ||
+                                  (Macros)                   ||
                                                              \/1
                                                            Scanner
 
@@ -972,7 +972,69 @@ Execution of a line directive involves a call to lexer.setLocation().
 
 
 
+Error Handling
+==============
 
 
+Modes:
+- Dismiss and exit: Error handler throws a SyntaxError exception. 
+- Recover and proceed: Error handler does not throw an exception.
 
 
+Error Types:
+------------
+
+
+Error Type                  Reference                   Explanation
+
+Lexer Errors:
+- Missing item inside token Location                    (such as end terminator of strings)
+- Wrong item inside token   Location                    (such as a non-existing escape sequence in strings)
+- Unknown prefix-items      Token                       (any character, which does not exist in the language)
+
+Parser Errors:
+- Missing token             previous.end                (a different token was expected such as TPunctuator instead of TEof)
+- Unexpected token          Token                       (such as tokens after a conditional expression)
+- Unknown Token             Token                       (received from lexer due to unknown prefix items)
+
+
+Error Handling Options:
+-----------------------
+Lexer: 
+Missing or wrong items only occur inside already identified tokens. 
+- Report error location inside token and proceed normally, emitting a regular token.
+Unkown prefix-items have to be emitted as TUnknown tokens, derived from TWhitespace. 
+- Report unknown token error and emit unknown token.
+
+None of the lexer errors is supposed to affect the parser. 
+
+
+Parser:
+- TUnknown tokens will be handled as whitespace to not interfere 
+with parser rules and to not cause redundant error reports. 
+
+
+Missing and unexpected tokens can be recovered in this way:
+- report, consume all tokens up to the next safe point (e.g. CRLF) and exit rule
+
+Recovery from missing tokens may also jump to the next token, but risks 
+to get into follow-up errors and false-positives or redundant error reporting. 
+Thus, skipping to the next safe point is more beneficial.
+
+Implementation:
+---------------
+
+Lexer error handling:
+method syntaxError() reports to handler only. If the handler decides to 
+throw an exception, preprocessing will exit immediately without any 
+results. 
+
+Parser error handling:
+Method syntaxError() reports to handler and throws a Recovery exception
+unless the handler already threw a syntax error exception (which always
+causes a stop).
+A Recovery exception has to be handled inside of the parser rule, which 
+issued the call to syntaxError(). General recovery method for every
+parser will be to read all remaining tokens up to and including the next
+CRLF and exit the rule without result. Depending on the rule, read tokens
+will eventually be forwarded to output, but not parsed or interpreted.

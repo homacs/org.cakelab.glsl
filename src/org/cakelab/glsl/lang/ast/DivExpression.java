@@ -2,7 +2,7 @@ package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ProcessingException;
-import org.cakelab.glsl.lang.Processor;
+import org.cakelab.glsl.lang.InstructionProcessor;
 
 public class DivExpression extends BinaryExpression {
 
@@ -13,7 +13,7 @@ public class DivExpression extends BinaryExpression {
 	@Override
 	public PrimaryExpression eval() throws EvaluationException {
 		try {
-			return Processor.div(leftOperand.eval().value(), rightOperand.eval().value());
+			return InstructionProcessor.div(leftOperand.eval().value(), rightOperand.eval().value());
 		} catch (ProcessingException e) {
 			throw new EvaluationException(this, e);
 		}

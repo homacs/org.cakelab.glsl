@@ -5,15 +5,14 @@ import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.PPHelper;
 import org.cakelab.glsl.pp.PPState;
-import org.cakelab.glsl.pp.error.ErrorRecoveryHandler;
-import org.cakelab.glsl.pp.error.StandardErrorHandler;
+import org.cakelab.glsl.pp.StandardErrorHandler;
 import org.cakelab.glsl.pp.lexer.rules.LexerRuleSet;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.TEof;
 import org.cakelab.glsl.pp.tokens.Token;
 import org.cakelab.glsl.pp.tokens.TokenList;
 
-public class PPLexer extends PPHelper implements ILexer, ErrorRecoveryHandler {
+public class PPLexer extends PPHelper implements ILexer {
 
 	
 	private LexerRuleSet rules;
@@ -31,8 +30,7 @@ public class PPLexer extends PPHelper implements ILexer, ErrorRecoveryHandler {
 	
 
 	public PPLexer(IScanner scanner) {
-		this(scanner, new PPState(new StandardErrorHandler(), null));
-		getState().setErrorRecoveryHandler(this);
+		this(scanner, new PPState(new StandardErrorHandler()));
 	}
 
 
@@ -160,17 +158,6 @@ public class PPLexer extends PPHelper implements ILexer, ErrorRecoveryHandler {
 		return in;
 	}
 
-
-	@Override
-	public void recoverError() {
-		// does no recovery
-	}
-
-
-	@Override
-	public void recoverWarning() {
-		// does no recovery
-	}
 	
 	
 	

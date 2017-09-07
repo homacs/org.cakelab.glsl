@@ -2,7 +2,7 @@ package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.EvaluationException;
-import org.cakelab.glsl.lang.Processor;
+import org.cakelab.glsl.lang.InstructionProcessor;
 
 public class PostfixIncExpression extends PostfixExpression {
 
@@ -13,9 +13,9 @@ public class PostfixIncExpression extends PostfixExpression {
 	@Override
 	public PrimaryExpression eval() throws EvaluationException {
 		PrimaryExpression result = operand.eval();
-		Value val = Processor.add(result.value(), ConstantValue.ONE);
+		Value val = InstructionProcessor.add(result.value(), ConstantValue.ONE);
 		Value tmp = result.value().copy();
-		Processor.store(result.lvalue(), val);
+		InstructionProcessor.store(result.lvalue(), val);
 		return tmp;
 	}
 

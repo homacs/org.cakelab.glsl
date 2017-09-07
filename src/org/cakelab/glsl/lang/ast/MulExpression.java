@@ -1,7 +1,7 @@
 package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.lang.EvaluationException;
-import org.cakelab.glsl.lang.Processor;
+import org.cakelab.glsl.lang.InstructionProcessor;
 
 public class MulExpression extends BinaryExpression {
 
@@ -11,7 +11,7 @@ public class MulExpression extends BinaryExpression {
 	
 	@Override
 	public PrimaryExpression eval() throws EvaluationException {
-		return Processor.mul(leftOperand.eval().value(), rightOperand.eval().value());
+		return InstructionProcessor.mul(leftOperand.eval().value(), rightOperand.eval().value());
 	}
 
 }

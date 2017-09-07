@@ -8,15 +8,12 @@ import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.ast.PPGroupScope;
 import org.cakelab.glsl.pp.error.ErrorHandler;
-import org.cakelab.glsl.pp.error.ErrorRecoveryHandler;
 import org.cakelab.glsl.pp.lexer.ILexer;
-import org.cakelab.glsl.pp.scanner.IScanner;
 
 public class PPState {
 	private ResourceManager resourceManager;
 	
 	private ErrorHandler errorHandler;
-	private ErrorRecoveryHandler errorRecoveryHandler;
 
 	
 	/* ************* results *************** */
@@ -36,6 +33,7 @@ public class PPState {
 	
 	
 	/* ************** config *************** */
+	private boolean includeEnabled = true;
 	private boolean insertLineDirectives = false;
 
 	
@@ -44,10 +42,9 @@ public class PPState {
 	private boolean seenCodeLineBeforeVersion = false;
 
 	
-	public PPState(ErrorHandler errorHandler, ErrorRecoveryHandler errorRecoveryHandler) {
+	public PPState(ErrorHandler errorHandler) {
 		super();
 		this.errorHandler = errorHandler;
-		this.errorRecoveryHandler = errorRecoveryHandler;
 	}
 	
 	public PPState() {
@@ -58,12 +55,6 @@ public class PPState {
 	}
 	public void setErrorHandler(ErrorHandler errorHandler) {
 		this.errorHandler = errorHandler;
-	}
-	public ErrorRecoveryHandler getErrorRecoveryHandler() {
-		return errorRecoveryHandler;
-	}
-	public void setErrorRecoveryHandler(ErrorRecoveryHandler errorRecoveryHandler) {
-		this.errorRecoveryHandler = errorRecoveryHandler;
 	}
 
 	public ResourceManager getResourceManager() {
@@ -140,6 +131,14 @@ public class PPState {
 
 	public void setLexer(ILexer lexer) {
 		this.lexer = lexer;
+	}
+
+	public boolean isIncludeEnabled() {
+		return includeEnabled;
+	}
+
+	public void setIncludeEnabled(boolean enable) {
+		this.includeEnabled = enable;
 	}
 
 	

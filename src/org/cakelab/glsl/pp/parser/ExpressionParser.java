@@ -32,15 +32,17 @@ import org.cakelab.glsl.lang.ast.Type;
 import org.cakelab.glsl.lang.ast.Type.Rank;
 import org.cakelab.glsl.lang.ast.Value;
 import org.cakelab.glsl.lang.ast.XorExpression;
-import org.cakelab.glsl.pp.PPState;
+import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.NodeList;
 import org.cakelab.glsl.pp.ast.PPDefinedExpression;
 import org.cakelab.glsl.pp.ast.StringConstant;
+import org.cakelab.glsl.pp.error.TokenFormatException;
 import org.cakelab.glsl.pp.lexer.FilteringLexer;
 import org.cakelab.glsl.pp.lexer.ILexer;
 import org.cakelab.glsl.pp.lexer.PPLexer;
 import org.cakelab.glsl.pp.lexer.TokenListLexer;
 import org.cakelab.glsl.pp.tokens.TCharacterConstant;
+import org.cakelab.glsl.pp.tokens.TIdentifier;
 import org.cakelab.glsl.pp.tokens.TNumber;
 import org.cakelab.glsl.pp.tokens.TPunctuator;
 import org.cakelab.glsl.pp.tokens.TStringLiteral;
@@ -49,20 +51,19 @@ import org.cakelab.glsl.pp.tokens.TokenList;
 
 public class ExpressionParser extends Parser {
 	
-	
 	private FilteringLexer myLexer;
 
 
-	public ExpressionParser(PPState state) {
-		super(state);
+	public ExpressionParser(Preprocessor preprocessor) {
+		super(preprocessor.getState());
+		setRecoveryException(false);
 		myLexer = new FilteringLexer(state, NodeList.Filter_WHITESPACE);
 	}
 
 	
 	public ExpressionParser(PPLexer pplexer) {
 		super(pplexer.getState());
-		// FIXME: remove next line
-		state.setErrorRecoveryHandler(this);
+		setRecoveryException(false);
 		myLexer = new FilteringLexer(pplexer, state, NodeList.Filter_WHITESPACE);
 	}
 
@@ -82,9 +83,6 @@ public class ExpressionParser extends Parser {
 		Expression expr = expression();
 		return expr != null;
 	}
-	
-	
-	
 	
 	
 	/**
@@ -474,7 +472,7 @@ public class ExpressionParser extends Parser {
 			case '~': return new NotExpression(opTok.getStart(), primary);
 			default: throw new Error("internal error: unhandled unary operator " + op);
 			}
-		} else if(optionalIDENTIFIER("defined")) {
+		} else if(optional(TIdentifier.class, "defined")) {
 			Token opTok = token;
 			if (null != (primary = unary_expression())) {
 				return new PPDefinedExpression(opTok.getStart(), primary);
@@ -546,16 +544,12 @@ public class ExpressionParser extends Parser {
 		// Note: simple C character constants only - no prefixed character constants
 		if (optional(TCharacterConstant.class)) {
 			TCharacterConstant tCharConst = (TCharacterConstant) token;
-			String value = decodeCharSequence(tCharConst, '\'', '\'');
-			if (value.length() > 1) 
-			{
-				return expressionError(token.getInterval(), "character constant contains more than one character");
+			try {
+				char c = tCharConst.decode();
+				return new ConstantValue<Character>(token.getInterval(), c);
+			} catch (TokenFormatException e) {
+				return expressionError(token.getInterval(), e.getMessage());
 			}
-			else if (value.length() == 0) 
-			{
-				return expressionError(token.getInterval(), "missing character");
-			}
-			return new ConstantValue<Character>(token.getInterval(), value.charAt(0));
 		}
 		return null;
 	}
@@ -564,8 +558,12 @@ public class ExpressionParser extends Parser {
 		
 		if (optional(TStringLiteral.class)) {
 			TStringLiteral tStringLit = (TStringLiteral) token;
-			String value = decodeCharSequence(tStringLit, '"', '"');
-			return new StringConstant(tStringLit.getInterval(), value, tStringLit.getText());
+			try {
+				String value = tStringLit.decode();
+				return new StringConstant(tStringLit.getInterval(), value, tStringLit.getText());
+			} catch (TokenFormatException e) {
+				return expressionError(token.getInterval(), e.getMessage());
+			}
 		}
 		return null;
 	}
@@ -582,9 +580,9 @@ public class ExpressionParser extends Parser {
 
 	public Expression constant_boolean() {
 		
-		if (optionalIDENTIFIER("true")) {
+		if (optional(TIdentifier.class, "true")) {
 			return ConstantValue.TRUE;
-		} else if (optionalIDENTIFIER("false")) {
+		} else if (optional(TIdentifier.class, "false")) {
 			return ConstantValue.FALSE;
 		} else {
 			return null;
@@ -594,16 +592,16 @@ public class ExpressionParser extends Parser {
 	public Expression number() {
 		
 		if (NUMBER()) {
-			return decodeNumber((TNumber)token);
+			try {
+				return ((TNumber)token).decode();
+			} catch (TokenFormatException e) {
+				return expressionError(token.getInterval(), e.getMessage());
+			}
 		} else {
 			return null;
 		}
 	}
 
-
-	@Override
-	public void dismiss() {
-	}
 
 	
 }

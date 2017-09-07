@@ -5,7 +5,7 @@ import org.cakelab.glsl.lang.ast.LValue;
 import org.cakelab.glsl.lang.ast.Type;
 import org.cakelab.glsl.lang.ast.Value;
 
-public class Processor {
+public class InstructionProcessor {
 	
 	public static Value load(LValue var) {
 		return var.value();

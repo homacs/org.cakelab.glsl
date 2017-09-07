@@ -4,6 +4,7 @@ import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.PPHelper;
 import org.cakelab.glsl.pp.PPState;
+import org.cakelab.glsl.pp.error.Recovery;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.Token;
 
@@ -26,10 +27,13 @@ public abstract class LexerRule extends PPHelper {
 	protected IScanner getScanner() {
 		return in;
 	}
-	
 
 	protected void syntaxError(String message) {
-		super.syntaxError(in.location(), message);
+		try {
+			super.syntaxError(in.location(), message);
+		} catch (Recovery e) {
+			throw new Error("internal error: lexer is not supposed to receive recovery exceptions");
+		}
 	}
 
 	

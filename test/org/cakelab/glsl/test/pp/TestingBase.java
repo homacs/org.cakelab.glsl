@@ -9,8 +9,9 @@ import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.Node;
+import org.cakelab.glsl.pp.StandardErrorHandler;
 import org.cakelab.glsl.pp.error.ErrorHandler;
-import org.cakelab.glsl.pp.error.StandardErrorHandler;
+import org.cakelab.glsl.pp.error.Recovery;
 import org.cakelab.glsl.pp.parser.Parser;
 
 public abstract class TestingBase {
@@ -85,7 +86,10 @@ public abstract class TestingBase {
 
 	public void assertValid(String source, String result) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		p(source, out).parse();
+		try {
+			p(source, out).parse();
+		} catch (Recovery e) {
+		}
 		assertValidPostConditions();
 		String output = new String(out.toByteArray());
 		if (!output.equals(result)) {
@@ -95,7 +99,10 @@ public abstract class TestingBase {
 
 	public void assertWarning(String source, String warningMessage) {
 		ignoreWarning = false;
-		p(source).parse();
+		try {
+			p(source).parse();
+		} catch (Recovery e) {
+		}
 		if (error != null) {
 			error("received error instead of warning: " + error);
 		} else if (warning == null) {
@@ -107,7 +114,10 @@ public abstract class TestingBase {
 	}
 	
 	public void assertError(String source, String errorMessage) {
-		p(source).parse();
+		try {
+			p(source).parse();
+		} catch (Recovery e) {
+		}
 		assertError(errorMessage);
 	}
 	public void assertError(String errorMessage) {
@@ -125,7 +135,10 @@ public abstract class TestingBase {
 
 
 	public void assertValid(String source) {
-		p(source).parse();
+		try {
+			p(source).parse();
+		} catch (Recovery e) {
+		}
 		assertValidPostConditions();
 	}
 
@@ -151,7 +164,10 @@ public abstract class TestingBase {
 
 
 	public void assertInvalid(String source) {
-		p(source).parse();
+		try {
+			p(source).parse();
+		} catch (Recovery e) {
+		}
 		if (!assertInvalidPostConditions()) error("expected an error");
 	}
 	

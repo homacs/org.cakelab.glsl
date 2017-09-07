@@ -1,6 +1,7 @@
 package org.cakelab.glsl.pp.tokens;
 
 import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.pp.error.TokenFormatException;
 
 public class TStringLiteral extends TCharSequence {
 
@@ -17,4 +18,10 @@ public class TStringLiteral extends TCharSequence {
 		return new TStringLiteral(this);
 	}
 
+	
+	public String decode() throws TokenFormatException {
+		return decode('"','"');
+	}
+	
+	
 }

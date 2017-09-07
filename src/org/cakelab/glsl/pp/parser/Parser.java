@@ -1,14 +1,14 @@
 package org.cakelab.glsl.pp.parser;
 
+import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
-import org.cakelab.glsl.lang.ast.ConstantValue;
-import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.pp.PPHelper;
 import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.error.ErrorHandler;
-import org.cakelab.glsl.pp.error.ErrorRecoveryHandler;
-import org.cakelab.glsl.pp.lexer.ILexer;
-import org.cakelab.glsl.pp.tokens.TCharSequence;
+import org.cakelab.glsl.pp.error.ExpressionError;
+import org.cakelab.glsl.pp.error.Recovery;
+import org.cakelab.glsl.pp.error.SyntaxError;
+import org.cakelab.glsl.pp.tokens.TCharacterConstant;
 import org.cakelab.glsl.pp.tokens.TComment;
 import org.cakelab.glsl.pp.tokens.TCrlf;
 import org.cakelab.glsl.pp.tokens.TEof;
@@ -17,18 +17,17 @@ import org.cakelab.glsl.pp.tokens.TIdentifier;
 import org.cakelab.glsl.pp.tokens.TLineContinuation;
 import org.cakelab.glsl.pp.tokens.TNumber;
 import org.cakelab.glsl.pp.tokens.TPunctuator;
+import org.cakelab.glsl.pp.tokens.TStringLiteral;
 import org.cakelab.glsl.pp.tokens.TWhitespace;
 import org.cakelab.glsl.pp.tokens.Token;
 import org.cakelab.glsl.pp.tokens.TokenList;
 
-public abstract class Parser extends PPHelper implements ErrorRecoveryHandler {
+public abstract class Parser extends PPHelper  {
 
 	protected Token token = null;
 	
-	
-	
 	public Parser(PPState state) {
-		super(state);
+		super(false, state);
 	}
 
 
@@ -37,7 +36,47 @@ public abstract class Parser extends PPHelper implements ErrorRecoveryHandler {
 	}
 
 	
-	public abstract boolean parse();
+	public abstract boolean parse() throws Recovery;
+	
+	
+	
+	protected ExpressionError expressionError(Interval interval, String message) throws SyntaxError {
+		try {
+			syntaxError(interval.getStart(), message);
+		} catch (Recovery e) {
+			throw new Error("internal error: expression parsers are not supposed to use Recovery exceptions");
+		}
+		return new ExpressionError(interval, message);
+	}
+
+	protected Token preprocessing_token(boolean acceptHashes) {
+		Token la = getLexer().lookahead(1);
+		if (la instanceof TIdentifier) {
+			return getLexer().consume(1);
+		} else if (la instanceof TStringLiteral) {
+			return getLexer().consume(1);
+		} else if (la instanceof TCharacterConstant) {
+			return getLexer().consume(1);
+		} else if (la instanceof TPunctuator) {
+			if (!acceptHashes && la.getText().startsWith("#")) {
+				return null;
+			} else {
+				return getLexer().consume(1);
+			}
+		} else if (la instanceof TNumber) {
+			return getLexer().consume(1);
+		} else if (la instanceof TEof) {
+			return null;
+		} else if (la instanceof TCrlf) {
+			return null;
+		} else if (la instanceof TWhitespace) {
+			return null;
+		} else {
+			// anything else but whitespace or crlf or eof
+			return getLexer().consume(1);
+		}
+	}
+
 	
 	protected Location line_start(Location start) {
 		Location l = start.clone();
@@ -90,6 +129,7 @@ public abstract class Parser extends PPHelper implements ErrorRecoveryHandler {
 	}
 	
 	protected boolean optional(Class<? extends Token> tokenType) {
+		token = null;
 		if (tokenType.isInstance(getLexer().lookahead(1))) {
 			token = getLexer().consume(1);
 			return true;
@@ -106,7 +146,7 @@ public abstract class Parser extends PPHelper implements ErrorRecoveryHandler {
 		return false;
 	}
 
-	protected boolean mandatory(Class<? extends Token> tokenType, String text) {
+	protected boolean mandatory(Class<? extends Token> tokenType, String text) throws Recovery {
 		if (!optional(tokenType, text)) {
 			syntaxError(getLexer().lookahead(1).getStart(), "missing '" + text + "'");
 			return false;
@@ -114,8 +154,6 @@ public abstract class Parser extends PPHelper implements ErrorRecoveryHandler {
 		return true;
 	}
 
-
-	
 	
 	/**
 	 * Either \r\n or \n or EOF
@@ -143,178 +181,16 @@ public abstract class Parser extends PPHelper implements ErrorRecoveryHandler {
 	
 
 	
-	
-	protected String decodeCharSequence(TCharSequence token, char startDelimiter, char endDelimiter) {
-		int i = 0;
-		String text = token.getText();
-		char c = text.charAt(i);
-		assert(c == startDelimiter) : "internal error: missing start delimiter for char sequence";
-		StringBuffer string = new StringBuffer();
-		for (i++; i < text.length()-1; i++) {
-			c = text.charAt(i);
-			if (c != '\\') {
-				// general case: anything not an escape sequence
-				assert (c != '\n') : "internal error: char sequence containing '\n'";  // has to be removed by preprocessor
-				assert (c != endDelimiter) : "internal error: char sequence internally containing end delimiter";  // sequence should have ended there
-				string.append(c);
-			} else {
-				// special case: escape sequence
-				if (i>= text.length()) return string.toString();
-				i++;
-				c = text.charAt(i);
-				assert (c != '\n') : "internal error: char sequence containing '\n'"; // has to be removed by preprocessor
-				
-				switch(c) {
-				case '\'': string.append('\''); break;
-				case '\"': string.append('\"'); break;
-				case '\\': string.append('\\'); break;
-				case '?': string.append('?'); break;
-				case 'a': string.append('\u0007'); break; // bell (alert), ASCII 07
-				case 'b': string.append('\b'); break;
-				case 'f': string.append('\f'); break;
-				case 'n': string.append('\n'); break;
-				case 'r': string.append('\r'); break;
-				case 't': string.append('\t'); break;
-				case 'v': string.append('\u0011'); break; // vertical tab
-				case 'u':
-				case 'x':
-				{
-					char prefix = c;
-					// decode unicode code
-					i++;
-					c = text.charAt(i);
-					// TODO [3] support 8 byte hex (depending on OS)
-					if (isHexDigit(c)) {
-						StringBuffer upto_four_hex_digits = new StringBuffer();
-						int max = Math.min(i+4, text.length()-1);
-						for (; isHexDigit(c) && i < max ; i++, c = text.charAt(i)) upto_four_hex_digits.append(c);
-						// 1-4 hex digits
-						i--;  // for loop will add the last
-						try {
-							int oct = Integer.decode("0x" + upto_four_hex_digits.toString());
-							string.append((char)oct);
-						} catch (IllegalArgumentException e) {
-							syntaxError(token, "illegal unicode code sequence in character sequence (\\" + prefix + upto_four_hex_digits.toString() + ")");
-							return string.toString();
-						}
-					} else {
-						// error recovery
-						syntaxError(token, "illegal unicode code sequence in character sequence (\\" + prefix + c + ")");
-						i--;
-					}
-					break;
-				}
-				default:
-					if (isOctDigit(c)) {
-						StringBuffer upto_three_oct_digits = new StringBuffer();
-						int max = Math.min(i+3, text.length()-1);
-						for (; isOctDigit(c) && i < max ; i++, c = text.charAt(i)) upto_three_oct_digits.append(c);
-						// 1-3 octal digits
-						i--;  // for loop will add the last
-						try {
-							int oct = Integer.decode("0" + upto_three_oct_digits.toString());
-							string.append((char)oct);
-						} catch (IllegalArgumentException e) {
-							syntaxError(token, "illegal octal sequence in character sequence (\\" + upto_three_oct_digits + ")");
-							return string.toString();
-						}
-					} else {
-						syntaxError(token, "undefined escape sequence '\\" + (char)c + "'");
-						i--;
-					}
-					break;
-				}
-			}
-		}
-		assert text.charAt(i) == endDelimiter : "missing end delimiter in string";
-		assert ++i == text.length() : "end delimiter before end of text";
-		return string.toString();
-	}
 
-	protected Expression decodeNumber(TNumber token) {
-		final int DEC = 0;
-		final int HEX = 1;
-		int type = DEC;
-		final String HEX_DIGITS = "0123456789abcdef";
-
-		boolean isReal = false;
-		
-		//
-		// Decode value
-		//
-		try {
-			
-			String text = token.getText().toLowerCase();
-			
-
-			
-			if (text.startsWith("0x")) {
-				type = HEX;
-			}
-
-			isReal = (text.indexOf('.') >= 0) ;
-			
-			if (type != HEX && text.endsWith("f")) {
-				isReal = true;
-				text = text.substring(0, text.length()-1);
-			}
-			
-			
-			if (isReal) {
-				// postfix 'f' was removed above
-				if (text.endsWith("l")) text = text.substring(0, text.length()-1);
-				
-				Double value;
-				if (type == HEX) {
-					// hexadecimal with fracture
-					// not supported by Java, so we need to decode it manually
-					String[] part = text.split("p");
-					double exp;
-					if (part.length == 2) exp = Double.valueOf(part[1]);
-					else exp = 0;
-
-					String base = part[0];
-					part = base.split("\\.");
-					if (base.startsWith("0x.")) {
-						value = 0.0;
-					} else {
-						value = (double)Long.decode(part[0]); // intpart
-					}
-					if (part.length == 2) {
-						String fract = part[1];
-						double pow = 1.0/16;
-						for (int i = 0; i < fract.length(); i++) {
-							value += HEX_DIGITS.indexOf(fract.charAt(i)) * pow;
-							pow /= 16;
-						}
-					}
-					
-					value *= Math.pow(2.0, exp);
-				} else {
-					value = Double.parseDouble(text);
-				}
-				return new ConstantValue<Double>(token.getInterval(), value);
-			} else {
-				if (text.endsWith("l")) text = text.substring(0, text.length()-1);
-				if (text.endsWith("u")) text = text.substring(0, text.length()-1);
-				Long value = Long.decode(text);
-				return new ConstantValue<Long>(token.getInterval(), value, false);
-			}
-		} catch (NumberFormatException e) {
-			// this should not occur at this stage, because the preprocessor already checked the syntax
-			return expressionError(token.getInterval(), "not a valid number '" + token.getText() + "'");
-		}
-	}
-
-	private boolean isOctDigit(char c) {
+	protected boolean isOctDigit(char c) {
 		return '0' <= c  && c <= '7';
 	}
 
-	private boolean isDigit(char c) {
+	protected boolean isDigit(char c) {
 		return '0' <= c  && c <= '9';
 	}
 
-	private boolean isHexDigit(char c) {
+	protected boolean isHexDigit(char c) {
 		return isDigit(c) || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F');
 	}
 
@@ -364,12 +240,11 @@ public abstract class Parser extends PPHelper implements ErrorRecoveryHandler {
 
 
 	protected boolean IDENTIFIER() {
-		token = null;
-		if (optional(TIdentifier.class)) {
-			return true;
-		} else {
-			return false;
-		}
+		return (optional(TIdentifier.class)); 
+	}
+	
+	protected boolean IDENTIFIER(String expectedIdentifier) {
+		return (optional(TIdentifier.class, expectedIdentifier)); 
 	}
 	
 
@@ -424,55 +299,39 @@ public abstract class Parser extends PPHelper implements ErrorRecoveryHandler {
 	 */
 	protected boolean whitespace_crlf_sequence() {
 		boolean result = false;
-		while (optional(TCrlf.class) || optional(TWhitespace.class)) {
+		Token la = getLexer().lookahead(1);
+		while (la instanceof TCrlf || la instanceof TWhitespace) {
 			result = true;
+			token = getLexer().consume(1);
+			la = getLexer().lookahead(1);
 		}
 		return result;
 	}
 
 	
-	/**
-	 * Checks whether the following characters equal
-	 * the given string (id) and the character thereafter
-	 * are not legal identifier characters.
-	 * 
-	 * @param id
-	 * @return
-	 */
-	protected boolean optionalIDENTIFIER(String id) {
-		Token t = getLexer().lookahead(1);
-		if (t instanceof TIdentifier && t.getText().equals(id)) {
-			token = getLexer().consume(1);
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 
 	protected boolean mandatory_endl() {
 		if (!ENDL()) {
-			syntaxError(getLexer().lookahead(1).getStart(), "missing mandatory CRLF or end of file");
+			try {
+				syntaxError(getLexer().lookahead(1).getStart(), "missing mandatory CRLF or end of file");
+			} catch (Recovery e) {
+				// use general error recovery
+				recoverError();
+			}
 			
-			// still here, then skip to next line end to recover from error
 			return false;
 		}
 		return true;
 	}
 
-	@Override
 	public void recoverError() {
-		skip_remaining_line();
-	}
-
-	@Override
-	public void recoverWarning() {
 		skip_remaining_line();
 	}
 
 	public void setErrorHandler(ErrorHandler errorHandler) {
 		getState().setErrorHandler(errorHandler);
 	}
+
 
 	
 

@@ -1,7 +1,7 @@
 package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.lang.EvaluationException;
-import org.cakelab.glsl.lang.Processor;
+import org.cakelab.glsl.lang.InstructionProcessor;
 
 public class LogicalOrExpression extends BinaryExpression {
 
@@ -11,7 +11,7 @@ public class LogicalOrExpression extends BinaryExpression {
 	
 	@Override
 	public PrimaryExpression eval() throws EvaluationException {
-		return Processor.logOr(leftOperand.eval().value(), rightOperand.eval().value());
+		return InstructionProcessor.logOr(leftOperand.eval().value(), rightOperand.eval().value());
 	}
 
 

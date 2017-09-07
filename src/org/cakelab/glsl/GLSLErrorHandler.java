@@ -12,7 +12,7 @@ import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cakelab.glsl.pp.LocationMap;
-import org.cakelab.glsl.pp.error.StandardErrorHandler;
+import org.cakelab.glsl.pp.StandardErrorHandler;
 
 public class GLSLErrorHandler extends StandardErrorHandler implements ANTLRErrorListener {
 	
@@ -20,6 +20,16 @@ public class GLSLErrorHandler extends StandardErrorHandler implements ANTLRError
 	private CommonTokenStream tokens;
 	
 	
+	public GLSLErrorHandler() {
+		super(false);
+	}
+
+	
+	public GLSLErrorHandler(boolean stopOnFirstError) {
+		super(stopOnFirstError);
+	}
+
+
 	public void setResourceManager(ResourceManager resources) {
 		this.resources = resources;
 	}
@@ -41,6 +51,12 @@ public class GLSLErrorHandler extends StandardErrorHandler implements ANTLRError
 		
 	}
 
+	public void error(ParseTree node, String message) {
+		Interval i = interval(node);
+		error(i.getStart(), message);
+	}
+
+
 	@Override
 	public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, boolean exact,
 			BitSet ambigAlts, ATNConfigSet configs) {
@@ -57,11 +73,6 @@ public class GLSLErrorHandler extends StandardErrorHandler implements ANTLRError
 	public void reportContextSensitivity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, int prediction,
 			ATNConfigSet configs) {
 		// ignored
-	}
-
-	public void error(ParseTree node, String message) {
-		Interval i = interval(node);
-		error(i.getStart(), message);
 	}
 
 	private Interval interval(ParseTree node) {

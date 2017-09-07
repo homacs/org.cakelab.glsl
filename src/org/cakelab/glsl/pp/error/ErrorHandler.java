@@ -7,29 +7,29 @@ import org.cakelab.glsl.lang.ast.Node;
 public interface ErrorHandler {
 	/**
 	 * @param node malicious node
-	 * @param string
-	 * @return whether to stop processing or not
+	 * @param message
+	 * @exception SyntaxError Throw it, if you wish the parser to immediately stop parsing
 	 */
-	public boolean error(Node node, String message);
+	public void error(Node node, String message) throws SyntaxError;
 	/**
 	 * @param expression
-	 * @param string
-	 * @return whether to stop processing or not
+	 * @param message
+	 * @exception SyntaxError Throw it, if you wish the parser to immediately stop parsing
 	 */
-	public boolean error(Location start, String message);
+	public void error(Location start, String message) throws SyntaxError;
 	
 	/**
 	 * @param location
-	 * @param string
-	 * @return whether to stop processing or not
+	 * @param message
+	 * @exception SyntaxError Throw it, if you wish the parser to immediately stop parsing
 	 */
-	public boolean warning(Location location, String message);
+	public void warning(Location location, String message) throws SyntaxError;
 	/**
 	 * 
 	 * @param interval interval containing the malicious tokens
 	 * @param message
-	 * @return
+	 * @exception SyntaxError Throw it, if you wish the parser to immediately stop parsing
 	 */
-	public boolean warning(Interval interval, String message);
+	public void warning(Interval interval, String message) throws SyntaxError;
 }
 

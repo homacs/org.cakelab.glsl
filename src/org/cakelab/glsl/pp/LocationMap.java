@@ -7,7 +7,10 @@ import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.tokens.Token;
 
 public class LocationMap {
-
+	// TODO: [1] remove location map and implement lexer for language parsing instead
+	
+	
+	
 	public static class SimpleArrayList<T> {
 
 		public interface Comparator<K, T> {

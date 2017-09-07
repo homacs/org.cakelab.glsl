@@ -14,7 +14,7 @@ import org.cakelab.glsl.pp.lexer.rules.RLineContinuation;
 import org.cakelab.glsl.pp.lexer.rules.RNumber;
 import org.cakelab.glsl.pp.lexer.rules.RPunctuator;
 import org.cakelab.glsl.pp.lexer.rules.RStringLiteral;
-import org.cakelab.glsl.pp.scanner.IScanner;
+import org.cakelab.glsl.pp.lexer.rules.RUnknownToken;
 
 public class PPGLSLRuleSet extends LexerRuleSet {
 
@@ -35,7 +35,9 @@ public class PPGLSLRuleSet extends LexerRuleSet {
 				new RNumber(state),
 				new RCharacterConstant(state),
 				new RStringLiteral(state),
-				new RPunctuator(state)
+				new RPunctuator(state),
+				
+				new RUnknownToken(state) // this accepts all tokens, not recognised by the above rules
 		);
 	}
 

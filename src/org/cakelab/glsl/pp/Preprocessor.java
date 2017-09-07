@@ -6,15 +6,12 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cakelab.glsl.GLSLExtension;
-import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.impl.StandardFileManager;
 import org.cakelab.glsl.lang.EvaluationException;
-import org.cakelab.glsl.lang.ast.ConstantValue;
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.pp.ast.Macro;
@@ -34,24 +31,30 @@ import org.cakelab.glsl.pp.ast.PPIfndefScope;
 import org.cakelab.glsl.pp.ast.PPStringifyExpression;
 import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.error.ExpressionError;
-import org.cakelab.glsl.pp.error.StandardErrorHandler;
+import org.cakelab.glsl.pp.error.Recovery;
+import org.cakelab.glsl.pp.error.SyntaxError;
 import org.cakelab.glsl.pp.lexer.ILexer;
 import org.cakelab.glsl.pp.lexer.PPLexer;
 import org.cakelab.glsl.pp.lexer.TokenListLexer;
+import org.cakelab.glsl.pp.parser.ErrorParser;
 import org.cakelab.glsl.pp.parser.ExpressionParser;
+import org.cakelab.glsl.pp.parser.ExtensionParser;
 import org.cakelab.glsl.pp.parser.IncludeParser;
+import org.cakelab.glsl.pp.parser.LineParser;
 import org.cakelab.glsl.pp.parser.Parser;
+import org.cakelab.glsl.pp.parser.PragmaParserSet;
+import org.cakelab.glsl.pp.parser.VersionParser;
+import org.cakelab.glsl.pp.parser.pragmas.GlslPragmasParser;
 import org.cakelab.glsl.pp.scanner.IScanner;
-import org.cakelab.glsl.pp.scanner.ScannerManager;
 import org.cakelab.glsl.pp.scanner.StreamScanner;
 import org.cakelab.glsl.pp.tokens.TCharacterConstant;
 import org.cakelab.glsl.pp.tokens.TCrlf;
 import org.cakelab.glsl.pp.tokens.TEof;
 import org.cakelab.glsl.pp.tokens.THash;
 import org.cakelab.glsl.pp.tokens.TIdentifier;
-import org.cakelab.glsl.pp.tokens.TNumber;
 import org.cakelab.glsl.pp.tokens.TPunctuator;
 import org.cakelab.glsl.pp.tokens.TStringLiteral;
+import org.cakelab.glsl.pp.tokens.TUnknownToken;
 import org.cakelab.glsl.pp.tokens.TWhitespace;
 import org.cakelab.glsl.pp.tokens.Token;
 import org.cakelab.glsl.pp.tokens.TokenList;
@@ -68,10 +71,16 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	private List<PPGroupScope> groups;
 	private PPGroupScope globalScope;
 
-
-	private IncludeParser includeParser;
 	private ExpressionParser expressionParser;
 
+	private IncludeParser includeParser;
+	private VersionParser versionParser;
+	private ErrorParser errorParser;
+	private LineParser lineParser;
+	private PragmaParserSet pragmaParser;
+
+
+	private ExtensionParser extensionParser;
 	
 	
 	/**
@@ -88,7 +97,6 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		super(new PPState());
 		
 		state.setErrorHandler(new StandardErrorHandler());
-		state.setErrorRecoveryHandler(this);
 		
 		state.setLexer(lexer);
 		state.setInsertLineDirectives(true);
@@ -98,8 +106,18 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		globalScope = new PPGroupScope(null);
 		pushScope(globalScope);
 		
-		includeParser = new IncludeParser(true, state);
-		expressionParser = new ExpressionParser(state);
+		includeParser = new IncludeParser(this);
+		versionParser = new VersionParser(this);
+		extensionParser = new ExtensionParser(this);
+		errorParser = new ErrorParser(this);
+		lineParser = new LineParser(this);
+		
+		pragmaParser = new PragmaParserSet(this);
+		
+		pragmaParser.appendPragma(new GlslPragmasParser(this));
+		
+		
+		expressionParser = new ExpressionParser(this);
 		
 	}
 
@@ -113,7 +131,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 
 	
 	public void enableInclude(boolean enable) {
-		includeParser.setEnabled(enable);
+		state.setIncludeEnabled(enable);
 	}
 	
 	/** 
@@ -172,8 +190,8 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		
 		ILexer previousLexer = getLexer();
 		try {
-			PPState predefineErrStrat = new PPState(getState().getErrorHandler(), this);
-			state.setLexer(new PPLexer(scanner, predefineErrStrat));
+			PPState predefineState = new PPState(getState().getErrorHandler());
+			state.setLexer(new PPLexer(scanner, predefineState));
 			
 			define();
 			// TODO: eof handler still necessary on this level?
@@ -216,17 +234,21 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	
 	public List<PPGroupScope> process() {
 		// main parser loop
-		while(!atEOF()) {
-			if (!directive_line() && !text_line()) {
-				syntaxError(getLexer().lookahead(1), "illegal token");
-				break;
+		try {
+			while(!atEOF()) {
+				if (!directive_line() && !text_line()) {
+					syntaxError(getLexer().lookahead(1), "illegal token");
+				}
 			}
+			// check if all scopes of conditional inclusion are complete
+			if (state.getGroupScope() != globalScope) 
+			{
+				syntaxError(getLexer().previous(), "missing #endif");
+			}
+		} catch (Recovery escape) {
+			// nothing to recover
 		}
-		// check if all scopes of conditional inclusion are complete
-		if (state.getGroupScope() != globalScope) 
-		{
-			syntaxError(getLexer().previous(), "missing #endif");
-		}
+			
 		return groups;
 	}
 
@@ -251,7 +273,12 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 //					else out.print(new TCrlf(token.getInterval(), "\n"));
 					else assert token instanceof TEof;
 				} else if (!getLexer().eof()) {
-					syntaxError(getLexer().lookahead(1), "invalid tokens");
+					try {
+						syntaxError(getLexer().lookahead(1), "invalid tokens");
+					} catch (Recovery escape) {
+						// just consume and keep going
+						getLexer().consume(1);
+					}
 				}
 				return true;
 			}
@@ -366,7 +393,11 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			((PPLexer)getLexer()).prepend(prependingText);
 
 		} catch (EvaluationException e) {
-			syntaxError(e);
+			try {
+				syntaxError(e);
+			} catch (Recovery escape) {
+				// no recovery necessary
+			}
 		}
 	}
 
@@ -409,19 +440,23 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 				skip_remaining_line();
 			} else if (
 				  ENDL() // empty directive
-				||include()
+				||includeParser.parse()
 				||define()
 				||undef()
-				||line()
-				||error()
-				||pragma()
-				||extension()
-				||version()
+				||lineParser.parse()
+				||errorParser.parse()
+				||pragmaParser.parse()
+				||extensionParser.parse()
+				||versionParser.parse()
 				)
 			{
 				// directive line has been processed;
 			} else {
-				syntaxError(getLexer().lookahead(1), "unknown directive #" + read_remaining_line());
+				try {
+					syntaxError(getLexer().lookahead(1), "unknown directive #" + read_remaining_line());
+				} catch (SyntaxError | Recovery e) {
+					// no recovery necessary
+				}
 			}
 			state.setSeenCodeLineBeforeVersion(true);
 		}
@@ -429,264 +464,99 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	}
 
 
-	private boolean version() {
-		boolean result = false;
-		if (optionalIDENTIFIER("version")) {
-			Location start = token.getStart();
-			result = true;
-			while(WHITESPACE());
-			if (!NUMBER()) {
-				syntaxError(start, "missing version number");
-			} else {
-				TNumber numTok = ((TNumber)token);
-				if (!numTok.isDecimalInteger() || numTok.length() == 0) {
-					syntaxError(numTok.getStart(), "version number is a 3 digit decimal integer");
-				}
-				Expression decoded = decodeNumber(numTok);
-				int number = -1;
-				if (decoded instanceof ConstantValue) {
-					@SuppressWarnings("unchecked")
-					ConstantValue<Long> intVal = ((ConstantValue<Long>)decoded);
-					number = ((Long) intVal.value().getNativeValue()).intValue();
-				}
-				while(WHITESPACE());
-				Location end = numTok.getEnd();
-				GLSLVersion.Profile profile = null;
-				if (optionalIDENTIFIER("core")) {
-					end = token.getEnd();
-					profile = GLSLVersion.Profile.CORE;
-				} else if (optionalIDENTIFIER("compatibility")) {
-					end = token.getEnd();
-					profile = GLSLVersion.Profile.COMPATIBILITY;
-				} else if (optionalIDENTIFIER("es")) {
-					end = token.getEnd();
-					profile = GLSLVersion.Profile.ES;
-				} else {
-					while(WHITESPACE());
-					String s = text(false, true);
-					if (s.length() > 0) syntaxError(decoded.getEnd(), "invalid profile identifier '" + s + "'");
-				}
-				while(WHITESPACE());
-				mandatory_endl();
-
-				
-				if (state.getGlslVersion() == null) {
-					if (state.isSeenCodeLineBeforeVersion()) syntaxWarning(start, "#version directive can not be preceeded by code lines");
-					if (number > 0) state.setGlslVersion(new GLSLVersion(new Interval(start, end), number, profile));
-				} else {
-					syntaxWarning(start, "version redefined");
-				}
-			}
-		}
-		return result;
-	}
-
-	private boolean extension() {
-		boolean result = false;
-		if (optionalIDENTIFIER("extension")) {
-			Location start = token.getStart();
-			result = true;
-			while(WHITESPACE());
-			TIdentifier extensionName = null;
-			if (!IDENTIFIER()) {
-				syntaxError(start, "missing extension name");
-			} else {
-				extensionName = (TIdentifier)token;
-				while(WHITESPACE());
-				mandatory(TPunctuator.class, ":");
-				while(WHITESPACE());
-				
-				GLSLExtension.Behaviour behaviour = null;
-				Location end = null;
-				if (IDENTIFIER()) {
-					TIdentifier ident = (TIdentifier) token;
-					end = ident.getEnd();
-					if (ident.getText().equals("require")) {
-						behaviour = GLSLExtension.Behaviour.REQUIRE;
-					} else if (ident.getText().equals("enable")) {
-						behaviour = GLSLExtension.Behaviour.ENABLE;
-					} else if (ident.getText().equals("warn")) {
-						behaviour = GLSLExtension.Behaviour.WARN;
-					} else if (ident.getText().equals("disable")) {
-						behaviour = GLSLExtension.Behaviour.DISABLE;
-					} else {
-						syntaxError(ident.getStart(), "extension behaviour has to be one of [require, enable, warn, disable])");
-					}
-				} else {
-					syntaxError(getLexer().lookahead(1).getStart(), "missing extension behaviour (one of [require, enable, warn, disable])");
-				}
-				while(WHITESPACE());
-				mandatory_endl();
-				
-				if (extensionName != null && behaviour != null) {
-					state.getExtensions().add(new GLSLExtension(new Interval(start, end), extensionName.getText(), behaviour));
-				}
-				
-			}
-		}
-		return result;
-	}
-
-	private boolean pragma() {
-		// TODO [1] implement pragma
-		if (optionalIDENTIFIER("pragma")) {
-			// all preprocessing tokens except whitespace
-			Token t;
-			TokenList tokens = new TokenList();
-			do {
-				t = preprocessing_token(true);
-				if (t != null) tokens.add(t);
-			} while(t != null || WHITESPACE());
-			mandatory_endl();
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	private boolean error() {
-		if (optionalIDENTIFIER("error")) {
-			Location loc = token.getStart();
-			StringBuffer message = new StringBuffer("#error");
-			for (Token t : read_remaining_line()) {
-				message.append(t.getText());
-			}
-			syntaxError(line_start(loc), message.toString());
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	private boolean line() {
-		boolean result = false;
-		if (optionalIDENTIFIER("line")) {
-			Location start = token.getStart();
-			result = true;
-			while(WHITESPACE());
-			int line = -1;
-			if (NUMBER()) {
-				TNumber numTok = (TNumber) token;
-				try {
-					if (!numTok.isDecimalInteger()) throw new NumberFormatException("not decimal integer");
-					line = Integer.valueOf(token.getText());
-					if (line < 0) throw new NumberFormatException("signed integer");
-				} catch (NumberFormatException e) {
-					syntaxError(numTok.getStart(), "not a valid line number. Positive decimal integer allowed only");
-					return result;
-				}
-			} else {
-				syntaxError(start, "missing line number in line directive");
-				return result;
-			}
-			while(WHITESPACE());
-			int id = -1;
-			if (NUMBER()) {
-				TNumber numTok = (TNumber) token;
-				try {
-					if (!numTok.isDecimalInteger()) throw new NumberFormatException("not decimal integer");
-					id = Integer.valueOf(token.getText());
-					if (id < 0) throw new NumberFormatException("signed integer");
-				} catch (NumberFormatException e) {
-					syntaxError(numTok.getStart(), "not a valid source identifier. Positive integer allowed only");
-					return result;
-				}
-			}
-			while(WHITESPACE());
-			if (mandatory_endl()) {
-				if (id >= 0) {
-					getLexer().setVirtualLocation(Integer.toString(id), line);
-				} else {
-					getLexer().setVirtualLocation(line);
-				}
-			}
-		}
-		return result;
-	}
 	
 
 	private boolean define() {
 		
 		boolean result = false;
-		if (optionalIDENTIFIER("define")) {
+		if (IDENTIFIER("define")) {
 			Location start = token.getStart();
 			result = true;
 			while(WHITESPACE());
-			if (!IDENTIFIER()) {
-				syntaxError(getLexer().lookahead(1), "no macro name given in #define directive");
+			try {
+				if (!IDENTIFIER()) {
+					syntaxError(getLexer().lookahead(1), "no macro name given in #define directive");
+				}
+				start = token.getStart();
+				Location end = token.getEnd();
+				String macroName = token.getText();
+				
+				List<MacroParameter> params = null;
+				if (PUNCTUATOR("(")) {
+					params = new ArrayList<MacroParameter>();
+					// macro parameters
+					boolean firstIteration = true;
+					do {
+						while(WHITESPACE());
+						if (DOTS()) {
+							params.add(new MacroParameter(MacroParameter.__VA_ARGS__, this));
+							break;
+						} else if (IDENTIFIER()) {
+							if (token.getText().equals(MacroParameter.__VA_ARGS__)) {
+								syntaxWarning(token.getInterval(), "__VA_ARGS__ can only appear in the expansion of a variadic macro");
+							}
+							params.add(new MacroParameter(token.getText(), this));
+						} else if (firstIteration) {
+							// empty parameter list
+							break;
+						} else {
+							syntaxError(getLexer().lookahead(1), "parameter name missing");
+						}
+						while(WHITESPACE());
+						firstIteration = false;
+					} while(PUNCTUATOR(','));
+	
+					mandatory(TPunctuator.class, ")");
+					end = getLexer().previous().getEnd();
+				}
+				while(WHITESPACE());
+			
+				Macro macroDefinition = new Macro(macroName, params, new Interval(start, end));
+				state.setCurrentMacroDefinition(macroDefinition);
+				NodeList<Node> list = replacement_list();
+				
+				macroDefinition.setReplacementList(list);
+				
+				Macro previousDefinition = state.getMacros().get(macroName);
+				if (previousDefinition != null && !previousDefinition.equals(macroDefinition)) {
+					syntaxWarning(start, "\"" + macroName + "\" redefined");
+				}
+	
+				state.getMacros().put(macroName, macroDefinition);
+				state.setCurrentMacroDefinition(macroDefinition);
+				
+				mandatory_endl();
+			} catch (Recovery escape) {
+				recoverError();
 				return result;
 			}
-			start = token.getStart();
-			Location end = token.getEnd();
-			String macroName = token.getText();
-			
-			List<MacroParameter> params = null;
-			if (PUNCTUATOR("(")) {
-				params = new ArrayList<MacroParameter>();
-				// macro parameters
-				boolean firstIteration = true;
-				do {
-					while(WHITESPACE());
-					if (DOTS()) {
-						params.add(new MacroParameter(MacroParameter.__VA_ARGS__, this));
-						break;
-					} else if (IDENTIFIER()) {
-						if (token.getText().equals(MacroParameter.__VA_ARGS__)) {
-							syntaxWarning(token.getInterval(), "__VA_ARGS__ can only appear in the expansion of a variadic macro");
-						}
-						params.add(new MacroParameter(token.getText(), this));
-					} else if (firstIteration) {
-						// empty parameter list
-						break;
-					} else {
-						syntaxError(getLexer().lookahead(1), "parameter name missing");
-						return result;
-					}
-					while(WHITESPACE());
-					firstIteration = false;
-				} while(PUNCTUATOR(','));
-
-				mandatory(TPunctuator.class, ")");
-				end = getLexer().previous().getEnd();
-			}
-			while(WHITESPACE());
-			
-			Macro macroDefinition = new Macro(macroName, params, new Interval(start, end));
-			state.setCurrentMacroDefinition(macroDefinition);
-			NodeList<Node> list = replacement_list();
-			
-			macroDefinition.setReplacementList(list);
-			
-			Macro previousDefinition = state.getMacros().get(macroName);
-			if (previousDefinition != null && !previousDefinition.equals(macroDefinition)) {
-				syntaxWarning(start, "\"" + macroName + "\" redefined");
-			}
-
-			state.getMacros().put(macroName, macroDefinition);
-			state.setCurrentMacroDefinition(macroDefinition);
-			
-			mandatory_endl();
 		}
 		return result;
 	}
 
-	private NodeList<Node> replacement_list() {
+	private NodeList<Node> replacement_list() throws Recovery {
 		NodeList<Node> result = new NodeList<Node>();
-		Node expr;
+		Node node;
 		do {
-			expr = concat_expression(result);
-			if (expr == null) expr = whitespace();
-			if (expr == null) expr = non_concat_expression();
-			if (expr != null) result.add(expr);
-		} while(null != expr);
+			node = concat_expression(result);
+			if (node == null) node = replacement_list_whitespace_sequence();
+			if (node == null) node = non_concat_expression();
+			
+			if (node != null) result.add(node);
+		} while(null != node);
 		
 		result.trim(NodeList.Filter_WHITESPACE);
 		return result;
 	}
 
-	private Token whitespace() {
+	private Token replacement_list_whitespace_sequence() {
+		// replace sequence of whitespace with a single 
+		// blank according to ISO standard
 		if (WHITESPACE()) {
-			return token;
+			Interval interval = new Interval(token.getStart(), token.getEnd());
+			TWhitespace blank = new TWhitespace(interval, " ");
+			while(WHITESPACE()) interval.setEnd(token.getEnd());
+			return blank;
 		} else {
 			return null;
 		}
@@ -711,9 +581,10 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 
 	/**
 	 *  anything ## anything
+	 * @throws Recovery 
 	 *  
 	 */
-	private Node concat_expression(List<Node> replacement_list) {
+	private Node concat_expression(List<Node> replacement_list) throws Recovery {
 		if (PUNCTUATOR("##")) {
 
 			TPunctuator opTok = (TPunctuator) token;
@@ -791,80 +662,56 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	
 
 	
-	private Token preprocessing_token(boolean acceptHashes) {
-		Token la = getLexer().lookahead(1);
-		if (la instanceof TIdentifier) {
-			return getLexer().consume(1);
-		} else if (la instanceof TStringLiteral) {
-			return getLexer().consume(1);
-		} else if (la instanceof TCharacterConstant) {
-			return getLexer().consume(1);
-		} else if (la instanceof TPunctuator) {
-			if (!acceptHashes && la.getText().startsWith("#")) {
-				return null;
-			} else {
-				return getLexer().consume(1);
-			}
-		} else if (la instanceof TNumber) {
-			return getLexer().consume(1);
-		} else if (la instanceof TEof) {
-			return null;
-		} else if (la instanceof TCrlf) {
-			return null;
-		} else if (la instanceof TWhitespace) {
-			return null;
-		} else {
-			// anything else but whitespace or crlf or eof
-			return getLexer().consume(1);
-		}
-	}
-
 	private TokenList[] macro_argument_list(MacroInvocation reference) {
 		Macro macro = reference.getMacro();
 		
 		
 		if (PUNCTUATOR('(')) {
 			while(whitespace_crlf_sequence());
-			
 			List<TokenList> arguments = new ArrayList<TokenList>();
-			int numParameters = macro.numParameters();
-			boolean hasVarArgs = macro.hasVarArgs();
-			Token la = getLexer().lookahead(1);
-			if (!(la instanceof TPunctuator && la.getText().equals(")"))) {
-				do {
-					while(whitespace_crlf_sequence());
-					if (hasVarArgs && arguments.size() == numParameters-1) {
-						TokenList varargs = new TokenList();
-						macro_variadic_arguments(varargs);
-						arguments.add(varargs);
-						break;
-					}
-					TokenList param = macro_arg();
-					arguments.add(param);
-					while(whitespace_crlf_sequence());
-				} while (PUNCTUATOR(','));
-			}
-			
-			if (!PUNCTUATOR(')')) {
-				syntaxError(getLexer().lookahead(1), "missing closing ')'");
-			}
 
-			if (macro.numParameters() != arguments.size()) {
-				if (arguments.size() == 0 && macro.numParameters() == 1) {
-					arguments.add(new TokenList()); // add an empty argument
-				} else {
-					syntaxError(reference.getStart(), "macro \"" + macro.getName() + "\" requires " + macro.numParameters() + " arguments, but only " + arguments.size() + " where given.");
-					return null;
+			try {
+				int numParameters = macro.numParameters();
+				boolean hasVarArgs = macro.hasVarArgs();
+				Token la = getLexer().lookahead(1);
+				if (!(la instanceof TPunctuator && la.getText().equals(")"))) {
+					do {
+						while(whitespace_crlf_sequence());
+						if (hasVarArgs && arguments.size() == numParameters-1) {
+							TokenList varargs = new TokenList();
+							macro_variadic_arguments(varargs);
+							arguments.add(varargs);
+							break;
+						}
+						TokenList param = macro_arg();
+						arguments.add(param);
+						while(whitespace_crlf_sequence());
+					} while (PUNCTUATOR(','));
 				}
+				
+				if (!PUNCTUATOR(')')) {
+					syntaxError(getLexer().lookahead(1), "missing closing ')'");
+				}
+	
+				if (macro.numParameters() != arguments.size()) {
+					if (arguments.size() == 0 && macro.numParameters() == 1) {
+						arguments.add(new TokenList()); // add an empty argument
+					} else {
+						syntaxError(reference.getStart(), "macro \"" + macro.getName() + "\" requires " + macro.numParameters() + " arguments, but only " + arguments.size() + " where given.");
+						return null;
+					}
+				}
+			} catch (Recovery escape) {
+				// just pretend there have been no arguments
+				return null;
 			}
-			
 			return arguments.toArray(new TokenList[0]);
 		} else {
 			return null;
 		}
 	}
 
-	private TokenList macro_arg() {
+	private TokenList macro_arg() throws Recovery {
 		// macro parameters can contain anything, even CRLF, but not ',' or ')' alone.
 		// ',' can occur in parenthesised expressions though.
 		TokenList arg = new TokenList();
@@ -873,12 +720,12 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		return arg;
 	}
 
-	private void macro_variadic_arguments(TokenList varargs) {
+	private void macro_variadic_arguments(TokenList varargs) throws Recovery {
 		// same rules as for macro_arg, but ',' is no longer a delimiter.
 		macro_arg_token_sequence(varargs, ")");
 	}
 
-	private boolean macro_arg_parenthesised(TokenList varargs) {
+	private boolean macro_arg_parenthesised(TokenList varargs) throws Recovery {
 		if (PUNCTUATOR('(')) {
 			
 			varargs.add(token);
@@ -907,8 +754,9 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	 * or comments will be ignored.
 	 * </p>
 	 * @param varargs
+	 * @throws Recovery 
 	 */
-	private void macro_arg_token_sequence(TokenList varargs, String delimiters) {
+	private void macro_arg_token_sequence(TokenList varargs, String delimiters) throws Recovery {
 		Token la = getLexer().lookahead(1);
 		while (!(la instanceof TEof) && delimiters.indexOf(la.getText().charAt(0)) == -1) {
 			if (whitespace_crlf_sequence()) {
@@ -927,7 +775,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			} else if (NUMBER()) {
 				varargs.add(token);
 			} else {
-				// FIXME: macro args cannot accept unknown tokens (I belive)
+				// FIXME: macro args cannot accept unknown tokens (I believe)
 				varargs.add(getLexer().consume(1));
 			}
 			la = getLexer().lookahead(1);
@@ -996,6 +844,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 
 	@Override
 	public Token macro_join_tokens(Token left, Token right) {
+		
 		// join two tokens parse for a single new, legal preprocessing token
 		ILexer previous = getLexer();
 		try {
@@ -1005,7 +854,12 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			Token joined = preprocessing_token(true);
 			rescanner.consume();
 			if (joined == null || !rescanner.eof()) {
-				syntaxError(left.getStart(), "pasting \"" + left.getText() + "\" and \"" + right.getText() + "\" does not give a valid preprocessing token");
+				try {
+					syntaxError(left.getStart(), "pasting \"" + left.getText() + "\" and \"" + right.getText() + "\" does not give a valid preprocessing token");
+					joined = new TUnknownToken(new Interval(left.getStart(),right.getEnd()), text);
+				} catch (Recovery escape) {
+					// already recovered
+				}
 			} else {
 				// joined token refers to the start of the left parameter and end of the right parameter in
 				// the expansion list. 
@@ -1024,33 +878,34 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	
 	private boolean undef() {
 		boolean result = false;
-		if (optionalIDENTIFIER("undef")) {
+		if (IDENTIFIER("undef")) {
 			Location start = token.getStart();
 			result = true;
-			while(WHITESPACE());
-			if(!IDENTIFIER()) {
-				syntaxError(start, "missing identifier to #undef directive");
-				return result;
-			}
-			String macro = token.getText();
-			while(WHITESPACE());
-			if (mandatory_endl()) {
-				state.getMacros().remove(macro);
-				return result;
-			} else {
-				syntaxError(start, "unexpected tokens at end of undef directive");
+			try {
+				while(WHITESPACE());
+				if(!IDENTIFIER()) {
+					syntaxError(start, "missing identifier to #undef directive");
+				}
+				String macro = token.getText();
+				while(WHITESPACE());
+				if (mandatory_endl()) {
+					state.getMacros().remove(macro);
+					return result;
+				} else {
+					syntaxError(start, "unexpected tokens at end of undef directive");
+				}
+			} catch (Recovery escape) {
 				return result;
 			}
 		}
 		return result;
 	}
 	
-
 	private boolean ifgroup() {
 		PPIfScope ifscope = null;
 		Node condition = null;
 		Token ifTok = null; 
-		if (optionalIDENTIFIER("if")) {
+		if (IDENTIFIER("if")) {
 			ifTok = token;
 			ifscope = new PPIfScope(state.getGroupScope());
 			while(WHITESPACE());
@@ -1058,7 +913,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			if (condition == null) {
 				condition = expressionError(ifTok.getInterval(), "#if with no expression");
 			}
-		} else if (optionalIDENTIFIER("ifdef")) {
+		} else if (IDENTIFIER("ifdef")) {
 			ifTok = token;
 			ifscope = new PPIfdefScope(state.getGroupScope());
 			while(WHITESPACE());
@@ -1066,7 +921,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			if (condition == null) {
 				condition = expressionError(ifTok.getInterval(), "missing identifier");
 			}
-		} else if (optionalIDENTIFIER("ifndef")) {
+		} else if (IDENTIFIER("ifndef")) {
 			ifTok = token;
 			ifscope = new PPIfndefScope(state.getGroupScope());
 			while(WHITESPACE());
@@ -1080,7 +935,11 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			try {
 				ifscope.setCondition(condition);
 			} catch (EvaluationException e) {
-				syntaxError(e);
+				try {
+					syntaxError(e);
+				} catch (Recovery e1) {
+					// no recovery necessary
+				}
 			}
 			while(WHITESPACE());
 			mandatory_endl();
@@ -1095,23 +954,32 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	private boolean elifgroup() {
 		PPElifScope elifscope = null;
 		Token ifTok = null;
-		if (optionalIDENTIFIER("elif")) {
+		if (IDENTIFIER("elif")) {
 			ifTok = token;
 			PPGroupScope predecessor = state.getGroupScope();
-			if (predecessor == null || !(predecessor instanceof PPIfScope)) syntaxError(ifTok, "#elif must follow #if* or #elif group");
-			popScope();
-			
-			elifscope = new PPElifScope(state.getGroupScope(), (PPIfScope)predecessor);
+			if (predecessor == null || !(predecessor instanceof PPIfScope)) {
+				try {
+					syntaxError(ifTok, "#elif must follow #if* or #elif group");
+				} catch (Recovery ignore) {
+					// no recovery necessary
+				}
+			}
 			while(WHITESPACE());
 			Node expr = directive_condition();
 			if (expr == null) {
 				expr = expressionError(ifTok.getInterval(), "missing condition to elif directive");
 			}
 
+			popScope();
+			elifscope = new PPElifScope(state.getGroupScope(), (PPIfScope)predecessor);
 			try {
 				elifscope.setCondition(expr);
 			} catch (EvaluationException e) {
-				syntaxError(e);
+				try {
+					syntaxError(e);
+				} catch (Recovery ignore) {
+					// already recovered above
+				}
 				elifscope.setCondition(expr.getInterval(), false);
 			}
 			
@@ -1125,10 +993,16 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	private boolean elsegroup() {
 		PPElseScope elsescope = null;
 		Token elseTok = null;
-		if (optionalIDENTIFIER("else")) {
+		if (IDENTIFIER("else")) {
 			elseTok = token;
 			PPGroupScope predecessor = state.getGroupScope();
-			if (predecessor == null || !(predecessor instanceof PPIfScope)) syntaxError(elseTok.getStart(), "#else must follow #if* or #elif group");
+			if (predecessor == null || !(predecessor instanceof PPIfScope)) {
+				try {
+					syntaxError(elseTok.getStart(), "#else must follow #if* or #elif group");
+				} catch (Recovery e) {
+					// already recovered
+				}
+			}
 			popScope();
 			elsescope = new PPElseScope(state.getGroupScope(), (PPIfScope) predecessor);
 			while(WHITESPACE());
@@ -1140,11 +1014,17 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 
 	private boolean endif() {
 		boolean result = false;
-		if (optionalIDENTIFIER("endif")) {
+		if (IDENTIFIER("endif")) {
 			Token endifTok = token;
 			result = true;
 			PPGroupScope predecessor = state.getGroupScope();
-			if (predecessor == null) syntaxError(endifTok, "#endif must follow #if*, #elif or #else group");
+			if (predecessor == null) {
+				try {
+					syntaxError(endifTok, "#endif must follow #if*, #elif or #else group");
+				} catch (Recovery e) {
+					// already recovered
+				}
+			}
 			popScope();
 			while(WHITESPACE());
 			mandatory_endl();
@@ -1193,113 +1073,9 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	}
 
 	
-	private boolean include()  {
-		boolean result = false;
-
-		includeParser.setState(state);
-		
-		if (includeParser.parse()) {
-			result = true;
-			Resource resource = includeParser.getResource();
-			if (resource == null) return result;
-			
-			// exec include
-			ILexer previous = getLexer();
-			try {
-
-				Token next = getLexer().lookahead(1);
-				
-				IScanner includeScanner = ScannerManager.createScanner(resource.getIdentifier(), resource.getData());
-				PPLexer includeLexer = new PPLexer(includeScanner, getState());
-	
-				Location locationReference = line_start(includeParser.getInterval().getStart());
-				if (state.isInsertLineDirectives()) {
-					state.getOutput().print(createLineTokens(locationReference, 1, resource.getIdentifier()));
-				}
-				
-				
-				state.setLexer(includeLexer);
-				process();
-				
-				
-				// insert CRLF if necessary
-				if (!(getLexer().previous() instanceof TCrlf)) {
-					state.getOutput().print(new TCrlf(getLexer().lookahead(1).getInterval(), "\n"));
-				}
-				if (state.isInsertLineDirectives()) {
-					state.getOutput().print(createLineTokens(locationReference, next.getStart().getLine(), next.getStart().getSourceIdentifier()));
-				}
-			
-			} finally {
-				state.setLexer(previous);
-			}
-			
-			
-		}
-		
-		return result;
-	}
-
-	private TokenList createLineTokens(Location ref, int line, String identifier) {
-		TokenList tokens = new TokenList();
-		int col = ref.getColumn();
-		Location start = ref.clone();
-		Location end = ref.clone();
-		tokens.add(new THash(new Interval(start, end), "#"));
-		ref.setColumn(col += 1);
-		
-		start = ref.clone();
-		ref.setColumn(col += 3);
-		end = ref.clone();
-		tokens.add(new TIdentifier(new Interval(start, end), "line"));
-		ref.setColumn(col += 1);
-		
-
-		start = ref.clone();
-		ref.setColumn(col += 0);
-		end = ref.clone();
-		tokens.add(new TWhitespace(new Interval(start, end), " "));
-		ref.setColumn(col += 1);
-
-		String text = Integer.toString(line);
-		start = ref.clone();
-		ref.setColumn(col += text.length()-1);
-		end = ref.clone();
-		tokens.add(new TNumber(new Interval(start, end), text));
-		ref.setColumn(col += 1);
-
-		start = ref.clone();
-		ref.setColumn(col += 0);
-		end = ref.clone();
-		tokens.add(new TWhitespace(new Interval(start, end), " "));
-		ref.setColumn(col += 1);
-
-		text = identifier;
-		start = ref.clone();
-		ref.setColumn(col += text.length()-1);
-		end = ref.clone();
-		tokens.add(new TNumber(new Interval(start, end), text));
-		ref.setColumn(col += 1);
-
-		start = ref.clone();
-		ref.setColumn(col += 0);
-		end = ref.clone();
-		tokens.add(new TCrlf(new Interval(start, end), "\n"));
-		ref.setColumn(col += 1);
-
-		return tokens;
-	}
-
 	public void setErrorHandler(ErrorHandler errorHandler) {
-		getState().setErrorHandler(errorHandler);
+		state.setErrorHandler(errorHandler);
 	}
-
-	@Override
-	public void dismiss() {
-		getLexer().dismiss();
-	}
-
-	
 
 	
 }

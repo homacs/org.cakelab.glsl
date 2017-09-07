@@ -2,7 +2,7 @@ package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.EvaluationException;
-import org.cakelab.glsl.lang.Processor;
+import org.cakelab.glsl.lang.InstructionProcessor;
 
 public class LogicalNotExpression extends PrefixExpression {
 
@@ -12,7 +12,7 @@ public class LogicalNotExpression extends PrefixExpression {
 
 	@Override
 	public PrimaryExpression eval() throws EvaluationException {
-		return Processor.logNot(operand.eval().value());
+		return InstructionProcessor.logNot(operand.eval().value());
 	}
 
 
