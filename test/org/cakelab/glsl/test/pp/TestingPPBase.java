@@ -4,12 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
-import org.cakelab.glsl.pp.PreprocessedOutputBuffer;
+import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.pp.Preprocessor;
-import org.cakelab.glsl.pp.lexer.PPLexer;
+import org.cakelab.glsl.pp.output.PreprocessedOutputBuffer;
 import org.cakelab.glsl.pp.parser.Parser;
-import org.cakelab.glsl.pp.scanner.IScanner;
-import org.cakelab.glsl.pp.scanner.StreamScanner;
 
 public class TestingPPBase extends TestingBase {
 
@@ -17,8 +15,7 @@ public class TestingPPBase extends TestingBase {
 		try {
 			error = null;
 			warning = null;
-			IScanner scanner = new StreamScanner("0", new ByteArrayInputStream(source.getBytes()));
-			PPLexer pplexer = new PPLexer(scanner);
+			Resource resource = new Resource("0", "-- testing --", new ByteArrayInputStream(source.getBytes()));
 			if (usePPBuffer) {
 				ByteArrayOutputStream outStream;
 				if (out instanceof ByteArrayOutputStream) {
@@ -26,9 +23,9 @@ public class TestingPPBase extends TestingBase {
 				} else {
 					outStream = new ByteArrayOutputStream();
 				}
-				parser = new Preprocessor(pplexer, new PreprocessedOutputBuffer(outStream));
+				parser = new Preprocessor(resource, new PreprocessedOutputBuffer(outStream));
 			} else {
-				parser = new Preprocessor(pplexer, output(out));
+				parser = new Preprocessor(resource, output(out));
 			}
 			parser.setErrorHandler(errorHandler);
 		} catch (Throwable e) {

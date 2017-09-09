@@ -144,7 +144,7 @@ public class TestNumber extends TestingBase {
 		assertInvalid(p("1.0E1.00f").glslFloatConstant());
 		// FLOATCONSTANT HEX
 		assertValid(p("0x1.f").glslFloatConstant());
-		assertInvalid(p("0x.F").glslFloatConstant());
+		assertValid(p("0x.F").glslFloatConstant());
 		assertValid(p(".0f").glslFloatConstant());
 		assertValid(p("0.0F").glslFloatConstant());
 		assertInvalid(p("1.0e1").glslFloatConstant());

@@ -1,23 +1,20 @@
 package org.cakelab.glsl;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.cakelab.glsl.impl.StandardFileManager;
 import org.cakelab.glsl.lang.ASTBuilder;
 import org.cakelab.glsl.lang.ast.Scope;
-import org.cakelab.glsl.pp.PreprocessedOutputBuffer;
+import org.cakelab.glsl.lang.lexer.PPOutputTokenBuffer;
+import org.cakelab.glsl.lang.lexer.PPTokenStream;
+import org.cakelab.glsl.lang.lexer.tokens.GLSLTokenTable;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.PPGroupScope;
-import org.cakelab.glsl.pp.lexer.PPLexer;
-import org.cakelab.glsl.pp.scanner.StreamScanner;
 
 public class GLSL {
 	
+	public static final GLSLTokenTable KEYWORDS_DEFAULT = GLSLTokenTable.V_450;
 	private ResourceManager resourceManager;
 	private GLSLErrorHandler errorHandler;
 
@@ -40,10 +37,10 @@ public class GLSL {
 	}
 	
 
+	
 	public CombinedAST parse(Resource resource) throws IOException {
-		PreprocessedOutputBuffer buffer = new PreprocessedOutputBuffer();
-		PPLexer pplexer = new PPLexer(new StreamScanner(resource.getIdentifier(), resource.getData()));
-		Preprocessor pp = new Preprocessor(pplexer, buffer);
+		PPOutputTokenBuffer buffer = new PPOutputTokenBuffer(resourceManager);
+		Preprocessor pp = new Preprocessor(resource, buffer);
 		
 		pp.setResourceManager(resourceManager);
 		pp.setErrorHandler(errorHandler);
@@ -52,26 +49,13 @@ public class GLSL {
 		
 		List<PPGroupScope> ppAST = pp.process();
 
-		ByteArrayInputStream preprocessed = new ByteArrayInputStream(buffer.getData());
-		
-		CharStream input;
-		try {
-			input = CharStreams.fromStream(preprocessed);
-		} catch (IOException e) {
-			throw new Error("internal error: couldn't read from preprocessed output");
-		}
-		
-		
-		GLSLLexer lexer = new GLSLLexer(input);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		PPTokenStream tokens = new PPTokenStream(buffer);
 		GLSLParser parser = new GLSLParser(tokens);
 
 		errorHandler.setLocations(tokens, buffer.getLocations());
 
 		parser.removeErrorListeners();
 		parser.addErrorListener(errorHandler);
-		lexer.removeErrorListeners();
-		lexer.addErrorListener(errorHandler);
 
 		ASTBuilder astBuilder = new ASTBuilder(tokens, buffer.getLocations(), errorHandler);
 		parser.addParseListener(astBuilder);

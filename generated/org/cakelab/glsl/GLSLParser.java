@@ -17,53 +17,22 @@ public class GLSLParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		ATTRIBUTE=1, CONST=2, UNIFORM=3, VARYING=4, BUFFER=5, SHARED=6, COHERENT=7, 
-		VOLATILE=8, RESTRICT=9, READONLY=10, WRITEONLY=11, ATOMIC_UINT=12, LAYOUT=13, 
-		CENTROID=14, FLAT=15, SMOOTH=16, NOPERSPECTIVE=17, PATCH=18, SAMPLE=19, 
-		BREAK=20, CONTINUE=21, DO=22, FOR=23, WHILE=24, SWITCH=25, CASE=26, DEFAULT=27, 
-		IF=28, ELSE=29, SUBROUTINE=30, IN=31, OUT=32, INOUT=33, FLOAT=34, DOUBLE=35, 
-		INT=36, VOID=37, BOOL=38, INVARIANT=39, PRECISE=40, DISCARD=41, RETURN=42, 
-		MAT2=43, MAT3=44, MAT4=45, DMAT2=46, DMAT3=47, DMAT4=48, MAT2X2=49, MAT2X3=50, 
-		MAT2X4=51, DMAT2X2=52, DMAT2X3=53, DMAT2X4=54, MAT3X2=55, MAT3X3=56, MAT3X4=57, 
-		DMAT3X2=58, DMAT3X3=59, DMAT3X4=60, MAT4X2=61, MAT4X3=62, MAT4X4=63, DMAT4X2=64, 
-		DMAT4X3=65, DMAT4X4=66, VEC2=67, VEC3=68, VEC4=69, IVEC2=70, IVEC3=71, 
-		IVEC4=72, BVEC2=73, BVEC3=74, BVEC4=75, DVEC2=76, DVEC3=77, DVEC4=78, 
-		UINT=79, UVEC2=80, UVEC3=81, UVEC4=82, LOW_PRECISION=83, MEDIUM_PRECISION=84, 
-		HIGH_PRECISION=85, PRECISION=86, SAMPLER1D=87, SAMPLER2D=88, SAMPLER3D=89, 
-		SAMPLERCUBE=90, SAMPLER1DSHADOW=91, SAMPLER2DSHADOW=92, SAMPLERCUBESHADOW=93, 
-		SAMPLER1DARRAY=94, SAMPLER2DARRAY=95, SAMPLER1DARRAYSHADOW=96, SAMPLER2DARRAYSHADOW=97, 
-		ISAMPLER1D=98, ISAMPLER2D=99, ISAMPLER3D=100, ISAMPLERCUBE=101, ISAMPLER1DARRAY=102, 
-		ISAMPLER2DARRAY=103, USAMPLER1D=104, USAMPLER2D=105, USAMPLER3D=106, USAMPLERCUBE=107, 
-		USAMPLER1DARRAY=108, USAMPLER2DARRAY=109, SAMPLER2DRECT=110, SAMPLER2DRECTSHADOW=111, 
-		ISAMPLER2DRECT=112, USAMPLER2DRECT=113, SAMPLERBUFFER=114, ISAMPLERBUFFER=115, 
-		USAMPLERBUFFER=116, SAMPLER2DMS=117, ISAMPLER2DMS=118, USAMPLER2DMS=119, 
-		SAMPLER2DMSARRAY=120, ISAMPLER2DMSARRAY=121, USAMPLER2DMSARRAY=122, SAMPLERCUBEARRAY=123, 
-		SAMPLERCUBEARRAYSHADOW=124, ISAMPLERCUBEARRAY=125, USAMPLERCUBEARRAY=126, 
-		IMAGE1D=127, IIMAGE1D=128, UIMAGE1D=129, IMAGE2D=130, IIMAGE2D=131, UIMAGE2D=132, 
-		IMAGE3D=133, IIMAGE3D=134, UIMAGE3D=135, IMAGE2DRECT=136, IIMAGE2DRECT=137, 
-		UIMAGE2DRECT=138, IMAGECUBE=139, IIMAGECUBE=140, UIMAGECUBE=141, IMAGEBUFFER=142, 
-		IIMAGEBUFFER=143, UIMAGEBUFFER=144, IMAGE1DARRAY=145, IIMAGE1DARRAY=146, 
-		UIMAGE1DARRAY=147, IMAGE2DARRAY=148, IIMAGE2DARRAY=149, UIMAGE2DARRAY=150, 
-		IMAGECUBEARRAY=151, IIMAGECUBEARRAY=152, UIMAGECUBEARRAY=153, IMAGE2DMS=154, 
-		IIMAGE2DMS=155, UIMAGE2DMS=156, IMAGE2DMSARRAY=157, IIMAGE2DMSARRAY=158, 
-		UIMAGE2DMSARRAY=159, SAMPLEREXTERNALOES=160, STRUCT=161, COMMON=162, PARTITION=163, 
-		ACTIVE=164, ASM=165, CLASS=166, UNION=167, ENUM=168, TYPEDEF=169, TEMPLATE=170, 
-		THIS=171, RESOURCE=172, GOTO=173, INLINE=174, NOINLINE=175, PUBLIC=176, 
-		STATIC=177, EXTERN=178, EXTERNAL=179, INTERFACE=180, LONG=181, SHORT=182, 
-		HALF=183, FIXED=184, UNSIGNED=185, SUPERP=186, INPUT=187, OUTPUT=188, 
-		HVEC2=189, HVEC3=190, HVEC4=191, FVEC2=192, FVEC3=193, FVEC4=194, SAMPLER3DRECT=195, 
-		FILTER=196, SIZEOF=197, CAST=198, NAMESPACE=199, USING=200, WHITESPACE=201, 
-		LINE_CONTINUATION=202, MULTILINE_COMMENT=203, SINGLELINE_COMMENT=204, 
-		BOOLCONSTANT=205, FLOATCONSTANT=206, DOUBLECONSTANT=207, INTCONSTANT=208, 
-		UINTCONSTANT=209, LEFT_OP=210, RIGHT_OP=211, INC_OP=212, DEC_OP=213, LE_OP=214, 
-		GE_OP=215, EQ_OP=216, NE_OP=217, AND_OP=218, OR_OP=219, XOR_OP=220, MUL_ASSIGN=221, 
-		DIV_ASSIGN=222, ADD_ASSIGN=223, MOD_ASSIGN=224, LEFT_ASSIGN=225, RIGHT_ASSIGN=226, 
-		AND_ASSIGN=227, XOR_ASSIGN=228, OR_ASSIGN=229, SUB_ASSIGN=230, LEFT_PAREN=231, 
-		RIGHT_PAREN=232, LEFT_BRACKET=233, RIGHT_BRACKET=234, LEFT_BRACE=235, 
-		RIGHT_BRACE=236, DOT=237, COMMA=238, COLON=239, EQUAL=240, SEMICOLON=241, 
-		BANG=242, DASH=243, TILDE=244, PLUS=245, STAR=246, SLASH=247, PERCENT=248, 
-		LEFT_ANGLE=249, RIGHT_ANGLE=250, VERTICAL_BAR=251, CARET=252, AMPERSAND=253, 
-		QUESTION=254, IDENTIFIER=255;
+		LEFT_OP=1, RIGHT_OP=2, INC_OP=3, DEC_OP=4, LE_OP=5, GE_OP=6, EQ_OP=7, 
+		NE_OP=8, AND_OP=9, OR_OP=10, XOR_OP=11, MUL_ASSIGN=12, DIV_ASSIGN=13, 
+		ADD_ASSIGN=14, MOD_ASSIGN=15, LEFT_ASSIGN=16, RIGHT_ASSIGN=17, AND_ASSIGN=18, 
+		XOR_ASSIGN=19, OR_ASSIGN=20, SUB_ASSIGN=21, LEFT_PAREN=22, RIGHT_PAREN=23, 
+		LEFT_BRACKET=24, RIGHT_BRACKET=25, LEFT_BRACE=26, RIGHT_BRACE=27, DOT=28, 
+		COMMA=29, COLON=30, EQUAL=31, SEMICOLON=32, BANG=33, DASH=34, TILDE=35, 
+		PLUS=36, STAR=37, SLASH=38, PERCENT=39, LEFT_ANGLE=40, RIGHT_ANGLE=41, 
+		VERTICAL_BAR=42, CARET=43, AMPERSAND=44, QUESTION=45, IDENTIFIER=46, BUILTIN_TYPE=47, 
+		VOID=48, BOOLCONSTANT=49, INTCONSTANT=50, UINTCONSTANT=51, FLOATCONSTANT=52, 
+		DOUBLECONSTANT=53, ATTRIBUTE=54, CONST=55, UNIFORM=56, VARYING=57, BUFFER=58, 
+		SHARED=59, COHERENT=60, VOLATILE=61, RESTRICT=62, READONLY=63, WRITEONLY=64, 
+		LAYOUT=65, CENTROID=66, FLAT=67, SMOOTH=68, NOPERSPECTIVE=69, PATCH=70, 
+		SAMPLE=71, BREAK=72, CONTINUE=73, DO=74, FOR=75, WHILE=76, SWITCH=77, 
+		CASE=78, DEFAULT=79, IF=80, ELSE=81, SUBROUTINE=82, IN=83, OUT=84, INOUT=85, 
+		INVARIANT=86, PRECISE=87, DISCARD=88, RETURN=89, LOWP=90, MEDIUMP=91, 
+		HIGHP=92, PRECISION=93, STRUCT=94;
 	public static final int
 		RULE_glsl = 0, RULE_glslDeclaration = 1, RULE_glslDeclarationStatement = 2, 
 		RULE_glslTypePrecisionDeclaration = 3, RULE_glslVariableDeclarations = 4, 
@@ -122,93 +91,23 @@ public class GLSLParser extends Parser {
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, "'attribute'", "'const'", "'uniform'", "'varying'", "'buffer'", 
-		"'shared'", "'coherent'", "'volatile'", "'restrict'", "'readonly'", "'writeonly'", 
-		"'atomic_uint'", "'layout'", "'centroid'", "'flat'", "'smooth'", "'noperspective'", 
-		"'patch'", "'sample'", "'break'", "'continue'", "'do'", "'for'", "'while'", 
-		"'switch'", "'case'", "'default'", "'if'", "'else'", "'subroutine'", "'in'", 
-		"'out'", "'inout'", "'float'", "'double'", "'int'", "'void'", "'bool'", 
-		"'invariant'", "'precise'", "'discard'", "'return'", "'mat2'", "'mat3'", 
-		"'mat4'", "'dmat2'", "'dmat3'", "'dmat4'", "'mat2x2'", "'mat2x3'", "'mat2x4'", 
-		"'dmat2x2'", "'dmat2x3'", "'dmat2x4'", "'mat3x2'", "'mat3x3'", "'mat3x4'", 
-		"'dmat3x2'", "'dmat3x3'", "'dmat3x4'", "'mat4x2'", "'mat4x3'", "'mat4x4'", 
-		"'dmat4x2'", "'dmat4x3'", "'dmat4x4'", "'vec2'", "'vec3'", "'vec4'", "'ivec2'", 
-		"'ivec3'", "'ivec4'", "'bvec2'", "'bvec3'", "'bvec4'", "'dvec2'", "'dvec3'", 
-		"'dvec4'", "'uint'", "'uvec2'", "'uvec3'", "'uvec4'", "'lowp'", "'mediump'", 
-		"'highp'", "'precision'", "'sampler1D'", "'sampler2D'", "'sampler3D'", 
-		"'samplerCube'", "'sampler1DShadow'", "'sampler2DShadow'", "'samplerCubeShadow'", 
-		"'sampler1DArray'", "'sampler2DArray'", "'sampler1DArrayShadow'", "'sampler2DArrayShadow'", 
-		"'isampler1D'", "'isampler2D'", "'isampler3D'", "'isamplerCube'", "'isampler1DArray'", 
-		"'isampler2DArray'", "'usampler1D'", "'usampler2D'", "'usampler3D'", "'usamplerCube'", 
-		"'usampler1DArray'", "'usampler2DArray'", "'sampler2DRect'", "'sampler2DRectShadow'", 
-		"'isampler2DRect'", "'usampler2DRect'", "'samplerBuffer'", "'isamplerBuffer'", 
-		"'usamplerBuffer'", "'sampler2DMS'", "'isampler2DMS'", "'usampler2DMS'", 
-		"'sampler2DMSArray'", "'isampler2DMSArray'", "'usampler2DMSArray'", "'samplerCubeArray'", 
-		"'samplerCubeArrayShadow'", "'isamplerCubeArray'", "'usamplerCubeArray'", 
-		"'image1D'", "'iimage1D'", "'uimage1D'", "'image2D'", "'iimage2D'", "'uimage2D'", 
-		"'image3D'", "'iimage3D'", "'uimage3D'", "'image2DRect'", "'iimage2DRect'", 
-		"'uimage2DRect'", "'imageCube'", "'iimageCube'", "'uimageCube'", "'imageBuffer'", 
-		"'iimageBuffer'", "'uimageBuffer'", "'image1DArray'", "'iimage1DArray'", 
-		"'uimage1DArray'", "'image2DArray'", "'iimage2DArray'", "'uimage2DArray'", 
-		"'imageCubeArray'", "'iimageCubeArray'", "'uimageCubeArray'", "'image2DMS'", 
-		"'iimage2DMS'", "'uimage2DMS'", "'image2DMSArray'", "'iimage2DMSArray'", 
-		"'uimage2DMSArray'", "'samplerExternalOES'", "'struct'", "'common'", "'partition'", 
-		"'active'", "'asm'", "'class'", "'union'", "'enum'", "'typedef'", "'template'", 
-		"'this'", "'resource'", "'goto'", "'inline'", "'noinline'", "'public'", 
-		"'static'", "'extern'", "'external'", "'interface'", "'long'", "'short'", 
-		"'half'", "'fixed'", "'unsigned'", "'superp'", "'input'", "'output'", 
-		"'hvec2'", "'hvec3'", "'hvec4'", "'fvec2'", "'fvec3'", "'fvec4'", "'sampler3DRect'", 
-		"'filter'", "'sizeof'", "'cast'", "'namespace'", "'using'", null, null, 
-		null, null, null, null, null, null, null, "'<<'", "'>>'", "'++'", "'--'", 
-		"'<='", "'>='", "'=='", "'!='", "'&&'", "'||'", "'^^'", "'*='", "'/='", 
-		"'+='", "'%='", "'<<='", "'>>='", "'&='", "'^='", "'|='", "'-='", "'('", 
-		"')'", "'['", "']'", "'{'", "'}'", "'.'", "','", "':'", "'='", "';'", 
-		"'!'", "'-'", "'~'", "'+'", "'*'", "'/'", "'%'", "'<'", "'>'", "'|'", 
-		"'^'", "'&'", "'?'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, "ATTRIBUTE", "CONST", "UNIFORM", "VARYING", "BUFFER", "SHARED", 
-		"COHERENT", "VOLATILE", "RESTRICT", "READONLY", "WRITEONLY", "ATOMIC_UINT", 
-		"LAYOUT", "CENTROID", "FLAT", "SMOOTH", "NOPERSPECTIVE", "PATCH", "SAMPLE", 
-		"BREAK", "CONTINUE", "DO", "FOR", "WHILE", "SWITCH", "CASE", "DEFAULT", 
-		"IF", "ELSE", "SUBROUTINE", "IN", "OUT", "INOUT", "FLOAT", "DOUBLE", "INT", 
-		"VOID", "BOOL", "INVARIANT", "PRECISE", "DISCARD", "RETURN", "MAT2", "MAT3", 
-		"MAT4", "DMAT2", "DMAT3", "DMAT4", "MAT2X2", "MAT2X3", "MAT2X4", "DMAT2X2", 
-		"DMAT2X3", "DMAT2X4", "MAT3X2", "MAT3X3", "MAT3X4", "DMAT3X2", "DMAT3X3", 
-		"DMAT3X4", "MAT4X2", "MAT4X3", "MAT4X4", "DMAT4X2", "DMAT4X3", "DMAT4X4", 
-		"VEC2", "VEC3", "VEC4", "IVEC2", "IVEC3", "IVEC4", "BVEC2", "BVEC3", "BVEC4", 
-		"DVEC2", "DVEC3", "DVEC4", "UINT", "UVEC2", "UVEC3", "UVEC4", "LOW_PRECISION", 
-		"MEDIUM_PRECISION", "HIGH_PRECISION", "PRECISION", "SAMPLER1D", "SAMPLER2D", 
-		"SAMPLER3D", "SAMPLERCUBE", "SAMPLER1DSHADOW", "SAMPLER2DSHADOW", "SAMPLERCUBESHADOW", 
-		"SAMPLER1DARRAY", "SAMPLER2DARRAY", "SAMPLER1DARRAYSHADOW", "SAMPLER2DARRAYSHADOW", 
-		"ISAMPLER1D", "ISAMPLER2D", "ISAMPLER3D", "ISAMPLERCUBE", "ISAMPLER1DARRAY", 
-		"ISAMPLER2DARRAY", "USAMPLER1D", "USAMPLER2D", "USAMPLER3D", "USAMPLERCUBE", 
-		"USAMPLER1DARRAY", "USAMPLER2DARRAY", "SAMPLER2DRECT", "SAMPLER2DRECTSHADOW", 
-		"ISAMPLER2DRECT", "USAMPLER2DRECT", "SAMPLERBUFFER", "ISAMPLERBUFFER", 
-		"USAMPLERBUFFER", "SAMPLER2DMS", "ISAMPLER2DMS", "USAMPLER2DMS", "SAMPLER2DMSARRAY", 
-		"ISAMPLER2DMSARRAY", "USAMPLER2DMSARRAY", "SAMPLERCUBEARRAY", "SAMPLERCUBEARRAYSHADOW", 
-		"ISAMPLERCUBEARRAY", "USAMPLERCUBEARRAY", "IMAGE1D", "IIMAGE1D", "UIMAGE1D", 
-		"IMAGE2D", "IIMAGE2D", "UIMAGE2D", "IMAGE3D", "IIMAGE3D", "UIMAGE3D", 
-		"IMAGE2DRECT", "IIMAGE2DRECT", "UIMAGE2DRECT", "IMAGECUBE", "IIMAGECUBE", 
-		"UIMAGECUBE", "IMAGEBUFFER", "IIMAGEBUFFER", "UIMAGEBUFFER", "IMAGE1DARRAY", 
-		"IIMAGE1DARRAY", "UIMAGE1DARRAY", "IMAGE2DARRAY", "IIMAGE2DARRAY", "UIMAGE2DARRAY", 
-		"IMAGECUBEARRAY", "IIMAGECUBEARRAY", "UIMAGECUBEARRAY", "IMAGE2DMS", "IIMAGE2DMS", 
-		"UIMAGE2DMS", "IMAGE2DMSARRAY", "IIMAGE2DMSARRAY", "UIMAGE2DMSARRAY", 
-		"SAMPLEREXTERNALOES", "STRUCT", "COMMON", "PARTITION", "ACTIVE", "ASM", 
-		"CLASS", "UNION", "ENUM", "TYPEDEF", "TEMPLATE", "THIS", "RESOURCE", "GOTO", 
-		"INLINE", "NOINLINE", "PUBLIC", "STATIC", "EXTERN", "EXTERNAL", "INTERFACE", 
-		"LONG", "SHORT", "HALF", "FIXED", "UNSIGNED", "SUPERP", "INPUT", "OUTPUT", 
-		"HVEC2", "HVEC3", "HVEC4", "FVEC2", "FVEC3", "FVEC4", "SAMPLER3DRECT", 
-		"FILTER", "SIZEOF", "CAST", "NAMESPACE", "USING", "WHITESPACE", "LINE_CONTINUATION", 
-		"MULTILINE_COMMENT", "SINGLELINE_COMMENT", "BOOLCONSTANT", "FLOATCONSTANT", 
-		"DOUBLECONSTANT", "INTCONSTANT", "UINTCONSTANT", "LEFT_OP", "RIGHT_OP", 
-		"INC_OP", "DEC_OP", "LE_OP", "GE_OP", "EQ_OP", "NE_OP", "AND_OP", "OR_OP", 
-		"XOR_OP", "MUL_ASSIGN", "DIV_ASSIGN", "ADD_ASSIGN", "MOD_ASSIGN", "LEFT_ASSIGN", 
-		"RIGHT_ASSIGN", "AND_ASSIGN", "XOR_ASSIGN", "OR_ASSIGN", "SUB_ASSIGN", 
-		"LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACKET", "RIGHT_BRACKET", "LEFT_BRACE", 
-		"RIGHT_BRACE", "DOT", "COMMA", "COLON", "EQUAL", "SEMICOLON", "BANG", 
-		"DASH", "TILDE", "PLUS", "STAR", "SLASH", "PERCENT", "LEFT_ANGLE", "RIGHT_ANGLE", 
-		"VERTICAL_BAR", "CARET", "AMPERSAND", "QUESTION", "IDENTIFIER"
+		null, "LEFT_OP", "RIGHT_OP", "INC_OP", "DEC_OP", "LE_OP", "GE_OP", "EQ_OP", 
+		"NE_OP", "AND_OP", "OR_OP", "XOR_OP", "MUL_ASSIGN", "DIV_ASSIGN", "ADD_ASSIGN", 
+		"MOD_ASSIGN", "LEFT_ASSIGN", "RIGHT_ASSIGN", "AND_ASSIGN", "XOR_ASSIGN", 
+		"OR_ASSIGN", "SUB_ASSIGN", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACKET", 
+		"RIGHT_BRACKET", "LEFT_BRACE", "RIGHT_BRACE", "DOT", "COMMA", "COLON", 
+		"EQUAL", "SEMICOLON", "BANG", "DASH", "TILDE", "PLUS", "STAR", "SLASH", 
+		"PERCENT", "LEFT_ANGLE", "RIGHT_ANGLE", "VERTICAL_BAR", "CARET", "AMPERSAND", 
+		"QUESTION", "IDENTIFIER", "BUILTIN_TYPE", "VOID", "BOOLCONSTANT", "INTCONSTANT", 
+		"UINTCONSTANT", "FLOATCONSTANT", "DOUBLECONSTANT", "ATTRIBUTE", "CONST", 
+		"UNIFORM", "VARYING", "BUFFER", "SHARED", "COHERENT", "VOLATILE", "RESTRICT", 
+		"READONLY", "WRITEONLY", "LAYOUT", "CENTROID", "FLAT", "SMOOTH", "NOPERSPECTIVE", 
+		"PATCH", "SAMPLE", "BREAK", "CONTINUE", "DO", "FOR", "WHILE", "SWITCH", 
+		"CASE", "DEFAULT", "IF", "ELSE", "SUBROUTINE", "IN", "OUT", "INOUT", "INVARIANT", 
+		"PRECISE", "DISCARD", "RETURN", "LOWP", "MEDIUMP", "HIGHP", "PRECISION", 
+		"STRUCT"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -872,7 +771,7 @@ public class GLSLParser extends Parser {
 			setState(254);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << INVARIANT) | (1L << PRECISE) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4) | (1L << MAT3X2) | (1L << MAT3X3) | (1L << MAT3X4) | (1L << DMAT3X2) | (1L << DMAT3X3) | (1L << DMAT3X4) | (1L << MAT4X2) | (1L << MAT4X3) | (1L << MAT4X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)) | (1L << (USAMPLER2DMS - 64)) | (1L << (SAMPLER2DMSARRAY - 64)) | (1L << (ISAMPLER2DMSARRAY - 64)) | (1L << (USAMPLER2DMSARRAY - 64)) | (1L << (SAMPLERCUBEARRAY - 64)) | (1L << (SAMPLERCUBEARRAYSHADOW - 64)) | (1L << (ISAMPLERCUBEARRAY - 64)) | (1L << (USAMPLERCUBEARRAY - 64)) | (1L << (IMAGE1D - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)))) != 0) || _la==IDENTIFIER) {
+			if (((((_la - 46)) & ~0x3f) == 0 && ((1L << (_la - 46)) & ((1L << (IDENTIFIER - 46)) | (1L << (BUILTIN_TYPE - 46)) | (1L << (VOID - 46)) | (1L << (ATTRIBUTE - 46)) | (1L << (CONST - 46)) | (1L << (UNIFORM - 46)) | (1L << (VARYING - 46)) | (1L << (BUFFER - 46)) | (1L << (SHARED - 46)) | (1L << (COHERENT - 46)) | (1L << (VOLATILE - 46)) | (1L << (RESTRICT - 46)) | (1L << (READONLY - 46)) | (1L << (WRITEONLY - 46)) | (1L << (LAYOUT - 46)) | (1L << (CENTROID - 46)) | (1L << (FLAT - 46)) | (1L << (SMOOTH - 46)) | (1L << (NOPERSPECTIVE - 46)) | (1L << (PATCH - 46)) | (1L << (SAMPLE - 46)) | (1L << (SUBROUTINE - 46)) | (1L << (IN - 46)) | (1L << (OUT - 46)) | (1L << (INOUT - 46)) | (1L << (INVARIANT - 46)) | (1L << (PRECISE - 46)) | (1L << (LOWP - 46)) | (1L << (MEDIUMP - 46)) | (1L << (HIGHP - 46)) | (1L << (STRUCT - 46)))) != 0)) {
 				{
 				setState(253);
 				glslFunctionParameters();
@@ -1007,7 +906,7 @@ public class GLSLParser extends Parser {
 			setState(267);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << INVARIANT) | (1L << PRECISE))) != 0) || ((((_la - 83)) & ~0x3f) == 0 && ((1L << (_la - 83)) & ((1L << (LOW_PRECISION - 83)) | (1L << (MEDIUM_PRECISION - 83)) | (1L << (HIGH_PRECISION - 83)))) != 0)) {
+			if (((((_la - 54)) & ~0x3f) == 0 && ((1L << (_la - 54)) & ((1L << (ATTRIBUTE - 54)) | (1L << (CONST - 54)) | (1L << (UNIFORM - 54)) | (1L << (VARYING - 54)) | (1L << (BUFFER - 54)) | (1L << (SHARED - 54)) | (1L << (COHERENT - 54)) | (1L << (VOLATILE - 54)) | (1L << (RESTRICT - 54)) | (1L << (READONLY - 54)) | (1L << (WRITEONLY - 54)) | (1L << (LAYOUT - 54)) | (1L << (CENTROID - 54)) | (1L << (FLAT - 54)) | (1L << (SMOOTH - 54)) | (1L << (NOPERSPECTIVE - 54)) | (1L << (PATCH - 54)) | (1L << (SAMPLE - 54)) | (1L << (SUBROUTINE - 54)) | (1L << (IN - 54)) | (1L << (OUT - 54)) | (1L << (INOUT - 54)) | (1L << (INVARIANT - 54)) | (1L << (PRECISE - 54)) | (1L << (LOWP - 54)) | (1L << (MEDIUMP - 54)) | (1L << (HIGHP - 54)))) != 0)) {
 				{
 				setState(266);
 				glslTypeQualifier();
@@ -1170,7 +1069,7 @@ public class GLSLParser extends Parser {
 			setState(291);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << INVARIANT) | (1L << PRECISE))) != 0) || ((((_la - 83)) & ~0x3f) == 0 && ((1L << (_la - 83)) & ((1L << (LOW_PRECISION - 83)) | (1L << (MEDIUM_PRECISION - 83)) | (1L << (HIGH_PRECISION - 83)))) != 0)) {
+			if (((((_la - 54)) & ~0x3f) == 0 && ((1L << (_la - 54)) & ((1L << (ATTRIBUTE - 54)) | (1L << (CONST - 54)) | (1L << (UNIFORM - 54)) | (1L << (VARYING - 54)) | (1L << (BUFFER - 54)) | (1L << (SHARED - 54)) | (1L << (COHERENT - 54)) | (1L << (VOLATILE - 54)) | (1L << (RESTRICT - 54)) | (1L << (READONLY - 54)) | (1L << (WRITEONLY - 54)) | (1L << (LAYOUT - 54)) | (1L << (CENTROID - 54)) | (1L << (FLAT - 54)) | (1L << (SMOOTH - 54)) | (1L << (NOPERSPECTIVE - 54)) | (1L << (PATCH - 54)) | (1L << (SAMPLE - 54)) | (1L << (SUBROUTINE - 54)) | (1L << (IN - 54)) | (1L << (OUT - 54)) | (1L << (INOUT - 54)) | (1L << (INVARIANT - 54)) | (1L << (PRECISE - 54)) | (1L << (LOWP - 54)) | (1L << (MEDIUMP - 54)) | (1L << (HIGHP - 54)))) != 0)) {
 				{
 				setState(290);
 				glslTypeQualifier();
@@ -1236,132 +1135,6 @@ public class GLSLParser extends Parser {
 			setState(310);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case ATOMIC_UINT:
-			case FLOAT:
-			case DOUBLE:
-			case INT:
-			case VOID:
-			case BOOL:
-			case MAT2:
-			case MAT3:
-			case MAT4:
-			case DMAT2:
-			case DMAT3:
-			case DMAT4:
-			case MAT2X2:
-			case MAT2X3:
-			case MAT2X4:
-			case DMAT2X2:
-			case DMAT2X3:
-			case DMAT2X4:
-			case MAT3X2:
-			case MAT3X3:
-			case MAT3X4:
-			case DMAT3X2:
-			case DMAT3X3:
-			case DMAT3X4:
-			case MAT4X2:
-			case MAT4X3:
-			case MAT4X4:
-			case DMAT4X2:
-			case DMAT4X3:
-			case DMAT4X4:
-			case VEC2:
-			case VEC3:
-			case VEC4:
-			case IVEC2:
-			case IVEC3:
-			case IVEC4:
-			case BVEC2:
-			case BVEC3:
-			case BVEC4:
-			case DVEC2:
-			case DVEC3:
-			case DVEC4:
-			case UINT:
-			case UVEC2:
-			case UVEC3:
-			case UVEC4:
-			case SAMPLER1D:
-			case SAMPLER2D:
-			case SAMPLER3D:
-			case SAMPLERCUBE:
-			case SAMPLER1DSHADOW:
-			case SAMPLER2DSHADOW:
-			case SAMPLERCUBESHADOW:
-			case SAMPLER1DARRAY:
-			case SAMPLER2DARRAY:
-			case SAMPLER1DARRAYSHADOW:
-			case SAMPLER2DARRAYSHADOW:
-			case ISAMPLER1D:
-			case ISAMPLER2D:
-			case ISAMPLER3D:
-			case ISAMPLERCUBE:
-			case ISAMPLER1DARRAY:
-			case ISAMPLER2DARRAY:
-			case USAMPLER1D:
-			case USAMPLER2D:
-			case USAMPLER3D:
-			case USAMPLERCUBE:
-			case USAMPLER1DARRAY:
-			case USAMPLER2DARRAY:
-			case SAMPLER2DRECT:
-			case SAMPLER2DRECTSHADOW:
-			case ISAMPLER2DRECT:
-			case USAMPLER2DRECT:
-			case SAMPLERBUFFER:
-			case ISAMPLERBUFFER:
-			case USAMPLERBUFFER:
-			case SAMPLER2DMS:
-			case ISAMPLER2DMS:
-			case USAMPLER2DMS:
-			case SAMPLER2DMSARRAY:
-			case ISAMPLER2DMSARRAY:
-			case USAMPLER2DMSARRAY:
-			case SAMPLERCUBEARRAY:
-			case SAMPLERCUBEARRAYSHADOW:
-			case ISAMPLERCUBEARRAY:
-			case USAMPLERCUBEARRAY:
-			case IMAGE1D:
-			case IIMAGE1D:
-			case UIMAGE1D:
-			case IMAGE2D:
-			case IIMAGE2D:
-			case UIMAGE2D:
-			case IMAGE3D:
-			case IIMAGE3D:
-			case UIMAGE3D:
-			case IMAGE2DRECT:
-			case IIMAGE2DRECT:
-			case UIMAGE2DRECT:
-			case IMAGECUBE:
-			case IIMAGECUBE:
-			case UIMAGECUBE:
-			case IMAGEBUFFER:
-			case IIMAGEBUFFER:
-			case UIMAGEBUFFER:
-			case IMAGE1DARRAY:
-			case IIMAGE1DARRAY:
-			case UIMAGE1DARRAY:
-			case IMAGE2DARRAY:
-			case IIMAGE2DARRAY:
-			case UIMAGE2DARRAY:
-			case IMAGECUBEARRAY:
-			case IIMAGECUBEARRAY:
-			case UIMAGECUBEARRAY:
-			case IMAGE2DMS:
-			case IIMAGE2DMS:
-			case UIMAGE2DMS:
-			case IMAGE2DMSARRAY:
-			case IIMAGE2DMSARRAY:
-			case UIMAGE2DMSARRAY:
-			case SAMPLEREXTERNALOES:
-			case STRUCT:
-			case BOOLCONSTANT:
-			case FLOATCONSTANT:
-			case DOUBLECONSTANT:
-			case INTCONSTANT:
-			case UINTCONSTANT:
 			case INC_OP:
 			case DEC_OP:
 			case LEFT_PAREN:
@@ -1370,6 +1143,14 @@ public class GLSLParser extends Parser {
 			case TILDE:
 			case PLUS:
 			case IDENTIFIER:
+			case BUILTIN_TYPE:
+			case VOID:
+			case BOOLCONSTANT:
+			case INTCONSTANT:
+			case UINTCONSTANT:
+			case FLOATCONSTANT:
+			case DOUBLECONSTANT:
+			case STRUCT:
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(295);
@@ -1470,6 +1251,22 @@ public class GLSLParser extends Parser {
 				glslCompoundStatement();
 				}
 				break;
+			case INC_OP:
+			case DEC_OP:
+			case LEFT_PAREN:
+			case SEMICOLON:
+			case BANG:
+			case DASH:
+			case TILDE:
+			case PLUS:
+			case IDENTIFIER:
+			case BUILTIN_TYPE:
+			case VOID:
+			case BOOLCONSTANT:
+			case INTCONSTANT:
+			case UINTCONSTANT:
+			case FLOATCONSTANT:
+			case DOUBLECONSTANT:
 			case ATTRIBUTE:
 			case CONST:
 			case UNIFORM:
@@ -1481,7 +1278,6 @@ public class GLSLParser extends Parser {
 			case RESTRICT:
 			case READONLY:
 			case WRITEONLY:
-			case ATOMIC_UINT:
 			case LAYOUT:
 			case CENTROID:
 			case FLAT:
@@ -1500,148 +1296,15 @@ public class GLSLParser extends Parser {
 			case IN:
 			case OUT:
 			case INOUT:
-			case FLOAT:
-			case DOUBLE:
-			case INT:
-			case VOID:
-			case BOOL:
 			case INVARIANT:
 			case PRECISE:
 			case DISCARD:
 			case RETURN:
-			case MAT2:
-			case MAT3:
-			case MAT4:
-			case DMAT2:
-			case DMAT3:
-			case DMAT4:
-			case MAT2X2:
-			case MAT2X3:
-			case MAT2X4:
-			case DMAT2X2:
-			case DMAT2X3:
-			case DMAT2X4:
-			case MAT3X2:
-			case MAT3X3:
-			case MAT3X4:
-			case DMAT3X2:
-			case DMAT3X3:
-			case DMAT3X4:
-			case MAT4X2:
-			case MAT4X3:
-			case MAT4X4:
-			case DMAT4X2:
-			case DMAT4X3:
-			case DMAT4X4:
-			case VEC2:
-			case VEC3:
-			case VEC4:
-			case IVEC2:
-			case IVEC3:
-			case IVEC4:
-			case BVEC2:
-			case BVEC3:
-			case BVEC4:
-			case DVEC2:
-			case DVEC3:
-			case DVEC4:
-			case UINT:
-			case UVEC2:
-			case UVEC3:
-			case UVEC4:
-			case LOW_PRECISION:
-			case MEDIUM_PRECISION:
-			case HIGH_PRECISION:
+			case LOWP:
+			case MEDIUMP:
+			case HIGHP:
 			case PRECISION:
-			case SAMPLER1D:
-			case SAMPLER2D:
-			case SAMPLER3D:
-			case SAMPLERCUBE:
-			case SAMPLER1DSHADOW:
-			case SAMPLER2DSHADOW:
-			case SAMPLERCUBESHADOW:
-			case SAMPLER1DARRAY:
-			case SAMPLER2DARRAY:
-			case SAMPLER1DARRAYSHADOW:
-			case SAMPLER2DARRAYSHADOW:
-			case ISAMPLER1D:
-			case ISAMPLER2D:
-			case ISAMPLER3D:
-			case ISAMPLERCUBE:
-			case ISAMPLER1DARRAY:
-			case ISAMPLER2DARRAY:
-			case USAMPLER1D:
-			case USAMPLER2D:
-			case USAMPLER3D:
-			case USAMPLERCUBE:
-			case USAMPLER1DARRAY:
-			case USAMPLER2DARRAY:
-			case SAMPLER2DRECT:
-			case SAMPLER2DRECTSHADOW:
-			case ISAMPLER2DRECT:
-			case USAMPLER2DRECT:
-			case SAMPLERBUFFER:
-			case ISAMPLERBUFFER:
-			case USAMPLERBUFFER:
-			case SAMPLER2DMS:
-			case ISAMPLER2DMS:
-			case USAMPLER2DMS:
-			case SAMPLER2DMSARRAY:
-			case ISAMPLER2DMSARRAY:
-			case USAMPLER2DMSARRAY:
-			case SAMPLERCUBEARRAY:
-			case SAMPLERCUBEARRAYSHADOW:
-			case ISAMPLERCUBEARRAY:
-			case USAMPLERCUBEARRAY:
-			case IMAGE1D:
-			case IIMAGE1D:
-			case UIMAGE1D:
-			case IMAGE2D:
-			case IIMAGE2D:
-			case UIMAGE2D:
-			case IMAGE3D:
-			case IIMAGE3D:
-			case UIMAGE3D:
-			case IMAGE2DRECT:
-			case IIMAGE2DRECT:
-			case UIMAGE2DRECT:
-			case IMAGECUBE:
-			case IIMAGECUBE:
-			case UIMAGECUBE:
-			case IMAGEBUFFER:
-			case IIMAGEBUFFER:
-			case UIMAGEBUFFER:
-			case IMAGE1DARRAY:
-			case IIMAGE1DARRAY:
-			case UIMAGE1DARRAY:
-			case IMAGE2DARRAY:
-			case IIMAGE2DARRAY:
-			case UIMAGE2DARRAY:
-			case IMAGECUBEARRAY:
-			case IIMAGECUBEARRAY:
-			case UIMAGECUBEARRAY:
-			case IMAGE2DMS:
-			case IIMAGE2DMS:
-			case UIMAGE2DMS:
-			case IMAGE2DMSARRAY:
-			case IIMAGE2DMSARRAY:
-			case UIMAGE2DMSARRAY:
-			case SAMPLEREXTERNALOES:
 			case STRUCT:
-			case BOOLCONSTANT:
-			case FLOATCONSTANT:
-			case DOUBLECONSTANT:
-			case INTCONSTANT:
-			case UINTCONSTANT:
-			case INC_OP:
-			case DEC_OP:
-			case LEFT_PAREN:
-			case SEMICOLON:
-			case BANG:
-			case DASH:
-			case TILDE:
-			case PLUS:
-			case IDENTIFIER:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(313);
@@ -1823,7 +1486,7 @@ public class GLSLParser extends Parser {
 			setState(330);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << IF) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << INVARIANT) | (1L << PRECISE) | (1L << DISCARD) | (1L << RETURN) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4) | (1L << MAT3X2) | (1L << MAT3X3) | (1L << MAT3X4) | (1L << DMAT3X2) | (1L << DMAT3X3) | (1L << DMAT3X4) | (1L << MAT4X2) | (1L << MAT4X3) | (1L << MAT4X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)) | (1L << (USAMPLER2DMS - 64)) | (1L << (SAMPLER2DMSARRAY - 64)) | (1L << (ISAMPLER2DMSARRAY - 64)) | (1L << (USAMPLER2DMSARRAY - 64)) | (1L << (SAMPLERCUBEARRAY - 64)) | (1L << (SAMPLERCUBEARRAYSHADOW - 64)) | (1L << (ISAMPLERCUBEARRAY - 64)) | (1L << (USAMPLERCUBEARRAY - 64)) | (1L << (IMAGE1D - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)))) != 0) || ((((_la - 205)) & ~0x3f) == 0 && ((1L << (_la - 205)) & ((1L << (BOOLCONSTANT - 205)) | (1L << (FLOATCONSTANT - 205)) | (1L << (DOUBLECONSTANT - 205)) | (1L << (INTCONSTANT - 205)) | (1L << (UINTCONSTANT - 205)) | (1L << (INC_OP - 205)) | (1L << (DEC_OP - 205)) | (1L << (LEFT_PAREN - 205)) | (1L << (LEFT_BRACE - 205)) | (1L << (SEMICOLON - 205)) | (1L << (BANG - 205)) | (1L << (DASH - 205)) | (1L << (TILDE - 205)) | (1L << (PLUS - 205)) | (1L << (IDENTIFIER - 205)))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << INC_OP) | (1L << DEC_OP) | (1L << LEFT_PAREN) | (1L << LEFT_BRACE) | (1L << SEMICOLON) | (1L << BANG) | (1L << DASH) | (1L << TILDE) | (1L << PLUS) | (1L << IDENTIFIER) | (1L << BUILTIN_TYPE) | (1L << VOID) | (1L << BOOLCONSTANT) | (1L << INTCONSTANT) | (1L << UINTCONSTANT) | (1L << FLOATCONSTANT) | (1L << DOUBLECONSTANT) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (WRITEONLY - 64)) | (1L << (LAYOUT - 64)) | (1L << (CENTROID - 64)) | (1L << (FLAT - 64)) | (1L << (SMOOTH - 64)) | (1L << (NOPERSPECTIVE - 64)) | (1L << (PATCH - 64)) | (1L << (SAMPLE - 64)) | (1L << (BREAK - 64)) | (1L << (CONTINUE - 64)) | (1L << (DO - 64)) | (1L << (FOR - 64)) | (1L << (WHILE - 64)) | (1L << (SWITCH - 64)) | (1L << (IF - 64)) | (1L << (SUBROUTINE - 64)) | (1L << (IN - 64)) | (1L << (OUT - 64)) | (1L << (INOUT - 64)) | (1L << (INVARIANT - 64)) | (1L << (PRECISE - 64)) | (1L << (DISCARD - 64)) | (1L << (RETURN - 64)) | (1L << (LOWP - 64)) | (1L << (MEDIUMP - 64)) | (1L << (HIGHP - 64)) | (1L << (PRECISION - 64)) | (1L << (STRUCT - 64)))) != 0)) {
 				{
 				{
 				setState(327);
@@ -1883,7 +1546,7 @@ public class GLSLParser extends Parser {
 			setState(336);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATOMIC_UINT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4) | (1L << MAT3X2) | (1L << MAT3X3) | (1L << MAT3X4) | (1L << DMAT3X2) | (1L << DMAT3X3) | (1L << DMAT3X4) | (1L << MAT4X2) | (1L << MAT4X3) | (1L << MAT4X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)) | (1L << (USAMPLER2DMS - 64)) | (1L << (SAMPLER2DMSARRAY - 64)) | (1L << (ISAMPLER2DMSARRAY - 64)) | (1L << (USAMPLER2DMSARRAY - 64)) | (1L << (SAMPLERCUBEARRAY - 64)) | (1L << (SAMPLERCUBEARRAYSHADOW - 64)) | (1L << (ISAMPLERCUBEARRAY - 64)) | (1L << (USAMPLERCUBEARRAY - 64)) | (1L << (IMAGE1D - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)))) != 0) || ((((_la - 205)) & ~0x3f) == 0 && ((1L << (_la - 205)) & ((1L << (BOOLCONSTANT - 205)) | (1L << (FLOATCONSTANT - 205)) | (1L << (DOUBLECONSTANT - 205)) | (1L << (INTCONSTANT - 205)) | (1L << (UINTCONSTANT - 205)) | (1L << (INC_OP - 205)) | (1L << (DEC_OP - 205)) | (1L << (LEFT_PAREN - 205)) | (1L << (BANG - 205)) | (1L << (DASH - 205)) | (1L << (TILDE - 205)) | (1L << (PLUS - 205)) | (1L << (IDENTIFIER - 205)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << INC_OP) | (1L << DEC_OP) | (1L << LEFT_PAREN) | (1L << BANG) | (1L << DASH) | (1L << TILDE) | (1L << PLUS) | (1L << IDENTIFIER) | (1L << BUILTIN_TYPE) | (1L << VOID) | (1L << BOOLCONSTANT) | (1L << INTCONSTANT) | (1L << UINTCONSTANT) | (1L << FLOATCONSTANT) | (1L << DOUBLECONSTANT))) != 0) || _la==STRUCT) {
 				{
 				setState(335);
 				glslExpression();
@@ -2166,7 +1829,7 @@ public class GLSLParser extends Parser {
 			setState(374);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << BREAK) | (1L << CONTINUE) | (1L << DO) | (1L << FOR) | (1L << WHILE) | (1L << SWITCH) | (1L << CASE) | (1L << DEFAULT) | (1L << IF) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << INVARIANT) | (1L << PRECISE) | (1L << DISCARD) | (1L << RETURN) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4) | (1L << MAT3X2) | (1L << MAT3X3) | (1L << MAT3X4) | (1L << DMAT3X2) | (1L << DMAT3X3) | (1L << DMAT3X4) | (1L << MAT4X2) | (1L << MAT4X3) | (1L << MAT4X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)) | (1L << (USAMPLER2DMS - 64)) | (1L << (SAMPLER2DMSARRAY - 64)) | (1L << (ISAMPLER2DMSARRAY - 64)) | (1L << (USAMPLER2DMSARRAY - 64)) | (1L << (SAMPLERCUBEARRAY - 64)) | (1L << (SAMPLERCUBEARRAYSHADOW - 64)) | (1L << (ISAMPLERCUBEARRAY - 64)) | (1L << (USAMPLERCUBEARRAY - 64)) | (1L << (IMAGE1D - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)))) != 0) || ((((_la - 205)) & ~0x3f) == 0 && ((1L << (_la - 205)) & ((1L << (BOOLCONSTANT - 205)) | (1L << (FLOATCONSTANT - 205)) | (1L << (DOUBLECONSTANT - 205)) | (1L << (INTCONSTANT - 205)) | (1L << (UINTCONSTANT - 205)) | (1L << (INC_OP - 205)) | (1L << (DEC_OP - 205)) | (1L << (LEFT_PAREN - 205)) | (1L << (LEFT_BRACE - 205)) | (1L << (SEMICOLON - 205)) | (1L << (BANG - 205)) | (1L << (DASH - 205)) | (1L << (TILDE - 205)) | (1L << (PLUS - 205)) | (1L << (IDENTIFIER - 205)))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << INC_OP) | (1L << DEC_OP) | (1L << LEFT_PAREN) | (1L << LEFT_BRACE) | (1L << SEMICOLON) | (1L << BANG) | (1L << DASH) | (1L << TILDE) | (1L << PLUS) | (1L << IDENTIFIER) | (1L << BUILTIN_TYPE) | (1L << VOID) | (1L << BOOLCONSTANT) | (1L << INTCONSTANT) | (1L << UINTCONSTANT) | (1L << FLOATCONSTANT) | (1L << DOUBLECONSTANT) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (WRITEONLY - 64)) | (1L << (LAYOUT - 64)) | (1L << (CENTROID - 64)) | (1L << (FLAT - 64)) | (1L << (SMOOTH - 64)) | (1L << (NOPERSPECTIVE - 64)) | (1L << (PATCH - 64)) | (1L << (SAMPLE - 64)) | (1L << (BREAK - 64)) | (1L << (CONTINUE - 64)) | (1L << (DO - 64)) | (1L << (FOR - 64)) | (1L << (WHILE - 64)) | (1L << (SWITCH - 64)) | (1L << (CASE - 64)) | (1L << (DEFAULT - 64)) | (1L << (IF - 64)) | (1L << (SUBROUTINE - 64)) | (1L << (IN - 64)) | (1L << (OUT - 64)) | (1L << (INOUT - 64)) | (1L << (INVARIANT - 64)) | (1L << (PRECISE - 64)) | (1L << (DISCARD - 64)) | (1L << (RETURN - 64)) | (1L << (LOWP - 64)) | (1L << (MEDIUMP - 64)) | (1L << (HIGHP - 64)) | (1L << (PRECISION - 64)) | (1L << (STRUCT - 64)))) != 0)) {
 				{
 				{
 				setState(371);
@@ -2248,6 +1911,23 @@ public class GLSLParser extends Parser {
 				match(COLON);
 				}
 				break;
+			case INC_OP:
+			case DEC_OP:
+			case LEFT_PAREN:
+			case LEFT_BRACE:
+			case SEMICOLON:
+			case BANG:
+			case DASH:
+			case TILDE:
+			case PLUS:
+			case IDENTIFIER:
+			case BUILTIN_TYPE:
+			case VOID:
+			case BOOLCONSTANT:
+			case INTCONSTANT:
+			case UINTCONSTANT:
+			case FLOATCONSTANT:
+			case DOUBLECONSTANT:
 			case ATTRIBUTE:
 			case CONST:
 			case UNIFORM:
@@ -2259,7 +1939,6 @@ public class GLSLParser extends Parser {
 			case RESTRICT:
 			case READONLY:
 			case WRITEONLY:
-			case ATOMIC_UINT:
 			case LAYOUT:
 			case CENTROID:
 			case FLAT:
@@ -2278,149 +1957,15 @@ public class GLSLParser extends Parser {
 			case IN:
 			case OUT:
 			case INOUT:
-			case FLOAT:
-			case DOUBLE:
-			case INT:
-			case VOID:
-			case BOOL:
 			case INVARIANT:
 			case PRECISE:
 			case DISCARD:
 			case RETURN:
-			case MAT2:
-			case MAT3:
-			case MAT4:
-			case DMAT2:
-			case DMAT3:
-			case DMAT4:
-			case MAT2X2:
-			case MAT2X3:
-			case MAT2X4:
-			case DMAT2X2:
-			case DMAT2X3:
-			case DMAT2X4:
-			case MAT3X2:
-			case MAT3X3:
-			case MAT3X4:
-			case DMAT3X2:
-			case DMAT3X3:
-			case DMAT3X4:
-			case MAT4X2:
-			case MAT4X3:
-			case MAT4X4:
-			case DMAT4X2:
-			case DMAT4X3:
-			case DMAT4X4:
-			case VEC2:
-			case VEC3:
-			case VEC4:
-			case IVEC2:
-			case IVEC3:
-			case IVEC4:
-			case BVEC2:
-			case BVEC3:
-			case BVEC4:
-			case DVEC2:
-			case DVEC3:
-			case DVEC4:
-			case UINT:
-			case UVEC2:
-			case UVEC3:
-			case UVEC4:
-			case LOW_PRECISION:
-			case MEDIUM_PRECISION:
-			case HIGH_PRECISION:
+			case LOWP:
+			case MEDIUMP:
+			case HIGHP:
 			case PRECISION:
-			case SAMPLER1D:
-			case SAMPLER2D:
-			case SAMPLER3D:
-			case SAMPLERCUBE:
-			case SAMPLER1DSHADOW:
-			case SAMPLER2DSHADOW:
-			case SAMPLERCUBESHADOW:
-			case SAMPLER1DARRAY:
-			case SAMPLER2DARRAY:
-			case SAMPLER1DARRAYSHADOW:
-			case SAMPLER2DARRAYSHADOW:
-			case ISAMPLER1D:
-			case ISAMPLER2D:
-			case ISAMPLER3D:
-			case ISAMPLERCUBE:
-			case ISAMPLER1DARRAY:
-			case ISAMPLER2DARRAY:
-			case USAMPLER1D:
-			case USAMPLER2D:
-			case USAMPLER3D:
-			case USAMPLERCUBE:
-			case USAMPLER1DARRAY:
-			case USAMPLER2DARRAY:
-			case SAMPLER2DRECT:
-			case SAMPLER2DRECTSHADOW:
-			case ISAMPLER2DRECT:
-			case USAMPLER2DRECT:
-			case SAMPLERBUFFER:
-			case ISAMPLERBUFFER:
-			case USAMPLERBUFFER:
-			case SAMPLER2DMS:
-			case ISAMPLER2DMS:
-			case USAMPLER2DMS:
-			case SAMPLER2DMSARRAY:
-			case ISAMPLER2DMSARRAY:
-			case USAMPLER2DMSARRAY:
-			case SAMPLERCUBEARRAY:
-			case SAMPLERCUBEARRAYSHADOW:
-			case ISAMPLERCUBEARRAY:
-			case USAMPLERCUBEARRAY:
-			case IMAGE1D:
-			case IIMAGE1D:
-			case UIMAGE1D:
-			case IMAGE2D:
-			case IIMAGE2D:
-			case UIMAGE2D:
-			case IMAGE3D:
-			case IIMAGE3D:
-			case UIMAGE3D:
-			case IMAGE2DRECT:
-			case IIMAGE2DRECT:
-			case UIMAGE2DRECT:
-			case IMAGECUBE:
-			case IIMAGECUBE:
-			case UIMAGECUBE:
-			case IMAGEBUFFER:
-			case IIMAGEBUFFER:
-			case UIMAGEBUFFER:
-			case IMAGE1DARRAY:
-			case IIMAGE1DARRAY:
-			case UIMAGE1DARRAY:
-			case IMAGE2DARRAY:
-			case IIMAGE2DARRAY:
-			case UIMAGE2DARRAY:
-			case IMAGECUBEARRAY:
-			case IIMAGECUBEARRAY:
-			case UIMAGECUBEARRAY:
-			case IMAGE2DMS:
-			case IIMAGE2DMS:
-			case UIMAGE2DMS:
-			case IMAGE2DMSARRAY:
-			case IIMAGE2DMSARRAY:
-			case UIMAGE2DMSARRAY:
-			case SAMPLEREXTERNALOES:
 			case STRUCT:
-			case BOOLCONSTANT:
-			case FLOATCONSTANT:
-			case DOUBLECONSTANT:
-			case INTCONSTANT:
-			case UINTCONSTANT:
-			case INC_OP:
-			case DEC_OP:
-			case LEFT_PAREN:
-			case LEFT_BRACE:
-			case SEMICOLON:
-			case BANG:
-			case DASH:
-			case TILDE:
-			case PLUS:
-			case IDENTIFIER:
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(385);
@@ -2690,7 +2235,7 @@ public class GLSLParser extends Parser {
 			setState(413);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << INVARIANT) | (1L << PRECISE) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4) | (1L << MAT3X2) | (1L << MAT3X3) | (1L << MAT3X4) | (1L << DMAT3X2) | (1L << DMAT3X3) | (1L << DMAT3X4) | (1L << MAT4X2) | (1L << MAT4X3) | (1L << MAT4X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)) | (1L << (USAMPLER2DMS - 64)) | (1L << (SAMPLER2DMSARRAY - 64)) | (1L << (ISAMPLER2DMSARRAY - 64)) | (1L << (USAMPLER2DMSARRAY - 64)) | (1L << (SAMPLERCUBEARRAY - 64)) | (1L << (SAMPLERCUBEARRAYSHADOW - 64)) | (1L << (ISAMPLERCUBEARRAY - 64)) | (1L << (USAMPLERCUBEARRAY - 64)) | (1L << (IMAGE1D - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)))) != 0) || ((((_la - 205)) & ~0x3f) == 0 && ((1L << (_la - 205)) & ((1L << (BOOLCONSTANT - 205)) | (1L << (FLOATCONSTANT - 205)) | (1L << (DOUBLECONSTANT - 205)) | (1L << (INTCONSTANT - 205)) | (1L << (UINTCONSTANT - 205)) | (1L << (INC_OP - 205)) | (1L << (DEC_OP - 205)) | (1L << (LEFT_PAREN - 205)) | (1L << (BANG - 205)) | (1L << (DASH - 205)) | (1L << (TILDE - 205)) | (1L << (PLUS - 205)) | (1L << (IDENTIFIER - 205)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << INC_OP) | (1L << DEC_OP) | (1L << LEFT_PAREN) | (1L << BANG) | (1L << DASH) | (1L << TILDE) | (1L << PLUS) | (1L << IDENTIFIER) | (1L << BUILTIN_TYPE) | (1L << VOID) | (1L << BOOLCONSTANT) | (1L << INTCONSTANT) | (1L << UINTCONSTANT) | (1L << FLOATCONSTANT) | (1L << DOUBLECONSTANT) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (WRITEONLY - 64)) | (1L << (LAYOUT - 64)) | (1L << (CENTROID - 64)) | (1L << (FLAT - 64)) | (1L << (SMOOTH - 64)) | (1L << (NOPERSPECTIVE - 64)) | (1L << (PATCH - 64)) | (1L << (SAMPLE - 64)) | (1L << (SUBROUTINE - 64)) | (1L << (IN - 64)) | (1L << (OUT - 64)) | (1L << (INOUT - 64)) | (1L << (INVARIANT - 64)) | (1L << (PRECISE - 64)) | (1L << (LOWP - 64)) | (1L << (MEDIUMP - 64)) | (1L << (HIGHP - 64)) | (1L << (PRECISION - 64)) | (1L << (STRUCT - 64)))) != 0)) {
 				{
 				setState(412);
 				glslForInitExpression();
@@ -2702,7 +2247,7 @@ public class GLSLParser extends Parser {
 			setState(417);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << INVARIANT) | (1L << PRECISE) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4) | (1L << MAT3X2) | (1L << MAT3X3) | (1L << MAT3X4) | (1L << DMAT3X2) | (1L << DMAT3X3) | (1L << DMAT3X4) | (1L << MAT4X2) | (1L << MAT4X3) | (1L << MAT4X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)) | (1L << (USAMPLER2DMS - 64)) | (1L << (SAMPLER2DMSARRAY - 64)) | (1L << (ISAMPLER2DMSARRAY - 64)) | (1L << (USAMPLER2DMSARRAY - 64)) | (1L << (SAMPLERCUBEARRAY - 64)) | (1L << (SAMPLERCUBEARRAYSHADOW - 64)) | (1L << (ISAMPLERCUBEARRAY - 64)) | (1L << (USAMPLERCUBEARRAY - 64)) | (1L << (IMAGE1D - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)))) != 0) || ((((_la - 205)) & ~0x3f) == 0 && ((1L << (_la - 205)) & ((1L << (BOOLCONSTANT - 205)) | (1L << (FLOATCONSTANT - 205)) | (1L << (DOUBLECONSTANT - 205)) | (1L << (INTCONSTANT - 205)) | (1L << (UINTCONSTANT - 205)) | (1L << (INC_OP - 205)) | (1L << (DEC_OP - 205)) | (1L << (LEFT_PAREN - 205)) | (1L << (BANG - 205)) | (1L << (DASH - 205)) | (1L << (TILDE - 205)) | (1L << (PLUS - 205)) | (1L << (IDENTIFIER - 205)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << INC_OP) | (1L << DEC_OP) | (1L << LEFT_PAREN) | (1L << BANG) | (1L << DASH) | (1L << TILDE) | (1L << PLUS) | (1L << IDENTIFIER) | (1L << BUILTIN_TYPE) | (1L << VOID) | (1L << BOOLCONSTANT) | (1L << INTCONSTANT) | (1L << UINTCONSTANT) | (1L << FLOATCONSTANT) | (1L << DOUBLECONSTANT) | (1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (WRITEONLY - 64)) | (1L << (LAYOUT - 64)) | (1L << (CENTROID - 64)) | (1L << (FLAT - 64)) | (1L << (SMOOTH - 64)) | (1L << (NOPERSPECTIVE - 64)) | (1L << (PATCH - 64)) | (1L << (SAMPLE - 64)) | (1L << (SUBROUTINE - 64)) | (1L << (IN - 64)) | (1L << (OUT - 64)) | (1L << (INOUT - 64)) | (1L << (INVARIANT - 64)) | (1L << (PRECISE - 64)) | (1L << (LOWP - 64)) | (1L << (MEDIUMP - 64)) | (1L << (HIGHP - 64)) | (1L << (STRUCT - 64)))) != 0)) {
 				{
 				setState(416);
 				glslCondition();
@@ -2714,7 +2259,7 @@ public class GLSLParser extends Parser {
 			setState(421);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATOMIC_UINT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4) | (1L << MAT3X2) | (1L << MAT3X3) | (1L << MAT3X4) | (1L << DMAT3X2) | (1L << DMAT3X3) | (1L << DMAT3X4) | (1L << MAT4X2) | (1L << MAT4X3) | (1L << MAT4X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)) | (1L << (USAMPLER2DMS - 64)) | (1L << (SAMPLER2DMSARRAY - 64)) | (1L << (ISAMPLER2DMSARRAY - 64)) | (1L << (USAMPLER2DMSARRAY - 64)) | (1L << (SAMPLERCUBEARRAY - 64)) | (1L << (SAMPLERCUBEARRAYSHADOW - 64)) | (1L << (ISAMPLERCUBEARRAY - 64)) | (1L << (USAMPLERCUBEARRAY - 64)) | (1L << (IMAGE1D - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)))) != 0) || ((((_la - 205)) & ~0x3f) == 0 && ((1L << (_la - 205)) & ((1L << (BOOLCONSTANT - 205)) | (1L << (FLOATCONSTANT - 205)) | (1L << (DOUBLECONSTANT - 205)) | (1L << (INTCONSTANT - 205)) | (1L << (UINTCONSTANT - 205)) | (1L << (INC_OP - 205)) | (1L << (DEC_OP - 205)) | (1L << (LEFT_PAREN - 205)) | (1L << (BANG - 205)) | (1L << (DASH - 205)) | (1L << (TILDE - 205)) | (1L << (PLUS - 205)) | (1L << (IDENTIFIER - 205)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << INC_OP) | (1L << DEC_OP) | (1L << LEFT_PAREN) | (1L << BANG) | (1L << DASH) | (1L << TILDE) | (1L << PLUS) | (1L << IDENTIFIER) | (1L << BUILTIN_TYPE) | (1L << VOID) | (1L << BOOLCONSTANT) | (1L << INTCONSTANT) | (1L << UINTCONSTANT) | (1L << FLOATCONSTANT) | (1L << DOUBLECONSTANT))) != 0) || _la==STRUCT) {
 				{
 				setState(420);
 				glslExpression();
@@ -2860,7 +2405,7 @@ public class GLSLParser extends Parser {
 				setState(436);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATOMIC_UINT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4) | (1L << MAT3X2) | (1L << MAT3X3) | (1L << MAT3X4) | (1L << DMAT3X2) | (1L << DMAT3X3) | (1L << DMAT3X4) | (1L << MAT4X2) | (1L << MAT4X3) | (1L << MAT4X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)) | (1L << (USAMPLER2DMS - 64)) | (1L << (SAMPLER2DMSARRAY - 64)) | (1L << (ISAMPLER2DMSARRAY - 64)) | (1L << (USAMPLER2DMSARRAY - 64)) | (1L << (SAMPLERCUBEARRAY - 64)) | (1L << (SAMPLERCUBEARRAYSHADOW - 64)) | (1L << (ISAMPLERCUBEARRAY - 64)) | (1L << (USAMPLERCUBEARRAY - 64)) | (1L << (IMAGE1D - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)))) != 0) || ((((_la - 205)) & ~0x3f) == 0 && ((1L << (_la - 205)) & ((1L << (BOOLCONSTANT - 205)) | (1L << (FLOATCONSTANT - 205)) | (1L << (DOUBLECONSTANT - 205)) | (1L << (INTCONSTANT - 205)) | (1L << (UINTCONSTANT - 205)) | (1L << (INC_OP - 205)) | (1L << (DEC_OP - 205)) | (1L << (LEFT_PAREN - 205)) | (1L << (BANG - 205)) | (1L << (DASH - 205)) | (1L << (TILDE - 205)) | (1L << (PLUS - 205)) | (1L << (IDENTIFIER - 205)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << INC_OP) | (1L << DEC_OP) | (1L << LEFT_PAREN) | (1L << BANG) | (1L << DASH) | (1L << TILDE) | (1L << PLUS) | (1L << IDENTIFIER) | (1L << BUILTIN_TYPE) | (1L << VOID) | (1L << BOOLCONSTANT) | (1L << INTCONSTANT) | (1L << UINTCONSTANT) | (1L << FLOATCONSTANT) | (1L << DOUBLECONSTANT))) != 0) || _la==STRUCT) {
 					{
 					setState(435);
 					glslExpression();
@@ -2931,7 +2476,7 @@ public class GLSLParser extends Parser {
 			setState(446);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << INVARIANT) | (1L << PRECISE) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4) | (1L << MAT3X2) | (1L << MAT3X3) | (1L << MAT3X4) | (1L << DMAT3X2) | (1L << DMAT3X3) | (1L << DMAT3X4) | (1L << MAT4X2) | (1L << MAT4X3) | (1L << MAT4X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)) | (1L << (USAMPLER2DMS - 64)) | (1L << (SAMPLER2DMSARRAY - 64)) | (1L << (ISAMPLER2DMSARRAY - 64)) | (1L << (USAMPLER2DMSARRAY - 64)) | (1L << (SAMPLERCUBEARRAY - 64)) | (1L << (SAMPLERCUBEARRAYSHADOW - 64)) | (1L << (ISAMPLERCUBEARRAY - 64)) | (1L << (USAMPLERCUBEARRAY - 64)) | (1L << (IMAGE1D - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)))) != 0) || _la==IDENTIFIER) {
+			while (((((_la - 46)) & ~0x3f) == 0 && ((1L << (_la - 46)) & ((1L << (IDENTIFIER - 46)) | (1L << (BUILTIN_TYPE - 46)) | (1L << (VOID - 46)) | (1L << (ATTRIBUTE - 46)) | (1L << (CONST - 46)) | (1L << (UNIFORM - 46)) | (1L << (VARYING - 46)) | (1L << (BUFFER - 46)) | (1L << (SHARED - 46)) | (1L << (COHERENT - 46)) | (1L << (VOLATILE - 46)) | (1L << (RESTRICT - 46)) | (1L << (READONLY - 46)) | (1L << (WRITEONLY - 46)) | (1L << (LAYOUT - 46)) | (1L << (CENTROID - 46)) | (1L << (FLAT - 46)) | (1L << (SMOOTH - 46)) | (1L << (NOPERSPECTIVE - 46)) | (1L << (PATCH - 46)) | (1L << (SAMPLE - 46)) | (1L << (SUBROUTINE - 46)) | (1L << (IN - 46)) | (1L << (OUT - 46)) | (1L << (INOUT - 46)) | (1L << (INVARIANT - 46)) | (1L << (PRECISE - 46)) | (1L << (LOWP - 46)) | (1L << (MEDIUMP - 46)) | (1L << (HIGHP - 46)) | (1L << (PRECISION - 46)) | (1L << (STRUCT - 46)))) != 0)) {
 				{
 				{
 				setState(443);
@@ -3547,126 +3092,8 @@ public class GLSLParser extends Parser {
 				glslIdentifier();
 				}
 				break;
-			case ATOMIC_UINT:
-			case FLOAT:
-			case DOUBLE:
-			case INT:
+			case BUILTIN_TYPE:
 			case VOID:
-			case BOOL:
-			case MAT2:
-			case MAT3:
-			case MAT4:
-			case DMAT2:
-			case DMAT3:
-			case DMAT4:
-			case MAT2X2:
-			case MAT2X3:
-			case MAT2X4:
-			case DMAT2X2:
-			case DMAT2X3:
-			case DMAT2X4:
-			case MAT3X2:
-			case MAT3X3:
-			case MAT3X4:
-			case DMAT3X2:
-			case DMAT3X3:
-			case DMAT3X4:
-			case MAT4X2:
-			case MAT4X3:
-			case MAT4X4:
-			case DMAT4X2:
-			case DMAT4X3:
-			case DMAT4X4:
-			case VEC2:
-			case VEC3:
-			case VEC4:
-			case IVEC2:
-			case IVEC3:
-			case IVEC4:
-			case BVEC2:
-			case BVEC3:
-			case BVEC4:
-			case DVEC2:
-			case DVEC3:
-			case DVEC4:
-			case UINT:
-			case UVEC2:
-			case UVEC3:
-			case UVEC4:
-			case SAMPLER1D:
-			case SAMPLER2D:
-			case SAMPLER3D:
-			case SAMPLERCUBE:
-			case SAMPLER1DSHADOW:
-			case SAMPLER2DSHADOW:
-			case SAMPLERCUBESHADOW:
-			case SAMPLER1DARRAY:
-			case SAMPLER2DARRAY:
-			case SAMPLER1DARRAYSHADOW:
-			case SAMPLER2DARRAYSHADOW:
-			case ISAMPLER1D:
-			case ISAMPLER2D:
-			case ISAMPLER3D:
-			case ISAMPLERCUBE:
-			case ISAMPLER1DARRAY:
-			case ISAMPLER2DARRAY:
-			case USAMPLER1D:
-			case USAMPLER2D:
-			case USAMPLER3D:
-			case USAMPLERCUBE:
-			case USAMPLER1DARRAY:
-			case USAMPLER2DARRAY:
-			case SAMPLER2DRECT:
-			case SAMPLER2DRECTSHADOW:
-			case ISAMPLER2DRECT:
-			case USAMPLER2DRECT:
-			case SAMPLERBUFFER:
-			case ISAMPLERBUFFER:
-			case USAMPLERBUFFER:
-			case SAMPLER2DMS:
-			case ISAMPLER2DMS:
-			case USAMPLER2DMS:
-			case SAMPLER2DMSARRAY:
-			case ISAMPLER2DMSARRAY:
-			case USAMPLER2DMSARRAY:
-			case SAMPLERCUBEARRAY:
-			case SAMPLERCUBEARRAYSHADOW:
-			case ISAMPLERCUBEARRAY:
-			case USAMPLERCUBEARRAY:
-			case IMAGE1D:
-			case IIMAGE1D:
-			case UIMAGE1D:
-			case IMAGE2D:
-			case IIMAGE2D:
-			case UIMAGE2D:
-			case IMAGE3D:
-			case IIMAGE3D:
-			case UIMAGE3D:
-			case IMAGE2DRECT:
-			case IIMAGE2DRECT:
-			case UIMAGE2DRECT:
-			case IMAGECUBE:
-			case IIMAGECUBE:
-			case UIMAGECUBE:
-			case IMAGEBUFFER:
-			case IIMAGEBUFFER:
-			case UIMAGEBUFFER:
-			case IMAGE1DARRAY:
-			case IIMAGE1DARRAY:
-			case UIMAGE1DARRAY:
-			case IMAGE2DARRAY:
-			case IIMAGE2DARRAY:
-			case UIMAGE2DARRAY:
-			case IMAGECUBEARRAY:
-			case IIMAGECUBEARRAY:
-			case UIMAGECUBEARRAY:
-			case IMAGE2DMS:
-			case IIMAGE2DMS:
-			case UIMAGE2DMS:
-			case IMAGE2DMSARRAY:
-			case IIMAGE2DMSARRAY:
-			case UIMAGE2DMSARRAY:
-			case SAMPLEREXTERNALOES:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(477);
@@ -4062,134 +3489,16 @@ public class GLSLParser extends Parser {
 			setState(533);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case ATOMIC_UINT:
-			case FLOAT:
-			case DOUBLE:
-			case INT:
-			case VOID:
-			case BOOL:
-			case MAT2:
-			case MAT3:
-			case MAT4:
-			case DMAT2:
-			case DMAT3:
-			case DMAT4:
-			case MAT2X2:
-			case MAT2X3:
-			case MAT2X4:
-			case DMAT2X2:
-			case DMAT2X3:
-			case DMAT2X4:
-			case MAT3X2:
-			case MAT3X3:
-			case MAT3X4:
-			case DMAT3X2:
-			case DMAT3X3:
-			case DMAT3X4:
-			case MAT4X2:
-			case MAT4X3:
-			case MAT4X4:
-			case DMAT4X2:
-			case DMAT4X3:
-			case DMAT4X4:
-			case VEC2:
-			case VEC3:
-			case VEC4:
-			case IVEC2:
-			case IVEC3:
-			case IVEC4:
-			case BVEC2:
-			case BVEC3:
-			case BVEC4:
-			case DVEC2:
-			case DVEC3:
-			case DVEC4:
-			case UINT:
-			case UVEC2:
-			case UVEC3:
-			case UVEC4:
-			case SAMPLER1D:
-			case SAMPLER2D:
-			case SAMPLER3D:
-			case SAMPLERCUBE:
-			case SAMPLER1DSHADOW:
-			case SAMPLER2DSHADOW:
-			case SAMPLERCUBESHADOW:
-			case SAMPLER1DARRAY:
-			case SAMPLER2DARRAY:
-			case SAMPLER1DARRAYSHADOW:
-			case SAMPLER2DARRAYSHADOW:
-			case ISAMPLER1D:
-			case ISAMPLER2D:
-			case ISAMPLER3D:
-			case ISAMPLERCUBE:
-			case ISAMPLER1DARRAY:
-			case ISAMPLER2DARRAY:
-			case USAMPLER1D:
-			case USAMPLER2D:
-			case USAMPLER3D:
-			case USAMPLERCUBE:
-			case USAMPLER1DARRAY:
-			case USAMPLER2DARRAY:
-			case SAMPLER2DRECT:
-			case SAMPLER2DRECTSHADOW:
-			case ISAMPLER2DRECT:
-			case USAMPLER2DRECT:
-			case SAMPLERBUFFER:
-			case ISAMPLERBUFFER:
-			case USAMPLERBUFFER:
-			case SAMPLER2DMS:
-			case ISAMPLER2DMS:
-			case USAMPLER2DMS:
-			case SAMPLER2DMSARRAY:
-			case ISAMPLER2DMSARRAY:
-			case USAMPLER2DMSARRAY:
-			case SAMPLERCUBEARRAY:
-			case SAMPLERCUBEARRAYSHADOW:
-			case ISAMPLERCUBEARRAY:
-			case USAMPLERCUBEARRAY:
-			case IMAGE1D:
-			case IIMAGE1D:
-			case UIMAGE1D:
-			case IMAGE2D:
-			case IIMAGE2D:
-			case UIMAGE2D:
-			case IMAGE3D:
-			case IIMAGE3D:
-			case UIMAGE3D:
-			case IMAGE2DRECT:
-			case IIMAGE2DRECT:
-			case UIMAGE2DRECT:
-			case IMAGECUBE:
-			case IIMAGECUBE:
-			case UIMAGECUBE:
-			case IMAGEBUFFER:
-			case IIMAGEBUFFER:
-			case UIMAGEBUFFER:
-			case IMAGE1DARRAY:
-			case IIMAGE1DARRAY:
-			case UIMAGE1DARRAY:
-			case IMAGE2DARRAY:
-			case IIMAGE2DARRAY:
-			case UIMAGE2DARRAY:
-			case IMAGECUBEARRAY:
-			case IIMAGECUBEARRAY:
-			case UIMAGECUBEARRAY:
-			case IMAGE2DMS:
-			case IIMAGE2DMS:
-			case UIMAGE2DMS:
-			case IMAGE2DMSARRAY:
-			case IIMAGE2DMSARRAY:
-			case UIMAGE2DMSARRAY:
-			case SAMPLEREXTERNALOES:
-			case STRUCT:
-			case BOOLCONSTANT:
-			case FLOATCONSTANT:
-			case DOUBLECONSTANT:
-			case INTCONSTANT:
-			case UINTCONSTANT:
 			case LEFT_PAREN:
 			case IDENTIFIER:
+			case BUILTIN_TYPE:
+			case VOID:
+			case BOOLCONSTANT:
+			case INTCONSTANT:
+			case UINTCONSTANT:
+			case FLOATCONSTANT:
+			case DOUBLECONSTANT:
+			case STRUCT:
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(529);
@@ -4260,7 +3569,7 @@ public class GLSLParser extends Parser {
 			{
 			setState(535);
 			_la = _input.LA(1);
-			if ( !(((((_la - 212)) & ~0x3f) == 0 && ((1L << (_la - 212)) & ((1L << (INC_OP - 212)) | (1L << (DEC_OP - 212)) | (1L << (BANG - 212)) | (1L << (DASH - 212)) | (1L << (TILDE - 212)) | (1L << (PLUS - 212)))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << INC_OP) | (1L << DEC_OP) | (1L << BANG) | (1L << DASH) | (1L << TILDE) | (1L << PLUS))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -5522,7 +4831,7 @@ public class GLSLParser extends Parser {
 			{
 			setState(698);
 			_la = _input.LA(1);
-			if ( !(((((_la - 221)) & ~0x3f) == 0 && ((1L << (_la - 221)) & ((1L << (MUL_ASSIGN - 221)) | (1L << (DIV_ASSIGN - 221)) | (1L << (ADD_ASSIGN - 221)) | (1L << (MOD_ASSIGN - 221)) | (1L << (LEFT_ASSIGN - 221)) | (1L << (RIGHT_ASSIGN - 221)) | (1L << (AND_ASSIGN - 221)) | (1L << (XOR_ASSIGN - 221)) | (1L << (OR_ASSIGN - 221)) | (1L << (SUB_ASSIGN - 221)) | (1L << (EQUAL - 221)))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MUL_ASSIGN) | (1L << DIV_ASSIGN) | (1L << ADD_ASSIGN) | (1L << MOD_ASSIGN) | (1L << LEFT_ASSIGN) | (1L << RIGHT_ASSIGN) | (1L << AND_ASSIGN) | (1L << XOR_ASSIGN) | (1L << OR_ASSIGN) | (1L << SUB_ASSIGN) | (1L << EQUAL))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -5825,7 +5134,7 @@ public class GLSLParser extends Parser {
 			setState(727);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATOMIC_UINT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4) | (1L << MAT3X2) | (1L << MAT3X3) | (1L << MAT3X4) | (1L << DMAT3X2) | (1L << DMAT3X3) | (1L << DMAT3X4) | (1L << MAT4X2) | (1L << MAT4X3) | (1L << MAT4X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)) | (1L << (USAMPLER2DMS - 64)) | (1L << (SAMPLER2DMSARRAY - 64)) | (1L << (ISAMPLER2DMSARRAY - 64)) | (1L << (USAMPLER2DMSARRAY - 64)) | (1L << (SAMPLERCUBEARRAY - 64)) | (1L << (SAMPLERCUBEARRAYSHADOW - 64)) | (1L << (ISAMPLERCUBEARRAY - 64)) | (1L << (USAMPLERCUBEARRAY - 64)) | (1L << (IMAGE1D - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)))) != 0) || ((((_la - 205)) & ~0x3f) == 0 && ((1L << (_la - 205)) & ((1L << (BOOLCONSTANT - 205)) | (1L << (FLOATCONSTANT - 205)) | (1L << (DOUBLECONSTANT - 205)) | (1L << (INTCONSTANT - 205)) | (1L << (UINTCONSTANT - 205)) | (1L << (INC_OP - 205)) | (1L << (DEC_OP - 205)) | (1L << (LEFT_PAREN - 205)) | (1L << (BANG - 205)) | (1L << (DASH - 205)) | (1L << (TILDE - 205)) | (1L << (PLUS - 205)) | (1L << (IDENTIFIER - 205)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << INC_OP) | (1L << DEC_OP) | (1L << LEFT_PAREN) | (1L << BANG) | (1L << DASH) | (1L << TILDE) | (1L << PLUS) | (1L << IDENTIFIER) | (1L << BUILTIN_TYPE) | (1L << VOID) | (1L << BOOLCONSTANT) | (1L << INTCONSTANT) | (1L << UINTCONSTANT) | (1L << FLOATCONSTANT) | (1L << DOUBLECONSTANT))) != 0) || _la==STRUCT) {
 				{
 				setState(726);
 				glslIntegerExpression();
@@ -5883,126 +5192,8 @@ public class GLSLParser extends Parser {
 			setState(734);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case ATOMIC_UINT:
-			case FLOAT:
-			case DOUBLE:
-			case INT:
+			case BUILTIN_TYPE:
 			case VOID:
-			case BOOL:
-			case MAT2:
-			case MAT3:
-			case MAT4:
-			case DMAT2:
-			case DMAT3:
-			case DMAT4:
-			case MAT2X2:
-			case MAT2X3:
-			case MAT2X4:
-			case DMAT2X2:
-			case DMAT2X3:
-			case DMAT2X4:
-			case MAT3X2:
-			case MAT3X3:
-			case MAT3X4:
-			case DMAT3X2:
-			case DMAT3X3:
-			case DMAT3X4:
-			case MAT4X2:
-			case MAT4X3:
-			case MAT4X4:
-			case DMAT4X2:
-			case DMAT4X3:
-			case DMAT4X4:
-			case VEC2:
-			case VEC3:
-			case VEC4:
-			case IVEC2:
-			case IVEC3:
-			case IVEC4:
-			case BVEC2:
-			case BVEC3:
-			case BVEC4:
-			case DVEC2:
-			case DVEC3:
-			case DVEC4:
-			case UINT:
-			case UVEC2:
-			case UVEC3:
-			case UVEC4:
-			case SAMPLER1D:
-			case SAMPLER2D:
-			case SAMPLER3D:
-			case SAMPLERCUBE:
-			case SAMPLER1DSHADOW:
-			case SAMPLER2DSHADOW:
-			case SAMPLERCUBESHADOW:
-			case SAMPLER1DARRAY:
-			case SAMPLER2DARRAY:
-			case SAMPLER1DARRAYSHADOW:
-			case SAMPLER2DARRAYSHADOW:
-			case ISAMPLER1D:
-			case ISAMPLER2D:
-			case ISAMPLER3D:
-			case ISAMPLERCUBE:
-			case ISAMPLER1DARRAY:
-			case ISAMPLER2DARRAY:
-			case USAMPLER1D:
-			case USAMPLER2D:
-			case USAMPLER3D:
-			case USAMPLERCUBE:
-			case USAMPLER1DARRAY:
-			case USAMPLER2DARRAY:
-			case SAMPLER2DRECT:
-			case SAMPLER2DRECTSHADOW:
-			case ISAMPLER2DRECT:
-			case USAMPLER2DRECT:
-			case SAMPLERBUFFER:
-			case ISAMPLERBUFFER:
-			case USAMPLERBUFFER:
-			case SAMPLER2DMS:
-			case ISAMPLER2DMS:
-			case USAMPLER2DMS:
-			case SAMPLER2DMSARRAY:
-			case ISAMPLER2DMSARRAY:
-			case USAMPLER2DMSARRAY:
-			case SAMPLERCUBEARRAY:
-			case SAMPLERCUBEARRAYSHADOW:
-			case ISAMPLERCUBEARRAY:
-			case USAMPLERCUBEARRAY:
-			case IMAGE1D:
-			case IIMAGE1D:
-			case UIMAGE1D:
-			case IMAGE2D:
-			case IIMAGE2D:
-			case UIMAGE2D:
-			case IMAGE3D:
-			case IIMAGE3D:
-			case UIMAGE3D:
-			case IMAGE2DRECT:
-			case IIMAGE2DRECT:
-			case UIMAGE2DRECT:
-			case IMAGECUBE:
-			case IIMAGECUBE:
-			case UIMAGECUBE:
-			case IMAGEBUFFER:
-			case IIMAGEBUFFER:
-			case UIMAGEBUFFER:
-			case IMAGE1DARRAY:
-			case IIMAGE1DARRAY:
-			case UIMAGE1DARRAY:
-			case IMAGE2DARRAY:
-			case IIMAGE2DARRAY:
-			case UIMAGE2DARRAY:
-			case IMAGECUBEARRAY:
-			case IIMAGECUBEARRAY:
-			case UIMAGECUBEARRAY:
-			case IMAGE2DMS:
-			case IIMAGE2DMS:
-			case UIMAGE2DMS:
-			case IMAGE2DMSARRAY:
-			case IIMAGE2DMSARRAY:
-			case UIMAGE2DMSARRAY:
-			case SAMPLEREXTERNALOES:
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(731);
@@ -6040,125 +5231,7 @@ public class GLSLParser extends Parser {
 
 	public static class GlslBuiltinTypeContext extends ParserRuleContext {
 		public TerminalNode VOID() { return getToken(GLSLParser.VOID, 0); }
-		public TerminalNode FLOAT() { return getToken(GLSLParser.FLOAT, 0); }
-		public TerminalNode DOUBLE() { return getToken(GLSLParser.DOUBLE, 0); }
-		public TerminalNode INT() { return getToken(GLSLParser.INT, 0); }
-		public TerminalNode UINT() { return getToken(GLSLParser.UINT, 0); }
-		public TerminalNode BOOL() { return getToken(GLSLParser.BOOL, 0); }
-		public TerminalNode VEC2() { return getToken(GLSLParser.VEC2, 0); }
-		public TerminalNode VEC3() { return getToken(GLSLParser.VEC3, 0); }
-		public TerminalNode VEC4() { return getToken(GLSLParser.VEC4, 0); }
-		public TerminalNode DVEC2() { return getToken(GLSLParser.DVEC2, 0); }
-		public TerminalNode DVEC3() { return getToken(GLSLParser.DVEC3, 0); }
-		public TerminalNode DVEC4() { return getToken(GLSLParser.DVEC4, 0); }
-		public TerminalNode BVEC2() { return getToken(GLSLParser.BVEC2, 0); }
-		public TerminalNode BVEC3() { return getToken(GLSLParser.BVEC3, 0); }
-		public TerminalNode BVEC4() { return getToken(GLSLParser.BVEC4, 0); }
-		public TerminalNode IVEC2() { return getToken(GLSLParser.IVEC2, 0); }
-		public TerminalNode IVEC3() { return getToken(GLSLParser.IVEC3, 0); }
-		public TerminalNode IVEC4() { return getToken(GLSLParser.IVEC4, 0); }
-		public TerminalNode UVEC2() { return getToken(GLSLParser.UVEC2, 0); }
-		public TerminalNode UVEC3() { return getToken(GLSLParser.UVEC3, 0); }
-		public TerminalNode UVEC4() { return getToken(GLSLParser.UVEC4, 0); }
-		public TerminalNode MAT2() { return getToken(GLSLParser.MAT2, 0); }
-		public TerminalNode MAT3() { return getToken(GLSLParser.MAT3, 0); }
-		public TerminalNode MAT4() { return getToken(GLSLParser.MAT4, 0); }
-		public TerminalNode MAT2X2() { return getToken(GLSLParser.MAT2X2, 0); }
-		public TerminalNode MAT2X3() { return getToken(GLSLParser.MAT2X3, 0); }
-		public TerminalNode MAT2X4() { return getToken(GLSLParser.MAT2X4, 0); }
-		public TerminalNode MAT3X2() { return getToken(GLSLParser.MAT3X2, 0); }
-		public TerminalNode MAT3X3() { return getToken(GLSLParser.MAT3X3, 0); }
-		public TerminalNode MAT3X4() { return getToken(GLSLParser.MAT3X4, 0); }
-		public TerminalNode MAT4X2() { return getToken(GLSLParser.MAT4X2, 0); }
-		public TerminalNode MAT4X3() { return getToken(GLSLParser.MAT4X3, 0); }
-		public TerminalNode MAT4X4() { return getToken(GLSLParser.MAT4X4, 0); }
-		public TerminalNode DMAT2() { return getToken(GLSLParser.DMAT2, 0); }
-		public TerminalNode DMAT3() { return getToken(GLSLParser.DMAT3, 0); }
-		public TerminalNode DMAT4() { return getToken(GLSLParser.DMAT4, 0); }
-		public TerminalNode DMAT2X2() { return getToken(GLSLParser.DMAT2X2, 0); }
-		public TerminalNode DMAT2X3() { return getToken(GLSLParser.DMAT2X3, 0); }
-		public TerminalNode DMAT2X4() { return getToken(GLSLParser.DMAT2X4, 0); }
-		public TerminalNode DMAT3X2() { return getToken(GLSLParser.DMAT3X2, 0); }
-		public TerminalNode DMAT3X3() { return getToken(GLSLParser.DMAT3X3, 0); }
-		public TerminalNode DMAT3X4() { return getToken(GLSLParser.DMAT3X4, 0); }
-		public TerminalNode DMAT4X2() { return getToken(GLSLParser.DMAT4X2, 0); }
-		public TerminalNode DMAT4X3() { return getToken(GLSLParser.DMAT4X3, 0); }
-		public TerminalNode DMAT4X4() { return getToken(GLSLParser.DMAT4X4, 0); }
-		public TerminalNode ATOMIC_UINT() { return getToken(GLSLParser.ATOMIC_UINT, 0); }
-		public TerminalNode SAMPLER1D() { return getToken(GLSLParser.SAMPLER1D, 0); }
-		public TerminalNode SAMPLER2D() { return getToken(GLSLParser.SAMPLER2D, 0); }
-		public TerminalNode SAMPLER3D() { return getToken(GLSLParser.SAMPLER3D, 0); }
-		public TerminalNode SAMPLERCUBE() { return getToken(GLSLParser.SAMPLERCUBE, 0); }
-		public TerminalNode SAMPLER1DSHADOW() { return getToken(GLSLParser.SAMPLER1DSHADOW, 0); }
-		public TerminalNode SAMPLER2DSHADOW() { return getToken(GLSLParser.SAMPLER2DSHADOW, 0); }
-		public TerminalNode SAMPLERCUBESHADOW() { return getToken(GLSLParser.SAMPLERCUBESHADOW, 0); }
-		public TerminalNode SAMPLER1DARRAY() { return getToken(GLSLParser.SAMPLER1DARRAY, 0); }
-		public TerminalNode SAMPLER2DARRAY() { return getToken(GLSLParser.SAMPLER2DARRAY, 0); }
-		public TerminalNode SAMPLER1DARRAYSHADOW() { return getToken(GLSLParser.SAMPLER1DARRAYSHADOW, 0); }
-		public TerminalNode SAMPLER2DARRAYSHADOW() { return getToken(GLSLParser.SAMPLER2DARRAYSHADOW, 0); }
-		public TerminalNode SAMPLERCUBEARRAY() { return getToken(GLSLParser.SAMPLERCUBEARRAY, 0); }
-		public TerminalNode SAMPLERCUBEARRAYSHADOW() { return getToken(GLSLParser.SAMPLERCUBEARRAYSHADOW, 0); }
-		public TerminalNode ISAMPLER1D() { return getToken(GLSLParser.ISAMPLER1D, 0); }
-		public TerminalNode ISAMPLER2D() { return getToken(GLSLParser.ISAMPLER2D, 0); }
-		public TerminalNode ISAMPLER3D() { return getToken(GLSLParser.ISAMPLER3D, 0); }
-		public TerminalNode ISAMPLERCUBE() { return getToken(GLSLParser.ISAMPLERCUBE, 0); }
-		public TerminalNode ISAMPLER1DARRAY() { return getToken(GLSLParser.ISAMPLER1DARRAY, 0); }
-		public TerminalNode ISAMPLER2DARRAY() { return getToken(GLSLParser.ISAMPLER2DARRAY, 0); }
-		public TerminalNode ISAMPLERCUBEARRAY() { return getToken(GLSLParser.ISAMPLERCUBEARRAY, 0); }
-		public TerminalNode USAMPLER1D() { return getToken(GLSLParser.USAMPLER1D, 0); }
-		public TerminalNode USAMPLER2D() { return getToken(GLSLParser.USAMPLER2D, 0); }
-		public TerminalNode USAMPLER3D() { return getToken(GLSLParser.USAMPLER3D, 0); }
-		public TerminalNode USAMPLERCUBE() { return getToken(GLSLParser.USAMPLERCUBE, 0); }
-		public TerminalNode USAMPLER1DARRAY() { return getToken(GLSLParser.USAMPLER1DARRAY, 0); }
-		public TerminalNode USAMPLER2DARRAY() { return getToken(GLSLParser.USAMPLER2DARRAY, 0); }
-		public TerminalNode USAMPLERCUBEARRAY() { return getToken(GLSLParser.USAMPLERCUBEARRAY, 0); }
-		public TerminalNode SAMPLER2DRECT() { return getToken(GLSLParser.SAMPLER2DRECT, 0); }
-		public TerminalNode SAMPLER2DRECTSHADOW() { return getToken(GLSLParser.SAMPLER2DRECTSHADOW, 0); }
-		public TerminalNode ISAMPLER2DRECT() { return getToken(GLSLParser.ISAMPLER2DRECT, 0); }
-		public TerminalNode USAMPLER2DRECT() { return getToken(GLSLParser.USAMPLER2DRECT, 0); }
-		public TerminalNode SAMPLERBUFFER() { return getToken(GLSLParser.SAMPLERBUFFER, 0); }
-		public TerminalNode ISAMPLERBUFFER() { return getToken(GLSLParser.ISAMPLERBUFFER, 0); }
-		public TerminalNode USAMPLERBUFFER() { return getToken(GLSLParser.USAMPLERBUFFER, 0); }
-		public TerminalNode SAMPLER2DMS() { return getToken(GLSLParser.SAMPLER2DMS, 0); }
-		public TerminalNode ISAMPLER2DMS() { return getToken(GLSLParser.ISAMPLER2DMS, 0); }
-		public TerminalNode USAMPLER2DMS() { return getToken(GLSLParser.USAMPLER2DMS, 0); }
-		public TerminalNode SAMPLER2DMSARRAY() { return getToken(GLSLParser.SAMPLER2DMSARRAY, 0); }
-		public TerminalNode ISAMPLER2DMSARRAY() { return getToken(GLSLParser.ISAMPLER2DMSARRAY, 0); }
-		public TerminalNode USAMPLER2DMSARRAY() { return getToken(GLSLParser.USAMPLER2DMSARRAY, 0); }
-		public TerminalNode IMAGE1D() { return getToken(GLSLParser.IMAGE1D, 0); }
-		public TerminalNode IIMAGE1D() { return getToken(GLSLParser.IIMAGE1D, 0); }
-		public TerminalNode UIMAGE1D() { return getToken(GLSLParser.UIMAGE1D, 0); }
-		public TerminalNode IMAGE2D() { return getToken(GLSLParser.IMAGE2D, 0); }
-		public TerminalNode IIMAGE2D() { return getToken(GLSLParser.IIMAGE2D, 0); }
-		public TerminalNode UIMAGE2D() { return getToken(GLSLParser.UIMAGE2D, 0); }
-		public TerminalNode IMAGE3D() { return getToken(GLSLParser.IMAGE3D, 0); }
-		public TerminalNode IIMAGE3D() { return getToken(GLSLParser.IIMAGE3D, 0); }
-		public TerminalNode UIMAGE3D() { return getToken(GLSLParser.UIMAGE3D, 0); }
-		public TerminalNode IMAGE2DRECT() { return getToken(GLSLParser.IMAGE2DRECT, 0); }
-		public TerminalNode IIMAGE2DRECT() { return getToken(GLSLParser.IIMAGE2DRECT, 0); }
-		public TerminalNode UIMAGE2DRECT() { return getToken(GLSLParser.UIMAGE2DRECT, 0); }
-		public TerminalNode IMAGECUBE() { return getToken(GLSLParser.IMAGECUBE, 0); }
-		public TerminalNode IIMAGECUBE() { return getToken(GLSLParser.IIMAGECUBE, 0); }
-		public TerminalNode UIMAGECUBE() { return getToken(GLSLParser.UIMAGECUBE, 0); }
-		public TerminalNode IMAGEBUFFER() { return getToken(GLSLParser.IMAGEBUFFER, 0); }
-		public TerminalNode IIMAGEBUFFER() { return getToken(GLSLParser.IIMAGEBUFFER, 0); }
-		public TerminalNode UIMAGEBUFFER() { return getToken(GLSLParser.UIMAGEBUFFER, 0); }
-		public TerminalNode IMAGE1DARRAY() { return getToken(GLSLParser.IMAGE1DARRAY, 0); }
-		public TerminalNode IIMAGE1DARRAY() { return getToken(GLSLParser.IIMAGE1DARRAY, 0); }
-		public TerminalNode UIMAGE1DARRAY() { return getToken(GLSLParser.UIMAGE1DARRAY, 0); }
-		public TerminalNode IMAGE2DARRAY() { return getToken(GLSLParser.IMAGE2DARRAY, 0); }
-		public TerminalNode IIMAGE2DARRAY() { return getToken(GLSLParser.IIMAGE2DARRAY, 0); }
-		public TerminalNode UIMAGE2DARRAY() { return getToken(GLSLParser.UIMAGE2DARRAY, 0); }
-		public TerminalNode IMAGECUBEARRAY() { return getToken(GLSLParser.IMAGECUBEARRAY, 0); }
-		public TerminalNode IIMAGECUBEARRAY() { return getToken(GLSLParser.IIMAGECUBEARRAY, 0); }
-		public TerminalNode UIMAGECUBEARRAY() { return getToken(GLSLParser.UIMAGECUBEARRAY, 0); }
-		public TerminalNode IMAGE2DMS() { return getToken(GLSLParser.IMAGE2DMS, 0); }
-		public TerminalNode IIMAGE2DMS() { return getToken(GLSLParser.IIMAGE2DMS, 0); }
-		public TerminalNode UIMAGE2DMS() { return getToken(GLSLParser.UIMAGE2DMS, 0); }
-		public TerminalNode IMAGE2DMSARRAY() { return getToken(GLSLParser.IMAGE2DMSARRAY, 0); }
-		public TerminalNode IIMAGE2DMSARRAY() { return getToken(GLSLParser.IIMAGE2DMSARRAY, 0); }
-		public TerminalNode UIMAGE2DMSARRAY() { return getToken(GLSLParser.UIMAGE2DMSARRAY, 0); }
-		public TerminalNode SAMPLEREXTERNALOES() { return getToken(GLSLParser.SAMPLEREXTERNALOES, 0); }
+		public TerminalNode BUILTIN_TYPE() { return getToken(GLSLParser.BUILTIN_TYPE, 0); }
 		public GlslBuiltinTypeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -6187,7 +5260,7 @@ public class GLSLParser extends Parser {
 			{
 			setState(736);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATOMIC_UINT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4) | (1L << MAT3X2) | (1L << MAT3X3) | (1L << MAT3X4) | (1L << DMAT3X2) | (1L << DMAT3X3) | (1L << DMAT3X4) | (1L << MAT4X2) | (1L << MAT4X3) | (1L << MAT4X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)) | (1L << (USAMPLER2DMS - 64)) | (1L << (SAMPLER2DMSARRAY - 64)) | (1L << (ISAMPLER2DMSARRAY - 64)) | (1L << (USAMPLER2DMSARRAY - 64)) | (1L << (SAMPLERCUBEARRAY - 64)) | (1L << (SAMPLERCUBEARRAYSHADOW - 64)) | (1L << (ISAMPLERCUBEARRAY - 64)) | (1L << (USAMPLERCUBEARRAY - 64)) | (1L << (IMAGE1D - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)))) != 0)) ) {
+			if ( !(_la==BUILTIN_TYPE || _la==VOID) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -6308,7 +5381,7 @@ public class GLSLParser extends Parser {
 				setState(746); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << ATOMIC_UINT) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << FLOAT) | (1L << DOUBLE) | (1L << INT) | (1L << VOID) | (1L << BOOL) | (1L << INVARIANT) | (1L << PRECISE) | (1L << MAT2) | (1L << MAT3) | (1L << MAT4) | (1L << DMAT2) | (1L << DMAT3) | (1L << DMAT4) | (1L << MAT2X2) | (1L << MAT2X3) | (1L << MAT2X4) | (1L << DMAT2X2) | (1L << DMAT2X3) | (1L << DMAT2X4) | (1L << MAT3X2) | (1L << MAT3X3) | (1L << MAT3X4) | (1L << DMAT3X2) | (1L << DMAT3X3) | (1L << DMAT3X4) | (1L << MAT4X2) | (1L << MAT4X3) | (1L << MAT4X4))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (DMAT4X2 - 64)) | (1L << (DMAT4X3 - 64)) | (1L << (DMAT4X4 - 64)) | (1L << (VEC2 - 64)) | (1L << (VEC3 - 64)) | (1L << (VEC4 - 64)) | (1L << (IVEC2 - 64)) | (1L << (IVEC3 - 64)) | (1L << (IVEC4 - 64)) | (1L << (BVEC2 - 64)) | (1L << (BVEC3 - 64)) | (1L << (BVEC4 - 64)) | (1L << (DVEC2 - 64)) | (1L << (DVEC3 - 64)) | (1L << (DVEC4 - 64)) | (1L << (UINT - 64)) | (1L << (UVEC2 - 64)) | (1L << (UVEC3 - 64)) | (1L << (UVEC4 - 64)) | (1L << (LOW_PRECISION - 64)) | (1L << (MEDIUM_PRECISION - 64)) | (1L << (HIGH_PRECISION - 64)) | (1L << (SAMPLER1D - 64)) | (1L << (SAMPLER2D - 64)) | (1L << (SAMPLER3D - 64)) | (1L << (SAMPLERCUBE - 64)) | (1L << (SAMPLER1DSHADOW - 64)) | (1L << (SAMPLER2DSHADOW - 64)) | (1L << (SAMPLERCUBESHADOW - 64)) | (1L << (SAMPLER1DARRAY - 64)) | (1L << (SAMPLER2DARRAY - 64)) | (1L << (SAMPLER1DARRAYSHADOW - 64)) | (1L << (SAMPLER2DARRAYSHADOW - 64)) | (1L << (ISAMPLER1D - 64)) | (1L << (ISAMPLER2D - 64)) | (1L << (ISAMPLER3D - 64)) | (1L << (ISAMPLERCUBE - 64)) | (1L << (ISAMPLER1DARRAY - 64)) | (1L << (ISAMPLER2DARRAY - 64)) | (1L << (USAMPLER1D - 64)) | (1L << (USAMPLER2D - 64)) | (1L << (USAMPLER3D - 64)) | (1L << (USAMPLERCUBE - 64)) | (1L << (USAMPLER1DARRAY - 64)) | (1L << (USAMPLER2DARRAY - 64)) | (1L << (SAMPLER2DRECT - 64)) | (1L << (SAMPLER2DRECTSHADOW - 64)) | (1L << (ISAMPLER2DRECT - 64)) | (1L << (USAMPLER2DRECT - 64)) | (1L << (SAMPLERBUFFER - 64)) | (1L << (ISAMPLERBUFFER - 64)) | (1L << (USAMPLERBUFFER - 64)) | (1L << (SAMPLER2DMS - 64)) | (1L << (ISAMPLER2DMS - 64)) | (1L << (USAMPLER2DMS - 64)) | (1L << (SAMPLER2DMSARRAY - 64)) | (1L << (ISAMPLER2DMSARRAY - 64)) | (1L << (USAMPLER2DMSARRAY - 64)) | (1L << (SAMPLERCUBEARRAY - 64)) | (1L << (SAMPLERCUBEARRAYSHADOW - 64)) | (1L << (ISAMPLERCUBEARRAY - 64)) | (1L << (USAMPLERCUBEARRAY - 64)) | (1L << (IMAGE1D - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (IIMAGE1D - 128)) | (1L << (UIMAGE1D - 128)) | (1L << (IMAGE2D - 128)) | (1L << (IIMAGE2D - 128)) | (1L << (UIMAGE2D - 128)) | (1L << (IMAGE3D - 128)) | (1L << (IIMAGE3D - 128)) | (1L << (UIMAGE3D - 128)) | (1L << (IMAGE2DRECT - 128)) | (1L << (IIMAGE2DRECT - 128)) | (1L << (UIMAGE2DRECT - 128)) | (1L << (IMAGECUBE - 128)) | (1L << (IIMAGECUBE - 128)) | (1L << (UIMAGECUBE - 128)) | (1L << (IMAGEBUFFER - 128)) | (1L << (IIMAGEBUFFER - 128)) | (1L << (UIMAGEBUFFER - 128)) | (1L << (IMAGE1DARRAY - 128)) | (1L << (IIMAGE1DARRAY - 128)) | (1L << (UIMAGE1DARRAY - 128)) | (1L << (IMAGE2DARRAY - 128)) | (1L << (IIMAGE2DARRAY - 128)) | (1L << (UIMAGE2DARRAY - 128)) | (1L << (IMAGECUBEARRAY - 128)) | (1L << (IIMAGECUBEARRAY - 128)) | (1L << (UIMAGECUBEARRAY - 128)) | (1L << (IMAGE2DMS - 128)) | (1L << (IIMAGE2DMS - 128)) | (1L << (UIMAGE2DMS - 128)) | (1L << (IMAGE2DMSARRAY - 128)) | (1L << (IIMAGE2DMSARRAY - 128)) | (1L << (UIMAGE2DMSARRAY - 128)) | (1L << (SAMPLEREXTERNALOES - 128)) | (1L << (STRUCT - 128)))) != 0) || _la==IDENTIFIER );
+			} while ( ((((_la - 46)) & ~0x3f) == 0 && ((1L << (_la - 46)) & ((1L << (IDENTIFIER - 46)) | (1L << (BUILTIN_TYPE - 46)) | (1L << (VOID - 46)) | (1L << (ATTRIBUTE - 46)) | (1L << (CONST - 46)) | (1L << (UNIFORM - 46)) | (1L << (VARYING - 46)) | (1L << (BUFFER - 46)) | (1L << (SHARED - 46)) | (1L << (COHERENT - 46)) | (1L << (VOLATILE - 46)) | (1L << (RESTRICT - 46)) | (1L << (READONLY - 46)) | (1L << (WRITEONLY - 46)) | (1L << (LAYOUT - 46)) | (1L << (CENTROID - 46)) | (1L << (FLAT - 46)) | (1L << (SMOOTH - 46)) | (1L << (NOPERSPECTIVE - 46)) | (1L << (PATCH - 46)) | (1L << (SAMPLE - 46)) | (1L << (SUBROUTINE - 46)) | (1L << (IN - 46)) | (1L << (OUT - 46)) | (1L << (INOUT - 46)) | (1L << (INVARIANT - 46)) | (1L << (PRECISE - 46)) | (1L << (LOWP - 46)) | (1L << (MEDIUMP - 46)) | (1L << (HIGHP - 46)) | (1L << (STRUCT - 46)))) != 0) );
 			setState(748);
 			match(RIGHT_BRACE);
 			}
@@ -6364,7 +5437,7 @@ public class GLSLParser extends Parser {
 			setState(751);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << INVARIANT) | (1L << PRECISE))) != 0) || ((((_la - 83)) & ~0x3f) == 0 && ((1L << (_la - 83)) & ((1L << (LOW_PRECISION - 83)) | (1L << (MEDIUM_PRECISION - 83)) | (1L << (HIGH_PRECISION - 83)))) != 0)) {
+			if (((((_la - 54)) & ~0x3f) == 0 && ((1L << (_la - 54)) & ((1L << (ATTRIBUTE - 54)) | (1L << (CONST - 54)) | (1L << (UNIFORM - 54)) | (1L << (VARYING - 54)) | (1L << (BUFFER - 54)) | (1L << (SHARED - 54)) | (1L << (COHERENT - 54)) | (1L << (VOLATILE - 54)) | (1L << (RESTRICT - 54)) | (1L << (READONLY - 54)) | (1L << (WRITEONLY - 54)) | (1L << (LAYOUT - 54)) | (1L << (CENTROID - 54)) | (1L << (FLAT - 54)) | (1L << (SMOOTH - 54)) | (1L << (NOPERSPECTIVE - 54)) | (1L << (PATCH - 54)) | (1L << (SAMPLE - 54)) | (1L << (SUBROUTINE - 54)) | (1L << (IN - 54)) | (1L << (OUT - 54)) | (1L << (INOUT - 54)) | (1L << (INVARIANT - 54)) | (1L << (PRECISE - 54)) | (1L << (LOWP - 54)) | (1L << (MEDIUMP - 54)) | (1L << (HIGHP - 54)))) != 0)) {
 				{
 				setState(750);
 				glslTypeQualifier();
@@ -6567,7 +5640,7 @@ public class GLSLParser extends Parser {
 				setState(775); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ATTRIBUTE) | (1L << CONST) | (1L << UNIFORM) | (1L << VARYING) | (1L << BUFFER) | (1L << SHARED) | (1L << COHERENT) | (1L << VOLATILE) | (1L << RESTRICT) | (1L << READONLY) | (1L << WRITEONLY) | (1L << LAYOUT) | (1L << CENTROID) | (1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE) | (1L << PATCH) | (1L << SAMPLE) | (1L << SUBROUTINE) | (1L << IN) | (1L << OUT) | (1L << INOUT) | (1L << INVARIANT) | (1L << PRECISE))) != 0) || ((((_la - 83)) & ~0x3f) == 0 && ((1L << (_la - 83)) & ((1L << (LOW_PRECISION - 83)) | (1L << (MEDIUM_PRECISION - 83)) | (1L << (HIGH_PRECISION - 83)))) != 0) );
+			} while ( ((((_la - 54)) & ~0x3f) == 0 && ((1L << (_la - 54)) & ((1L << (ATTRIBUTE - 54)) | (1L << (CONST - 54)) | (1L << (UNIFORM - 54)) | (1L << (VARYING - 54)) | (1L << (BUFFER - 54)) | (1L << (SHARED - 54)) | (1L << (COHERENT - 54)) | (1L << (VOLATILE - 54)) | (1L << (RESTRICT - 54)) | (1L << (READONLY - 54)) | (1L << (WRITEONLY - 54)) | (1L << (LAYOUT - 54)) | (1L << (CENTROID - 54)) | (1L << (FLAT - 54)) | (1L << (SMOOTH - 54)) | (1L << (NOPERSPECTIVE - 54)) | (1L << (PATCH - 54)) | (1L << (SAMPLE - 54)) | (1L << (SUBROUTINE - 54)) | (1L << (IN - 54)) | (1L << (OUT - 54)) | (1L << (INOUT - 54)) | (1L << (INVARIANT - 54)) | (1L << (PRECISE - 54)) | (1L << (LOWP - 54)) | (1L << (MEDIUMP - 54)) | (1L << (HIGHP - 54)))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -6657,9 +5730,9 @@ public class GLSLParser extends Parser {
 				glslLayoutQualifier();
 				}
 				break;
-			case LOW_PRECISION:
-			case MEDIUM_PRECISION:
-			case HIGH_PRECISION:
+			case LOWP:
+			case MEDIUMP:
+			case HIGHP:
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(779);
@@ -6778,7 +5851,7 @@ public class GLSLParser extends Parser {
 			{
 			setState(787);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << FLAT) | (1L << SMOOTH) | (1L << NOPERSPECTIVE))) != 0)) ) {
+			if ( !(((((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & ((1L << (FLAT - 67)) | (1L << (SMOOTH - 67)) | (1L << (NOPERSPECTIVE - 67)))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -7236,9 +6309,9 @@ public class GLSLParser extends Parser {
 	}
 
 	public static class GlslPrecisionQualifierContext extends ParserRuleContext {
-		public TerminalNode HIGH_PRECISION() { return getToken(GLSLParser.HIGH_PRECISION, 0); }
-		public TerminalNode MEDIUM_PRECISION() { return getToken(GLSLParser.MEDIUM_PRECISION, 0); }
-		public TerminalNode LOW_PRECISION() { return getToken(GLSLParser.LOW_PRECISION, 0); }
+		public TerminalNode HIGHP() { return getToken(GLSLParser.HIGHP, 0); }
+		public TerminalNode MEDIUMP() { return getToken(GLSLParser.MEDIUMP, 0); }
+		public TerminalNode LOWP() { return getToken(GLSLParser.LOWP, 0); }
 		public GlslPrecisionQualifierContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -7267,7 +6340,7 @@ public class GLSLParser extends Parser {
 			{
 			setState(836);
 			_la = _input.LA(1);
-			if ( !(((((_la - 83)) & ~0x3f) == 0 && ((1L << (_la - 83)) & ((1L << (LOW_PRECISION - 83)) | (1L << (MEDIUM_PRECISION - 83)) | (1L << (HIGH_PRECISION - 83)))) != 0)) ) {
+			if ( !(((((_la - 90)) & ~0x3f) == 0 && ((1L << (_la - 90)) & ((1L << (LOWP - 90)) | (1L << (MEDIUMP - 90)) | (1L << (HIGHP - 90)))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -7427,9 +6500,9 @@ public class GLSLParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\u0101\u0349\4\2\t"+
-		"\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
-		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3`\u0349\4\2\t\2\4"+
+		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
+		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
 		"\4\32\t\32\4\33\t\33\4\34\t\34\4\35\t\35\4\36\t\36\4\37\t\37\4 \t \4!"+
 		"\t!\4\"\t\"\4#\t#\4$\t$\4%\t%\4&\t&\4\'\t\'\4(\t(\4)\t)\4*\t*\4+\t+\4"+
@@ -7488,62 +6561,61 @@ public class GLSLParser extends Parser {
 		"\3Q\3Q\3Q\3Q\3Q\3Q\3Q\5Q\u0345\nQ\3R\3R\3R\2\16R\\^`bdfhjlnpS\2\4\6\b"+
 		"\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60\62\64\668:<>@BDFHJLNPRTVX"+
 		"Z\\^`bdfhjlnprtvxz|~\u0080\u0082\u0084\u0086\u0088\u008a\u008c\u008e\u0090"+
-		"\u0092\u0094\u0096\u0098\u009a\u009c\u009e\u00a0\u00a2\2\7\4\2\u00d6\u00d7"+
-		"\u00f4\u00f7\4\2\u00df\u00e8\u00f2\u00f2\6\2\16\16$(-TY\u00a2\3\2\21\23"+
-		"\3\2UW\2\u0382\2\u00a4\3\2\2\2\4\u00e7\3\2\2\2\6\u00e9\3\2\2\2\b\u00ec"+
-		"\3\2\2\2\n\u00f0\3\2\2\2\f\u00f8\3\2\2\2\16\u00fc\3\2\2\2\20\u0104\3\2"+
-		"\2\2\22\u010d\3\2\2\2\24\u0119\3\2\2\2\26\u0125\3\2\2\2\30\u0138\3\2\2"+
-		"\2\32\u013c\3\2\2\2\34\u0146\3\2\2\2\36\u0148\3\2\2\2 \u0152\3\2\2\2\""+
-		"\u0164\3\2\2\2$\u016e\3\2\2\2&\u0170\3\2\2\2(\u0184\3\2\2\2*\u018c\3\2"+
-		"\2\2,\u018e\3\2\2\2.\u0194\3\2\2\2\60\u019c\3\2\2\2\62\u01ae\3\2\2\2\64"+
-		"\u01bb\3\2\2\2\66\u01c0\3\2\2\28\u01c5\3\2\2\2:\u01c7\3\2\2\2<\u01ca\3"+
-		"\2\2\2>\u01cc\3\2\2\2@\u01ce\3\2\2\2B\u01d0\3\2\2\2D\u01d2\3\2\2\2F\u01d4"+
-		"\3\2\2\2H\u01d6\3\2\2\2J\u01d8\3\2\2\2L\u01da\3\2\2\2N\u01dc\3\2\2\2P"+
-		"\u01ea\3\2\2\2R\u01ec\3\2\2\2T\u020f\3\2\2\2V\u0211\3\2\2\2X\u0217\3\2"+
-		"\2\2Z\u0219\3\2\2\2\\\u021b\3\2\2\2^\u022c\3\2\2\2`\u023a\3\2\2\2b\u0248"+
-		"\3\2\2\2d\u025c\3\2\2\2f\u026a\3\2\2\2h\u0275\3\2\2\2j\u0280\3\2\2\2l"+
-		"\u028b\3\2\2\2n\u0296\3\2\2\2p\u02a1\3\2\2\2r\u02b3\3\2\2\2t\u02ba\3\2"+
-		"\2\2v\u02bc\3\2\2\2x\u02be\3\2\2\2z\u02c6\3\2\2\2|\u02c8\3\2\2\2~\u02d0"+
-		"\3\2\2\2\u0080\u02d7\3\2\2\2\u0082\u02e0\3\2\2\2\u0084\u02e2\3\2\2\2\u0086"+
-		"\u02e4\3\2\2\2\u0088\u02e8\3\2\2\2\u008a\u02f1\3\2\2\2\u008c\u02f7\3\2"+
-		"\2\2\u008e\u02ff\3\2\2\2\u0090\u0307\3\2\2\2\u0092\u0311\3\2\2\2\u0094"+
-		"\u0313\3\2\2\2\u0096\u0315\3\2\2\2\u0098\u0317\3\2\2\2\u009a\u031c\3\2"+
-		"\2\2\u009c\u0329\3\2\2\2\u009e\u032b\3\2\2\2\u00a0\u0344\3\2\2\2\u00a2"+
-		"\u0346\3\2\2\2\u00a4\u00a5\5\66\34\2\u00a5\u00a6\7\2\2\3\u00a6\3\3\2\2"+
-		"\2\u00a7\u00e8\5\u0090I\2\u00a8\u00e8\5\b\5\2\u00a9\u00aa\5\u0090I\2\u00aa"+
-		"\u00ab\5> \2\u00ab\u00e8\3\2\2\2\u00ac\u00ad\5\u0090I\2\u00ad\u00b0\5"+
-		"B\"\2\u00ae\u00af\7\u00f0\2\2\u00af\u00b1\5B\"\2\u00b0\u00ae\3\2\2\2\u00b1"+
-		"\u00b2\3\2\2\2\u00b2\u00b0\3\2\2\2\u00b2\u00b3\3\2\2\2\u00b3\u00e8\3\2"+
-		"\2\2\u00b4\u00b5\5\u0090I\2\u00b5\u00b6\5@!\2\u00b6\u00b7\5\n\6\2\u00b7"+
-		"\u00e8\3\2\2\2\u00b8\u00b9\5\u0090I\2\u00b9\u00bb\5@!\2\u00ba\u00bc\5"+
-		"\u0080A\2\u00bb\u00ba\3\2\2\2\u00bc\u00bd\3\2\2\2\u00bd\u00bb\3\2\2\2"+
-		"\u00bd\u00be\3\2\2\2\u00be\u00c0\3\2\2\2\u00bf\u00c1\5\n\6\2\u00c0\u00bf"+
-		"\3\2\2\2\u00c0\u00c1\3\2\2\2\u00c1\u00e8\3\2\2\2\u00c2\u00c3\5\u0090I"+
-		"\2\u00c3\u00c7\5\u0084C\2\u00c4\u00c6\5\u0080A\2\u00c5\u00c4\3\2\2\2\u00c6"+
-		"\u00c9\3\2\2\2\u00c7\u00c5\3\2\2\2\u00c7\u00c8\3\2\2\2\u00c8\u00cb\3\2"+
-		"\2\2\u00c9\u00c7\3\2\2\2\u00ca\u00cc\5\n\6\2\u00cb\u00ca\3\2\2\2\u00cb"+
-		"\u00cc\3\2\2\2\u00cc\u00e8\3\2\2\2\u00cd\u00ce\5\u0090I\2\u00ce\u00d2"+
-		"\5\u0086D\2\u00cf\u00d1\5\u0080A\2\u00d0\u00cf\3\2\2\2\u00d1\u00d4\3\2"+
-		"\2\2\u00d2\u00d0\3\2\2\2\u00d2\u00d3\3\2\2\2\u00d3\u00d6\3\2\2\2\u00d4"+
-		"\u00d2\3\2\2\2\u00d5\u00d7\5\n\6\2\u00d6\u00d5\3\2\2\2\u00d6\u00d7\3\2"+
-		"\2\2\u00d7\u00e8\3\2\2\2\u00d8\u00da\5~@\2\u00d9\u00db\5\n\6\2\u00da\u00d9"+
-		"\3\2\2\2\u00da\u00db\3\2\2\2\u00db\u00e8\3\2\2\2\u00dc\u00e4\5\f\7\2\u00dd"+
-		"\u00e1\5B\"\2\u00de\u00e0\5\u0080A\2\u00df\u00de\3\2\2\2\u00e0\u00e3\3"+
-		"\2\2\2\u00e1\u00df\3\2\2\2\u00e1\u00e2\3\2\2\2\u00e2\u00e5\3\2\2\2\u00e3"+
-		"\u00e1\3\2\2\2\u00e4\u00dd\3\2\2\2\u00e4\u00e5\3\2\2\2\u00e5\u00e8\3\2"+
-		"\2\2\u00e6\u00e8\5\16\b\2\u00e7\u00a7\3\2\2\2\u00e7\u00a8\3\2\2\2\u00e7"+
-		"\u00a9\3\2\2\2\u00e7\u00ac\3\2\2\2\u00e7\u00b4\3\2\2\2\u00e7\u00b8\3\2"+
-		"\2\2\u00e7\u00c2\3\2\2\2\u00e7\u00cd\3\2\2\2\u00e7\u00d8\3\2\2\2\u00e7"+
-		"\u00dc\3\2\2\2\u00e7\u00e6\3\2\2\2\u00e8\5\3\2\2\2\u00e9\u00ea\5\4\3\2"+
-		"\u00ea\u00eb\7\u00f3\2\2\u00eb\7\3\2\2\2\u00ec\u00ed\7X\2\2\u00ed\u00ee"+
-		"\5\u00a2R\2\u00ee\u00ef\5~@\2\u00ef\t\3\2\2\2\u00f0\u00f5\5\24\13\2\u00f1"+
-		"\u00f2\7\u00f0\2\2\u00f2\u00f4\5\24\13\2\u00f3\u00f1\3\2\2\2\u00f4\u00f7"+
-		"\3\2\2\2\u00f5\u00f3\3\2\2\2\u00f5\u00f6\3\2\2\2\u00f6\13\3\2\2\2\u00f7"+
-		"\u00f5\3\2\2\2\u00f8\u00f9\5\u0090I\2\u00f9\u00fa\7\u0101\2\2\u00fa\u00fb"+
-		"\5\u0088E\2\u00fb\r\3\2\2\2\u00fc\u00fd\5\26\f\2\u00fd\u00fe\5D#\2\u00fe"+
-		"\u0100\7\u00e9\2\2\u00ff\u0101\5\20\t\2\u0100\u00ff\3\2\2\2\u0100\u0101"+
-		"\3\2\2\2\u0101\u0102\3\2\2\2\u0102\u0103\7\u00ea\2\2\u0103\17\3\2\2\2"+
-		"\u0104\u0109\5\22\n\2\u0105\u0106\7\u00f0\2\2\u0106\u0108\5\22\n\2\u0107"+
+		"\u0092\u0094\u0096\u0098\u009a\u009c\u009e\u00a0\u00a2\2\7\4\2\5\6#&\4"+
+		"\2\16\27!!\3\2\61\62\3\2EG\3\2\\^\2\u0382\2\u00a4\3\2\2\2\4\u00e7\3\2"+
+		"\2\2\6\u00e9\3\2\2\2\b\u00ec\3\2\2\2\n\u00f0\3\2\2\2\f\u00f8\3\2\2\2\16"+
+		"\u00fc\3\2\2\2\20\u0104\3\2\2\2\22\u010d\3\2\2\2\24\u0119\3\2\2\2\26\u0125"+
+		"\3\2\2\2\30\u0138\3\2\2\2\32\u013c\3\2\2\2\34\u0146\3\2\2\2\36\u0148\3"+
+		"\2\2\2 \u0152\3\2\2\2\"\u0164\3\2\2\2$\u016e\3\2\2\2&\u0170\3\2\2\2(\u0184"+
+		"\3\2\2\2*\u018c\3\2\2\2,\u018e\3\2\2\2.\u0194\3\2\2\2\60\u019c\3\2\2\2"+
+		"\62\u01ae\3\2\2\2\64\u01bb\3\2\2\2\66\u01c0\3\2\2\28\u01c5\3\2\2\2:\u01c7"+
+		"\3\2\2\2<\u01ca\3\2\2\2>\u01cc\3\2\2\2@\u01ce\3\2\2\2B\u01d0\3\2\2\2D"+
+		"\u01d2\3\2\2\2F\u01d4\3\2\2\2H\u01d6\3\2\2\2J\u01d8\3\2\2\2L\u01da\3\2"+
+		"\2\2N\u01dc\3\2\2\2P\u01ea\3\2\2\2R\u01ec\3\2\2\2T\u020f\3\2\2\2V\u0211"+
+		"\3\2\2\2X\u0217\3\2\2\2Z\u0219\3\2\2\2\\\u021b\3\2\2\2^\u022c\3\2\2\2"+
+		"`\u023a\3\2\2\2b\u0248\3\2\2\2d\u025c\3\2\2\2f\u026a\3\2\2\2h\u0275\3"+
+		"\2\2\2j\u0280\3\2\2\2l\u028b\3\2\2\2n\u0296\3\2\2\2p\u02a1\3\2\2\2r\u02b3"+
+		"\3\2\2\2t\u02ba\3\2\2\2v\u02bc\3\2\2\2x\u02be\3\2\2\2z\u02c6\3\2\2\2|"+
+		"\u02c8\3\2\2\2~\u02d0\3\2\2\2\u0080\u02d7\3\2\2\2\u0082\u02e0\3\2\2\2"+
+		"\u0084\u02e2\3\2\2\2\u0086\u02e4\3\2\2\2\u0088\u02e8\3\2\2\2\u008a\u02f1"+
+		"\3\2\2\2\u008c\u02f7\3\2\2\2\u008e\u02ff\3\2\2\2\u0090\u0307\3\2\2\2\u0092"+
+		"\u0311\3\2\2\2\u0094\u0313\3\2\2\2\u0096\u0315\3\2\2\2\u0098\u0317\3\2"+
+		"\2\2\u009a\u031c\3\2\2\2\u009c\u0329\3\2\2\2\u009e\u032b\3\2\2\2\u00a0"+
+		"\u0344\3\2\2\2\u00a2\u0346\3\2\2\2\u00a4\u00a5\5\66\34\2\u00a5\u00a6\7"+
+		"\2\2\3\u00a6\3\3\2\2\2\u00a7\u00e8\5\u0090I\2\u00a8\u00e8\5\b\5\2\u00a9"+
+		"\u00aa\5\u0090I\2\u00aa\u00ab\5> \2\u00ab\u00e8\3\2\2\2\u00ac\u00ad\5"+
+		"\u0090I\2\u00ad\u00b0\5B\"\2\u00ae\u00af\7\37\2\2\u00af\u00b1\5B\"\2\u00b0"+
+		"\u00ae\3\2\2\2\u00b1\u00b2\3\2\2\2\u00b2\u00b0\3\2\2\2\u00b2\u00b3\3\2"+
+		"\2\2\u00b3\u00e8\3\2\2\2\u00b4\u00b5\5\u0090I\2\u00b5\u00b6\5@!\2\u00b6"+
+		"\u00b7\5\n\6\2\u00b7\u00e8\3\2\2\2\u00b8\u00b9\5\u0090I\2\u00b9\u00bb"+
+		"\5@!\2\u00ba\u00bc\5\u0080A\2\u00bb\u00ba\3\2\2\2\u00bc\u00bd\3\2\2\2"+
+		"\u00bd\u00bb\3\2\2\2\u00bd\u00be\3\2\2\2\u00be\u00c0\3\2\2\2\u00bf\u00c1"+
+		"\5\n\6\2\u00c0\u00bf\3\2\2\2\u00c0\u00c1\3\2\2\2\u00c1\u00e8\3\2\2\2\u00c2"+
+		"\u00c3\5\u0090I\2\u00c3\u00c7\5\u0084C\2\u00c4\u00c6\5\u0080A\2\u00c5"+
+		"\u00c4\3\2\2\2\u00c6\u00c9\3\2\2\2\u00c7\u00c5\3\2\2\2\u00c7\u00c8\3\2"+
+		"\2\2\u00c8\u00cb\3\2\2\2\u00c9\u00c7\3\2\2\2\u00ca\u00cc\5\n\6\2\u00cb"+
+		"\u00ca\3\2\2\2\u00cb\u00cc\3\2\2\2\u00cc\u00e8\3\2\2\2\u00cd\u00ce\5\u0090"+
+		"I\2\u00ce\u00d2\5\u0086D\2\u00cf\u00d1\5\u0080A\2\u00d0\u00cf\3\2\2\2"+
+		"\u00d1\u00d4\3\2\2\2\u00d2\u00d0\3\2\2\2\u00d2\u00d3\3\2\2\2\u00d3\u00d6"+
+		"\3\2\2\2\u00d4\u00d2\3\2\2\2\u00d5\u00d7\5\n\6\2\u00d6\u00d5\3\2\2\2\u00d6"+
+		"\u00d7\3\2\2\2\u00d7\u00e8\3\2\2\2\u00d8\u00da\5~@\2\u00d9\u00db\5\n\6"+
+		"\2\u00da\u00d9\3\2\2\2\u00da\u00db\3\2\2\2\u00db\u00e8\3\2\2\2\u00dc\u00e4"+
+		"\5\f\7\2\u00dd\u00e1\5B\"\2\u00de\u00e0\5\u0080A\2\u00df\u00de\3\2\2\2"+
+		"\u00e0\u00e3\3\2\2\2\u00e1\u00df\3\2\2\2\u00e1\u00e2\3\2\2\2\u00e2\u00e5"+
+		"\3\2\2\2\u00e3\u00e1\3\2\2\2\u00e4\u00dd\3\2\2\2\u00e4\u00e5\3\2\2\2\u00e5"+
+		"\u00e8\3\2\2\2\u00e6\u00e8\5\16\b\2\u00e7\u00a7\3\2\2\2\u00e7\u00a8\3"+
+		"\2\2\2\u00e7\u00a9\3\2\2\2\u00e7\u00ac\3\2\2\2\u00e7\u00b4\3\2\2\2\u00e7"+
+		"\u00b8\3\2\2\2\u00e7\u00c2\3\2\2\2\u00e7\u00cd\3\2\2\2\u00e7\u00d8\3\2"+
+		"\2\2\u00e7\u00dc\3\2\2\2\u00e7\u00e6\3\2\2\2\u00e8\5\3\2\2\2\u00e9\u00ea"+
+		"\5\4\3\2\u00ea\u00eb\7\"\2\2\u00eb\7\3\2\2\2\u00ec\u00ed\7_\2\2\u00ed"+
+		"\u00ee\5\u00a2R\2\u00ee\u00ef\5~@\2\u00ef\t\3\2\2\2\u00f0\u00f5\5\24\13"+
+		"\2\u00f1\u00f2\7\37\2\2\u00f2\u00f4\5\24\13\2\u00f3\u00f1\3\2\2\2\u00f4"+
+		"\u00f7\3\2\2\2\u00f5\u00f3\3\2\2\2\u00f5\u00f6\3\2\2\2\u00f6\13\3\2\2"+
+		"\2\u00f7\u00f5\3\2\2\2\u00f8\u00f9\5\u0090I\2\u00f9\u00fa\7\60\2\2\u00fa"+
+		"\u00fb\5\u0088E\2\u00fb\r\3\2\2\2\u00fc\u00fd\5\26\f\2\u00fd\u00fe\5D"+
+		"#\2\u00fe\u0100\7\30\2\2\u00ff\u0101\5\20\t\2\u0100\u00ff\3\2\2\2\u0100"+
+		"\u0101\3\2\2\2\u0101\u0102\3\2\2\2\u0102\u0103\7\31\2\2\u0103\17\3\2\2"+
+		"\2\u0104\u0109\5\22\n\2\u0105\u0106\7\37\2\2\u0106\u0108\5\22\n\2\u0107"+
 		"\u0105\3\2\2\2\u0108\u010b\3\2\2\2\u0109\u0107\3\2\2\2\u0109\u010a\3\2"+
 		"\2\2\u010a\21\3\2\2\2\u010b\u0109\3\2\2\2\u010c\u010e\5\u0090I\2\u010d"+
 		"\u010c\3\2\2\2\u010d\u010e\3\2\2\2\u010e\u010f\3\2\2\2\u010f\u0117\5~"+
@@ -7552,203 +6624,198 @@ public class GLSLParser extends Parser {
 		"\2\2\u0116\u0114\3\2\2\2\u0117\u0110\3\2\2\2\u0117\u0118\3\2\2\2\u0118"+
 		"\23\3\2\2\2\u0119\u011d\5B\"\2\u011a\u011c\5\u0080A\2\u011b\u011a\3\2"+
 		"\2\2\u011c\u011f\3\2\2\2\u011d\u011b\3\2\2\2\u011d\u011e\3\2\2\2\u011e"+
-		"\u0122\3\2\2\2\u011f\u011d\3\2\2\2\u0120\u0121\7\u00f2\2\2\u0121\u0123"+
-		"\5\30\r\2\u0122\u0120\3\2\2\2\u0122\u0123\3\2\2\2\u0123\25\3\2\2\2\u0124"+
-		"\u0126\5\u0090I\2\u0125\u0124\3\2\2\2\u0125\u0126\3\2\2\2\u0126\u0127"+
-		"\3\2\2\2\u0127\u0128\5~@\2\u0128\27\3\2\2\2\u0129\u0139\5t;\2\u012a\u012b"+
-		"\7\u00ed\2\2\u012b\u0130\5\30\r\2\u012c\u012d\7\u00f0\2\2\u012d\u012f"+
-		"\5\30\r\2\u012e\u012c\3\2\2\2\u012f\u0132\3\2\2\2\u0130\u012e\3\2\2\2"+
-		"\u0130\u0131\3\2\2\2\u0131\u0134\3\2\2\2\u0132\u0130\3\2\2\2\u0133\u0135"+
-		"\7\u00f0\2\2\u0134\u0133\3\2\2\2\u0134\u0135\3\2\2\2\u0135\u0136\3\2\2"+
-		"\2\u0136\u0137\7\u00ee\2\2\u0137\u0139\3\2\2\2\u0138\u0129\3\2\2\2\u0138"+
-		"\u012a\3\2\2\2\u0139\31\3\2\2\2\u013a\u013d\5\36\20\2\u013b\u013d\5\34"+
-		"\17\2\u013c\u013a\3\2\2\2\u013c\u013b\3\2\2\2\u013d\33\3\2\2\2\u013e\u0147"+
-		"\5\6\4\2\u013f\u0147\5 \21\2\u0140\u0147\5\"\22\2\u0141\u0147\5&\24\2"+
-		"\u0142\u0147\5,\27\2\u0143\u0147\5.\30\2\u0144\u0147\5\60\31\2\u0145\u0147"+
-		"\5\64\33\2\u0146\u013e\3\2\2\2\u0146\u013f\3\2\2\2\u0146\u0140\3\2\2\2"+
-		"\u0146\u0141\3\2\2\2\u0146\u0142\3\2\2\2\u0146\u0143\3\2\2\2\u0146\u0144"+
-		"\3\2\2\2\u0146\u0145\3\2\2\2\u0147\35\3\2\2\2\u0148\u014c\7\u00ed\2\2"+
-		"\u0149\u014b\5\32\16\2\u014a\u0149\3\2\2\2\u014b\u014e\3\2\2\2\u014c\u014a"+
-		"\3\2\2\2\u014c\u014d\3\2\2\2\u014d\u014f\3\2\2\2\u014e\u014c\3\2\2\2\u014f"+
-		"\u0150\7\u00ee\2\2\u0150\37\3\2\2\2\u0151\u0153\5x=\2\u0152\u0151\3\2"+
-		"\2\2\u0152\u0153\3\2\2\2\u0153\u0154\3\2\2\2\u0154\u0155\7\u00f3\2\2\u0155"+
-		"!\3\2\2\2\u0156\u0157\7\36\2\2\u0157\u0158\7\u00e9\2\2\u0158\u0159\5*"+
-		"\26\2\u0159\u015a\7\u00ea\2\2\u015a\u015b\5\32\16\2\u015b\u0165\3\2\2"+
-		"\2\u015c\u015d\7\36\2\2\u015d\u015e\7\u00e9\2\2\u015e\u015f\5*\26\2\u015f"+
-		"\u0160\7\u00ea\2\2\u0160\u0161\5$\23\2\u0161\u0162\7\37\2\2\u0162\u0163"+
-		"\5\32\16\2\u0163\u0165\3\2\2\2\u0164\u0156\3\2\2\2\u0164\u015c\3\2\2\2"+
-		"\u0165#\3\2\2\2\u0166\u016f\5\36\20\2\u0167\u016f\5\6\4\2\u0168\u016f"+
-		"\5 \21\2\u0169\u016f\5&\24\2\u016a\u016f\5,\27\2\u016b\u016f\5.\30\2\u016c"+
-		"\u016f\5\60\31\2\u016d\u016f\5\64\33\2\u016e\u0166\3\2\2\2\u016e\u0167"+
-		"\3\2\2\2\u016e\u0168\3\2\2\2\u016e\u0169\3\2\2\2\u016e\u016a\3\2\2\2\u016e"+
-		"\u016b\3\2\2\2\u016e\u016c\3\2\2\2\u016e\u016d\3\2\2\2\u016f%\3\2\2\2"+
-		"\u0170\u0171\7\33\2\2\u0171\u0172\7\u00e9\2\2\u0172\u0173\5*\26\2\u0173"+
-		"\u0174\7\u00ea\2\2\u0174\u0178\7\u00ed\2\2\u0175\u0177\5(\25\2\u0176\u0175"+
-		"\3\2\2\2\u0177\u017a\3\2\2\2\u0178\u0176\3\2\2\2\u0178\u0179\3\2\2\2\u0179"+
-		"\u017b\3\2\2\2\u017a\u0178\3\2\2\2\u017b\u017c\7\u00ee\2\2\u017c\'\3\2"+
-		"\2\2\u017d\u017e\7\34\2\2\u017e\u017f\5V,\2\u017f\u0180\7\u00f1\2\2\u0180"+
-		"\u0185\3\2\2\2\u0181\u0182\7\35\2\2\u0182\u0185\7\u00f1\2\2\u0183\u0185"+
-		"\5\32\16\2\u0184\u017d\3\2\2\2\u0184\u0181\3\2\2\2\u0184\u0183\3\2\2\2"+
-		"\u0185)\3\2\2\2\u0186\u018d\5x=\2\u0187\u0188\5\26\f\2\u0188\u0189\5B"+
-		"\"\2\u0189\u018a\7\u00f2\2\2\u018a\u018b\5\30\r\2\u018b\u018d\3\2\2\2"+
-		"\u018c\u0186\3\2\2\2\u018c\u0187\3\2\2\2\u018d+\3\2\2\2\u018e\u018f\7"+
-		"\32\2\2\u018f\u0190\7\u00e9\2\2\u0190\u0191\5*\26\2\u0191\u0192\7\u00ea"+
-		"\2\2\u0192\u0193\5\32\16\2\u0193-\3\2\2\2\u0194\u0195\7\30\2\2\u0195\u0196"+
-		"\5\32\16\2\u0196\u0197\7\32\2\2\u0197\u0198\7\u00e9\2\2\u0198\u0199\5"+
-		"x=\2\u0199\u019a\7\u00ea\2\2\u019a\u019b\7\u00f3\2\2\u019b/\3\2\2\2\u019c"+
-		"\u019d\7\31\2\2\u019d\u019f\7\u00e9\2\2\u019e\u01a0\5\62\32\2\u019f\u019e"+
-		"\3\2\2\2\u019f\u01a0\3\2\2\2\u01a0\u01a1\3\2\2\2\u01a1\u01a3\7\u00f3\2"+
-		"\2\u01a2\u01a4\5*\26\2\u01a3\u01a2\3\2\2\2\u01a3\u01a4\3\2\2\2\u01a4\u01a5"+
-		"\3\2\2\2\u01a5\u01a7\7\u00f3\2\2\u01a6\u01a8\5x=\2\u01a7\u01a6\3\2\2\2"+
-		"\u01a7\u01a8\3\2\2\2\u01a8\u01a9\3\2\2\2\u01a9\u01aa\7\u00ea\2\2\u01aa"+
-		"\u01ab\5\32\16\2\u01ab\61\3\2\2\2\u01ac\u01af\5x=\2\u01ad\u01af\5\4\3"+
-		"\2\u01ae\u01ac\3\2\2\2\u01ae\u01ad\3\2\2\2\u01af\63\3\2\2\2\u01b0\u01b1"+
-		"\7\27\2\2\u01b1\u01bc\7\u00f3\2\2\u01b2\u01b3\7\26\2\2\u01b3\u01bc\7\u00f3"+
-		"\2\2\u01b4\u01b6\7,\2\2\u01b5\u01b7\5x=\2\u01b6\u01b5\3\2\2\2\u01b6\u01b7"+
-		"\3\2\2\2\u01b7\u01b8\3\2\2\2\u01b8\u01bc\7\u00f3\2\2\u01b9\u01ba\7+\2"+
-		"\2\u01ba\u01bc\7\u00f3\2\2\u01bb\u01b0\3\2\2\2\u01bb\u01b2\3\2\2\2\u01bb"+
-		"\u01b4\3\2\2\2\u01bb\u01b9\3\2\2\2\u01bc\65\3\2\2\2\u01bd\u01bf\58\35"+
-		"\2\u01be\u01bd\3\2\2\2\u01bf\u01c2\3\2\2\2\u01c0\u01be\3\2\2\2\u01c0\u01c1"+
-		"\3\2\2\2\u01c1\67\3\2\2\2\u01c2\u01c0\3\2\2\2\u01c3\u01c6\5:\36\2\u01c4"+
-		"\u01c6\5\6\4\2\u01c5\u01c3\3\2\2\2\u01c5\u01c4\3\2\2\2\u01c69\3\2\2\2"+
-		"\u01c7\u01c8\5\16\b\2\u01c8\u01c9\5\36\20\2\u01c9;\3\2\2\2\u01ca\u01cb"+
-		"\7\u0101\2\2\u01cb=\3\2\2\2\u01cc\u01cd\7\u0101\2\2\u01cd?\3\2\2\2\u01ce"+
-		"\u01cf\7\u0101\2\2\u01cfA\3\2\2\2\u01d0\u01d1\7\u0101\2\2\u01d1C\3\2\2"+
-		"\2\u01d2\u01d3\7\u0101\2\2\u01d3E\3\2\2\2\u01d4\u01d5\7\u00cf\2\2\u01d5"+
-		"G\3\2\2\2\u01d6\u01d7\7\u00d2\2\2\u01d7I\3\2\2\2\u01d8\u01d9\7\u00d3\2"+
-		"\2\u01d9K\3\2\2\2\u01da\u01db\7\u00d0\2\2\u01dbM\3\2\2\2\u01dc\u01dd\7"+
-		"\u00d1\2\2\u01ddO\3\2\2\2\u01de\u01eb\5> \2\u01df\u01eb\5\u0084C\2\u01e0"+
-		"\u01eb\5\u0086D\2\u01e1\u01eb\5L\'\2\u01e2\u01eb\5N(\2\u01e3\u01eb\5H"+
-		"%\2\u01e4\u01eb\5J&\2\u01e5\u01eb\5F$\2\u01e6\u01e7\7\u00e9\2\2\u01e7"+
-		"\u01e8\5x=\2\u01e8\u01e9\7\u00ea\2\2\u01e9\u01eb\3\2\2\2\u01ea\u01de\3"+
-		"\2\2\2\u01ea\u01df\3\2\2\2\u01ea\u01e0\3\2\2\2\u01ea\u01e1\3\2\2\2\u01ea"+
-		"\u01e2\3\2\2\2\u01ea\u01e3\3\2\2\2\u01ea\u01e4\3\2\2\2\u01ea\u01e5\3\2"+
-		"\2\2\u01ea\u01e6\3\2\2\2\u01ebQ\3\2\2\2\u01ec\u01ed\b*\1\2\u01ed\u01ee"+
-		"\5P)\2\u01ee\u01fc\3\2\2\2\u01ef\u01f0\f\7\2\2\u01f0\u01fb\5T+\2\u01f1"+
-		"\u01f2\f\6\2\2\u01f2\u01fb\5\u0080A\2\u01f3\u01f4\f\5\2\2\u01f4\u01f5"+
-		"\7\u00ef\2\2\u01f5\u01fb\5<\37\2\u01f6\u01f7\f\4\2\2\u01f7\u01fb\7\u00d6"+
-		"\2\2\u01f8\u01f9\f\3\2\2\u01f9\u01fb\7\u00d7\2\2\u01fa\u01ef\3\2\2\2\u01fa"+
-		"\u01f1\3\2\2\2\u01fa\u01f3\3\2\2\2\u01fa\u01f6\3\2\2\2\u01fa\u01f8\3\2"+
-		"\2\2\u01fb\u01fe\3\2\2\2\u01fc\u01fa\3\2\2\2\u01fc\u01fd\3\2\2\2\u01fd"+
-		"S\3\2\2\2\u01fe\u01fc\3\2\2\2\u01ff\u0200\7\u00e9\2\2\u0200\u0205\5t;"+
-		"\2\u0201\u0202\7\u00f0\2\2\u0202\u0204\5t;\2\u0203\u0201\3\2\2\2\u0204"+
-		"\u0207\3\2\2\2\u0205\u0203\3\2\2\2\u0205\u0206\3\2\2\2\u0206\u0208\3\2"+
-		"\2\2\u0207\u0205\3\2\2\2\u0208\u0209\7\u00ea\2\2\u0209\u0210\3\2\2\2\u020a"+
-		"\u020c\7\u00e9\2\2\u020b\u020d\7\'\2\2\u020c\u020b\3\2\2\2\u020c\u020d"+
-		"\3\2\2\2\u020d\u020e\3\2\2\2\u020e\u0210\7\u00ea\2\2\u020f\u01ff\3\2\2"+
-		"\2\u020f\u020a\3\2\2\2\u0210U\3\2\2\2\u0211\u0212\5x=\2\u0212W\3\2\2\2"+
-		"\u0213\u0218\5R*\2\u0214\u0215\5Z.\2\u0215\u0216\5X-\2\u0216\u0218\3\2"+
-		"\2\2\u0217\u0213\3\2\2\2\u0217\u0214\3\2\2\2\u0218Y\3\2\2\2\u0219\u021a"+
-		"\t\2\2\2\u021a[\3\2\2\2\u021b\u021c\b/\1\2\u021c\u021d\5X-\2\u021d\u0229"+
-		"\3\2\2\2\u021e\u021f\f\5\2\2\u021f\u0220\7\u00f8\2\2\u0220\u0228\5X-\2"+
-		"\u0221\u0222\f\4\2\2\u0222\u0223\7\u00f9\2\2\u0223\u0228\5X-\2\u0224\u0225"+
-		"\f\3\2\2\u0225\u0226\7\u00fa\2\2\u0226\u0228\5X-\2\u0227\u021e\3\2\2\2"+
-		"\u0227\u0221\3\2\2\2\u0227\u0224\3\2\2\2\u0228\u022b\3\2\2\2\u0229\u0227"+
-		"\3\2\2\2\u0229\u022a\3\2\2\2\u022a]\3\2\2\2\u022b\u0229\3\2\2\2\u022c"+
-		"\u022d\b\60\1\2\u022d\u022e\5\\/\2\u022e\u0237\3\2\2\2\u022f\u0230\f\4"+
-		"\2\2\u0230\u0231\7\u00f7\2\2\u0231\u0236\5\\/\2\u0232\u0233\f\3\2\2\u0233"+
-		"\u0234\7\u00f5\2\2\u0234\u0236\5\\/\2\u0235\u022f\3\2\2\2\u0235\u0232"+
-		"\3\2\2\2\u0236\u0239\3\2\2\2\u0237\u0235\3\2\2\2\u0237\u0238\3\2\2\2\u0238"+
-		"_\3\2\2\2\u0239\u0237\3\2\2\2\u023a\u023b\b\61\1\2\u023b\u023c\5^\60\2"+
-		"\u023c\u0245\3\2\2\2\u023d\u023e\f\4\2\2\u023e\u023f\7\u00d4\2\2\u023f"+
-		"\u0244\5^\60\2\u0240\u0241\f\3\2\2\u0241\u0242\7\u00d5\2\2\u0242\u0244"+
-		"\5^\60\2\u0243\u023d\3\2\2\2\u0243\u0240\3\2\2\2\u0244\u0247\3\2\2\2\u0245"+
-		"\u0243\3\2\2\2\u0245\u0246\3\2\2\2\u0246a\3\2\2\2\u0247\u0245\3\2\2\2"+
-		"\u0248\u0249\b\62\1\2\u0249\u024a\5`\61\2\u024a\u0259\3\2\2\2\u024b\u024c"+
-		"\f\6\2\2\u024c\u024d\7\u00fb\2\2\u024d\u0258\5`\61\2\u024e\u024f\f\5\2"+
-		"\2\u024f\u0250\7\u00fc\2\2\u0250\u0258\5`\61\2\u0251\u0252\f\4\2\2\u0252"+
-		"\u0253\7\u00d8\2\2\u0253\u0258\5`\61\2\u0254\u0255\f\3\2\2\u0255\u0256"+
-		"\7\u00d9\2\2\u0256\u0258\5`\61\2\u0257\u024b\3\2\2\2\u0257\u024e\3\2\2"+
-		"\2\u0257\u0251\3\2\2\2\u0257\u0254\3\2\2\2\u0258\u025b\3\2\2\2\u0259\u0257"+
-		"\3\2\2\2\u0259\u025a\3\2\2\2\u025ac\3\2\2\2\u025b\u0259\3\2\2\2\u025c"+
-		"\u025d\b\63\1\2\u025d\u025e\5b\62\2\u025e\u0267\3\2\2\2\u025f\u0260\f"+
-		"\4\2\2\u0260\u0261\7\u00da\2\2\u0261\u0266\5b\62\2\u0262\u0263\f\3\2\2"+
-		"\u0263\u0264\7\u00db\2\2\u0264\u0266\5b\62\2\u0265\u025f\3\2\2\2\u0265"+
-		"\u0262\3\2\2\2\u0266\u0269\3\2\2\2\u0267\u0265\3\2\2\2\u0267\u0268\3\2"+
-		"\2\2\u0268e\3\2\2\2\u0269\u0267\3\2\2\2\u026a\u026b\b\64\1\2\u026b\u026c"+
-		"\5d\63\2\u026c\u0272\3\2\2\2\u026d\u026e\f\3\2\2\u026e\u026f\7\u00ff\2"+
-		"\2\u026f\u0271\5d\63\2\u0270\u026d\3\2\2\2\u0271\u0274\3\2\2\2\u0272\u0270"+
-		"\3\2\2\2\u0272\u0273\3\2\2\2\u0273g\3\2\2\2\u0274\u0272\3\2\2\2\u0275"+
-		"\u0276\b\65\1\2\u0276\u0277\5f\64\2\u0277\u027d\3\2\2\2\u0278\u0279\f"+
-		"\3\2\2\u0279\u027a\7\u00fe\2\2\u027a\u027c\5f\64\2\u027b\u0278\3\2\2\2"+
-		"\u027c\u027f\3\2\2\2\u027d\u027b\3\2\2\2\u027d\u027e\3\2\2\2\u027ei\3"+
-		"\2\2\2\u027f\u027d\3\2\2\2\u0280\u0281\b\66\1\2\u0281\u0282\5h\65\2\u0282"+
-		"\u0288\3\2\2\2\u0283\u0284\f\3\2\2\u0284\u0285\7\u00fd\2\2\u0285\u0287"+
-		"\5h\65\2\u0286\u0283\3\2\2\2\u0287\u028a\3\2\2\2\u0288\u0286\3\2\2\2\u0288"+
-		"\u0289\3\2\2\2\u0289k\3\2\2\2\u028a\u0288\3\2\2\2\u028b\u028c\b\67\1\2"+
-		"\u028c\u028d\5j\66\2\u028d\u0293\3\2\2\2\u028e\u028f\f\3\2\2\u028f\u0290"+
-		"\7\u00dc\2\2\u0290\u0292\5j\66\2\u0291\u028e\3\2\2\2\u0292\u0295\3\2\2"+
-		"\2\u0293\u0291\3\2\2\2\u0293\u0294\3\2\2\2\u0294m\3\2\2\2\u0295\u0293"+
-		"\3\2\2\2\u0296\u0297\b8\1\2\u0297\u0298\5l\67\2\u0298\u029e\3\2\2\2\u0299"+
-		"\u029a\f\3\2\2\u029a\u029b\7\u00de\2\2\u029b\u029d\5l\67\2\u029c\u0299"+
-		"\3\2\2\2\u029d\u02a0\3\2\2\2\u029e\u029c\3\2\2\2\u029e\u029f\3\2\2\2\u029f"+
-		"o\3\2\2\2\u02a0\u029e\3\2\2\2\u02a1\u02a2\b9\1\2\u02a2\u02a3\5n8\2\u02a3"+
-		"\u02a9\3\2\2\2\u02a4\u02a5\f\3\2\2\u02a5\u02a6\7\u00dd\2\2\u02a6\u02a8"+
-		"\5n8\2\u02a7\u02a4\3\2\2\2\u02a8\u02ab\3\2\2\2\u02a9\u02a7\3\2\2\2\u02a9"+
-		"\u02aa\3\2\2\2\u02aaq\3\2\2\2\u02ab\u02a9\3\2\2\2\u02ac\u02b4\5p9\2\u02ad"+
-		"\u02ae\5p9\2\u02ae\u02af\7\u0100\2\2\u02af\u02b0\5x=\2\u02b0\u02b1\7\u00f1"+
-		"\2\2\u02b1\u02b2\5t;\2\u02b2\u02b4\3\2\2\2\u02b3\u02ac\3\2\2\2\u02b3\u02ad"+
-		"\3\2\2\2\u02b4s\3\2\2\2\u02b5\u02bb\5r:\2\u02b6\u02b7\5X-\2\u02b7\u02b8"+
-		"\5v<\2\u02b8\u02b9\5t;\2\u02b9\u02bb\3\2\2\2\u02ba\u02b5\3\2\2\2\u02ba"+
-		"\u02b6\3\2\2\2\u02bbu\3\2\2\2\u02bc\u02bd\t\3\2\2\u02bdw\3\2\2\2\u02be"+
-		"\u02c3\5t;\2\u02bf\u02c0\7\u00f0\2\2\u02c0\u02c2\5t;\2\u02c1\u02bf\3\2"+
-		"\2\2\u02c2\u02c5\3\2\2\2\u02c3\u02c1\3\2\2\2\u02c3\u02c4\3\2\2\2\u02c4"+
+		"\u0122\3\2\2\2\u011f\u011d\3\2\2\2\u0120\u0121\7!\2\2\u0121\u0123\5\30"+
+		"\r\2\u0122\u0120\3\2\2\2\u0122\u0123\3\2\2\2\u0123\25\3\2\2\2\u0124\u0126"+
+		"\5\u0090I\2\u0125\u0124\3\2\2\2\u0125\u0126\3\2\2\2\u0126\u0127\3\2\2"+
+		"\2\u0127\u0128\5~@\2\u0128\27\3\2\2\2\u0129\u0139\5t;\2\u012a\u012b\7"+
+		"\34\2\2\u012b\u0130\5\30\r\2\u012c\u012d\7\37\2\2\u012d\u012f\5\30\r\2"+
+		"\u012e\u012c\3\2\2\2\u012f\u0132\3\2\2\2\u0130\u012e\3\2\2\2\u0130\u0131"+
+		"\3\2\2\2\u0131\u0134\3\2\2\2\u0132\u0130\3\2\2\2\u0133\u0135\7\37\2\2"+
+		"\u0134\u0133\3\2\2\2\u0134\u0135\3\2\2\2\u0135\u0136\3\2\2\2\u0136\u0137"+
+		"\7\35\2\2\u0137\u0139\3\2\2\2\u0138\u0129\3\2\2\2\u0138\u012a\3\2\2\2"+
+		"\u0139\31\3\2\2\2\u013a\u013d\5\36\20\2\u013b\u013d\5\34\17\2\u013c\u013a"+
+		"\3\2\2\2\u013c\u013b\3\2\2\2\u013d\33\3\2\2\2\u013e\u0147\5\6\4\2\u013f"+
+		"\u0147\5 \21\2\u0140\u0147\5\"\22\2\u0141\u0147\5&\24\2\u0142\u0147\5"+
+		",\27\2\u0143\u0147\5.\30\2\u0144\u0147\5\60\31\2\u0145\u0147\5\64\33\2"+
+		"\u0146\u013e\3\2\2\2\u0146\u013f\3\2\2\2\u0146\u0140\3\2\2\2\u0146\u0141"+
+		"\3\2\2\2\u0146\u0142\3\2\2\2\u0146\u0143\3\2\2\2\u0146\u0144\3\2\2\2\u0146"+
+		"\u0145\3\2\2\2\u0147\35\3\2\2\2\u0148\u014c\7\34\2\2\u0149\u014b\5\32"+
+		"\16\2\u014a\u0149\3\2\2\2\u014b\u014e\3\2\2\2\u014c\u014a\3\2\2\2\u014c"+
+		"\u014d\3\2\2\2\u014d\u014f\3\2\2\2\u014e\u014c\3\2\2\2\u014f\u0150\7\35"+
+		"\2\2\u0150\37\3\2\2\2\u0151\u0153\5x=\2\u0152\u0151\3\2\2\2\u0152\u0153"+
+		"\3\2\2\2\u0153\u0154\3\2\2\2\u0154\u0155\7\"\2\2\u0155!\3\2\2\2\u0156"+
+		"\u0157\7R\2\2\u0157\u0158\7\30\2\2\u0158\u0159\5*\26\2\u0159\u015a\7\31"+
+		"\2\2\u015a\u015b\5\32\16\2\u015b\u0165\3\2\2\2\u015c\u015d\7R\2\2\u015d"+
+		"\u015e\7\30\2\2\u015e\u015f\5*\26\2\u015f\u0160\7\31\2\2\u0160\u0161\5"+
+		"$\23\2\u0161\u0162\7S\2\2\u0162\u0163\5\32\16\2\u0163\u0165\3\2\2\2\u0164"+
+		"\u0156\3\2\2\2\u0164\u015c\3\2\2\2\u0165#\3\2\2\2\u0166\u016f\5\36\20"+
+		"\2\u0167\u016f\5\6\4\2\u0168\u016f\5 \21\2\u0169\u016f\5&\24\2\u016a\u016f"+
+		"\5,\27\2\u016b\u016f\5.\30\2\u016c\u016f\5\60\31\2\u016d\u016f\5\64\33"+
+		"\2\u016e\u0166\3\2\2\2\u016e\u0167\3\2\2\2\u016e\u0168\3\2\2\2\u016e\u0169"+
+		"\3\2\2\2\u016e\u016a\3\2\2\2\u016e\u016b\3\2\2\2\u016e\u016c\3\2\2\2\u016e"+
+		"\u016d\3\2\2\2\u016f%\3\2\2\2\u0170\u0171\7O\2\2\u0171\u0172\7\30\2\2"+
+		"\u0172\u0173\5*\26\2\u0173\u0174\7\31\2\2\u0174\u0178\7\34\2\2\u0175\u0177"+
+		"\5(\25\2\u0176\u0175\3\2\2\2\u0177\u017a\3\2\2\2\u0178\u0176\3\2\2\2\u0178"+
+		"\u0179\3\2\2\2\u0179\u017b\3\2\2\2\u017a\u0178\3\2\2\2\u017b\u017c\7\35"+
+		"\2\2\u017c\'\3\2\2\2\u017d\u017e\7P\2\2\u017e\u017f\5V,\2\u017f\u0180"+
+		"\7 \2\2\u0180\u0185\3\2\2\2\u0181\u0182\7Q\2\2\u0182\u0185\7 \2\2\u0183"+
+		"\u0185\5\32\16\2\u0184\u017d\3\2\2\2\u0184\u0181\3\2\2\2\u0184\u0183\3"+
+		"\2\2\2\u0185)\3\2\2\2\u0186\u018d\5x=\2\u0187\u0188\5\26\f\2\u0188\u0189"+
+		"\5B\"\2\u0189\u018a\7!\2\2\u018a\u018b\5\30\r\2\u018b\u018d\3\2\2\2\u018c"+
+		"\u0186\3\2\2\2\u018c\u0187\3\2\2\2\u018d+\3\2\2\2\u018e\u018f\7N\2\2\u018f"+
+		"\u0190\7\30\2\2\u0190\u0191\5*\26\2\u0191\u0192\7\31\2\2\u0192\u0193\5"+
+		"\32\16\2\u0193-\3\2\2\2\u0194\u0195\7L\2\2\u0195\u0196\5\32\16\2\u0196"+
+		"\u0197\7N\2\2\u0197\u0198\7\30\2\2\u0198\u0199\5x=\2\u0199\u019a\7\31"+
+		"\2\2\u019a\u019b\7\"\2\2\u019b/\3\2\2\2\u019c\u019d\7M\2\2\u019d\u019f"+
+		"\7\30\2\2\u019e\u01a0\5\62\32\2\u019f\u019e\3\2\2\2\u019f\u01a0\3\2\2"+
+		"\2\u01a0\u01a1\3\2\2\2\u01a1\u01a3\7\"\2\2\u01a2\u01a4\5*\26\2\u01a3\u01a2"+
+		"\3\2\2\2\u01a3\u01a4\3\2\2\2\u01a4\u01a5\3\2\2\2\u01a5\u01a7\7\"\2\2\u01a6"+
+		"\u01a8\5x=\2\u01a7\u01a6\3\2\2\2\u01a7\u01a8\3\2\2\2\u01a8\u01a9\3\2\2"+
+		"\2\u01a9\u01aa\7\31\2\2\u01aa\u01ab\5\32\16\2\u01ab\61\3\2\2\2\u01ac\u01af"+
+		"\5x=\2\u01ad\u01af\5\4\3\2\u01ae\u01ac\3\2\2\2\u01ae\u01ad\3\2\2\2\u01af"+
+		"\63\3\2\2\2\u01b0\u01b1\7K\2\2\u01b1\u01bc\7\"\2\2\u01b2\u01b3\7J\2\2"+
+		"\u01b3\u01bc\7\"\2\2\u01b4\u01b6\7[\2\2\u01b5\u01b7\5x=\2\u01b6\u01b5"+
+		"\3\2\2\2\u01b6\u01b7\3\2\2\2\u01b7\u01b8\3\2\2\2\u01b8\u01bc\7\"\2\2\u01b9"+
+		"\u01ba\7Z\2\2\u01ba\u01bc\7\"\2\2\u01bb\u01b0\3\2\2\2\u01bb\u01b2\3\2"+
+		"\2\2\u01bb\u01b4\3\2\2\2\u01bb\u01b9\3\2\2\2\u01bc\65\3\2\2\2\u01bd\u01bf"+
+		"\58\35\2\u01be\u01bd\3\2\2\2\u01bf\u01c2\3\2\2\2\u01c0\u01be\3\2\2\2\u01c0"+
+		"\u01c1\3\2\2\2\u01c1\67\3\2\2\2\u01c2\u01c0\3\2\2\2\u01c3\u01c6\5:\36"+
+		"\2\u01c4\u01c6\5\6\4\2\u01c5\u01c3\3\2\2\2\u01c5\u01c4\3\2\2\2\u01c69"+
+		"\3\2\2\2\u01c7\u01c8\5\16\b\2\u01c8\u01c9\5\36\20\2\u01c9;\3\2\2\2\u01ca"+
+		"\u01cb\7\60\2\2\u01cb=\3\2\2\2\u01cc\u01cd\7\60\2\2\u01cd?\3\2\2\2\u01ce"+
+		"\u01cf\7\60\2\2\u01cfA\3\2\2\2\u01d0\u01d1\7\60\2\2\u01d1C\3\2\2\2\u01d2"+
+		"\u01d3\7\60\2\2\u01d3E\3\2\2\2\u01d4\u01d5\7\63\2\2\u01d5G\3\2\2\2\u01d6"+
+		"\u01d7\7\64\2\2\u01d7I\3\2\2\2\u01d8\u01d9\7\65\2\2\u01d9K\3\2\2\2\u01da"+
+		"\u01db\7\66\2\2\u01dbM\3\2\2\2\u01dc\u01dd\7\67\2\2\u01ddO\3\2\2\2\u01de"+
+		"\u01eb\5> \2\u01df\u01eb\5\u0084C\2\u01e0\u01eb\5\u0086D\2\u01e1\u01eb"+
+		"\5L\'\2\u01e2\u01eb\5N(\2\u01e3\u01eb\5H%\2\u01e4\u01eb\5J&\2\u01e5\u01eb"+
+		"\5F$\2\u01e6\u01e7\7\30\2\2\u01e7\u01e8\5x=\2\u01e8\u01e9\7\31\2\2\u01e9"+
+		"\u01eb\3\2\2\2\u01ea\u01de\3\2\2\2\u01ea\u01df\3\2\2\2\u01ea\u01e0\3\2"+
+		"\2\2\u01ea\u01e1\3\2\2\2\u01ea\u01e2\3\2\2\2\u01ea\u01e3\3\2\2\2\u01ea"+
+		"\u01e4\3\2\2\2\u01ea\u01e5\3\2\2\2\u01ea\u01e6\3\2\2\2\u01ebQ\3\2\2\2"+
+		"\u01ec\u01ed\b*\1\2\u01ed\u01ee\5P)\2\u01ee\u01fc\3\2\2\2\u01ef\u01f0"+
+		"\f\7\2\2\u01f0\u01fb\5T+\2\u01f1\u01f2\f\6\2\2\u01f2\u01fb\5\u0080A\2"+
+		"\u01f3\u01f4\f\5\2\2\u01f4\u01f5\7\36\2\2\u01f5\u01fb\5<\37\2\u01f6\u01f7"+
+		"\f\4\2\2\u01f7\u01fb\7\5\2\2\u01f8\u01f9\f\3\2\2\u01f9\u01fb\7\6\2\2\u01fa"+
+		"\u01ef\3\2\2\2\u01fa\u01f1\3\2\2\2\u01fa\u01f3\3\2\2\2\u01fa\u01f6\3\2"+
+		"\2\2\u01fa\u01f8\3\2\2\2\u01fb\u01fe\3\2\2\2\u01fc\u01fa\3\2\2\2\u01fc"+
+		"\u01fd\3\2\2\2\u01fdS\3\2\2\2\u01fe\u01fc\3\2\2\2\u01ff\u0200\7\30\2\2"+
+		"\u0200\u0205\5t;\2\u0201\u0202\7\37\2\2\u0202\u0204\5t;\2\u0203\u0201"+
+		"\3\2\2\2\u0204\u0207\3\2\2\2\u0205\u0203\3\2\2\2\u0205\u0206\3\2\2\2\u0206"+
+		"\u0208\3\2\2\2\u0207\u0205\3\2\2\2\u0208\u0209\7\31\2\2\u0209\u0210\3"+
+		"\2\2\2\u020a\u020c\7\30\2\2\u020b\u020d\7\62\2\2\u020c\u020b\3\2\2\2\u020c"+
+		"\u020d\3\2\2\2\u020d\u020e\3\2\2\2\u020e\u0210\7\31\2\2\u020f\u01ff\3"+
+		"\2\2\2\u020f\u020a\3\2\2\2\u0210U\3\2\2\2\u0211\u0212\5x=\2\u0212W\3\2"+
+		"\2\2\u0213\u0218\5R*\2\u0214\u0215\5Z.\2\u0215\u0216\5X-\2\u0216\u0218"+
+		"\3\2\2\2\u0217\u0213\3\2\2\2\u0217\u0214\3\2\2\2\u0218Y\3\2\2\2\u0219"+
+		"\u021a\t\2\2\2\u021a[\3\2\2\2\u021b\u021c\b/\1\2\u021c\u021d\5X-\2\u021d"+
+		"\u0229\3\2\2\2\u021e\u021f\f\5\2\2\u021f\u0220\7\'\2\2\u0220\u0228\5X"+
+		"-\2\u0221\u0222\f\4\2\2\u0222\u0223\7(\2\2\u0223\u0228\5X-\2\u0224\u0225"+
+		"\f\3\2\2\u0225\u0226\7)\2\2\u0226\u0228\5X-\2\u0227\u021e\3\2\2\2\u0227"+
+		"\u0221\3\2\2\2\u0227\u0224\3\2\2\2\u0228\u022b\3\2\2\2\u0229\u0227\3\2"+
+		"\2\2\u0229\u022a\3\2\2\2\u022a]\3\2\2\2\u022b\u0229\3\2\2\2\u022c\u022d"+
+		"\b\60\1\2\u022d\u022e\5\\/\2\u022e\u0237\3\2\2\2\u022f\u0230\f\4\2\2\u0230"+
+		"\u0231\7&\2\2\u0231\u0236\5\\/\2\u0232\u0233\f\3\2\2\u0233\u0234\7$\2"+
+		"\2\u0234\u0236\5\\/\2\u0235\u022f\3\2\2\2\u0235\u0232\3\2\2\2\u0236\u0239"+
+		"\3\2\2\2\u0237\u0235\3\2\2\2\u0237\u0238\3\2\2\2\u0238_\3\2\2\2\u0239"+
+		"\u0237\3\2\2\2\u023a\u023b\b\61\1\2\u023b\u023c\5^\60\2\u023c\u0245\3"+
+		"\2\2\2\u023d\u023e\f\4\2\2\u023e\u023f\7\3\2\2\u023f\u0244\5^\60\2\u0240"+
+		"\u0241\f\3\2\2\u0241\u0242\7\4\2\2\u0242\u0244\5^\60\2\u0243\u023d\3\2"+
+		"\2\2\u0243\u0240\3\2\2\2\u0244\u0247\3\2\2\2\u0245\u0243\3\2\2\2\u0245"+
+		"\u0246\3\2\2\2\u0246a\3\2\2\2\u0247\u0245\3\2\2\2\u0248\u0249\b\62\1\2"+
+		"\u0249\u024a\5`\61\2\u024a\u0259\3\2\2\2\u024b\u024c\f\6\2\2\u024c\u024d"+
+		"\7*\2\2\u024d\u0258\5`\61\2\u024e\u024f\f\5\2\2\u024f\u0250\7+\2\2\u0250"+
+		"\u0258\5`\61\2\u0251\u0252\f\4\2\2\u0252\u0253\7\7\2\2\u0253\u0258\5`"+
+		"\61\2\u0254\u0255\f\3\2\2\u0255\u0256\7\b\2\2\u0256\u0258\5`\61\2\u0257"+
+		"\u024b\3\2\2\2\u0257\u024e\3\2\2\2\u0257\u0251\3\2\2\2\u0257\u0254\3\2"+
+		"\2\2\u0258\u025b\3\2\2\2\u0259\u0257\3\2\2\2\u0259\u025a\3\2\2\2\u025a"+
+		"c\3\2\2\2\u025b\u0259\3\2\2\2\u025c\u025d\b\63\1\2\u025d\u025e\5b\62\2"+
+		"\u025e\u0267\3\2\2\2\u025f\u0260\f\4\2\2\u0260\u0261\7\t\2\2\u0261\u0266"+
+		"\5b\62\2\u0262\u0263\f\3\2\2\u0263\u0264\7\n\2\2\u0264\u0266\5b\62\2\u0265"+
+		"\u025f\3\2\2\2\u0265\u0262\3\2\2\2\u0266\u0269\3\2\2\2\u0267\u0265\3\2"+
+		"\2\2\u0267\u0268\3\2\2\2\u0268e\3\2\2\2\u0269\u0267\3\2\2\2\u026a\u026b"+
+		"\b\64\1\2\u026b\u026c\5d\63\2\u026c\u0272\3\2\2\2\u026d\u026e\f\3\2\2"+
+		"\u026e\u026f\7.\2\2\u026f\u0271\5d\63\2\u0270\u026d\3\2\2\2\u0271\u0274"+
+		"\3\2\2\2\u0272\u0270\3\2\2\2\u0272\u0273\3\2\2\2\u0273g\3\2\2\2\u0274"+
+		"\u0272\3\2\2\2\u0275\u0276\b\65\1\2\u0276\u0277\5f\64\2\u0277\u027d\3"+
+		"\2\2\2\u0278\u0279\f\3\2\2\u0279\u027a\7-\2\2\u027a\u027c\5f\64\2\u027b"+
+		"\u0278\3\2\2\2\u027c\u027f\3\2\2\2\u027d\u027b\3\2\2\2\u027d\u027e\3\2"+
+		"\2\2\u027ei\3\2\2\2\u027f\u027d\3\2\2\2\u0280\u0281\b\66\1\2\u0281\u0282"+
+		"\5h\65\2\u0282\u0288\3\2\2\2\u0283\u0284\f\3\2\2\u0284\u0285\7,\2\2\u0285"+
+		"\u0287\5h\65\2\u0286\u0283\3\2\2\2\u0287\u028a\3\2\2\2\u0288\u0286\3\2"+
+		"\2\2\u0288\u0289\3\2\2\2\u0289k\3\2\2\2\u028a\u0288\3\2\2\2\u028b\u028c"+
+		"\b\67\1\2\u028c\u028d\5j\66\2\u028d\u0293\3\2\2\2\u028e\u028f\f\3\2\2"+
+		"\u028f\u0290\7\13\2\2\u0290\u0292\5j\66\2\u0291\u028e\3\2\2\2\u0292\u0295"+
+		"\3\2\2\2\u0293\u0291\3\2\2\2\u0293\u0294\3\2\2\2\u0294m\3\2\2\2\u0295"+
+		"\u0293\3\2\2\2\u0296\u0297\b8\1\2\u0297\u0298\5l\67\2\u0298\u029e\3\2"+
+		"\2\2\u0299\u029a\f\3\2\2\u029a\u029b\7\r\2\2\u029b\u029d\5l\67\2\u029c"+
+		"\u0299\3\2\2\2\u029d\u02a0\3\2\2\2\u029e\u029c\3\2\2\2\u029e\u029f\3\2"+
+		"\2\2\u029fo\3\2\2\2\u02a0\u029e\3\2\2\2\u02a1\u02a2\b9\1\2\u02a2\u02a3"+
+		"\5n8\2\u02a3\u02a9\3\2\2\2\u02a4\u02a5\f\3\2\2\u02a5\u02a6\7\f\2\2\u02a6"+
+		"\u02a8\5n8\2\u02a7\u02a4\3\2\2\2\u02a8\u02ab\3\2\2\2\u02a9\u02a7\3\2\2"+
+		"\2\u02a9\u02aa\3\2\2\2\u02aaq\3\2\2\2\u02ab\u02a9\3\2\2\2\u02ac\u02b4"+
+		"\5p9\2\u02ad\u02ae\5p9\2\u02ae\u02af\7/\2\2\u02af\u02b0\5x=\2\u02b0\u02b1"+
+		"\7 \2\2\u02b1\u02b2\5t;\2\u02b2\u02b4\3\2\2\2\u02b3\u02ac\3\2\2\2\u02b3"+
+		"\u02ad\3\2\2\2\u02b4s\3\2\2\2\u02b5\u02bb\5r:\2\u02b6\u02b7\5X-\2\u02b7"+
+		"\u02b8\5v<\2\u02b8\u02b9\5t;\2\u02b9\u02bb\3\2\2\2\u02ba\u02b5\3\2\2\2"+
+		"\u02ba\u02b6\3\2\2\2\u02bbu\3\2\2\2\u02bc\u02bd\t\3\2\2\u02bdw\3\2\2\2"+
+		"\u02be\u02c3\5t;\2\u02bf\u02c0\7\37\2\2\u02c0\u02c2\5t;\2\u02c1\u02bf"+
+		"\3\2\2\2\u02c2\u02c5\3\2\2\2\u02c3\u02c1\3\2\2\2\u02c3\u02c4\3\2\2\2\u02c4"+
 		"y\3\2\2\2\u02c5\u02c3\3\2\2\2\u02c6\u02c7\5r:\2\u02c7{\3\2\2\2\u02c8\u02cd"+
-		"\5D#\2\u02c9\u02ca\7\u00f0\2\2\u02ca\u02cc\5D#\2\u02cb\u02c9\3\2\2\2\u02cc"+
+		"\5D#\2\u02c9\u02ca\7\37\2\2\u02ca\u02cc\5D#\2\u02cb\u02c9\3\2\2\2\u02cc"+
 		"\u02cf\3\2\2\2\u02cd\u02cb\3\2\2\2\u02cd\u02ce\3\2\2\2\u02ce}\3\2\2\2"+
 		"\u02cf\u02cd\3\2\2\2\u02d0\u02d4\5\u0082B\2\u02d1\u02d3\5\u0080A\2\u02d2"+
 		"\u02d1\3\2\2\2\u02d3\u02d6\3\2\2\2\u02d4\u02d2\3\2\2\2\u02d4\u02d5\3\2"+
-		"\2\2\u02d5\177\3\2\2\2\u02d6\u02d4\3\2\2\2\u02d7\u02d9\7\u00eb\2\2\u02d8"+
+		"\2\2\u02d5\177\3\2\2\2\u02d6\u02d4\3\2\2\2\u02d7\u02d9\7\32\2\2\u02d8"+
 		"\u02da\5V,\2\u02d9\u02d8\3\2\2\2\u02d9\u02da\3\2\2\2\u02da\u02db\3\2\2"+
-		"\2\u02db\u02dc\7\u00ec\2\2\u02dc\u0081\3\2\2\2\u02dd\u02e1\5\u0084C\2"+
-		"\u02de\u02e1\5\u0086D\2\u02df\u02e1\5@!\2\u02e0\u02dd\3\2\2\2\u02e0\u02de"+
-		"\3\2\2\2\u02e0\u02df\3\2\2\2\u02e1\u0083\3\2\2\2\u02e2\u02e3\t\4\2\2\u02e3"+
-		"\u0085\3\2\2\2\u02e4\u02e5\7\u00a3\2\2\u02e5\u02e6\7\u0101\2\2\u02e6\u02e7"+
-		"\5\u0088E\2\u02e7\u0087\3\2\2\2\u02e8\u02ea\7\u00ed\2\2\u02e9\u02eb\5"+
-		"\u008aF\2\u02ea\u02e9\3\2\2\2\u02eb\u02ec\3\2\2\2\u02ec\u02ea\3\2\2\2"+
-		"\u02ec\u02ed\3\2\2\2\u02ed\u02ee\3\2\2\2\u02ee\u02ef\7\u00ee\2\2\u02ef"+
-		"\u0089\3\2\2\2\u02f0\u02f2\5\u0090I\2\u02f1\u02f0\3\2\2\2\u02f1\u02f2"+
-		"\3\2\2\2\u02f2\u02f3\3\2\2\2\u02f3\u02f4\5~@\2\u02f4\u02f5\5\u008cG\2"+
-		"\u02f5\u02f6\7\u00f3\2\2\u02f6\u008b\3\2\2\2\u02f7\u02fc\5\u008eH\2\u02f8"+
-		"\u02f9\7\u00f0\2\2\u02f9\u02fb\5\u008eH\2\u02fa\u02f8\3\2\2\2\u02fb\u02fe"+
-		"\3\2\2\2\u02fc\u02fa\3\2\2\2\u02fc\u02fd\3\2\2\2\u02fd\u008d\3\2\2\2\u02fe"+
-		"\u02fc\3\2\2\2\u02ff\u0303\7\u0101\2\2\u0300\u0302\5\u0080A\2\u0301\u0300"+
-		"\3\2\2\2\u0302\u0305\3\2\2\2\u0303\u0301\3\2\2\2\u0303\u0304\3\2\2\2\u0304"+
-		"\u008f\3\2\2\2\u0305\u0303\3\2\2\2\u0306\u0308\5\u0092J\2\u0307\u0306"+
-		"\3\2\2\2\u0308\u0309\3\2\2\2\u0309\u0307\3\2\2\2\u0309\u030a\3\2\2\2\u030a"+
-		"\u0091\3\2\2\2\u030b\u0312\5\u00a0Q\2\u030c\u0312\5\u0098M\2\u030d\u0312"+
-		"\5\u00a2R\2\u030e\u0312\5\u0096L\2\u030f\u0312\5\u0094K\2\u0310\u0312"+
-		"\5\u009eP\2\u0311\u030b\3\2\2\2\u0311\u030c\3\2\2\2\u0311\u030d\3\2\2"+
-		"\2\u0311\u030e\3\2\2\2\u0311\u030f\3\2\2\2\u0311\u0310\3\2\2\2\u0312\u0093"+
-		"\3\2\2\2\u0313\u0314\7)\2\2\u0314\u0095\3\2\2\2\u0315\u0316\t\5\2\2\u0316"+
-		"\u0097\3\2\2\2\u0317\u0318\7\17\2\2\u0318\u0319\7\u00e9\2\2\u0319\u031a"+
-		"\5\u009aN\2\u031a\u031b\7\u00ea\2\2\u031b\u0099\3\2\2\2\u031c\u0321\5"+
-		"\u009cO\2\u031d\u031e\7\u00f0\2\2\u031e\u0320\5\u009cO\2\u031f\u031d\3"+
-		"\2\2\2\u0320\u0323\3\2\2\2\u0321\u031f\3\2\2\2\u0321\u0322\3\2\2\2\u0322"+
-		"\u009b\3\2\2\2\u0323\u0321\3\2\2\2\u0324\u032a\7\u0101\2\2\u0325\u0326"+
-		"\7\u0101\2\2\u0326\u0327\7\u00f2\2\2\u0327\u032a\5z>\2\u0328\u032a\7\b"+
-		"\2\2\u0329\u0324\3\2\2\2\u0329\u0325\3\2\2\2\u0329\u0328\3\2\2\2\u032a"+
-		"\u009d\3\2\2\2\u032b\u032c\7*\2\2\u032c\u009f\3\2\2\2\u032d\u0345\7\4"+
-		"\2\2\u032e\u0345\7\3\2\2\u032f\u0345\7\6\2\2\u0330\u0345\7#\2\2\u0331"+
-		"\u0345\7!\2\2\u0332\u0345\7\"\2\2\u0333\u0345\7\20\2\2\u0334\u0345\7\24"+
-		"\2\2\u0335\u0345\7\25\2\2\u0336\u0345\7\5\2\2\u0337\u0345\7\7\2\2\u0338"+
-		"\u0345\7\b\2\2\u0339\u0345\7\t\2\2\u033a\u0345\7\n\2\2\u033b\u0345\7\13"+
-		"\2\2\u033c\u0345\7\f\2\2\u033d\u0345\7\r\2\2\u033e\u033f\7 \2\2\u033f"+
-		"\u0340\7\u00e9\2\2\u0340\u0341\5|?\2\u0341\u0342\7\u00ea\2\2\u0342\u0345"+
-		"\3\2\2\2\u0343\u0345\7 \2\2\u0344\u032d\3\2\2\2\u0344\u032e\3\2\2\2\u0344"+
-		"\u032f\3\2\2\2\u0344\u0330\3\2\2\2\u0344\u0331\3\2\2\2\u0344\u0332\3\2"+
-		"\2\2\u0344\u0333\3\2\2\2\u0344\u0334\3\2\2\2\u0344\u0335\3\2\2\2\u0344"+
-		"\u0336\3\2\2\2\u0344\u0337\3\2\2\2\u0344\u0338\3\2\2\2\u0344\u0339\3\2"+
-		"\2\2\u0344\u033a\3\2\2\2\u0344\u033b\3\2\2\2\u0344\u033c\3\2\2\2\u0344"+
-		"\u033d\3\2\2\2\u0344\u033e\3\2\2\2\u0344\u0343\3\2\2\2\u0345\u00a1\3\2"+
-		"\2\2\u0346\u0347\t\6\2\2\u0347\u00a3\3\2\2\2Q\u00b2\u00bd\u00c0\u00c7"+
-		"\u00cb\u00d2\u00d6\u00da\u00e1\u00e4\u00e7\u00f5\u0100\u0109\u010d\u0114"+
-		"\u0117\u011d\u0122\u0125\u0130\u0134\u0138\u013c\u0146\u014c\u0152\u0164"+
-		"\u016e\u0178\u0184\u018c\u019f\u01a3\u01a7\u01ae\u01b6\u01bb\u01c0\u01c5"+
-		"\u01ea\u01fa\u01fc\u0205\u020c\u020f\u0217\u0227\u0229\u0235\u0237\u0243"+
-		"\u0245\u0257\u0259\u0265\u0267\u0272\u027d\u0288\u0293\u029e\u02a9\u02b3"+
-		"\u02ba\u02c3\u02cd\u02d4\u02d9\u02e0\u02ec\u02f1\u02fc\u0303\u0309\u0311"+
-		"\u0321\u0329\u0344";
+		"\2\u02db\u02dc\7\33\2\2\u02dc\u0081\3\2\2\2\u02dd\u02e1\5\u0084C\2\u02de"+
+		"\u02e1\5\u0086D\2\u02df\u02e1\5@!\2\u02e0\u02dd\3\2\2\2\u02e0\u02de\3"+
+		"\2\2\2\u02e0\u02df\3\2\2\2\u02e1\u0083\3\2\2\2\u02e2\u02e3\t\4\2\2\u02e3"+
+		"\u0085\3\2\2\2\u02e4\u02e5\7`\2\2\u02e5\u02e6\7\60\2\2\u02e6\u02e7\5\u0088"+
+		"E\2\u02e7\u0087\3\2\2\2\u02e8\u02ea\7\34\2\2\u02e9\u02eb\5\u008aF\2\u02ea"+
+		"\u02e9\3\2\2\2\u02eb\u02ec\3\2\2\2\u02ec\u02ea\3\2\2\2\u02ec\u02ed\3\2"+
+		"\2\2\u02ed\u02ee\3\2\2\2\u02ee\u02ef\7\35\2\2\u02ef\u0089\3\2\2\2\u02f0"+
+		"\u02f2\5\u0090I\2\u02f1\u02f0\3\2\2\2\u02f1\u02f2\3\2\2\2\u02f2\u02f3"+
+		"\3\2\2\2\u02f3\u02f4\5~@\2\u02f4\u02f5\5\u008cG\2\u02f5\u02f6\7\"\2\2"+
+		"\u02f6\u008b\3\2\2\2\u02f7\u02fc\5\u008eH\2\u02f8\u02f9\7\37\2\2\u02f9"+
+		"\u02fb\5\u008eH\2\u02fa\u02f8\3\2\2\2\u02fb\u02fe\3\2\2\2\u02fc\u02fa"+
+		"\3\2\2\2\u02fc\u02fd\3\2\2\2\u02fd\u008d\3\2\2\2\u02fe\u02fc\3\2\2\2\u02ff"+
+		"\u0303\7\60\2\2\u0300\u0302\5\u0080A\2\u0301\u0300\3\2\2\2\u0302\u0305"+
+		"\3\2\2\2\u0303\u0301\3\2\2\2\u0303\u0304\3\2\2\2\u0304\u008f\3\2\2\2\u0305"+
+		"\u0303\3\2\2\2\u0306\u0308\5\u0092J\2\u0307\u0306\3\2\2\2\u0308\u0309"+
+		"\3\2\2\2\u0309\u0307\3\2\2\2\u0309\u030a\3\2\2\2\u030a\u0091\3\2\2\2\u030b"+
+		"\u0312\5\u00a0Q\2\u030c\u0312\5\u0098M\2\u030d\u0312\5\u00a2R\2\u030e"+
+		"\u0312\5\u0096L\2\u030f\u0312\5\u0094K\2\u0310\u0312\5\u009eP\2\u0311"+
+		"\u030b\3\2\2\2\u0311\u030c\3\2\2\2\u0311\u030d\3\2\2\2\u0311\u030e\3\2"+
+		"\2\2\u0311\u030f\3\2\2\2\u0311\u0310\3\2\2\2\u0312\u0093\3\2\2\2\u0313"+
+		"\u0314\7X\2\2\u0314\u0095\3\2\2\2\u0315\u0316\t\5\2\2\u0316\u0097\3\2"+
+		"\2\2\u0317\u0318\7C\2\2\u0318\u0319\7\30\2\2\u0319\u031a\5\u009aN\2\u031a"+
+		"\u031b\7\31\2\2\u031b\u0099\3\2\2\2\u031c\u0321\5\u009cO\2\u031d\u031e"+
+		"\7\37\2\2\u031e\u0320\5\u009cO\2\u031f\u031d\3\2\2\2\u0320\u0323\3\2\2"+
+		"\2\u0321\u031f\3\2\2\2\u0321\u0322\3\2\2\2\u0322\u009b\3\2\2\2\u0323\u0321"+
+		"\3\2\2\2\u0324\u032a\7\60\2\2\u0325\u0326\7\60\2\2\u0326\u0327\7!\2\2"+
+		"\u0327\u032a\5z>\2\u0328\u032a\7=\2\2\u0329\u0324\3\2\2\2\u0329\u0325"+
+		"\3\2\2\2\u0329\u0328\3\2\2\2\u032a\u009d\3\2\2\2\u032b\u032c\7Y\2\2\u032c"+
+		"\u009f\3\2\2\2\u032d\u0345\79\2\2\u032e\u0345\78\2\2\u032f\u0345\7;\2"+
+		"\2\u0330\u0345\7W\2\2\u0331\u0345\7U\2\2\u0332\u0345\7V\2\2\u0333\u0345"+
+		"\7D\2\2\u0334\u0345\7H\2\2\u0335\u0345\7I\2\2\u0336\u0345\7:\2\2\u0337"+
+		"\u0345\7<\2\2\u0338\u0345\7=\2\2\u0339\u0345\7>\2\2\u033a\u0345\7?\2\2"+
+		"\u033b\u0345\7@\2\2\u033c\u0345\7A\2\2\u033d\u0345\7B\2\2\u033e\u033f"+
+		"\7T\2\2\u033f\u0340\7\30\2\2\u0340\u0341\5|?\2\u0341\u0342\7\31\2\2\u0342"+
+		"\u0345\3\2\2\2\u0343\u0345\7T\2\2\u0344\u032d\3\2\2\2\u0344\u032e\3\2"+
+		"\2\2\u0344\u032f\3\2\2\2\u0344\u0330\3\2\2\2\u0344\u0331\3\2\2\2\u0344"+
+		"\u0332\3\2\2\2\u0344\u0333\3\2\2\2\u0344\u0334\3\2\2\2\u0344\u0335\3\2"+
+		"\2\2\u0344\u0336\3\2\2\2\u0344\u0337\3\2\2\2\u0344\u0338\3\2\2\2\u0344"+
+		"\u0339\3\2\2\2\u0344\u033a\3\2\2\2\u0344\u033b\3\2\2\2\u0344\u033c\3\2"+
+		"\2\2\u0344\u033d\3\2\2\2\u0344\u033e\3\2\2\2\u0344\u0343\3\2\2\2\u0345"+
+		"\u00a1\3\2\2\2\u0346\u0347\t\6\2\2\u0347\u00a3\3\2\2\2Q\u00b2\u00bd\u00c0"+
+		"\u00c7\u00cb\u00d2\u00d6\u00da\u00e1\u00e4\u00e7\u00f5\u0100\u0109\u010d"+
+		"\u0114\u0117\u011d\u0122\u0125\u0130\u0134\u0138\u013c\u0146\u014c\u0152"+
+		"\u0164\u016e\u0178\u0184\u018c\u019f\u01a3\u01a7\u01ae\u01b6\u01bb\u01c0"+
+		"\u01c5\u01ea\u01fa\u01fc\u0205\u020c\u020f\u0217\u0227\u0229\u0235\u0237"+
+		"\u0243\u0245\u0257\u0259\u0265\u0267\u0272\u027d\u0288\u0293\u029e\u02a9"+
+		"\u02b3\u02ba\u02c3\u02cd\u02d4\u02d9\u02e0\u02ec\u02f1\u02fc\u0303\u0309"+
+		"\u0311\u0321\u0329\u0344";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

@@ -3,11 +3,11 @@ package org.cakelab.glsl;
 import java.util.BitSet;
 
 import org.antlr.v4.runtime.ANTLRErrorListener;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -17,7 +17,7 @@ import org.cakelab.glsl.pp.StandardErrorHandler;
 public class GLSLErrorHandler extends StandardErrorHandler implements ANTLRErrorListener {
 	
 	LocationMap locations;
-	private CommonTokenStream tokens;
+	private TokenStream tokens;
 	
 	
 	public GLSLErrorHandler() {
@@ -34,7 +34,7 @@ public class GLSLErrorHandler extends StandardErrorHandler implements ANTLRError
 		this.resources = resources;
 	}
 
-	public void setLocations(CommonTokenStream tokens, LocationMap locations) {
+	public void setLocations(TokenStream tokens, LocationMap locations) {
 		this.locations = locations;
 		this.tokens = tokens;
 	}

@@ -3,6 +3,8 @@ package org.cakelab.glsl.test.pp;
 import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
 
+import org.cakelab.glsl.Resource;
+import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.lexer.PPLexer;
 import org.cakelab.glsl.pp.parser.ExpressionParser;
 import org.cakelab.glsl.pp.parser.Parser;
@@ -13,12 +15,15 @@ public class TestingExprBase extends TestingBase {
 
 	public Parser p(String source) {
 		try {
-			IScanner scanner = new StreamScanner("0", new ByteArrayInputStream(source.getBytes()));
-			PPLexer pplexer = new PPLexer(scanner);
+			Resource resource = new Resource("0", "-- testing --", new ByteArrayInputStream(source.getBytes()));
+			PPState state = new PPState(resource);
+			state.setErrorHandler(errorHandler);
+			
+			IScanner scanner = new StreamScanner(resource);
+			PPLexer pplexer = new PPLexer(scanner, state);
 			error = null;
 			warning = null;
 			parser = new ExpressionParser(pplexer);
-			parser.setErrorHandler(errorHandler);
 		} catch (Throwable e) {
 			// will never happen
 			throw new Error(e);

@@ -58,11 +58,84 @@
 //
 grammar GLSL;
 
-//
-// Order of imported rules equals order of grammars in import statement!
-// GLSLtoken must be last!
-// 
-import GLSLkeyword, GLSLtoken;
+
+tokens {
+	//
+	// Punctuators
+	//
+	LEFT_OP /* '<<' */,
+	RIGHT_OP /* '>>' */,
+	INC_OP /* '++' */,
+	DEC_OP /* '--' */,
+	LE_OP /* '<=' */,
+	GE_OP /* '>=' */,
+	EQ_OP /* '==' */,
+	NE_OP /* '!=' */,
+	AND_OP /* '&&' */,
+	OR_OP /* '||' */,
+	XOR_OP /* '^^' */,
+	MUL_ASSIGN /* '*=' */,
+	DIV_ASSIGN /* '/=' */,
+	ADD_ASSIGN /* '+=' */,
+	MOD_ASSIGN /* '%=' */,
+	LEFT_ASSIGN /* '<<=' */,
+	RIGHT_ASSIGN /* '>>=' */,
+	AND_ASSIGN /* '&=' */,
+	XOR_ASSIGN /* '^=' */,
+	OR_ASSIGN /* '|=' */,
+	SUB_ASSIGN /* '-=' */,
+	LEFT_PAREN /* '(' */,
+	RIGHT_PAREN /* ')' */,
+	LEFT_BRACKET /* '[' */,
+	RIGHT_BRACKET /* ']' */,
+	LEFT_BRACE /* '{' */,
+	RIGHT_BRACE /* '}' */,
+	DOT /* '.' */,
+	COMMA /* ',' */,
+	COLON /* ':' */,
+	EQUAL /* '=' */,
+	SEMICOLON /* ';' */,
+	BANG /* '!' */,
+	DASH /* '-' */,
+	TILDE /* '~' */,
+	PLUS /* '+' */,
+	STAR /* '*' */,
+	SLASH /* '/' */,
+	PERCENT /* '%' */,
+	LEFT_ANGLE /* '<' */,
+	RIGHT_ANGLE /* '>' */,
+	VERTICAL_BAR /* '|' */,
+	CARET /* '^' */,
+	AMPERSAND /* '&' */,
+	QUESTION /* '?' */,
+
+	//
+	// Identifiers
+	//
+	IDENTIFIER, BUILTIN_TYPE, VOID,
+
+	//
+	// Constant values
+	//
+	BOOLCONSTANT, INTCONSTANT, UINTCONSTANT, FLOATCONSTANT, DOUBLECONSTANT,
+
+	//
+	// Keywords
+	//
+	ATTRIBUTE, CONST, UNIFORM, VARYING, BUFFER, SHARED,
+	COHERENT, VOLATILE, RESTRICT, READONLY, WRITEONLY,
+	LAYOUT, 
+	CENTROID, FLAT, SMOOTH, NOPERSPECTIVE,
+	PATCH, SAMPLE,
+	BREAK, CONTINUE, DO, FOR, WHILE, SWITCH, CASE, DEFAULT,
+	IF, ELSE,
+	SUBROUTINE,
+	IN, OUT, INOUT,
+	INVARIANT, PRECISE,
+	DISCARD, RETURN,
+	LOWP, MEDIUMP, HIGHP, PRECISION,
+	STRUCT
+}
 
 //
 // Added as main entry point for language parsing
@@ -569,125 +642,7 @@ glslTypeSpecifierNonarray
 
 glslBuiltinType
     : VOID 
-    | FLOAT 
-    | DOUBLE 
-    | INT 
-    | UINT 
-    | BOOL 
-    | VEC2 
-    | VEC3 
-    | VEC4 
-    | DVEC2 
-    | DVEC3 
-    | DVEC4 
-    | BVEC2 
-    | BVEC3 
-    | BVEC4 
-    | IVEC2 
-    | IVEC3 
-    | IVEC4 
-    | UVEC2 
-    | UVEC3 
-    | UVEC4 
-    | MAT2 
-    | MAT3 
-    | MAT4 
-    | MAT2X2 
-    | MAT2X3 
-    | MAT2X4 
-    | MAT3X2 
-    | MAT3X3 
-    | MAT3X4 
-    | MAT4X2 
-    | MAT4X3 
-    | MAT4X4 
-    | DMAT2 
-    | DMAT3 
-    | DMAT4 
-    | DMAT2X2 
-    | DMAT2X3 
-    | DMAT2X4 
-    | DMAT3X2 
-    | DMAT3X3 
-    | DMAT3X4 
-    | DMAT4X2 
-    | DMAT4X3 
-    | DMAT4X4 
-    | ATOMIC_UINT 
-    | SAMPLER1D 
-    | SAMPLER2D 
-    | SAMPLER3D 
-    | SAMPLERCUBE 
-    | SAMPLER1DSHADOW 
-    | SAMPLER2DSHADOW 
-    | SAMPLERCUBESHADOW 
-    | SAMPLER1DARRAY 
-    | SAMPLER2DARRAY 
-    | SAMPLER1DARRAYSHADOW 
-    | SAMPLER2DARRAYSHADOW 
-    | SAMPLERCUBEARRAY 
-    | SAMPLERCUBEARRAYSHADOW 
-    | ISAMPLER1D 
-    | ISAMPLER2D 
-    | ISAMPLER3D 
-    | ISAMPLERCUBE 
-    | ISAMPLER1DARRAY 
-    | ISAMPLER2DARRAY 
-    | ISAMPLERCUBEARRAY 
-    | USAMPLER1D 
-    | USAMPLER2D 
-    | USAMPLER3D 
-    | USAMPLERCUBE 
-    | USAMPLER1DARRAY 
-    | USAMPLER2DARRAY 
-    | USAMPLERCUBEARRAY 
-    | SAMPLER2DRECT 
-    | SAMPLER2DRECTSHADOW 
-    | ISAMPLER2DRECT 
-    | USAMPLER2DRECT 
-    | SAMPLERBUFFER 
-    | ISAMPLERBUFFER 
-    | USAMPLERBUFFER 
-    | SAMPLER2DMS 
-    | ISAMPLER2DMS 
-    | USAMPLER2DMS 
-    | SAMPLER2DMSARRAY 
-    | ISAMPLER2DMSARRAY 
-    | USAMPLER2DMSARRAY 
-    | IMAGE1D 
-    | IIMAGE1D 
-    | UIMAGE1D 
-    | IMAGE2D 
-    | IIMAGE2D 
-    | UIMAGE2D 
-    | IMAGE3D 
-    | IIMAGE3D 
-    | UIMAGE3D 
-    | IMAGE2DRECT 
-    | IIMAGE2DRECT 
-    | UIMAGE2DRECT 
-    | IMAGECUBE 
-    | IIMAGECUBE 
-    | UIMAGECUBE 
-    | IMAGEBUFFER 
-    | IIMAGEBUFFER 
-    | UIMAGEBUFFER 
-    | IMAGE1DARRAY 
-    | IIMAGE1DARRAY 
-    | UIMAGE1DARRAY 
-    | IMAGE2DARRAY 
-    | IIMAGE2DARRAY 
-    | UIMAGE2DARRAY 
-    | IMAGECUBEARRAY 
-    | IIMAGECUBEARRAY 
-    | UIMAGECUBEARRAY 
-    | IMAGE2DMS 
-    | IIMAGE2DMS 
-    | UIMAGE2DMS 
-    | IMAGE2DMSARRAY 
-    | IIMAGE2DMSARRAY 
-    | UIMAGE2DMSARRAY 
-    | SAMPLEREXTERNALOES 
+    | BUILTIN_TYPE
     ;
 
 
@@ -790,9 +745,9 @@ glslStorageQualifier
     ;
 
 glslPrecisionQualifier
-    : HIGH_PRECISION 
-    | MEDIUM_PRECISION 
-    | LOW_PRECISION 
+    : HIGHP
+    | MEDIUMP
+    | LOWP
     ;
 
 

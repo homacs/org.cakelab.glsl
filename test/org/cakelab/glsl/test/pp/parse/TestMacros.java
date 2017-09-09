@@ -392,7 +392,7 @@ public class TestMacros extends TestingPPBase {
 	
 	public void testVariadicMacros() {
 
-		assertError("#define A(...,x)\n", "0:1:14: missing ')'");
+		assertError("#define A(...,x)\n", "-- testing --:1:14: missing ')'");
 		
 		assertValid("#define A(...) __VA_ARGS__\n"
 				+ "A(success)\n",

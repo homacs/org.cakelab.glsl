@@ -16,7 +16,7 @@ public class RPunctuator extends LexerRuleSequenceSelect {
 			"}",
 			"...", ".",
 			"--", "->", "-=", "-",
-			"++", "+", "+=", 
+			"++", "+=", "+", 
 			"&=", "&&","&", 
 			"*=", "*",
 			"~", 

@@ -5,7 +5,6 @@ import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.PPHelper;
 import org.cakelab.glsl.pp.PPState;
-import org.cakelab.glsl.pp.StandardErrorHandler;
 import org.cakelab.glsl.pp.lexer.rules.LexerRuleSet;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.tokens.TEof;
@@ -28,11 +27,6 @@ public class PPLexer extends PPHelper implements ILexer {
 		this.rules = new PPGLSLRuleSet(state);
 	}
 	
-
-	public PPLexer(IScanner scanner) {
-		this(scanner, new PPState(new StandardErrorHandler()));
-	}
-
 
 	@Override
 	public void setRules(LexerRuleSet rules) {

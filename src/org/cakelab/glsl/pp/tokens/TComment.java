@@ -21,6 +21,10 @@ public class TComment extends TWhitespace {
 		return new TComment(this);
 	}
 
+	public boolean isMultiLineComment() {
+		return getText().startsWith("/*");
+	}
+
 	
 	
 }

@@ -35,6 +35,7 @@ public class RComment extends LexerRule {
 				comment.append("*/");
 			}
 		} else if (LA_equals(SL_START)) {
+			tokenStart();
 			comment = new StringBuffer(SL_START);
 			consume(SL_START.length());
 			while (LA1() != IScanner.EOF && !LA_equals('\n')) {

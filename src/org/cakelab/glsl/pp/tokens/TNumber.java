@@ -7,6 +7,9 @@ import org.cakelab.glsl.pp.error.TokenFormatException;
 
 public class TNumber extends Token {
 	
+	private ConstantValue<? extends Number> decoded = null;
+
+
 	public TNumber(Interval interval, String text) {
 		super(interval, text);
 	}
@@ -24,21 +27,54 @@ public class TNumber extends Token {
 		return new TNumber(this);
 	}
 
+	/**
+	 * basically not floating point and not hexadecimal
+	 * @return
+	 */
 	public boolean isDecimalInteger() {
 		return !isFloatingPoint() && !isHexadecimal();
 	}
 
 	public boolean isFloatingPoint() {
-		return text.contains(".") || text.endsWith("f") || text.endsWith("F");
+		return text.contains(".") || (!isHexadecimal() && (text.endsWith("f") || text.endsWith("F")));
 	}
 
 	public boolean isHexadecimal() {
 		return text.startsWith("0x") || text.startsWith("0X");
 	}
 
+	public boolean isUnsignedInteger() {
+		int i = text.length()-1;
+		if (i > 1 && text.charAt(i) == 'l' || text.charAt(i) == 'L') {
+			i--;
+		}
+		if (i > 0 && text.charAt(i) == 'u' || text.charAt(i) == 'U') {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isInteger() {
+		return !isFloatingPoint() && !isUnsignedInteger();
+	}
+
+	public boolean isFloat() {
+		if (isFloatingPoint()) {
+			int i = text.length()-1;
+			if (i > 0 && text.charAt(i) == 'f' || text.charAt(i) == 'F') {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean isDouble() {
+		return isFloatingPoint() && !isFloat();
+	}
 	
 
 	public Expression decode() throws TokenFormatException {
+		if (decoded != null) return decoded;
 		final int DEC = 0;
 		final int HEX = 1;
 		int type = DEC;
@@ -100,18 +136,20 @@ public class TNumber extends Token {
 				} else {
 					value = Double.parseDouble(text);
 				}
-				return new ConstantValue<Double>(getInterval(), value);
+				decoded = new ConstantValue<Double>(getInterval(), value);
 			} else {
 				if (text.endsWith("l")) text = text.substring(0, text.length()-1);
 				if (text.endsWith("u")) text = text.substring(0, text.length()-1);
 				Long value = Long.decode(text);
-				return new ConstantValue<Long>(getInterval(), value, false);
+				decoded  = new ConstantValue<Long>(getInterval(), value, false);
 			}
 		} catch (NumberFormatException e) {
 			// this should not occur at this stage, because the preprocessor already checked the syntax
 			throw new TokenFormatException(this, "not a valid number '" + getText() + "'");
 		}
+		return decoded;
 	}
+
 
 	
 }

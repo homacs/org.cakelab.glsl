@@ -1,11 +1,13 @@
 package org.cakelab.glsl.pp;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
@@ -36,6 +38,7 @@ import org.cakelab.glsl.pp.error.SyntaxError;
 import org.cakelab.glsl.pp.lexer.ILexer;
 import org.cakelab.glsl.pp.lexer.PPLexer;
 import org.cakelab.glsl.pp.lexer.TokenListLexer;
+import org.cakelab.glsl.pp.output.PreprocessedOutput;
 import org.cakelab.glsl.pp.parser.ErrorParser;
 import org.cakelab.glsl.pp.parser.ExpressionParser;
 import org.cakelab.glsl.pp.parser.ExtensionParser;
@@ -63,7 +66,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	
 	
 	/** this is where only valid preprocessed output goes. */
-	private PreprocessedOutputSink outputStream;
+	private PPOutputSink outputStream;
 
 
 
@@ -89,17 +92,20 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	 * @param in
 	 * @param out
 	 */
-	public Preprocessor(PPLexer lexer, OutputStream out) {
-		this(lexer, new PreprocessedOutput(out));
+	public Preprocessor(Resource resource, OutputStream out) {
+		this(resource, new PreprocessedOutput(out));
 	}
 
-	public Preprocessor(PPLexer lexer, PreprocessedOutputSink out) {
-		super(new PPState());
+	public Preprocessor(Resource resource, PPOutputSink out) {
+		super(new PPState(resource));
+		state.setInputResource(resource);
+		PPLexer lexer = new PPLexer(new StreamScanner(resource), state);
 		
 		state.setErrorHandler(new StandardErrorHandler());
-		
 		state.setLexer(lexer);
 		state.setInsertLineDirectives(true);
+
+		out.init(state);
 		
 		outputStream = out;
 		state.setResourceManager(new StandardFileManager());
@@ -127,6 +133,11 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	 */
 	public void setResourceManager(ResourceManager resourceManager) {
 		state.setResourceManager(resourceManager);
+		try {
+			resourceManager.add(state.getInputResource());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	
@@ -190,8 +201,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		
 		ILexer previousLexer = getLexer();
 		try {
-			PPState predefineState = new PPState(getState().getErrorHandler());
-			state.setLexer(new PPLexer(scanner, predefineState));
+			state.setLexer(new PPLexer(scanner, state));
 			
 			define();
 			// TODO: eof handler still necessary on this level?
@@ -210,7 +220,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	private void setScopeVisibility() {
 		// TODO [3] scope visibility (skipping text lines), suspending output generation and location mapping is kind of redundant
 		if (state.getGroupScope().visible()) state.setOutput(outputStream);
-		else state.setOutput(PreprocessedOutputSink.DEV_NULL);
+		else state.setOutput(PPOutputSink.DEV_NULL);
 	}
 	
 	private void pushScope(PPGroupScope scope) {
@@ -1075,6 +1085,10 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	
 	public void setErrorHandler(ErrorHandler errorHandler) {
 		state.setErrorHandler(errorHandler);
+	}
+
+	public void setDefaultVersion(int version) {
+		state.setGlslVersion(new GLSLVersion(null, version, null));
 	}
 
 	

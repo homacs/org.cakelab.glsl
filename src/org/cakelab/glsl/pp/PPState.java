@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.cakelab.glsl.GLSLExtension;
 import org.cakelab.glsl.GLSLVersion;
+import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.ast.PPGroupScope;
@@ -11,16 +12,32 @@ import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.lexer.ILexer;
 
 public class PPState {
-	private ResourceManager resourceManager;
 	
+	public static interface Listener {
+		void reportModifiedVersion(GLSLVersion version);
+	}
+	
+	@SuppressWarnings("serial")
+	private class ListenerSet extends ArrayList<Listener> implements Listener {
+		@Override
+		public void reportModifiedVersion(GLSLVersion version) {
+			for (Listener listener : this) {
+				listener.reportModifiedVersion(version);
+			}
+		}
+	}
+	
+	private ResourceManager resourceManager;
 	private ErrorHandler errorHandler;
-
+	private ListenerSet listeners;
 	
 	/* ************* results *************** */
 	
 	/** this is where valid and invalid/hidden preprocessed output goes. 
 	 * It will refer to DEV_NULL when an error occurred (i.e. invalid output). */
-	private PreprocessedOutputSink output;
+	private PPOutputSink output;
+
+	private Resource input;
 
 	private ILexer lexer;
 	
@@ -29,7 +46,6 @@ public class PPState {
 
 	private GLSLVersion glslVersion;
 	private ArrayList<GLSLExtension> extensions = new ArrayList<GLSLExtension>();
-
 	
 	
 	/* ************** config *************** */
@@ -40,16 +56,28 @@ public class PPState {
 	/* ************** Context specific data *************** */
 	private Macro currentMacroDefinition = null;
 	private boolean seenCodeLineBeforeVersion = false;
+	
+	
 
 	
-	public PPState(ErrorHandler errorHandler) {
-		super();
+	public PPState(Resource input, ErrorHandler errorHandler) {
+		this(input);
 		this.errorHandler = errorHandler;
 	}
 	
-	public PPState() {
+	public PPState(Resource input) {
+		listeners = new ListenerSet();
 	}
 
+	public void addListener(Listener listener) {
+		listeners.add(listener);
+	}
+	
+	public void removeListener(Listener listener) {
+		listeners.remove(listener);
+	}
+	
+	
 	public ErrorHandler getErrorHandler() {
 		return errorHandler;
 	}
@@ -65,11 +93,11 @@ public class PPState {
 		this.resourceManager = resourceManager;
 	}
 
-	public PreprocessedOutputSink getOutput() {
+	public PPOutputSink getOutput() {
 		return output;
 	}
 
-	public void setOutput(PreprocessedOutputSink output) {
+	public void setOutput(PPOutputSink output) {
 		this.output = output;
 	}
 
@@ -119,6 +147,7 @@ public class PPState {
 
 	public void setGlslVersion(GLSLVersion glslVersion) {
 		this.glslVersion = glslVersion;
+		listeners.reportModifiedVersion(glslVersion);
 	}
 
 	public ArrayList<GLSLExtension> getExtensions() {
@@ -139,6 +168,14 @@ public class PPState {
 
 	public void setIncludeEnabled(boolean enable) {
 		this.includeEnabled = enable;
+	}
+
+	public Resource getInputResource() {
+		return this.input;
+	}
+
+	public void setInputResource(Resource resource) {
+		this.input = resource;
 	}
 
 	

@@ -1,7 +1,7 @@
 package org.cakelab.glsl.lang;
 
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.cakelab.glsl.GLSLBaseListener;
@@ -27,7 +27,7 @@ public class ASTBuilder extends GLSLBaseListener {
 	
 	private ASTFactory factory;
 	private LocationMap locations;
-	private CommonTokenStream tokens;
+	private TokenStream tokens;
 	private GLSLErrorHandler errorHandler;
 	SymbolTable symbolTable = new SymbolTable();
 	private boolean functionDefinitionContext;
@@ -35,11 +35,11 @@ public class ASTBuilder extends GLSLBaseListener {
 	
 	
 	
-	public ASTBuilder(CommonTokenStream tokens, LocationMap locations, GLSLErrorHandler errorHandler) {
+	public ASTBuilder(TokenStream tokens, LocationMap locations, GLSLErrorHandler errorHandler) {
 		configure(tokens, locations, errorHandler);
 	}
 	
-	void configure(CommonTokenStream tokens, LocationMap locations, GLSLErrorHandler errorHandler) {
+	void configure(TokenStream tokens, LocationMap locations, GLSLErrorHandler errorHandler) {
 		this.locations = locations;
 		this.errorHandler = errorHandler;
 		this.tokens = tokens;

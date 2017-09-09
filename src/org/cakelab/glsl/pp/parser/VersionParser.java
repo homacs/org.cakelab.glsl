@@ -12,6 +12,7 @@ import org.cakelab.glsl.pp.tokens.TNumber;
 
 public class VersionParser extends Parser {
 
+
 	private Interval interval;
 	@SuppressWarnings("unused")
 	private Preprocessor control;
@@ -78,7 +79,9 @@ public class VersionParser extends Parser {
 					
 					if (state.getGlslVersion() == null) {
 						if (state.isSeenCodeLineBeforeVersion()) syntaxWarning(start, "#version directive can not be preceeded by code lines");
-						if (number > 0) state.setGlslVersion(new GLSLVersion(new Interval(start, end), number, profile));
+						if (number > 0) {
+							state.setGlslVersion(new GLSLVersion(new Interval(start, end), number, profile));
+						}
 					} else {
 						syntaxWarning(start, "version redefined");
 					}

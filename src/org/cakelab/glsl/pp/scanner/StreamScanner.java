@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 import org.cakelab.glsl.Location;
+import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.pp.error.SyntaxError;
 
 
@@ -145,6 +146,10 @@ public class StreamScanner extends IScanner {
 	public StreamScanner(Location origin, InputStream in) {
 		this.buffer = new InputStreamBuffer(in);
 		this.location = origin;
+	}
+
+	public StreamScanner(Resource resource) {
+		this(new Location(resource.getIdentifier()), resource.getData());
 	}
 
 	public int current() {

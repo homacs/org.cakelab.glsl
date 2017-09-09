@@ -12,6 +12,7 @@ import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.lang.ast.Qualifier.LayoutQualifier;
+import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
 
 // TODO [2] supposed to be an interface in parser package
 public class ASTFactory {
@@ -451,12 +452,20 @@ public class ASTFactory {
 	
 	private Location createStartLocation(ParserRuleContext context) {
 		Token start = context.getStart();
-		return new Location(start.getInputStream().getSourceName(), start.getStartIndex(), start.getLine(), start.getCharPositionInLine());
+		if (start instanceof PPOutputToken) {
+			return ((PPOutputToken)start).getPPToken().getStart();
+		} else {
+			return new Location(start.getInputStream().getSourceName(), start.getStartIndex(), start.getLine(), start.getCharPositionInLine());
+		}
 	}
 
 	private Location createEndLocation(ParserRuleContext context) {
 		Token end = context.getStop();
-		return new Location(end.getInputStream().getSourceName(), end.getStopIndex(), end.getLine(), end.getCharPositionInLine() + (end.getStopIndex() - end.getStartIndex()));
+		if (end instanceof PPOutputToken) {
+			return ((PPOutputToken)end).getPPToken().getEnd();
+		} else {
+			return new Location(end.getInputStream().getSourceName(), end.getStopIndex(), end.getLine(), end.getCharPositionInLine() + (end.getStopIndex() - end.getStartIndex()));
+		}
 	}
 
 	public Interval createInterval(ParserRuleContext context) {

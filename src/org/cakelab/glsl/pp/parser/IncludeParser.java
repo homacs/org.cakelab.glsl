@@ -14,7 +14,7 @@ import org.cakelab.glsl.pp.lexer.PPLexer;
 import org.cakelab.glsl.pp.lexer.rules.LexerRuleSet;
 import org.cakelab.glsl.pp.lexer.rules.RHeaderPath;
 import org.cakelab.glsl.pp.scanner.IScanner;
-import org.cakelab.glsl.pp.scanner.ScannerManager;
+import org.cakelab.glsl.pp.scanner.StreamScanner;
 import org.cakelab.glsl.pp.tokens.TCrlf;
 import org.cakelab.glsl.pp.tokens.THash;
 import org.cakelab.glsl.pp.tokens.THeaderPath;
@@ -115,7 +115,7 @@ public class IncludeParser extends Parser {
 
 			Token next = getLexer().lookahead(1);
 			
-			IScanner includeScanner = ScannerManager.createScanner(resource.getIdentifier(), resource.getData());
+			IScanner includeScanner = new StreamScanner(resource);
 			PPLexer includeLexer = new PPLexer(includeScanner, getState());
 
 			Location locationReference = line_start(getInterval().getStart());

@@ -1,7 +1,8 @@
-package org.cakelab.glsl.pp;
+package org.cakelab.glsl.pp.output;
 
 import java.io.ByteArrayOutputStream;
 
+import org.cakelab.glsl.pp.LocationMap;
 import org.cakelab.glsl.pp.tokens.Token;
 
 /**

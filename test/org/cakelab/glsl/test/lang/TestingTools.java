@@ -1,14 +1,12 @@
 package org.cakelab.glsl.test.lang;
 
+import java.io.ByteArrayInputStream;
 import java.io.PrintStream;
 import java.util.BitSet;
 
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
@@ -18,9 +16,16 @@ import org.antlr.v4.runtime.tree.ErrorNodeImpl;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 import org.cakelab.glsl.GLSLErrorHandler;
-import org.cakelab.glsl.GLSLLexer;
 import org.cakelab.glsl.GLSLParser;
+import org.cakelab.glsl.GLSLVersion;
+import org.cakelab.glsl.Location;
+import org.cakelab.glsl.Resource;
+import org.cakelab.glsl.ResourceManager;
+import org.cakelab.glsl.impl.StandardFileManager;
 import org.cakelab.glsl.lang.ASTBuilder;
+import org.cakelab.glsl.lang.lexer.PPOutputTokenBuffer;
+import org.cakelab.glsl.lang.lexer.PPTokenStream;
+import org.cakelab.glsl.pp.Preprocessor;
 
 public class TestingTools {
 
@@ -33,8 +38,10 @@ public class TestingTools {
 	private static final boolean DEBUG = false;
 	protected static boolean ALLOW_FULL_CONTEXT = false;
 	protected static boolean IGNORE_CONTEXT_SENSITIVITY = false;
+
+	private static ResourceManager resourceManager = new StandardFileManager();
 	
-	public static class ParserError extends GLSLErrorHandler {
+	public static class ParserErrorHandler extends GLSLErrorHandler {
 		public String message;
 		
 		public String getMessage() {
@@ -45,13 +52,8 @@ public class TestingTools {
 			message = null;
 		}
 		
-		@Override
-		public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
-				int column, String msg, RecognitionException e) {
-			if (hasError()) return;
-			this.message = "" + line  + ":" + column + ": " + msg;
-		}
-
+		
+		
 		@Override
 		public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, boolean exact,
 				BitSet ambigAlts, ATNConfigSet configs) {
@@ -93,8 +95,14 @@ public class TestingTools {
 			lexer.removeErrorListeners();
 			lexer.addErrorListener(this);
 		}
+
+		@Override
+		protected void printError(Location origin, String msg) {
+			if (hasError()) return;
+			this.message = "" + origin.getLine() + ":" + origin.getColumn() + ": " + msg;
+		}
 	}
-	protected static final ParserError error = new ParserError();
+	protected static final ParserErrorHandler error = new ParserErrorHandler();
 	
 
 
@@ -260,13 +268,31 @@ public class TestingTools {
 		return parser.getTokenStream().getText(interval);
 	}
 
-	public static void setup(CharStream input) {
-		GLSLLexer lexer = new GLSLLexer(input);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
+	public static void setup(String sourceCode) {
+		error.reset();
+
+		
+		PPOutputTokenBuffer buffer = new PPOutputTokenBuffer(resourceManager);
+		Resource resource = new Resource("0", "-- testing --", new ByteArrayInputStream(sourceCode.getBytes()));
+		Preprocessor pp = new Preprocessor(resource, buffer);
+
+		pp.setDefaultVersion(450);
+		pp.setResourceManager(resourceManager);
+		pp.setErrorHandler(error);
+		pp.enableInclude(true);
+		pp.enableLineDirectiveInsertion(false);
+		
+		pp.parse();
+
+		PPTokenStream tokens = new PPTokenStream(buffer);
 		parser = new GLSLParser(tokens);
-		error.setLocations(tokens, null);
-		error.listenTo(parser, lexer);
-		validator = new ASTBuilder(tokens, null, error);
+
+		error.setLocations(tokens, buffer.getLocations());
+
+		parser.removeErrorListeners();
+		parser.addErrorListener(error);
+		validator = new ASTBuilder(tokens, buffer.getLocations(), error);
+		parser.addParseListener(validator);
 	}
 
 	public static void tearDown() {
