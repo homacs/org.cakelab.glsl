@@ -1,3 +1,8 @@
+// TODO: cleanup grammar documentation
+
+
+
+
 //
 // This grammar is derived from the reference implementation of
 // a GLSL parser published by the Khronos Group (see 
@@ -175,8 +180,8 @@ glsl
  * identifier is followed by brackets (indicating an array type)
  * or (c) there is no identifier but a builtin type or struct declaration.
  * 
- * Affected rules have been split up into there respective cases and new
- * rules (glslTypeName and glslVairableIdentifier) have been added to
+ * Affected rules have been split up into their respective cases and new
+ * rules (glslTypeName and glslVariableIdentifier) have been added to
  * differentiate from the rule in question:
  * 
  *     glslTypeQualifier glslIdentifier SEMICOLON
@@ -186,7 +191,6 @@ glsl
  * a type or variable name to decide whether it is the 
  * declaration of qualified type or a redefinition of 
  * the qualifier for a variable.
- * 
  */    
 
 glslDeclaration
