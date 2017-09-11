@@ -2,7 +2,6 @@ package org.cakelab.glsl.lang;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.cakelab.glsl.GLSLBaseListener;
 import org.cakelab.glsl.GLSLErrorHandler;
@@ -62,13 +61,12 @@ public class ASTBuilder extends GLSLBaseListener {
 	public void exitGlslInterfaceBlockStructure(GlslInterfaceBlockStructureContext context) {
 		// qualifiers IDENTIFIER structBody
 		// (second position)
-		ParseTree identifier = context.getChild(1);
+		TerminalNode identifier = context.IDENTIFIER();
 		String name = identifier.getText();
 		if (symbolTable.getScope().containsType(name)) errorHandler.error(identifier, "type '" + name + "' already exists in this scope.");
 		InterfaceBlock block = new InterfaceBlock(symbolTable.getScope(), name);
 		addDeclaredType(name, block);
 	}
-
 	
 	@Override
 	public void enterGlslFunctionDefinition(GlslFunctionDefinitionContext ctx) {

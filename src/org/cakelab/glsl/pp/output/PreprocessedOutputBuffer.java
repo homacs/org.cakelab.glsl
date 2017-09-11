@@ -20,7 +20,7 @@ import org.cakelab.glsl.pp.tokens.Token;
  * @author homac
  *
  */
-public class PreprocessedOutputBuffer extends PreprocessedOutput {
+public class PreprocessedOutputBuffer extends PreprocessedOutputStream {
 
 	private ByteArrayOutputStream out;
 	private LocationMap locations = new LocationMap();

@@ -8,13 +8,11 @@ import org.cakelab.glsl.lang.ASTBuilder;
 import org.cakelab.glsl.lang.ast.Scope;
 import org.cakelab.glsl.lang.lexer.PPOutputTokenBuffer;
 import org.cakelab.glsl.lang.lexer.PPTokenStream;
-import org.cakelab.glsl.lang.lexer.tokens.GLSLTokenTable;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.PPGroupScope;
 
 public class GLSL {
 	
-	public static final GLSLTokenTable KEYWORDS_DEFAULT = GLSLTokenTable.V_450;
 	private ResourceManager resourceManager;
 	private GLSLErrorHandler errorHandler;
 

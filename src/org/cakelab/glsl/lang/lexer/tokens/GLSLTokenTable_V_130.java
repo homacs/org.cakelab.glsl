@@ -1,37 +1,24 @@
 package org.cakelab.glsl.lang.lexer.tokens;
 
-public class GLSLTokenTable_V_450 extends GLSLTokenTable {
+import java.util.HashMap;
 
-	
-	public GLSLTokenTable_V_450() {
-		super(450);
+public class GLSLTokenTable_V_130 extends GLSLTokenTable {
+
+	public GLSLTokenTable_V_130() {
+		super(110);
+		language = new HashMap<String, Integer>();
 		
-
+		
 		// LANGUAGE ELEMENTS
 		addKeyword(GLSLLanguageTokens.ATTRIBUTE);
 		addKeyword(GLSLLanguageTokens.CONST);
 		addKeyword(GLSLLanguageTokens.UNIFORM);
 		addKeyword(GLSLLanguageTokens.VARYING);
-		addKeyword(GLSLLanguageTokens.BUFFER);
-		addKeyword(GLSLLanguageTokens.SHARED);
-
-		addKeyword(GLSLLanguageTokens.COHERENT);
-		addKeyword(GLSLLanguageTokens.VOLATILE);
-		addKeyword(GLSLLanguageTokens.RESTRICT);
-		addKeyword(GLSLLanguageTokens.READONLY);
-		addKeyword(GLSLLanguageTokens.WRITEONLY);
-		
-		addBuiltinType(GLSLLanguageTokens.ATOMIC_UINT);
-
-		addKeyword(GLSLLanguageTokens.LAYOUT);
 		
 		addKeyword(GLSLLanguageTokens.CENTROID);
 		addKeyword(GLSLLanguageTokens.FLAT);
 		addKeyword(GLSLLanguageTokens.SMOOTH);
 		addKeyword(GLSLLanguageTokens.NOPERSPECTIVE);
-		
-		addKeyword(GLSLLanguageTokens.PATCH);
-		addKeyword(GLSLLanguageTokens.SAMPLE);
 		
 		addKeyword(GLSLLanguageTokens.BREAK);
 		addKeyword(GLSLLanguageTokens.CONTINUE);
@@ -44,15 +31,12 @@ public class GLSLTokenTable_V_450 extends GLSLTokenTable {
 		
 		addKeyword(GLSLLanguageTokens.IF);
 		addKeyword(GLSLLanguageTokens.ELSE);
-		
-		addKeyword(GLSLLanguageTokens.SUBROUTINE);
-		
+
 		addKeyword(GLSLLanguageTokens.IN);
 		addKeyword(GLSLLanguageTokens.OUT);
 		addKeyword(GLSLLanguageTokens.INOUT);
 		
 		addBuiltinType(GLSLLanguageTokens.FLOAT);
-		addBuiltinType(GLSLLanguageTokens.DOUBLE);
 		addBuiltinType(GLSLLanguageTokens.INT);
 		addBuiltinType(GLSLLanguageTokens.VOID);
 		addBuiltinType(GLSLLanguageTokens.BOOL);
@@ -60,7 +44,6 @@ public class GLSLTokenTable_V_450 extends GLSLTokenTable {
 		addKeyword(GLSLLanguageTokens.FALSE);
 
 		addKeyword(GLSLLanguageTokens.INVARIANT);
-		addKeyword(GLSLLanguageTokens.PRECISE);
 		
 		addKeyword(GLSLLanguageTokens.DISCARD);
 		addKeyword(GLSLLanguageTokens.RETURN);
@@ -68,30 +51,18 @@ public class GLSLTokenTable_V_450 extends GLSLTokenTable {
 		addBuiltinType(GLSLLanguageTokens.MAT2);
 		addBuiltinType(GLSLLanguageTokens.MAT3);
 		addBuiltinType(GLSLLanguageTokens.MAT4);
-		addBuiltinType(GLSLLanguageTokens.DMAT2);
-		addBuiltinType(GLSLLanguageTokens.DMAT3);
-		addBuiltinType(GLSLLanguageTokens.DMAT4);
 		
 		addBuiltinType(GLSLLanguageTokens.MAT2X2);
 		addBuiltinType(GLSLLanguageTokens.MAT2X3);
 		addBuiltinType(GLSLLanguageTokens.MAT2X4);
-		addBuiltinType(GLSLLanguageTokens.DMAT2X2);
-		addBuiltinType(GLSLLanguageTokens.DMAT2X3);
-		addBuiltinType(GLSLLanguageTokens.DMAT2X4);
-
+		
 		addBuiltinType(GLSLLanguageTokens.MAT3X2);
 		addBuiltinType(GLSLLanguageTokens.MAT3X3);
 		addBuiltinType(GLSLLanguageTokens.MAT3X4);
-		addBuiltinType(GLSLLanguageTokens.DMAT3X2);
-		addBuiltinType(GLSLLanguageTokens.DMAT3X3);
-		addBuiltinType(GLSLLanguageTokens.DMAT3X4);
 		
 		addBuiltinType(GLSLLanguageTokens.MAT4X2);
 		addBuiltinType(GLSLLanguageTokens.MAT4X3);
 		addBuiltinType(GLSLLanguageTokens.MAT4X4);
-		addBuiltinType(GLSLLanguageTokens.DMAT4X2);
-		addBuiltinType(GLSLLanguageTokens.DMAT4X3);
-		addBuiltinType(GLSLLanguageTokens.DMAT4X4);
 		
 		addBuiltinType(GLSLLanguageTokens.VEC2);
 		addBuiltinType(GLSLLanguageTokens.VEC3);
@@ -102,10 +73,7 @@ public class GLSLTokenTable_V_450 extends GLSLTokenTable {
 		addBuiltinType(GLSLLanguageTokens.BVEC2);
 		addBuiltinType(GLSLLanguageTokens.BVEC3);
 		addBuiltinType(GLSLLanguageTokens.BVEC4);
-		addBuiltinType(GLSLLanguageTokens.DVEC2);
-		addBuiltinType(GLSLLanguageTokens.DVEC3);
-		addBuiltinType(GLSLLanguageTokens.DVEC4);
-		
+
 		addBuiltinType(GLSLLanguageTokens.UINT);
 		addBuiltinType(GLSLLanguageTokens.UVEC2);
 		addBuiltinType(GLSLLanguageTokens.UVEC3);
@@ -120,148 +88,129 @@ public class GLSLTokenTable_V_450 extends GLSLTokenTable {
 		addBuiltinType(GLSLLanguageTokens.SAMPLER2D);
 		addBuiltinType(GLSLLanguageTokens.SAMPLER3D);
 		addBuiltinType(GLSLLanguageTokens.SAMPLERCUBE);
-		
+
 		addBuiltinType(GLSLLanguageTokens.SAMPLER1DSHADOW);
 		addBuiltinType(GLSLLanguageTokens.SAMPLER2DSHADOW);
 		addBuiltinType(GLSLLanguageTokens.SAMPLERCUBESHADOW);
-		
+
 		addBuiltinType(GLSLLanguageTokens.SAMPLER1DARRAY);
 		addBuiltinType(GLSLLanguageTokens.SAMPLER2DARRAY);
 		
 		addBuiltinType(GLSLLanguageTokens.SAMPLER1DARRAYSHADOW);
 		addBuiltinType(GLSLLanguageTokens.SAMPLER2DARRAYSHADOW);
 		
-		addBuiltinType(GLSLLanguageTokens.ISAMPLER1D);
 		addBuiltinType(GLSLLanguageTokens.ISAMPLER2D);
 		addBuiltinType(GLSLLanguageTokens.ISAMPLER3D);
 		addBuiltinType(GLSLLanguageTokens.ISAMPLERCUBE);
-		
-		addBuiltinType(GLSLLanguageTokens.ISAMPLER1DARRAY);
+
 		addBuiltinType(GLSLLanguageTokens.ISAMPLER2DARRAY);
-		
-		addBuiltinType(GLSLLanguageTokens.USAMPLER1D);
+
 		addBuiltinType(GLSLLanguageTokens.USAMPLER2D);
 		addBuiltinType(GLSLLanguageTokens.USAMPLER3D);
 		addBuiltinType(GLSLLanguageTokens.USAMPLERCUBE);
-		
-		addBuiltinType(GLSLLanguageTokens.USAMPLER1DARRAY);
+
 		addBuiltinType(GLSLLanguageTokens.USAMPLER2DARRAY);
-		
-		addBuiltinType(GLSLLanguageTokens.SAMPLER2DRECT);
-		addBuiltinType(GLSLLanguageTokens.SAMPLER2DRECTSHADOW);
-		addBuiltinType(GLSLLanguageTokens.ISAMPLER2DRECT);
-		addBuiltinType(GLSLLanguageTokens.USAMPLER2DRECT);
-		
-		addBuiltinType(GLSLLanguageTokens.SAMPLERBUFFER);
-		addBuiltinType(GLSLLanguageTokens.ISAMPLERBUFFER);
-		addBuiltinType(GLSLLanguageTokens.USAMPLERBUFFER);
-		
-		addBuiltinType(GLSLLanguageTokens.SAMPLER2DMS);
-		addBuiltinType(GLSLLanguageTokens.ISAMPLER2DMS);
-		addBuiltinType(GLSLLanguageTokens.USAMPLER2DMS);
-		
-		addBuiltinType(GLSLLanguageTokens.SAMPLER2DMSARRAY);
-		addBuiltinType(GLSLLanguageTokens.ISAMPLER2DMSARRAY);
-		addBuiltinType(GLSLLanguageTokens.USAMPLER2DMSARRAY);
-		
-		addBuiltinType(GLSLLanguageTokens.SAMPLERCUBEARRAY);
-		addBuiltinType(GLSLLanguageTokens.SAMPLERCUBEARRAYSHADOW);
-		addBuiltinType(GLSLLanguageTokens.ISAMPLERCUBEARRAY);
-		addBuiltinType(GLSLLanguageTokens.USAMPLERCUBEARRAY);
-		
-		addBuiltinType(GLSLLanguageTokens.IMAGE1D);
-		addBuiltinType(GLSLLanguageTokens.IIMAGE1D);
-		addBuiltinType(GLSLLanguageTokens.UIMAGE1D);
-		
-		addBuiltinType(GLSLLanguageTokens.IMAGE2D);
-		addBuiltinType(GLSLLanguageTokens.IIMAGE2D);
-		addBuiltinType(GLSLLanguageTokens.UIMAGE2D);
-		
-		addBuiltinType(GLSLLanguageTokens.IMAGE3D);
-		addBuiltinType(GLSLLanguageTokens.IIMAGE3D);
-		addBuiltinType(GLSLLanguageTokens.UIMAGE3D);
-		
-		addBuiltinType(GLSLLanguageTokens.IMAGE2DRECT);
-		addBuiltinType(GLSLLanguageTokens.IIMAGE2DRECT);
-		addBuiltinType(GLSLLanguageTokens.UIMAGE2DRECT);
-		
-		addBuiltinType(GLSLLanguageTokens.IMAGECUBE);
-		addBuiltinType(GLSLLanguageTokens.IIMAGECUBE);
-		addBuiltinType(GLSLLanguageTokens.UIMAGECUBE);
-		
-		addBuiltinType(GLSLLanguageTokens.IMAGEBUFFER);
-		addBuiltinType(GLSLLanguageTokens.IIMAGEBUFFER);
-		addBuiltinType(GLSLLanguageTokens.UIMAGEBUFFER);
-		
-		addBuiltinType(GLSLLanguageTokens.IMAGE1DARRAY);
-		addBuiltinType(GLSLLanguageTokens.IIMAGE1DARRAY);
-		addBuiltinType(GLSLLanguageTokens.UIMAGE1DARRAY);
-		
-		addBuiltinType(GLSLLanguageTokens.IMAGE2DARRAY);
-		addBuiltinType(GLSLLanguageTokens.IIMAGE2DARRAY);
-		addBuiltinType(GLSLLanguageTokens.UIMAGE2DARRAY);
-		
-		addBuiltinType(GLSLLanguageTokens.IMAGECUBEARRAY);
-		addBuiltinType(GLSLLanguageTokens.IIMAGECUBEARRAY);
-		addBuiltinType(GLSLLanguageTokens.UIMAGECUBEARRAY);
-		
-		addBuiltinType(GLSLLanguageTokens.IMAGE2DMS);
-		addBuiltinType(GLSLLanguageTokens.IIMAGE2DMS);
-		addBuiltinType(GLSLLanguageTokens.UIMAGE2DMS);
-		
-		addBuiltinType(GLSLLanguageTokens.IMAGE2DMSARRAY);
-		addBuiltinType(GLSLLanguageTokens.IIMAGE2DMSARRAY);
-		addBuiltinType(GLSLLanguageTokens.UIMAGE2DMSARRAY);
-		
+
 		addKeyword(GLSLLanguageTokens.STRUCT);
 
 		
-		// reserved keywords
+		//
+		// keywords, that have been reserved but not yet included in the language
+		//
 		addReservedKeyword(GLSLLanguageTokens.COMMON);
 		addReservedKeyword(GLSLLanguageTokens.PARTITION);
 		addReservedKeyword(GLSLLanguageTokens.ACTIVE);
-		
+
 		addReservedKeyword(GLSLLanguageTokens.ASM);
+
 		addReservedKeyword(GLSLLanguageTokens.CLASS);
 		addReservedKeyword(GLSLLanguageTokens.UNION);
 		addReservedKeyword(GLSLLanguageTokens.ENUM);
 		addReservedKeyword(GLSLLanguageTokens.TYPEDEF);
 		addReservedKeyword(GLSLLanguageTokens.TEMPLATE);
 		addReservedKeyword(GLSLLanguageTokens.THIS);
-		addReservedKeyword(GLSLLanguageTokens.RESOURCE);
+		addReservedKeyword(GLSLLanguageTokens.PACKAGED);
+
 		addReservedKeyword(GLSLLanguageTokens.GOTO);
+		
 		addReservedKeyword(GLSLLanguageTokens.INLINE);
 		addReservedKeyword(GLSLLanguageTokens.NOINLINE);
+		addReservedKeyword(GLSLLanguageTokens.VOLATILE);
 		addReservedKeyword(GLSLLanguageTokens.PUBLIC);
 		addReservedKeyword(GLSLLanguageTokens.STATIC);
 		addReservedKeyword(GLSLLanguageTokens.EXTERN);
 		addReservedKeyword(GLSLLanguageTokens.EXTERNAL);
 		addReservedKeyword(GLSLLanguageTokens.INTERFACE);
-				
+		
 		addReservedKeyword(GLSLLanguageTokens.LONG);
 		addReservedKeyword(GLSLLanguageTokens.SHORT);
+		addReservedKeyword(GLSLLanguageTokens.DOUBLE);
 		addReservedKeyword(GLSLLanguageTokens.HALF);
 		addReservedKeyword(GLSLLanguageTokens.FIXED);
 		addReservedKeyword(GLSLLanguageTokens.UNSIGNED);
 		addReservedKeyword(GLSLLanguageTokens.SUPERP);
+
 		addReservedKeyword(GLSLLanguageTokens.INPUT);
 		addReservedKeyword(GLSLLanguageTokens.OUTPUT);
-				
-		addReservedKeyword(GLSLLanguageTokens.SIZEOF);
-		addReservedKeyword(GLSLLanguageTokens.CAST);
-		addReservedKeyword(GLSLLanguageTokens.NAMESPACE);
-		addReservedKeyword(GLSLLanguageTokens.USING);
-				
+		
 		addReservedKeyword(GLSLLanguageTokens.HVEC2);
 		addReservedKeyword(GLSLLanguageTokens.HVEC3);
 		addReservedKeyword(GLSLLanguageTokens.HVEC4);
+		addReservedKeyword(GLSLLanguageTokens.DVEC2);
+		addReservedKeyword(GLSLLanguageTokens.DVEC3);
+		addReservedKeyword(GLSLLanguageTokens.DVEC4);
 		addReservedKeyword(GLSLLanguageTokens.FVEC2);
 		addReservedKeyword(GLSLLanguageTokens.FVEC3);
 		addReservedKeyword(GLSLLanguageTokens.FVEC4);
-		addReservedKeyword(GLSLLanguageTokens.SAMPLER3DRECT);
-		addReservedKeyword(GLSLLanguageTokens.FILTER);
 		
+		addReservedKeyword(GLSLLanguageTokens.SAMPLER2DRECT);
+		addReservedKeyword(GLSLLanguageTokens.SAMPLER3DRECT);
+		addReservedKeyword(GLSLLanguageTokens.SAMPLER2DRECTSHADOW);
 
+		addReservedKeyword(GLSLLanguageTokens.SAMPLERBUFFER);
+		
+		addReservedKeyword(GLSLLanguageTokens.FILTER);
+
+		addReservedKeyword(GLSLLanguageTokens.IMAGE1D);
+		addReservedKeyword(GLSLLanguageTokens.IMAGE2D);
+		addReservedKeyword(GLSLLanguageTokens.IMAGE3D);
+		addReservedKeyword(GLSLLanguageTokens.IMAGECUBE);
+		
+		addReservedKeyword(GLSLLanguageTokens.IIMAGE1D);
+		addReservedKeyword(GLSLLanguageTokens.IIMAGE2D);
+		addReservedKeyword(GLSLLanguageTokens.IIMAGE3D);
+		addReservedKeyword(GLSLLanguageTokens.IIMAGECUBE);
+		
+		addReservedKeyword(GLSLLanguageTokens.UIMAGE1D);
+		addReservedKeyword(GLSLLanguageTokens.UIMAGE2D);
+		addReservedKeyword(GLSLLanguageTokens.UIMAGE3D);
+		addReservedKeyword(GLSLLanguageTokens.UIMAGECUBE);
+		
+		addReservedKeyword(GLSLLanguageTokens.IMAGE1DARRAY);
+		addReservedKeyword(GLSLLanguageTokens.IMAGE2DARRAY);
+		
+		addReservedKeyword(GLSLLanguageTokens.IIMAGE1DARRAY);
+		addReservedKeyword(GLSLLanguageTokens.IIMAGE2DARRAY);
+		addReservedKeyword(GLSLLanguageTokens.UIMAGE1DARRAY);
+		addReservedKeyword(GLSLLanguageTokens.UIMAGE2DARRAY);
+		
+		addReservedKeyword(GLSLLanguageTokens.IMAGE1DSHADOW);
+		addReservedKeyword(GLSLLanguageTokens.IMAGE2DSHADOW);
+		
+		addReservedKeyword(GLSLLanguageTokens.IMAGE1DARRAYSHADOW);
+		addReservedKeyword(GLSLLanguageTokens.IMAGE2DARRAYSHADOW);
+		
+		addReservedKeyword(GLSLLanguageTokens.IMAGEBUFFER);
+		addReservedKeyword(GLSLLanguageTokens.IIMAGEBUFFER);
+		addReservedKeyword(GLSLLanguageTokens.UIMAGEBUFFER);
+		
+		addReservedKeyword(GLSLLanguageTokens.SIZEOF);
+		addReservedKeyword(GLSLLanguageTokens.CAST);
+		
+		addReservedKeyword(GLSLLanguageTokens.NAMESPACE);
+		addReservedKeyword(GLSLLanguageTokens.USING);
+				
+		addReservedKeyword(GLSLLanguageTokens.ROW_MAJOR);
 	}
 
 }

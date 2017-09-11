@@ -3,7 +3,6 @@ package org.cakelab.glsl.lang.lexer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.cakelab.glsl.GLSL;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
@@ -36,12 +35,14 @@ public class PPOutputTokenBuffer extends PPHelper implements PPOutputSink, PPSta
 	public PPOutputTokenBuffer(ResourceManager resources) {
 		this.resources = resources;
 		pos = -1;
-		this.tokenTable = GLSL.KEYWORDS_DEFAULT;
+		this.tokenTable = GLSLTokenTable.getDefault();
 	}
 	
 	
 	@Override
 	public void init(PPState state) {
+		reportModifiedVersion(state.getGlslVersion());
+		
 		state.addListener(this);
 		setState(state);
 	}
@@ -98,9 +99,9 @@ public class PPOutputTokenBuffer extends PPHelper implements PPOutputSink, PPSta
 		} else if (t instanceof TIdentifier) {
 			String ident = t.getText();
 			if (tokenTable.isLanguageKeyword(ident)) {
-				return tokenTable.getLanguageKeyword(ident);
+				return tokenTable.mapLanguageKeyword(ident);
 			} else if (tokenTable.isBuiltinType(ident)) {
-				return GLSLParser.BUILTIN_TYPE;
+				return tokenTable.mapBuiltintType(ident);
 			} else if (tokenTable.isReservedKeyword(ident)) {
 				// TODO: warn in case of reserved keywords?
 				return GLSLParser.IDENTIFIER;
@@ -161,7 +162,11 @@ public class PPOutputTokenBuffer extends PPHelper implements PPOutputSink, PPSta
 
 	@Override
 	public void reportModifiedVersion(GLSLVersion version) {
-		tokenTable = GLSLTokenTable.get(version);
+		if (version != null) {
+			tokenTable = GLSLTokenTable.get(version.number);
+		} else {
+			tokenTable = GLSLTokenTable.getDefault();
+		}
 	}
 
 

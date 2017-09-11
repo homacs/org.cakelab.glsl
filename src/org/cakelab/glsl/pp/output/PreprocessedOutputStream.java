@@ -8,12 +8,12 @@ import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.tokens.Token;
 import org.cakelab.glsl.pp.tokens.TokenList;
 
-public class PreprocessedOutput implements PPOutputSink {
+public class PreprocessedOutputStream implements PPOutputSink {
 
 
 	PrintStream out;
 	
-	public PreprocessedOutput(OutputStream out) {
+	public PreprocessedOutputStream(OutputStream out) {
 		this.out = new PrintStream(out, true);
 	}
 

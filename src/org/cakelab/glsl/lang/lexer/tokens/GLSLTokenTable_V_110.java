@@ -2,8 +2,6 @@ package org.cakelab.glsl.lang.lexer.tokens;
 
 import java.util.HashMap;
 
-import org.cakelab.glsl.GLSLParser;
-
 public class GLSLTokenTable_V_110 extends GLSLTokenTable {
 
 	public GLSLTokenTable_V_110() {
@@ -12,114 +10,115 @@ public class GLSLTokenTable_V_110 extends GLSLTokenTable {
 		
 		
 		// LANGUAGE ELEMENTS
-		language.put("attribute",GLSLParser.ATTRIBUTE);
-		language.put("const", GLSLParser.CONST);
-		language.put("uniform", GLSLParser.UNIFORM);
-		language.put("varying", GLSLParser.VARYING);
+		addKeyword(GLSLLanguageTokens.ATTRIBUTE);
+		addKeyword(GLSLLanguageTokens.CONST);
+		addKeyword(GLSLLanguageTokens.UNIFORM);
+		addKeyword(GLSLLanguageTokens.VARYING);
 		
-		language.put("break", GLSLParser.BREAK);
-		language.put("continue", GLSLParser.CONTINUE);
-		language.put("do", GLSLParser.DO);
-		language.put("for", GLSLParser.FOR);
-		language.put("while", GLSLParser.WHILE);
+		addKeyword(GLSLLanguageTokens.BREAK);
+		addKeyword(GLSLLanguageTokens.CONTINUE);
+		addKeyword(GLSLLanguageTokens.DO);
+		addKeyword(GLSLLanguageTokens.FOR);
+		addKeyword(GLSLLanguageTokens.WHILE);
 		
-		language.put("if", GLSLParser.IF);
-		language.put("else", GLSLParser.ELSE);
+		addKeyword(GLSLLanguageTokens.IF);
+		addKeyword(GLSLLanguageTokens.ELSE);
 
-		language.put("in", GLSLParser.IN);
-		language.put("out", GLSLParser.OUT);
-		language.put("inout", GLSLParser.INOUT);
+		addKeyword(GLSLLanguageTokens.IN);
+		addKeyword(GLSLLanguageTokens.OUT);
+		addKeyword(GLSLLanguageTokens.INOUT);
 		
-		builtinTypes.add("float");
-		builtinTypes.add("int");
-		language.put("void", GLSLParser.VOID);
-		builtinTypes.add("bool");
-		language.put("true", GLSLParser.BOOLCONSTANT);
-		language.put("false", GLSLParser.BOOLCONSTANT);
+		addBuiltinType(GLSLLanguageTokens.FLOAT);
+		addBuiltinType(GLSLLanguageTokens.INT);
+		addBuiltinType(GLSLLanguageTokens.VOID);
+		addBuiltinType(GLSLLanguageTokens.BOOL);
+		addKeyword(GLSLLanguageTokens.TRUE);
+		addKeyword(GLSLLanguageTokens.FALSE);
 
-		language.put("discard", GLSLParser.DISCARD);
-		language.put("return", GLSLParser.RETURN);
+		addKeyword(GLSLLanguageTokens.DISCARD);
+		addKeyword(GLSLLanguageTokens.RETURN);
 
-		builtinTypes.add("mat2");
-		builtinTypes.add("mat3");
-		builtinTypes.add("mat4");
+		addBuiltinType(GLSLLanguageTokens.MAT2);
+		addBuiltinType(GLSLLanguageTokens.MAT3);
+		addBuiltinType(GLSLLanguageTokens.MAT4);
 		
-		builtinTypes.add("vec2");
-		builtinTypes.add("vec3");
-		builtinTypes.add("vec4");
-		builtinTypes.add("ivec2");
-		builtinTypes.add("ivec3");
-		builtinTypes.add("ivec4");
-		builtinTypes.add("bvec2");
-		builtinTypes.add("bvec3");
-		builtinTypes.add("bvec4");
+		addBuiltinType(GLSLLanguageTokens.VEC2);
+		addBuiltinType(GLSLLanguageTokens.VEC3);
+		addBuiltinType(GLSLLanguageTokens.VEC4);
+		addBuiltinType(GLSLLanguageTokens.IVEC2);
+		addBuiltinType(GLSLLanguageTokens.IVEC3);
+		addBuiltinType(GLSLLanguageTokens.IVEC4);
+		addBuiltinType(GLSLLanguageTokens.BVEC2);
+		addBuiltinType(GLSLLanguageTokens.BVEC3);
+		addBuiltinType(GLSLLanguageTokens.BVEC4);
 
-		builtinTypes.add("sampler1D");
-		builtinTypes.add("sampler2D");
-		builtinTypes.add("sampler3D");
-		builtinTypes.add("samplerCube");
-		builtinTypes.add("sampler1DShadow");
-		builtinTypes.add("sampler2DShadow");
+		addBuiltinType(GLSLLanguageTokens.SAMPLER1D);
+		addBuiltinType(GLSLLanguageTokens.SAMPLER2D);
+		addBuiltinType(GLSLLanguageTokens.SAMPLER3D);
+		addBuiltinType(GLSLLanguageTokens.SAMPLERCUBE);
+		addBuiltinType(GLSLLanguageTokens.SAMPLER1DSHADOW);
+		addBuiltinType(GLSLLanguageTokens.SAMPLER2DSHADOW);
 
-		language.put("struct", GLSLParser.STRUCT);
+		addKeyword(GLSLLanguageTokens.STRUCT);
 
 		
 		//
 		// keywords, that have been reserved but not yet included in the language
 		//
-		reserved.add("asm");
+		addReservedKeyword(GLSLLanguageTokens.ASM);
 
-		reserved.add("class");
-		reserved.add("union");
-		reserved.add("enum");
-		reserved.add("typedef");
-		reserved.add("template");
-		reserved.add("this");
-		reserved.add("packaged");
+		addReservedKeyword(GLSLLanguageTokens.CLASS);
+		addReservedKeyword(GLSLLanguageTokens.UNION);
+		addReservedKeyword(GLSLLanguageTokens.ENUM);
+		addReservedKeyword(GLSLLanguageTokens.TYPEDEF);
+		addReservedKeyword(GLSLLanguageTokens.TEMPLATE);
+		addReservedKeyword(GLSLLanguageTokens.THIS);
+		addReservedKeyword(GLSLLanguageTokens.PACKAGED);
 
-		reserved.add("goto");
-		reserved.add("switch");
-		reserved.add("default");
+		addReservedKeyword(GLSLLanguageTokens.GOTO);
+		addReservedKeyword(GLSLLanguageTokens.SWITCH);
+		addReservedKeyword(GLSLLanguageTokens.DEFAULT);
 		
-		reserved.add("inline");
-		reserved.add("noinline");
-		reserved.add("volatile");
-		reserved.add("public");
-		reserved.add("static");
-		reserved.add("extern");
-		reserved.add("external");
-		reserved.add("interface");
+		addReservedKeyword(GLSLLanguageTokens.INLINE);
+		addReservedKeyword(GLSLLanguageTokens.NOINLINE);
+		addReservedKeyword(GLSLLanguageTokens.VOLATILE);
+		addReservedKeyword(GLSLLanguageTokens.PUBLIC);
+		addReservedKeyword(GLSLLanguageTokens.STATIC);
+		addReservedKeyword(GLSLLanguageTokens.EXTERN);
+		addReservedKeyword(GLSLLanguageTokens.EXTERNAL);
+		addReservedKeyword(GLSLLanguageTokens.INTERFACE);
 				
-		reserved.add("long");
-		reserved.add("short");
-		reserved.add("double");
-		reserved.add("half");
-		reserved.add("fixed");
-		reserved.add("unsigned");
-		reserved.add("superp");
+		addReservedKeyword(GLSLLanguageTokens.LONG);
+		addReservedKeyword(GLSLLanguageTokens.SHORT);
+		addReservedKeyword(GLSLLanguageTokens.DOUBLE);
+		addReservedKeyword(GLSLLanguageTokens.HALF);
+		addReservedKeyword(GLSLLanguageTokens.FIXED);
+		addReservedKeyword(GLSLLanguageTokens.UNSIGNED);
+		addReservedKeyword(GLSLLanguageTokens.SUPERP);
 
-		reserved.add("input");
-		reserved.add("output");
+		addReservedKeyword(GLSLLanguageTokens.INPUT);
+		addReservedKeyword(GLSLLanguageTokens.OUTPUT);
 				
-		reserved.add("hvec2");
-		reserved.add("hvec3");
-		reserved.add("hvec4");
-		reserved.add("dvec2");
-		reserved.add("dvec3");
-		reserved.add("dvec4");
-		reserved.add("fvec2");
-		reserved.add("fvec3");
-		reserved.add("fvec4");
-		reserved.add("sampler2DRect");
-		reserved.add("sampler3DRect");
-		reserved.add("sampler2DRectShadow");
-		reserved.add("filter");
+		addReservedKeyword(GLSLLanguageTokens.HVEC2);
+		addReservedKeyword(GLSLLanguageTokens.HVEC3);
+		addReservedKeyword(GLSLLanguageTokens.HVEC4);
+		addReservedKeyword(GLSLLanguageTokens.DVEC2);
+		addReservedKeyword(GLSLLanguageTokens.DVEC3);
+		addReservedKeyword(GLSLLanguageTokens.DVEC4);
+		addReservedKeyword(GLSLLanguageTokens.FVEC2);
+		addReservedKeyword(GLSLLanguageTokens.FVEC3);
+		addReservedKeyword(GLSLLanguageTokens.FVEC4);
 		
-		reserved.add("sizeof");
-		reserved.add("cast");
+		addReservedKeyword(GLSLLanguageTokens.SAMPLER2DRECT);
+		addReservedKeyword(GLSLLanguageTokens.SAMPLER3DRECT);
+		addReservedKeyword(GLSLLanguageTokens.SAMPLER2DRECTSHADOW);
 		
-		reserved.add("namespace");
-		reserved.add("using");
+		addReservedKeyword(GLSLLanguageTokens.SIZEOF);
+		addReservedKeyword(GLSLLanguageTokens.CAST);
+		
+		addReservedKeyword(GLSLLanguageTokens.NAMESPACE);
+		addReservedKeyword(GLSLLanguageTokens.USING);
 				
 	}
+
 }

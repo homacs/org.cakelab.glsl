@@ -38,7 +38,7 @@ import org.cakelab.glsl.pp.error.SyntaxError;
 import org.cakelab.glsl.pp.lexer.ILexer;
 import org.cakelab.glsl.pp.lexer.PPLexer;
 import org.cakelab.glsl.pp.lexer.TokenListLexer;
-import org.cakelab.glsl.pp.output.PreprocessedOutput;
+import org.cakelab.glsl.pp.output.PreprocessedOutputStream;
 import org.cakelab.glsl.pp.parser.ErrorParser;
 import org.cakelab.glsl.pp.parser.ExpressionParser;
 import org.cakelab.glsl.pp.parser.ExtensionParser;
@@ -93,7 +93,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	 * @param out
 	 */
 	public Preprocessor(Resource resource, OutputStream out) {
-		this(resource, new PreprocessedOutput(out));
+		this(resource, new PreprocessedOutputStream(out));
 	}
 
 	public Preprocessor(Resource resource, PPOutputSink out) {

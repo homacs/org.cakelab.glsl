@@ -1,16 +1,21 @@
 package org.cakelab.glsl.lang.lexer.tokens;
 
-public class GLSL_ES_TokenTable_V_100 extends GLSLTokenTable {
-	
-	public GLSL_ES_TokenTable_V_100() {
-		super(100);
-		//
-		// Keywords
-		//
+import java.util.HashMap;
+
+public class GLSLTokenTable_V_120 extends GLSLTokenTable {
+
+	public GLSLTokenTable_V_120() {
+		super(110);
+		language = new HashMap<String, Integer>();
+		
+		
+		// LANGUAGE ELEMENTS
 		addKeyword(GLSLLanguageTokens.ATTRIBUTE);
 		addKeyword(GLSLLanguageTokens.CONST);
 		addKeyword(GLSLLanguageTokens.UNIFORM);
 		addKeyword(GLSLLanguageTokens.VARYING);
+		
+		addKeyword(GLSLLanguageTokens.CENTROID);
 		
 		addKeyword(GLSLLanguageTokens.BREAK);
 		addKeyword(GLSLLanguageTokens.CONTINUE);
@@ -20,7 +25,7 @@ public class GLSL_ES_TokenTable_V_100 extends GLSLTokenTable {
 		
 		addKeyword(GLSLLanguageTokens.IF);
 		addKeyword(GLSLLanguageTokens.ELSE);
-	
+
 		addKeyword(GLSLLanguageTokens.IN);
 		addKeyword(GLSLLanguageTokens.OUT);
 		addKeyword(GLSLLanguageTokens.INOUT);
@@ -31,21 +36,27 @@ public class GLSL_ES_TokenTable_V_100 extends GLSLTokenTable {
 		addBuiltinType(GLSLLanguageTokens.BOOL);
 		addKeyword(GLSLLanguageTokens.TRUE);
 		addKeyword(GLSLLanguageTokens.FALSE);
-	
-		addKeyword(GLSLLanguageTokens.LOWP);
-		addKeyword(GLSLLanguageTokens.MEDIUMP);
-		addKeyword(GLSLLanguageTokens.HIGHP);
-		addKeyword(GLSLLanguageTokens.PRECISION);
-		addKeyword(GLSLLanguageTokens.INVARIANT);
 
+		addKeyword(GLSLLanguageTokens.INVARIANT);
 		
 		addKeyword(GLSLLanguageTokens.DISCARD);
 		addKeyword(GLSLLanguageTokens.RETURN);
-		
 
 		addBuiltinType(GLSLLanguageTokens.MAT2);
 		addBuiltinType(GLSLLanguageTokens.MAT3);
 		addBuiltinType(GLSLLanguageTokens.MAT4);
+		
+		addBuiltinType(GLSLLanguageTokens.MAT2X2);
+		addBuiltinType(GLSLLanguageTokens.MAT2X3);
+		addBuiltinType(GLSLLanguageTokens.MAT2X4);
+		
+		addBuiltinType(GLSLLanguageTokens.MAT3X2);
+		addBuiltinType(GLSLLanguageTokens.MAT3X3);
+		addBuiltinType(GLSLLanguageTokens.MAT3X4);
+		
+		addBuiltinType(GLSLLanguageTokens.MAT4X2);
+		addBuiltinType(GLSLLanguageTokens.MAT4X3);
+		addBuiltinType(GLSLLanguageTokens.MAT4X4);
 		
 		addBuiltinType(GLSLLanguageTokens.VEC2);
 		addBuiltinType(GLSLLanguageTokens.VEC3);
@@ -57,17 +68,22 @@ public class GLSL_ES_TokenTable_V_100 extends GLSLTokenTable {
 		addBuiltinType(GLSLLanguageTokens.BVEC3);
 		addBuiltinType(GLSLLanguageTokens.BVEC4);
 
+		addBuiltinType(GLSLLanguageTokens.SAMPLER1D);
 		addBuiltinType(GLSLLanguageTokens.SAMPLER2D);
+		addBuiltinType(GLSLLanguageTokens.SAMPLER3D);
 		addBuiltinType(GLSLLanguageTokens.SAMPLERCUBE);
 
+		addBuiltinType(GLSLLanguageTokens.SAMPLER1DSHADOW);
+		addBuiltinType(GLSLLanguageTokens.SAMPLER2DSHADOW);
+
 		addKeyword(GLSLLanguageTokens.STRUCT);
-	
+
 		
 		//
-		// Reserved keywords
+		// keywords, that have been reserved but not yet included in the language
 		//
 		addReservedKeyword(GLSLLanguageTokens.ASM);
-		
+
 		addReservedKeyword(GLSLLanguageTokens.CLASS);
 		addReservedKeyword(GLSLLanguageTokens.UNION);
 		addReservedKeyword(GLSLLanguageTokens.ENUM);
@@ -80,7 +96,6 @@ public class GLSL_ES_TokenTable_V_100 extends GLSLTokenTable {
 		addReservedKeyword(GLSLLanguageTokens.SWITCH);
 		addReservedKeyword(GLSLLanguageTokens.DEFAULT);
 		
-		
 		addReservedKeyword(GLSLLanguageTokens.INLINE);
 		addReservedKeyword(GLSLLanguageTokens.NOINLINE);
 		addReservedKeyword(GLSLLanguageTokens.VOLATILE);
@@ -89,7 +104,6 @@ public class GLSL_ES_TokenTable_V_100 extends GLSLTokenTable {
 		addReservedKeyword(GLSLLanguageTokens.EXTERN);
 		addReservedKeyword(GLSLLanguageTokens.EXTERNAL);
 		addReservedKeyword(GLSLLanguageTokens.INTERFACE);
-		addReservedKeyword(GLSLLanguageTokens.FLAT);
 				
 		addReservedKeyword(GLSLLanguageTokens.LONG);
 		addReservedKeyword(GLSLLanguageTokens.SHORT);
@@ -98,6 +112,11 @@ public class GLSL_ES_TokenTable_V_100 extends GLSLTokenTable {
 		addReservedKeyword(GLSLLanguageTokens.FIXED);
 		addReservedKeyword(GLSLLanguageTokens.UNSIGNED);
 		addReservedKeyword(GLSLLanguageTokens.SUPERP);
+
+		addReservedKeyword(GLSLLanguageTokens.LOWP);
+		addReservedKeyword(GLSLLanguageTokens.MEDIUMP);
+		addReservedKeyword(GLSLLanguageTokens.HIGHP);
+		addReservedKeyword(GLSLLanguageTokens.PRECISION);
 		
 		addReservedKeyword(GLSLLanguageTokens.INPUT);
 		addReservedKeyword(GLSLLanguageTokens.OUTPUT);
@@ -112,22 +131,16 @@ public class GLSL_ES_TokenTable_V_100 extends GLSLTokenTable {
 		addReservedKeyword(GLSLLanguageTokens.FVEC3);
 		addReservedKeyword(GLSLLanguageTokens.FVEC4);
 		
-		addReservedKeyword(GLSLLanguageTokens.SAMPLER1D);
-		addReservedKeyword(GLSLLanguageTokens.SAMPLER3D);
-		
-		addReservedKeyword(GLSLLanguageTokens.SAMPLER1DSHADOW);
-		addReservedKeyword(GLSLLanguageTokens.SAMPLER3DSHADOW);
-		
 		addReservedKeyword(GLSLLanguageTokens.SAMPLER2DRECT);
 		addReservedKeyword(GLSLLanguageTokens.SAMPLER3DRECT);
 		addReservedKeyword(GLSLLanguageTokens.SAMPLER2DRECTSHADOW);
-	
+		
 		addReservedKeyword(GLSLLanguageTokens.SIZEOF);
 		addReservedKeyword(GLSLLanguageTokens.CAST);
 		
 		addReservedKeyword(GLSLLanguageTokens.NAMESPACE);
 		addReservedKeyword(GLSLLanguageTokens.USING);
-		
+				
 	}
 
 }
