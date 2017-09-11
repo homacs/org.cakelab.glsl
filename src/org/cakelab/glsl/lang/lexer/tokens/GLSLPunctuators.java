@@ -2,57 +2,55 @@ package org.cakelab.glsl.lang.lexer.tokens;
 
 import java.util.HashMap;
 
+import org.cakelab.glsl.GLSLParser;
+
 @SuppressWarnings("serial")
 public class GLSLPunctuators extends HashMap<String, Integer> {
 	public GLSLPunctuators() {
-		add(GLSLLanguageTokens.LEFT_OP);
-		add(GLSLLanguageTokens.RIGHT_OP);
-		add(GLSLLanguageTokens.INC_OP);
-		add(GLSLLanguageTokens.DEC_OP);
-		add(GLSLLanguageTokens.LE_OP);
-		add(GLSLLanguageTokens.GE_OP);
-		add(GLSLLanguageTokens.EQ_OP);
-		add(GLSLLanguageTokens.NE_OP);
-		add(GLSLLanguageTokens.AND_OP);
-		add(GLSLLanguageTokens.OR_OP);
-		add(GLSLLanguageTokens.XOR_OP);
-		add(GLSLLanguageTokens.MUL_ASSIGN);
-		add(GLSLLanguageTokens.DIV_ASSIGN);
-		add(GLSLLanguageTokens.ADD_ASSIGN);
-		add(GLSLLanguageTokens.MOD_ASSIGN);
-		add(GLSLLanguageTokens.LEFT_ASSIGN);
-		add(GLSLLanguageTokens.RIGHT_ASSIGN);
-		add(GLSLLanguageTokens.AND_ASSIGN);
-		add(GLSLLanguageTokens.XOR_ASSIGN);
-		add(GLSLLanguageTokens.OR_ASSIGN);
-		add(GLSLLanguageTokens.SUB_ASSIGN);
-		add(GLSLLanguageTokens.LEFT_PAREN);
-		add(GLSLLanguageTokens.RIGHT_PAREN);
-		add(GLSLLanguageTokens.LEFT_BRACKET);
-		add(GLSLLanguageTokens.RIGHT_BRACKET);
-		add(GLSLLanguageTokens.LEFT_BRACE);
-		add(GLSLLanguageTokens.RIGHT_BRACE);
-		add(GLSLLanguageTokens.DOT);
-		add(GLSLLanguageTokens.COMMA);
-		add(GLSLLanguageTokens.COLON);
-		add(GLSLLanguageTokens.EQUAL);
-		add(GLSLLanguageTokens.SEMICOLON);
-		add(GLSLLanguageTokens.BANG);
-		add(GLSLLanguageTokens.DASH);
-		add(GLSLLanguageTokens.TILDE);
-		add(GLSLLanguageTokens.PLUS);
-		add(GLSLLanguageTokens.STAR);
-		add(GLSLLanguageTokens.SLASH);
-		add(GLSLLanguageTokens.PERCENT);
-		add(GLSLLanguageTokens.LEFT_ANGLE);
-		add(GLSLLanguageTokens.RIGHT_ANGLE);
-		add(GLSLLanguageTokens.VERTICAL_BAR);
-		add(GLSLLanguageTokens.CARET);
-		add(GLSLLanguageTokens.AMPERSAND);
-		add(GLSLLanguageTokens.QUESTION);
-	}
-
-	private void add(GLSLParserToken token) {
-		put(token.text, token.type);
+		put("<<", GLSLParser.LEFT_OP);
+		put(">>", GLSLParser.RIGHT_OP);
+		put("++", GLSLParser.INC_OP);
+		put("--", GLSLParser.DEC_OP);
+		put("<=", GLSLParser.LE_OP);
+		put(">=", GLSLParser.GE_OP);
+		put("==", GLSLParser.EQ_OP);
+		put("!=", GLSLParser.NE_OP);
+		put("&&", GLSLParser.AND_OP);
+		put("||", GLSLParser.OR_OP);
+		put("^^", GLSLParser.XOR_OP);
+		put("*=", GLSLParser.MUL_ASSIGN);
+		put("/=", GLSLParser.DIV_ASSIGN);
+		put("+=", GLSLParser.ADD_ASSIGN);
+		put("%=", GLSLParser.MOD_ASSIGN);
+		put("<<=", GLSLParser.LEFT_ASSIGN);
+		put(">>=", GLSLParser.RIGHT_ASSIGN);
+		put("&=", GLSLParser.AND_ASSIGN);
+		put("^=", GLSLParser.XOR_ASSIGN);
+		put("|=", GLSLParser.OR_ASSIGN);
+		put("-=", GLSLParser.SUB_ASSIGN);
+		put("(", GLSLParser.LEFT_PAREN);
+		put(")", GLSLParser.RIGHT_PAREN);
+		put("[", GLSLParser.LEFT_BRACKET);
+		put("]", GLSLParser.RIGHT_BRACKET);
+		put("{", GLSLParser.LEFT_BRACE);
+		put("}", GLSLParser.RIGHT_BRACE);
+		put(".", GLSLParser.DOT);
+		put(",", GLSLParser.COMMA);
+		put(":", GLSLParser.COLON);
+		put("=", GLSLParser.EQUAL);
+		put(";", GLSLParser.SEMICOLON);
+		put("!", GLSLParser.BANG);
+		put("-", GLSLParser.DASH);
+		put("~", GLSLParser.TILDE);
+		put("+", GLSLParser.PLUS);
+		put("*", GLSLParser.STAR);
+		put("/", GLSLParser.SLASH);
+		put("%", GLSLParser.PERCENT);
+		put("<", GLSLParser.LEFT_ANGLE);
+		put(">", GLSLParser.RIGHT_ANGLE);
+		put("|", GLSLParser.VERTICAL_BAR);
+		put("^", GLSLParser.CARET);
+		put("&", GLSLParser.AMPERSAND);
+		put("?", GLSLParser.QUESTION);
 	}
 }

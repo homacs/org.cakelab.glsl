@@ -35,7 +35,7 @@ public class PPTokenStream implements TokenStream {
 	private boolean fetchedEOF;
 
 	@SuppressWarnings("unchecked")
-	public PPTokenStream(PPOutputTokenBuffer tokens) {
+	public PPTokenStream(PPOutputTokenSink_GLSL_ANTLR tokens) {
 		this.sources = tokens.getSources();
 		PPTokenSource inputSource = tokens.getInputSource();
 		this.tokens = (ArrayList<PPOutputToken>) tokens.getTokens().clone();
@@ -139,8 +139,7 @@ public class PPTokenStream implements TokenStream {
 
 	@Override
 	public String getSourceName() {
-		throw new Error("not supported");
-		// UNKNOWN_SOURCE or current token source?
+		return UNKNOWN_SOURCE_NAME;
 	}
 
 	@Override
@@ -153,6 +152,15 @@ public class PPTokenStream implements TokenStream {
 
 	@Override
 	public TokenSource getTokenSource() {
+		//
+		// Tokens are actually from different streams when supporting 
+		// #include.
+		// This method is used by the parser to retreive the TokenFactory
+		// and generate a new token for a missing token.
+		//
+		// Since the missing token would be at the place of the next token,
+		// we return here the source of the next token in the stream.
+		//
 		TokenSource source = LT(1).getTokenSource();
 		if (source == null) {
 			return null;

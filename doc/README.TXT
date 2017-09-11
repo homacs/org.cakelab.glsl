@@ -428,12 +428,6 @@ based on use cases:
 2. Language Preprocessing: Generates a preprocessed sequence of tokens to be used by a language parser.
 3. Text Tokenizing: Turns the given input in a sequence of tokens to be used for text highlighting.
 
-Each output type is associated with a mode and modes can 
-be combined to generate multiple output types at once. For 
-example, runtime preprocessing and tokenizing can be used
-in an IDE to visualize different token types and validate
-against a specific GLSL compiler.
-
 
 Output of Runtime Preprocessing:
 --------------------------------
@@ -446,40 +440,45 @@ There are tasks that can be performed in this mode, but
 some directives have to be left in the output.
 
 
-The preprocessor can execute only the following tasks:
+The preprocessor can perform the following tasks only:
   - Conditional inclusion
   - Includes of other resources
 
-To keep track of errors reported by the GLSL compiler, those tasks 
+
+To keep track of errors reported by an external GLSL compiler, those tasks 
 need to add appropriate #line directives in this mode.
+
+Macro expansion cannot be performed, since the expansion may change
+locations of tokens (column and row) and reported errors of an external
+GLSL compiler cannot be located properly.
 
 
 The following directives will be parsed but not fully executed or removed from output:
   - #version : parsed for information but not removed.
   - #extension : parsed for information but not removed.
   - #pragma : parsed but not removed.
-  - #line : will be parsed but not executed (i.e. lines will follow the given text) and not removed.
-  - #define and macro invocations: parsed and registered, but not executed or removed. Missing argument lists will be ignored. 
+  - #line : will be parsed and executed, so that error reports will consider seen line directives.
+  - #define and macro invocations: parsed and registered, but not executed or removed. 
+            Missing argument lists will be ignored. 
 
 
 Note: This functionality is useful only, if the include directive is used. 
 Otherwise, the preprocessor of the compiler will be probably faster.
 
 
+
 Output for Language Parsing:
 ----------------------------
 
-Contains only preprocessed language tokens without comments. Unknown 
-and error tokens will also be forwarded and shall turn into errors 
-in the language parser.
+All tokens of text sections will be forwarded to the output sink. Those can be
+buffered and filtered by the output sink (such as removing all whitespace tokens). 
+All tokens of directive lines will be removed. #line directives will be fully 
+considered to adjust locations of tokens accordingly. 
+
 
 
 Output for Text Tokenizing:
 ---------------------------
-
-TODO: Redesign. This mode probably cannot be combined with the other modes or it 
-      needs to be closely coupled with the lexer. #line directive conflicts with it.
-
 
 This mode is useful for text highlighting. Since the preprocessor parses
 the tokens anyway, it can generate a sequence of tokens according 
@@ -493,15 +492,23 @@ The output contains:
 2. Directive tokens, which basically add type information to input tokens.
 3. Tokens for excluded sections in respect to conditional inclusion.
 
-The ordinary tasks of directives are just partially performed:
-- every directive will generate a TDirectiveIdentifier followed by directive tokens
-- macro definitions will be parsed and registered
-- macro invocation expressions will be parsed into a TMacroReference, but not performed
-- conditional inclusion will be parsed and tokens of excluded sections added as TExcluded.
-- #include will be parsed but not performed.
-- #version will be parsed
-- #extension will be parsed
-- #line will be parsed but not performed.
+Text tokenizing requires 
+1. all tokens of the original input stream only (no included tokens)
+2. and their original location in the input stream.
+
+To achieve (1), the lexer of the original input resource will
+provide TextTokenizerListener capabilities. All committed tokens
+will be forwarded to the listener.
+
+Regarding (2), the row and column of tokens may refer to different
+locations in respect to #line directives. But the position (see
+Location.getPosition()) will always be the original offset 
+in the input stream.
+
+Forwarded token instances will be identical (same memory) to the 
+tokens used by the language parser and will be enriched with
+links to symbol references identified by the parser (e.g.
+identifiers of functions will refer to the function).
 
 
 
@@ -532,10 +539,8 @@ Error reporting occurs in two flavours:
 Error Handler:
 --------------
 
-
 Error handler will be the component which receives error reports
 and decides whether to proceed or exit.
-
 
 
 Error Reporting:
@@ -569,7 +574,7 @@ and consists of two tasks:
 The easiest way to recover from an error in a language parser
 is to search for the start of the next bigger parse rule 
 such as a sentence or a statement with a prefix token set, 
-which differs significantly from all the other. 
+which differs significantly from other prefix token sets. 
 All tokens up to that location should be ignored, because 
 most of the time those tokens just cause false positives. 
 
@@ -578,7 +583,6 @@ occurs in a directive line or in text (e.g. macro expansion).
 In directive lines, recovery will skip to the end of the line.
 In text (i.e. in macro invocation expressions), recovery will 
 skip to the next token only.
-
 
 
 
@@ -665,7 +669,7 @@ Architecture Overview:
                              Conditional Scope
                                      |
                                      |         Context *
-Resource Manager   <-------    Preprocessor   --------->   Parser  -->  Output Generator
+Resource Manager   <-------    Preprocessor   --------->   Parser  -->  Output Generators
       ||                             |                       ||
       \/*                            |                       \/1
    Resource                    Symbol Table                 Lexer
@@ -889,8 +893,8 @@ Parser Listeners
 
 Parser listeners generate output of parser rules.
 
-PreprocessedOutputListener
-
+- [mandatory] PPOutputSink receives generated preprocessor output tokens
+- [optional]  TextTokenizerListener receives tokens of the original input
 
 
 
@@ -1038,3 +1042,69 @@ issued the call to syntaxError(). General recovery method for every
 parser will be to read all remaining tokens up to and including the next
 CRLF and exit the rule without result. Depending on the rule, read tokens
 will eventually be forwarded to output, but not parsed or interpreted.
+
+
+
+GLSL Versioning
+===============
+
+Each GLSL version has a set of unique properties:
+
+- keywords
+- reserved keywords
+- builtin types
+- builtin functions
+- builtin variables
+
+All GLSL versions have a set of common properties:
+- punctuator tokens
+- builtin macros (__FILE__, __LINE__, __VERSION__)
+
+This results in a set of version specific tokens and symbols, which are 
+stored in instances of those two classes:
+- TokenTable maps preprocessed tokens to language parser token types.
+- SymbolTable maps identifier tokens to builtin symbols (i.e. macros
+  types, functions and variables).
+
+Both are required in different stages of the translation process 
+(preprocessing and language parsing). 
+TokenTable is used by the PPOutputSink, which converts received 
+tokens into language parser tokens. 
+SymbolTable is used by the preprocessor to identify builtin macros
+and by the language parser to identify builtin types, functions and
+variables.
+
+Maintenance should be kept simple to allow fast adaption to new versions 
+or other languages such as SPIR-V. It is common practice to use the 
+capabilities of a compiler to declare all builtin symbols using the
+language itself. Thus, the builtin table will be initialised with glsl
+source code, which contains all declaration statements and #define
+directives of that version, which will be called 'preamble'. The 
+only exception are scalar builtin types (int, float, bool etc. and void).
+
+Parsing of the preamble requires a few preconditions:
+
+- A fresh SymbolTable filled with scalar builtin types and common builtin macros.
+- An isolated preprocessor and language parser
+- No user level listeners (no user level output sink or error handler (all errors are internal errors))
+- Builtin symbols have to be distinguishable from user declared symbols, which will be implemented as flag.
+
+All language tokens recognized by the language parser have a specific mapping to a language parser token
+type. The TokenTable just has to decide, which language tokens are actually used as keywords, reserved 
+keywords or builtin types. The latter will be identified using the builtin symbol table.
+
+
+Implementation:
+---------------
+
+The preamble will be split into a preprocessor preamble and a language parser preamble. The preprocessor
+preamble contains #define directives only and the language parser preamble contains language tokens only.
+Thus, both can be parsed independent of each other.
+
+Valid language tokens are split into keywords and reserved keywords. For each version there will be two
+files, which contain each a whitespace separated list of (reserved) keywords of that version.
+
+For each version X exists:
+- versioning/X/keywords.txt  (keywords)
+- versioning/X/reserved.txt  (reserved keywords)
+- versioning/X/preamble.glsl (builtin symbols)

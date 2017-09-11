@@ -12,8 +12,11 @@
 				
 				Tasks for tomorrow:
 				
-				1. Cleanup PPOutputTokenBuffer and PPTokenStream
-				2. General Concept for versioning
-				   - Concept for Builtin Macros (preprocessor, __LINE__ etc.) 
+				1. Finish General Concept for Versioning
+				   - Use lazy initialisation to circumvent initialisation of DEFAULT token table
+				   - Consider profiles (compatibility, core, es)
+				   - Consider extensions maybe?
+				   
+				   - Concept for Builtin Macros (GL_compatibility_profile, preprocessor, __LINE__ etc.) 
 				   - and Symbols (language parser, functions etc.)
 				

@@ -146,7 +146,7 @@ public class ASTFactory {
 		GlslPostfixExpressionContext postfix = unary.glslPostfixExpression();
 		if (postfix == null) {
 			Expression operand = create(unary.glslUnaryExpression());
-			Location start = createStartLocation(unary.glslUnaryOperator());
+			Location start = getStartLocation(unary.glslUnaryOperator());
 			int operator = unary.glslUnaryOperator().getStart().getType();
 			switch(operator) {
 			case GLSLParser.INC_OP: return new PrefixIncExpression(start, operand);
@@ -175,10 +175,10 @@ public class ASTFactory {
 			if (dim != null) return create(operand, dim);
 			
 			GlslFieldSelectionContext field = postfix.glslFieldSelection();
-			if (field != null) return new FieldSelection(operand, field.IDENTIFIER().getText(), createEndLocation(postfix));
+			if (field != null) return new FieldSelection(operand, field.IDENTIFIER().getText(), getEndLocation(postfix));
 			
-			if (postfix.INC_OP()!= null) return new PostfixIncExpression(operand, createEndLocation(postfix));
-			else /* DEC_OP */ return new PostfixDecExpression(operand, createEndLocation(postfix));
+			if (postfix.INC_OP()!= null) return new PostfixIncExpression(operand, getEndLocation(postfix));
+			else /* DEC_OP */ return new PostfixDecExpression(operand, getEndLocation(postfix));
 		} else {
 			return create(primary);
 		}
@@ -291,7 +291,7 @@ public class ASTFactory {
 			arguments[i] = create(assignments.get(i));
 		}
 		
-		return new CallExpression(operand, arguments, createEndLocation(args));
+		return new CallExpression(operand, arguments, getEndLocation(args));
 	}
 
 	public Struct create(GlslStructSpecifierContext context) {
@@ -450,26 +450,18 @@ public class ASTFactory {
 
 	
 	
-	private Location createStartLocation(ParserRuleContext context) {
+	private Location getStartLocation(ParserRuleContext context) {
 		Token start = context.getStart();
-		if (start instanceof PPOutputToken) {
-			return ((PPOutputToken)start).getPPToken().getStart();
-		} else {
-			return new Location(start.getInputStream().getSourceName(), start.getStartIndex(), start.getLine(), start.getCharPositionInLine());
-		}
+		return ((PPOutputToken)start).getPPToken().getStart();
 	}
 
-	private Location createEndLocation(ParserRuleContext context) {
+	private Location getEndLocation(ParserRuleContext context) {
 		Token end = context.getStop();
-		if (end instanceof PPOutputToken) {
-			return ((PPOutputToken)end).getPPToken().getEnd();
-		} else {
-			return new Location(end.getInputStream().getSourceName(), end.getStopIndex(), end.getLine(), end.getCharPositionInLine() + (end.getStopIndex() - end.getStartIndex()));
-		}
+		return ((PPOutputToken)end).getPPToken().getEnd();
 	}
 
 	public Interval createInterval(ParserRuleContext context) {
-		return new Interval(createStartLocation(context), createEndLocation(context));
+		return new Interval(getStartLocation(context), getEndLocation(context));
 	}
 
 

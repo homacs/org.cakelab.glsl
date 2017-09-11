@@ -1,0 +1,46 @@
+    attribute    varying
+    resource    
+    noperspective
+    patch    sample
+    subroutine
+    precise
+    common    partition    active
+    asm
+    class    union    
+enum
+    typedef    template   this   
+    goto    
+inline
+noinline
+        public    static    extern    external    interface
+    long    short    double    half    fixed    unsigned    superp
+    input    output
+    hvec2    hvec3    hvec4    dvec2    dvec3    dvec4    fvec2    fvec3    fvec4
+    sampler3DRect    
+                             filter    
+    image1D   
+    iimage1D  
+    uimage1D   
+    image1DArray            
+    iimage1DArray        uimage1DArray    
+        imageBuffer    iimageBuffer    uimageBuffer
+    sampler1D     sampler1DShadow     sampler1DArray     sampler1DArrayShadow
+    isampler1D     
+isampler1DArray     usampler1D     usampler1DArray
+    sampler2DRect    sampler2DRectShadow    isampler2DRect    usampler2DRect
+    samplerBuffer    isamplerBuffer    usamplerBuffer
+    sampler2DMSArray    isampler2DMSArray    usampler2DMSArray
+    sizeof    cast
+namespace
+    using
+dmat2   dmat3  dmat4
+ dmat2x2 dmat2x3 dmat2x4
+ dmat3x2 dmat3x3 dmat3x4
+ dmat4x2 dmat4x3 dmat4x4
+ samplerCubeArray    samplerCubeArrayShadow    isamplerCubeArray 
+ usamplerCubeArray
+ image2DRect    iimage2DRect    uimage2DRect
+ imageCubeArray     iimageCubeArray    uimageCubeArray
+ image2DMS    iimage2DMS    uimage2DMS
+ image2DMSArray    iimage2DMSArray    uimage2DMSArray
+ 

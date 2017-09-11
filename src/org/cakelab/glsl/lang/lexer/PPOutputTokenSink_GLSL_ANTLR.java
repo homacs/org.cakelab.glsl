@@ -22,7 +22,7 @@ import org.cakelab.glsl.pp.tokens.TWhitespace;
 import org.cakelab.glsl.pp.tokens.Token;
 import org.cakelab.glsl.pp.tokens.TokenList;
 
-public class PPOutputTokenBuffer extends PPHelper implements PPOutputSink, PPState.Listener {
+public class PPOutputTokenSink_GLSL_ANTLR extends PPHelper implements PPOutputSink, PPState.Listener {
 
 
 	int pos;
@@ -32,12 +32,11 @@ public class PPOutputTokenBuffer extends PPHelper implements PPOutputSink, PPSta
 	private GLSLTokenTable tokenTable;
 	private LocationMap locations = new LocationMap();
 	
-	public PPOutputTokenBuffer(ResourceManager resources) {
+	public PPOutputTokenSink_GLSL_ANTLR(ResourceManager resources) {
 		this.resources = resources;
 		pos = -1;
 		this.tokenTable = GLSLTokenTable.getDefault();
 	}
-	
 	
 	@Override
 	public void init(PPState state) {
@@ -46,22 +45,18 @@ public class PPOutputTokenBuffer extends PPHelper implements PPOutputSink, PPSta
 		state.addListener(this);
 		setState(state);
 	}
-
 	
 	public ArrayList<PPOutputToken> getTokens() {
 		return tokens;
 	}
-	
 
 	public void setKeywords(GLSLTokenTable keywords) {
 		this.tokenTable = keywords;
 	}
-	
 
 	public LocationMap getLocations() {
 		return locations;
 	}
-	
 
 	@Override
 	public void print(TokenList tokens) {
@@ -88,14 +83,14 @@ public class PPOutputTokenBuffer extends PPHelper implements PPOutputSink, PPSta
 	private PPOutputToken convert(int index, int start, Token t) {
 		PPTokenSource source = getTokenSource(t.getStart().getSourceIdentifier());
 		int stop = start + t.length() - 1;
-		int type = getType(t);
+		int type = getTokenType(t);
 		return new PPOutputToken(index, source, start, stop, type, t);
 	}
 
-	private int getType(Token t) {
+	private int getTokenType(Token t) {
 		if (t instanceof TWhitespace) {
 			// TWhitespace is base of TCrlf, TLineContinuation, TComment and TUnknownToken
-			throw new InternalError("preprocessor is supposed to remove all whitespace tokens");
+			throw new Error("internal error: preprocessor is supposed to remove all whitespace tokens");
 		} else if (t instanceof TIdentifier) {
 			String ident = t.getText();
 			if (tokenTable.isLanguageKeyword(ident)) {

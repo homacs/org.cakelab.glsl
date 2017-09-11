@@ -1,0 +1,35 @@
+asm
+class   union
+enum
+typedef
+template   this   packed
+goto
+switch
+default
+inline
+noinline
+volatile
+public
+static    extern
+external
+interface
+long    short    double
+half    fixed    unsigned
+input
+output
+hvec2
+hvec3
+hvec4
+dvec2
+dvec3
+dvec4
+fvec2
+fvec3
+fvec4
+sampler2DRect
+sampler3DRect
+sampler2DRectShadow
+sizeof
+cast
+namespace
+using

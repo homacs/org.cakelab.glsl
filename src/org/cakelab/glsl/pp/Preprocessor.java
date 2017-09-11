@@ -84,6 +84,18 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 
 
 	private ExtensionParser extensionParser;
+
+
+	/**
+	 * This lexer is responsible to generate tokens of the 
+	 * original source. It will never see for example included 
+	 * sources!
+	 * 
+	 * This lexer is used to identify and forward tokens of the 
+	 * original source to the TokenListener for text 
+	 * highlighting purposes.
+	 */
+	private PPLexer originalSourceLexer;
 	
 	
 	/**
@@ -99,10 +111,10 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	public Preprocessor(Resource resource, PPOutputSink out) {
 		super(new PPState(resource));
 		state.setInputResource(resource);
-		PPLexer lexer = new PPLexer(new StreamScanner(resource), state);
+		originalSourceLexer = new PPLexer(new StreamScanner(resource), state);
 		
 		state.setErrorHandler(new StandardErrorHandler());
-		state.setLexer(lexer);
+		state.setLexer(originalSourceLexer);
 		state.setInsertLineDirectives(true);
 
 		out.init(state);
@@ -1087,6 +1099,14 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 		state.setErrorHandler(errorHandler);
 	}
 
+	/** This method is for testing purposes only! 
+	 * <p>
+	 * The default version
+	 * in a glsl file without a <code>#version</code> directive is
+	 * usually GLSL 1.10.
+	 * </p>
+	 * @param version
+	 */
 	public void setDefaultVersion(int version) {
 		state.setGlslVersion(new GLSLVersion(null, version, null));
 	}

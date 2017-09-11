@@ -1,0 +1,19 @@
+    common    partition    active
+    asm
+    class    union    
+enum
+    typedef    template   this   packed 
+    resource     
+        goto    
+inline
+noinline
+        public    static    extern    external    interface
+    long    short    half    fixed    unsigned    superp
+    input    output
+    hvec2    hvec3    hvec4    fvec2    fvec3    fvec4
+    sampler3DRect    
+                             filter
+    sizeof    cast
+namespace
+    using
+    row_major

@@ -1,7 +1,13 @@
 package org.cakelab.glsl.lang.lexer.tokens;
 
+import java.io.InputStream;
 import java.util.HashMap;
-import java.util.HashSet;
+
+import org.cakelab.glsl.GLSLParser;
+import org.cakelab.glsl.pp.scanner.IScanner;
+import org.cakelab.glsl.pp.scanner.StreamScanner;
+import org.cakelab.glsl.util.ObjectCache;
+import org.cakelab.glsl.versioning.LookupResource;
 
 
 
@@ -9,46 +15,64 @@ public class GLSLTokenTable {
 	public static final boolean DEBUG = true;
 	public static final int DEFAULT_GLSL_VERSION = 110;
 	
+	/**
+	 * A cache for instantiated (used) token tables.
+	 * <p>
+	 * Usually a particular parse for a given glsl file will require
+	 * at least two token tables: the default 110 will be instantiated 
+	 * at the start and a specific may be selected by <code>#version</code>.
+	 * 
+	 * When reusing an instance of a language parser for different files,
+	 * we might have to switch between the same token tables multiple times, but
+	 * the set of used tables will still be small in a single project.
+	 */
+	public static final ObjectCache<Integer, GLSLTokenTable> cache = new ObjectCache<Integer, GLSLTokenTable>(4);
+	
+	
 	// TODO: combine with AST builtin type entries
 
 	public static final GLSLPunctuators COMMON_PUNCTUATORS = new GLSLPunctuators();
-	public static final HashMap<Integer, Class<? extends GLSLTokenTable>> lookup = new HashMap<Integer, Class<? extends GLSLTokenTable>>();
-	
-	static {
-		// OpenGL ES exclusive GLSL versions: 100, 300, 310
-		register(100, GLSL_ES_TokenTable_V_100.class);
-		register(300, GLSL_ES_TokenTable_V_300.class);
-		register(310, GLSL_ES_TokenTable_V_310.class);
-		
-		// Standard OpenGL GLSL versions
-		register(110, GLSLTokenTable_V_110.class);
-		register(120, GLSLTokenTable_V_120.class);
-		register(450, GLSLTokenTable_V_450.class);
-	}
 	
 	public static GLSLTokenTable get(int version) {
-		Class<? extends GLSLTokenTable> clazz = lookup.get(version);
-		try {
-			GLSLTokenTable instance = clazz.newInstance();
-			assert instance.getGLSLVersionNumber() == version;
-			return instance;
-		} catch (NullPointerException | InstantiationException | IllegalAccessException e) {
-			throw new InternalError("failed to create a token lookup table for glsl version " + version + ".", e);
+		GLSLTokenTable table = cache.get(version);
+		if (table == null) {
+			// cache miss -> create new
+			table = new GLSLTokenTable(version);
+			cache.put(version, table);
 		}
+		return table;
 	}
 	
 	
-	
+	static {
+		boolean validate = false;
+		assert validate = true;
+		
+		if (validate) {
+			// assertions enabled -> validate all keyword files
+			
+			// OpenGL ES
+			get(100);
+			get(300);
+			get(310);
+			
+			// OpenGL Standard
+			get(110);
+			get(120);
+			get(130);
+			get(140);
+			get(150);
 
-	private static void register(int glslVersion, Class<? extends GLSLTokenTable> clazz) {
-		if (DEBUG) {
-			try {
-				clazz.newInstance();
-			} catch(Throwable t) {
-				throw new InternalError("Implementations of " + GLSLTokenTable.class.getCanonicalName() + " require a default constructor");
-			}
+			get(330);
+
+			get(400);
+			get(410);
+			get(420);
+			get(430);
+			get(440);
+			get(450);
+			get(460);
 		}
-		lookup.put(glslVersion, clazz);
 	}
 
 
@@ -56,22 +80,83 @@ public class GLSLTokenTable {
 	protected int version;
 	
 	
-	protected HashMap<String, Integer> punctuators;
+	protected HashMap<String, Integer> keywords;
+	protected HashMap<String, Integer> reserved;
 	protected HashMap<String, Integer> builtinTypes;
-	protected HashSet<String> reserved;
-	protected HashMap<String, Integer> language;
+	protected HashMap<String, Integer> punctuators = COMMON_PUNCTUATORS;
 
 	protected GLSLTokenTable(int version) {
 		this.version = version;
 		punctuators = COMMON_PUNCTUATORS;
 		builtinTypes = new HashMap<String, Integer>();
-		reserved = new HashSet<String>();
-		language = new HashMap<String, Integer>();
+		reserved = new HashMap<String, Integer>();
+		keywords = new HashMap<String, Integer>();
+		
+		//
+		// Initialise token type tables
+		//
+		
+		InputStream in = LookupResource.getInputStream(version, "keywords.txt");
+		readKeywordList(in, false);
+		
+		in = LookupResource.getInputStream(version, "reserved.txt");
+		readKeywordList(in, true);
+
+		//
+		// Validate content
+		//
+		
+		assert !keywords.isEmpty() : "keyword list for version " + version + " is empty";
+		assert !reserved.isEmpty() : "reserved keyword list for version " + version + " is empty";
+		assert !builtinTypes.isEmpty() : "builtin types list for version " + version + " is empty";
+		assert !punctuators.isEmpty() : "punctuators list for version " + version + " is empty";
 	}
 	
-	private int getGLSLVersionNumber() {
-		return version;
+
+	private void readKeywordList(InputStream in, boolean reservedKeywords) {
+		StreamScanner scanner = new StreamScanner("-- keyword list --", in);
+		StringBuffer s = new StringBuffer();
+		do {
+			// remove all whitespace
+			while (isWhite(scanner.LA1())) scanner.consume();
+
+			// read keyword
+			while(!isWhite(scanner.LA1()) && scanner.LA1() != IScanner.EOF) {
+				s.append((char)scanner.consume());
+			}
+			if (s.length() > 0) {
+				String keyword = s.toString();
+				s.delete(0, s.length());
+				
+				if (GLSLKeywords.contains(keyword)) {
+					int type = GLSLKeywords.getTokenType(keyword);
+					if (reservedKeywords) {
+						// reserved keywords:
+						// TODO: maybe accept unknown reserved keywords as well
+						reserved.put(keyword, type);
+						
+						// do cross checking
+						assert (!builtinTypes.containsKey(keyword)) && (!keywords.containsKey(keyword));
+					} else if (type == GLSLParser.BUILTIN_TYPE) {
+						builtinTypes.put(keyword, type);
+					} else {
+						keywords.put(keyword, type);
+					}
+				} else {
+					throw new Error("internal error: unrecognized keyword '" + keyword + "' for glsl version '" + version + "'");
+				}
+			}
+		} while(scanner.LA1() != IScanner.EOF);
 	}
+
+
+	private static boolean isWhite(int la1) {
+		return la1 == '\n' || la1 == '\r' || la1 == '\t' || la1 == ' ';
+	}
+
+	
+	
+	
 	
 	public Integer getPunctuator(String text) {
 		return punctuators.get(text);
@@ -81,11 +166,6 @@ public class GLSLTokenTable {
 		return punctuators.containsKey(text);
 	}
 	
-	protected void addBuiltinType(GLSLParserToken parserToken) {
-		assert validateAdd(parserToken, false);
-		builtinTypes.put(parserToken.text, parserToken.type);
-	}
-
 	public boolean isBuiltinType(String text) {
 		return builtinTypes.containsKey(text);
 	}
@@ -95,40 +175,19 @@ public class GLSLTokenTable {
 	}
 
 	
-	protected void addReservedKeyword(GLSLParserToken parserToken) {
-		assert validateAdd(parserToken, true);
-		reserved.add(parserToken.text);
-	}
-
 	public boolean isReservedKeyword(String text) {
-		return reserved.contains(text);
-	}
-	
-	protected void addKeyword(GLSLParserToken parserToken) {
-		assert validateAdd(parserToken, false);
-		language.put(parserToken.text, parserToken.type);
+		return reserved.containsKey(text);
 	}
 	
 
 	public Integer mapLanguageKeyword(String text) {
-		return language.get(text);
+		return keywords.get(text);
 	}
 
 	public boolean isLanguageKeyword(String text) {
-		return language.containsKey(text);
+		return keywords.containsKey(text);
 	}
-
 	
-	
-	private boolean validateAdd(GLSLParserToken parserToken, boolean isReserved) {
-		assert(!punctuators.containsKey(parserToken.text));
-		assert(!language.containsKey(parserToken.text));
-		assert(!builtinTypes.containsKey(parserToken.text));
-		assert(!reserved.contains(parserToken.text));
-		assert(isReserved || (parserToken.type != GLSLLanguageTokens.RESERVED_KEYWORD));
-		return true;
-	}
-
 
 
 
