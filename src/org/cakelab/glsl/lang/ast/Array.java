@@ -2,6 +2,7 @@ package org.cakelab.glsl.lang.ast;
 
 import java.util.Arrays;
 
+import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.ast.Struct.Method;
 
 public class Array extends Type {
@@ -32,8 +33,8 @@ public class Array extends Type {
 	private Type baseType;
 	private Type componentType;
 	
-	public Array(Type baseType, Expression ... dimensions) {
-		super(signature(baseType.signature, dimensions.length), KIND_ARRAY);
+	public Array(Interval interval, Type baseType, Expression ... dimensions) {
+		super(interval, signature(baseType.signature, dimensions.length), KIND_ARRAY);
 		if (baseType instanceof Array) {
 			Array that = ((Array)baseType);
 			this.baseType = that.baseType;
@@ -48,7 +49,7 @@ public class Array extends Type {
 	}
 
 	public Array(Array that) {
-		super(that.signature, KIND_ARRAY);
+		super(that.interval, that.signature, KIND_ARRAY);
 		this.baseType = that.baseType;
 		this.dimensions = that.dimensions;
 	}
@@ -71,7 +72,7 @@ public class Array extends Type {
 		} else if (dimensions.length == 1) {
 			componentType = baseType;
 		} else {
-			componentType = new Array(baseType, Arrays.copyOfRange(dimensions, 1, dimensions.length-1));
+			componentType = new Array(Interval.NONE, baseType, Arrays.copyOfRange(dimensions, 1, dimensions.length-1));
 		}
 		return componentType;
 	}

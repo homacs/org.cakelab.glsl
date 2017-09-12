@@ -2,6 +2,8 @@ package org.cakelab.glsl.lang.ast;
 
 import java.util.ArrayList;
 
+import org.cakelab.glsl.Interval;
+
 public class Struct extends Type {
 
 	public static class QualifiedStructImpl extends Struct implements QualifiedType {
@@ -60,7 +62,7 @@ public class Struct extends Type {
 	
 	Body body;
 
-	public Struct(Scope parent, String name) {
+	public Struct(Interval interval, Scope parent, String name) {
 		super(name, KIND_STRUCT);
 		this.body = new Body(parent);
 	}

@@ -20,6 +20,7 @@ import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
+import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.impl.StandardFileManager;
 import org.cakelab.glsl.lang.ASTBuilder;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
@@ -283,14 +284,15 @@ public class TestingTools {
 		
 		pp.parse();
 
-		PPTokenStream tokens = new PPTokenStream(buffer, error);
+		SymbolTable symbolTable = new SymbolTable();
+		PPTokenStream tokens = new PPTokenStream(buffer, symbolTable, error);
 		parser = new GLSLParser(tokens);
 
 		error.setLocations(tokens, buffer.getLocations());
 
 		parser.removeErrorListeners();
 		parser.addErrorListener(error);
-		validator = new ASTBuilder(tokens, buffer.getLocations(), error);
+		validator = new ASTBuilder(tokens, buffer.getLocations(), symbolTable, error);
 		parser.addParseListener(validator);
 	}
 

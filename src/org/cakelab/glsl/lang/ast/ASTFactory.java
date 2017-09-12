@@ -296,7 +296,7 @@ public class ASTFactory {
 
 	public Struct create(GlslStructSpecifierContext context) {
 		String name = context.IDENTIFIER().getText();
-		Struct struct = new Struct(symbols.getScope(), name);
+		Struct struct = new Struct(createInterval(context), symbols.getScope(), name);
 		symbols.enterScope(struct.body);
 		GlslStructBodyContext members = context.glslStructBody();
 		List<GlslStructMemberGroupContext> groups = members.glslStructMemberGroup();
@@ -374,16 +374,18 @@ public class ASTFactory {
 
 	private Type createArrayType(Type type, List<GlslArrayDimensionContext> dcontext) {
 		Expression[] dimensions = new Expression[dcontext.size()];
+		Location end = type.getEnd();
 		for (int i = 0; i < dimensions.length; i++) {
 			dimensions[i] = create(dcontext.get(i).glslIntegerExpression());
+			end = dimensions[i].getEnd();
 		}
-		type = new Array(type, dimensions);
+		type = new Array(new Interval(type.getStart(), end), type, dimensions);
 		return type;
 	}
 
 	private Type createArrayType(Type type, GlslArrayDimensionContext dim) {
 		Expression dimension = create(dim.glslIntegerExpression());
-		type = new Array(type, dimension);
+		type = new Array(new Interval(type.getStart(), dimension.getEnd()), type, dimension);
 		return type;
 	}
 

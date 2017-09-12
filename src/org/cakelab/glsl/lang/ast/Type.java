@@ -1,6 +1,7 @@
 package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.lang.ast.impl.NodeImpl;
 
 /** 
  * Type has a signature instead of a name.
@@ -19,7 +20,7 @@ import org.cakelab.glsl.Interval;
  * @author homac
  *
  */
-public class Type implements Comparable<Type> {
+public class Type extends NodeImpl implements Comparable<Type> {
 
 	public interface QualifiedType {
 		Qualifier[] qualifiers();
@@ -67,13 +68,19 @@ public class Type implements Comparable<Type> {
 	final int kind;
 	
 	
-	public Type(String signature, int kind) {
+	Type(String signature, int kind) {
+		this(Interval.NONE, signature, kind);
+	}
+	
+	public Type(Interval interval, String signature, int kind) {
+		super(interval);
 		this.signature = signature;
 		this.kind = kind;
 	}
 
 	
 	public Type(Type that) {
+		super(that);
 		this.signature = that.signature;
 		this.kind = that.kind;
 	}

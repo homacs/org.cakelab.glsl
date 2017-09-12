@@ -1,5 +1,7 @@
 package org.cakelab.glsl.lang.ast;
 
+import org.cakelab.glsl.Interval;
+
 public class InterfaceBlock extends Struct {
 
 	public static class QualifiedInterfaceBlockImpl extends InterfaceBlock implements QualifiedType {
@@ -19,8 +21,8 @@ public class InterfaceBlock extends Struct {
 		
 	}
 	
-	public InterfaceBlock(Scope parent, String name) {
-		super(parent, name);
+	public InterfaceBlock(Interval interval, Scope parent, String name) {
+		super(interval, parent, name);
 	}
 
 	public InterfaceBlock(InterfaceBlock block) {

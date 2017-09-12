@@ -11,6 +11,7 @@ import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
+import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.lang.lexer.tokens.GLSLTokenTable;
 import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
 import org.cakelab.glsl.pp.error.TokenFormatException;
@@ -53,8 +54,10 @@ public class PPTokenStream implements TokenStream {
 	private boolean fetchedEOF;
 	private GLSLTokenTable tokenTable;
 	private GLSLErrorHandler errorHandler;
+	private SymbolTable symbolTable;
 
-	public PPTokenStream(GLSL_ANTLR_PPOutputBuffer output, GLSLErrorHandler errorHandler) {
+	public PPTokenStream(GLSL_ANTLR_PPOutputBuffer output, SymbolTable symbolTable, GLSLErrorHandler errorHandler) {
+		this.symbolTable = symbolTable;
 		this.p = 0;
 		this.errorHandler = errorHandler;
 		this.tokens = filter(output.getTokens());
@@ -107,17 +110,18 @@ public class PPTokenStream implements TokenStream {
 			// TWhitespace is base of TCrlf, TLineContinuation, TComment and TUnknownToken
 			throw new Error("internal error: preprocessor is supposed to remove all whitespace tokens");
 		} else if (t instanceof TIdentifier) {
-			String ident = t.getText();
+			TIdentifier identifierToken = (TIdentifier)t;
+			String ident = identifierToken.getText();
 			if (tokenTable.isLanguageKeyword(ident)) {
+				identifierToken.setKeyword(true);
 				return tokenTable.mapLanguageKeyword(ident);
 			} else if (tokenTable.isBuiltinType(ident)) {
+				identifierToken.setReferencedNode(symbolTable.getType(ident));
 				return tokenTable.mapBuiltintType(ident);
-			} else if (tokenTable.isReservedKeyword(ident)) {
-				if (errorHandler != null) {
+			} else {
+				if (tokenTable.isReservedKeyword(ident) && errorHandler != null) {
 					errorHandler.error(t, "use of reserved keyword '" + ident + "'");
 				}
-				return GLSLParser.IDENTIFIER;
-			} else {
 				return GLSLParser.IDENTIFIER;
 			}
 		} else if (t instanceof TPunctuator && tokenTable.isPunctuator(t.getText())) {

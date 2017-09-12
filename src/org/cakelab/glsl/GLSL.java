@@ -47,15 +47,16 @@ public class GLSL {
 		
 		List<PPGroupScope> ppAST = pp.process();
 
-		PPTokenStream tokens = new PPTokenStream(buffer, errorHandler);
-		GLSLParser parser = new GLSLParser(tokens);
-
+		// TODO consider glsl version, profile and extensions in symbol table
+		SymbolTable symbolTable = new SymbolTable();
+		
+		PPTokenStream tokens = new PPTokenStream(buffer, symbolTable, errorHandler);
 		errorHandler.setLocations(tokens, buffer.getLocations());
-
+		ASTBuilder astBuilder = new ASTBuilder(tokens, buffer.getLocations(), symbolTable, errorHandler);
+		
+		GLSLParser parser = new GLSLParser(tokens);
 		parser.removeErrorListeners();
 		parser.addErrorListener(errorHandler);
-
-		ASTBuilder astBuilder = new ASTBuilder(tokens, buffer.getLocations(), errorHandler);
 		parser.addParseListener(astBuilder);
 		
 		parser.glsl();

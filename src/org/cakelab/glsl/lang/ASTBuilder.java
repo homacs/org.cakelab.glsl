@@ -28,24 +28,26 @@ public class ASTBuilder extends GLSLBaseListener {
 	private LocationMap locations;
 	private TokenStream tokens;
 	private GLSLErrorHandler errorHandler;
-	SymbolTable symbolTable = new SymbolTable();
+	private SymbolTable symbolTable;
 	private boolean functionDefinitionContext;
 	private Function functionDefinition;
 	
 	
 	
-	public ASTBuilder(TokenStream tokens, LocationMap locations, GLSLErrorHandler errorHandler) {
-		configure(tokens, locations, errorHandler);
+	public ASTBuilder(TokenStream tokens, LocationMap locations, SymbolTable symbolTable, GLSLErrorHandler errorHandler) {
+		configure(tokens, locations, symbolTable, errorHandler);
 	}
 	
-	void configure(TokenStream tokens, LocationMap locations, GLSLErrorHandler errorHandler) {
+	void configure(TokenStream tokens, LocationMap locations, SymbolTable symbolTable, GLSLErrorHandler errorHandler) {
 		this.locations = locations;
+		this.symbolTable = symbolTable;
 		this.errorHandler = errorHandler;
 		this.tokens = tokens;
 		factory = new ASTFactory(symbolTable, errorHandler);
 		symbolTable.reset();
 	}
 	
+
 	@Override
 	public void exitGlslStructSpecifier(GlslStructSpecifierContext context) {
 		// STRUCT IDENTIFIER? structBody
@@ -64,7 +66,7 @@ public class ASTBuilder extends GLSLBaseListener {
 		TerminalNode identifier = context.IDENTIFIER();
 		String name = identifier.getText();
 		if (symbolTable.getScope().containsType(name)) errorHandler.error(identifier, "type '" + name + "' already exists in this scope.");
-		InterfaceBlock block = new InterfaceBlock(symbolTable.getScope(), name);
+		InterfaceBlock block = new InterfaceBlock(factory.createInterval(context), symbolTable.getScope(), name);
 		addDeclaredType(name, block);
 	}
 	
