@@ -25,6 +25,9 @@ public class TComment extends TWhitespace {
 		return getText().startsWith("/*");
 	}
 
+	public boolean isJavaDocComment() {
+		return getText().startsWith("/**");
+	}
 	
 	
 }
