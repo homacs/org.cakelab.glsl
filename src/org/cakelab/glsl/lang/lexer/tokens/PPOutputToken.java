@@ -78,4 +78,8 @@ public class PPOutputToken implements org.antlr.v4.runtime.Token {
 		return token;
 	}
 
+	public void setType(int type) {
+		this.type = type;
+	}
+
 }

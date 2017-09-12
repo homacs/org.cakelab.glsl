@@ -82,6 +82,13 @@ public class StandardErrorHandler implements ErrorHandler {
 		warning(interval.getStart(), message);
 	}
 	
+	public void warning(Node t, String warningMsg) {
+		warning(t.getStart(), warningMsg);
+	}
+
+
+	
+	
 	protected void handleMacroOrigin(Location location) {
 		while (location instanceof MacroExpandedLocation) {
 			MacroInvocation invocation = ((MacroExpandedLocation) location).getMacroInvocation();

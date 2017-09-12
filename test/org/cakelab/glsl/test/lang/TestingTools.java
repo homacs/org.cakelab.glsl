@@ -22,7 +22,7 @@ import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.impl.StandardFileManager;
 import org.cakelab.glsl.lang.ASTBuilder;
-import org.cakelab.glsl.lang.lexer.PPOutputTokenSink_GLSL_ANTLR;
+import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.PPTokenStream;
 import org.cakelab.glsl.pp.Preprocessor;
 
@@ -271,7 +271,7 @@ public class TestingTools {
 		error.reset();
 
 		
-		PPOutputTokenSink_GLSL_ANTLR buffer = new PPOutputTokenSink_GLSL_ANTLR(resourceManager);
+		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(resourceManager);
 		Resource resource = new Resource("0", "-- testing --", new ByteArrayInputStream(sourceCode.getBytes()));
 		Preprocessor pp = new Preprocessor(resource, buffer);
 
@@ -283,7 +283,7 @@ public class TestingTools {
 		
 		pp.parse();
 
-		PPTokenStream tokens = new PPTokenStream(buffer);
+		PPTokenStream tokens = new PPTokenStream(buffer, error);
 		parser = new GLSLParser(tokens);
 
 		error.setLocations(tokens, buffer.getLocations());

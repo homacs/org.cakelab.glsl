@@ -7,12 +7,31 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenSource;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.Interval;
+import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
+import org.cakelab.glsl.lang.lexer.tokens.GLSLTokenTable;
 import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
+import org.cakelab.glsl.pp.error.TokenFormatException;
 import org.cakelab.glsl.pp.tokens.TEof;
+import org.cakelab.glsl.pp.tokens.TIdentifier;
+import org.cakelab.glsl.pp.tokens.TNumber;
+import org.cakelab.glsl.pp.tokens.TPunctuator;
+import org.cakelab.glsl.pp.tokens.TWhitespace;
 
+/**
+ * PPTokenStream uses the preprocessor output and turns it
+ * into a stream of valid GLSLParser tokens.
+ * <p>
+ * Received preprocessor tokens will be analysed based on
+ * the given GLSLTokenTable and parse state information to
+ * assign a valid token type.
+ * </p>
+ * 
+ * @author homac
+ *
+ */
 public class PPTokenStream implements TokenStream {
 
 	
@@ -31,17 +50,20 @@ public class PPTokenStream implements TokenStream {
 	private ArrayList<PPOutputToken> tokens;
 	private int p;
 	private EOFToken eofToken;
-	private PPTokenSource[] sources;
 	private boolean fetchedEOF;
+	private GLSLTokenTable tokenTable;
+	private GLSLErrorHandler errorHandler;
 
-	@SuppressWarnings("unchecked")
-	public PPTokenStream(PPOutputTokenSink_GLSL_ANTLR tokens) {
-		this.sources = tokens.getSources();
-		PPTokenSource inputSource = tokens.getInputSource();
-		this.tokens = (ArrayList<PPOutputToken>) tokens.getTokens().clone();
+	public PPTokenStream(GLSL_ANTLR_PPOutputBuffer output, GLSLErrorHandler errorHandler) {
 		this.p = 0;
+		this.errorHandler = errorHandler;
+		this.tokens = filter(output.getTokens());
+		this.tokenTable = GLSLTokenTable.get(output.getVersion().number);
 		
-		// FIXME: eof token should be added by the class which generates/filters tokens, not here
+		//
+		// add EOF token
+		//
+		PPTokenSource inputSource = output.getInputSource();
 		if (this.tokens.size() > 0) {
 			PPOutputToken last = this.tokens.get(this.tokens.size()-1);
 			Location end = last.getPPToken().getEnd();
@@ -50,20 +72,86 @@ public class PPTokenStream implements TokenStream {
 			TEof teof = new TEof(interval);
 			this.eofToken = new EOFToken(this.tokens.size(), inputSource, last.getStopIndex()+1, teof);
 		} else {
-			Resource resource = tokens.getState().getInputResource();
+			Resource resource = output.getState().getInputResource();
 			Location end = new Location(resource.getIdentifier());
 			org.cakelab.glsl.Interval interval = new org.cakelab.glsl.Interval(end, end);
 			TEof teof = new TEof(interval);
 			this.eofToken = new EOFToken(this.tokens.size(), inputSource, 0, teof);
 		}
 		this.tokens.add(eofToken);
-		
+
+		//
+		// configure token sources
+		//
+		PPTokenSource[] sources = output.getUsedTokenSources();
 		for (PPTokenSource source : sources) {
-			source.setStreamReference(this);
+			source.setTokenStream(this);
 		}
 	}
 	
+
+	private ArrayList<PPOutputToken> filter(ArrayList<PPOutputToken> tokens) {
+		ArrayList<PPOutputToken> filtered = new ArrayList<PPOutputToken>();
+		for (PPOutputToken token : tokens) {
+			org.cakelab.glsl.pp.tokens.Token t = token.getPPToken();
+			if (!(t instanceof TWhitespace)) {
+				filtered.add(token);
+			}
+		}
+		return filtered;
+	}
+
+
+	private int getTokenType(org.cakelab.glsl.pp.tokens.Token t) {
+		if (t instanceof TWhitespace) {
+			// TWhitespace is base of TCrlf, TLineContinuation, TComment and TUnknownToken
+			throw new Error("internal error: preprocessor is supposed to remove all whitespace tokens");
+		} else if (t instanceof TIdentifier) {
+			String ident = t.getText();
+			if (tokenTable.isLanguageKeyword(ident)) {
+				return tokenTable.mapLanguageKeyword(ident);
+			} else if (tokenTable.isBuiltinType(ident)) {
+				return tokenTable.mapBuiltintType(ident);
+			} else if (tokenTable.isReservedKeyword(ident)) {
+				if (errorHandler != null) {
+					errorHandler.error(t, "use of reserved keyword '" + ident + "'");
+				}
+				return GLSLParser.IDENTIFIER;
+			} else {
+				return GLSLParser.IDENTIFIER;
+			}
+		} else if (t instanceof TPunctuator && tokenTable.isPunctuator(t.getText())) {
+			return tokenTable.getPunctuator(t.getText());
+		} else if (t instanceof TNumber) {
+			TNumber number = (TNumber)t;
+			validate(number);
+
+			if (number.isUnsignedInteger()) {
+				return GLSLParser.UINTCONSTANT;
+			} else if (number.isInteger()) {
+				return GLSLParser.INTCONSTANT;
+			} else if (number.isFloat()) {
+				return GLSLParser.FLOATCONSTANT;
+			} else if (number.isDouble()) {
+				return GLSLParser.DOUBLECONSTANT;
+			} else {
+				throw new Error("internal error: constant number type recognition failed");
+			}
+		} else {
+			throw new Error("internal error: token '" + t.getText() + "' should have not been forwarded as language token output");
+		}
+	}
 	
+	private void validate(TNumber number) {
+		if (errorHandler == null) return;
+		try {
+			number.decode();
+		} catch (TokenFormatException e) {
+			errorHandler.error(number, e.getMessage());
+		}
+	}
+
+
 	@Override
 	public void consume() {
 		boolean skipEofCheck;
@@ -101,17 +189,29 @@ public class PPTokenStream implements TokenStream {
         if ( k < 0 ) {
         	int j = -k;
             if ( (p-j)<0 ) return null;
-            else return tokens.get(p-j);
+            else return token(p-j);
         }
 
 		int i = p + k - 1;
 
         if (i >= tokens.size()) { 
         	// return EOF token
-            return tokens.get(tokens.size()-1);
+            return eofToken;
+        } else {
+        	return token(i);
         }
-        return tokens.get(i);
 	}
+
+
+	private PPOutputToken token(int i) {
+		PPOutputToken token = tokens.get(i);
+		if (token.getType() == PPOutputToken.INVALID_TYPE) {
+			org.cakelab.glsl.pp.tokens.Token t = token.getPPToken();
+			token.setType(getTokenType(t));
+		}
+		return token;
+	}
+
 
 	@Override
 	public int mark() {
@@ -147,8 +247,10 @@ public class PPTokenStream implements TokenStream {
         if ( i < 0 || i >= tokens.size() ) {
             throw new IndexOutOfBoundsException("token index "+i+" out of range 0.."+(tokens.size()-1));
         }
-        return tokens.get(i);
+        PPOutputToken token = tokens.get(i);
+        return token;
 	}
+
 
 	@Override
 	public TokenSource getTokenSource() {

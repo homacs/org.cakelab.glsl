@@ -82,12 +82,11 @@ public class PPTokenSource implements TokenSource, TokenFactory<PPOutputToken> {
 
 	@Override
 	public PPOutputToken create(int type, String text) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new Error("not supported");
 	}
 
 
-	public void setStreamReference(PPTokenStream ppTokenStream) {
+	public void setTokenStream(PPTokenStream ppTokenStream) {
 		this.ppTokenStream = ppTokenStream;
 	}
 

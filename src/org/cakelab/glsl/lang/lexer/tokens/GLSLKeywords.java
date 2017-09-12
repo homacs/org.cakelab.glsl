@@ -4,6 +4,23 @@ import java.util.HashMap;
 
 import org.cakelab.glsl.GLSLParser;
 
+/**
+ * This is the set of mappings for keywords to GLSLParser token types. 
+ * 
+ * <p>
+ * A GLSLTokenTable copies those mappings only, which are supported by
+ * the corresponding glsl version. 
+ * </p>
+ * 
+ * <p>
+ * Keywords mapped to {@link #RESERVED_KEYWORD_TYPE} are not yet known
+ * to the GLSLParser and can be added to a GLSLTokenTable as reserved 
+ * keywords only.
+ * </p>
+ * 
+ * @author homac
+ *
+ */
 public class GLSLKeywords {
 	
 	public static final int RESERVED_KEYWORD_TYPE = Integer.MIN_VALUE;

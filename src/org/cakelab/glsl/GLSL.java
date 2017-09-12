@@ -6,7 +6,7 @@ import java.util.List;
 import org.cakelab.glsl.impl.StandardFileManager;
 import org.cakelab.glsl.lang.ASTBuilder;
 import org.cakelab.glsl.lang.ast.Scope;
-import org.cakelab.glsl.lang.lexer.PPOutputTokenSink_GLSL_ANTLR;
+import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.PPTokenStream;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.PPGroupScope;
@@ -37,7 +37,7 @@ public class GLSL {
 
 	
 	public CombinedAST parse(Resource resource) throws IOException {
-		PPOutputTokenSink_GLSL_ANTLR buffer = new PPOutputTokenSink_GLSL_ANTLR(resourceManager);
+		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(resourceManager);
 		Preprocessor pp = new Preprocessor(resource, buffer);
 		
 		pp.setResourceManager(resourceManager);
@@ -47,7 +47,7 @@ public class GLSL {
 		
 		List<PPGroupScope> ppAST = pp.process();
 
-		PPTokenStream tokens = new PPTokenStream(buffer);
+		PPTokenStream tokens = new PPTokenStream(buffer, errorHandler);
 		GLSLParser parser = new GLSLParser(tokens);
 
 		errorHandler.setLocations(tokens, buffer.getLocations());
