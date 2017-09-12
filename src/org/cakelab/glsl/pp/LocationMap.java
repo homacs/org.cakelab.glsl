@@ -7,6 +7,8 @@ import org.cakelab.glsl.util.SimpleArrayList;
 import org.cakelab.glsl.util.SimpleArrayList.Comparator;
 
 public class LocationMap {
+	// TODO: can we remove the LocationMap now finally?!!
+	
 	private static Comparator<Integer, Range> comparator = new SimpleArrayList.Comparator<Integer, Range>() {
 
 		@Override
