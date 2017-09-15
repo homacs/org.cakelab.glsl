@@ -7,7 +7,7 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenSource;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.Interval;
-import org.cakelab.glsl.GLSLErrorHandlerInterface;
+import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
@@ -53,10 +53,10 @@ public class PPTokenStream implements TokenStream {
 	private EOFToken eofToken;
 	private boolean fetchedEOF;
 	private GLSLTokenTable tokenTable;
-	private GLSLErrorHandlerInterface errorHandler;
+	private GLSLErrorHandler errorHandler;
 	private SymbolTable symbolTable;
 
-	public PPTokenStream(GLSL_ANTLR_PPOutputBuffer output, GLSLTokenTable tokenTable, SymbolTable symbolTable, GLSLErrorHandlerInterface errorHandler) {
+	public PPTokenStream(GLSL_ANTLR_PPOutputBuffer output, GLSLTokenTable tokenTable, SymbolTable symbolTable, GLSLErrorHandler errorHandler) {
 		this.symbolTable = symbolTable;
 		this.p = 0;
 		this.errorHandler = errorHandler;

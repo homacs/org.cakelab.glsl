@@ -2,23 +2,39 @@ package org.cakelab.glsl.versioning;
 
 import java.io.InputStream;
 
+import org.cakelab.glsl.GLSLVersion;
+
 public class LookupResource {
 	private static final String DIRECTORY = LookupResource.class.getPackage().getName().replace('.', '/');
 	private static final ClassLoader loader = LookupResource.class.getClassLoader();
 	
 	
 
-	public static InputStream getInputStream(int version, String filename) {
-		String url = getVersionPath(version) + "/" + filename;
+	public static InputStream getInputStream(GLSLVersion version, String filename) {
+		return getInputStream(version.number, version.profile, filename);
+	}
+
+	public static InputStream getInputStream(int version, GLSLVersion.Profile profile, String filename) {
+		String url = getResourceDirectory(version, profile) + "/" + filename;
 		InputStream in = loader.getResourceAsStream(url);
-		if (in == null) throw new Error("internal error: missing version specific file '" + url + "'");
+		if (in == null) throw new Error("internal error: missing version specific file '" + url + "'. Preprocessor is supposed to prevent this from happening.");
 		return in;
 	}
 
-
-
-	public static String getVersionPath(int version) {
-		return DIRECTORY + "/V" + version;
+	public static String getResourceDirectory(int version, GLSLVersion.Profile profile) {
+		return DIRECTORY + "/" + profile.name() + "/V" + version;
 	}
+
+	public static String getResourceDirectory(GLSLVersion version) {
+		return getResourceDirectory(version.number, version.profile);
+	}
+
+	public static String getBaseDirectory() {
+		return DIRECTORY;
+	}
+
+
+
+
 
 }

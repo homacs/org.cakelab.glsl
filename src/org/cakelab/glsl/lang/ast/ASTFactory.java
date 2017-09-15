@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
-import org.cakelab.glsl.GLSLErrorHandlerInterface;
+import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLParser.*;
 import org.cakelab.glsl.Interval;
@@ -18,9 +18,9 @@ import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
 public class ASTFactory {
 
 	private SymbolTable symbols;
-	private GLSLErrorHandlerInterface errorHandler;
+	private GLSLErrorHandler errorHandler;
 
-	public ASTFactory(SymbolTable symbols, GLSLErrorHandlerInterface errorHandler) {
+	public ASTFactory(SymbolTable symbols, GLSLErrorHandler errorHandler) {
 		this.errorHandler = errorHandler;
 		this.symbols = symbols;
 	}

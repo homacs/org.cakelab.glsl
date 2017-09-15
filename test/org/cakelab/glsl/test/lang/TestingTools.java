@@ -15,7 +15,6 @@ import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNodeImpl;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
-import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Location;
@@ -23,6 +22,7 @@ import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
+import org.cakelab.glsl.impl.GLSLErrorHandlerImpl;
 import org.cakelab.glsl.lang.ASTBuilder;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.PPTokenStream;
@@ -43,7 +43,7 @@ public class TestingTools {
 
 	private static ResourceManager resourceManager = new FileSystemResourceManager();
 	
-	public static class ParserErrorHandler extends GLSLErrorHandler {
+	public static class ParserErrorHandler extends GLSLErrorHandlerImpl {
 		public String message;
 		
 		public String getMessage() {
@@ -287,7 +287,7 @@ public class TestingTools {
 		pp.parse();
 
 		GLSLVersion version = buffer.getVersion();
-		GLSLTokenTable tokenTable = GLSLTokenTable.get(version.number);
+		GLSLTokenTable tokenTable = GLSLTokenTable.get(version);
 		assert false : "adapt to new builtin apporach";
 		SymbolTable symbolTable = new SymbolTable(null);
 		PPTokenStream tokens = new PPTokenStream(buffer, tokenTable, symbolTable, error);

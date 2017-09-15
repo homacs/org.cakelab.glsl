@@ -1,6 +1,7 @@
 package org.cakelab.glsl.pp.parser;
 
 import org.cakelab.glsl.GLSLVersion;
+import org.cakelab.glsl.GLSLVersion.Profile;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.ast.ConstantValue;
@@ -54,25 +55,25 @@ public class VersionParser extends Parser {
 					Location end = numTok.getEnd();
 					GLSLVersion.Profile profile = null;
 					
-					try {
-						while(WHITESPACE());
-						if (IDENTIFIER("core")) {
-							end = token.getEnd();
-							profile = GLSLVersion.Profile.CORE;
-						} else if (IDENTIFIER("compatibility")) {
-							end = token.getEnd();
-							profile = GLSLVersion.Profile.COMPATIBILITY;
-						} else if (IDENTIFIER("es")) {
-							end = token.getEnd();
-							profile = GLSLVersion.Profile.ES;
-						} else if (IDENTIFIER()) {
-							// TODO: too restrictive profile parsing prevents us from being future compatible
+					while(WHITESPACE());
+					if (IDENTIFIER("core")) {
+						end = token.getEnd();
+						profile = GLSLVersion.Profile.core;
+					} else if (IDENTIFIER("compatibility")) {
+						end = token.getEnd();
+						profile = GLSLVersion.Profile.compatibility;
+					} else if (IDENTIFIER("es")) {
+						end = token.getEnd();
+						profile = GLSLVersion.Profile.es;
+					} else if (IDENTIFIER()) {
+						// TODO: too restrictive profile parsing prevents us from being future compatible
+						try {
 							syntaxError(token, "invalid profile identifier '" + token.getText() + "'");
+						} catch (Recovery e) {
+							// validation will assign a proper profile later
 						}
-					} catch (Recovery escape) {
-						// we would like to keep at least the version number, so we recover here.
-						recoverError();
 					}
+					
 					while(WHITESPACE());
 					mandatory_endl();
 	
@@ -80,7 +81,8 @@ public class VersionParser extends Parser {
 					if (state.getGlslVersion() == null) {
 						if (state.isSeenCodeLine()) syntaxWarning(start, "#version directive can not be preceeded by code lines");
 						if (number > 0) {
-							state.setGlslVersion(new GLSLVersion(new Interval(start, end), number, profile));
+							GLSLVersion glslVersion = validate(new GLSLVersion(new Interval(start, end), number, profile));
+							state.setGlslVersion(glslVersion);
 						}
 						// in any case, we have seen a code line now.
 						state.setSeenCodeLine(true);
@@ -97,6 +99,62 @@ public class VersionParser extends Parser {
 		return result;
 	}
 	
+
+	private GLSLVersion validate(GLSLVersion glslVersion) throws Recovery {
+		int number = glslVersion.number;
+		Profile profile = glslVersion.profile;
+		if (number < 150 && profile != null) {
+			try {
+				syntaxError(glslVersion, "profile only supported for versions starting at 1.50");
+			} catch (Recovery e) {
+				profile = null;
+			}
+		}
+		switch (number) {
+		case 100:
+		case 300:
+		case 310:
+			if (profile != null && profile != Profile.es) {
+				try {
+					syntaxError(glslVersion, "profile for version '" + number + "' has to be 'es' and not '" + profile + "'.");
+				} catch (Recovery e) {
+				}
+			}
+			// always 'es'
+			glslVersion.profile = Profile.es;
+			break;
+		case 110:
+		case 120:
+		case 130:
+		case 140:
+			glslVersion.profile = Profile.core;
+			break;
+		case 150:
+		case 330:
+		case 400:
+		case 410:
+		case 420:
+		case 430:
+		case 440:
+		case 450:
+		case 460:
+			if (profile == null) {
+				glslVersion.profile = Profile.core;
+			} else if (profile != Profile.core && profile != Profile.compatibility){
+				try {
+					syntaxError(glslVersion, "profile for version '" + number + "' has to be either 'core' or 'compatibility' and not '" + profile + "'.");
+				} catch (Recovery e) {
+					glslVersion.profile = Profile.core;
+				}
+			}
+			break;
+		default:
+			syntaxError(glslVersion, "version " + glslVersion.number + "' not supported");
+		}
+		return glslVersion;
+	}
+
+
 
 	public Interval getInterval() {
 		return interval;

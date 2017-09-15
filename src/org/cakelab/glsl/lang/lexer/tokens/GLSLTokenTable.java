@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 
 import org.cakelab.glsl.GLSLParser;
+import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.scanner.StreamScanner;
 import org.cakelab.glsl.util.ObjectCache;
@@ -13,7 +14,10 @@ import org.cakelab.glsl.versioning.LookupResource;
 
 public class GLSLTokenTable {
 	public static final boolean DEBUG = true;
-	public static final int DEFAULT_GLSL_VERSION = 110;
+	/**
+	 * In case no #version directive was given, GLSL always assumes v1.10 core.
+	 */
+	public static final GLSLVersion DEFAULT_GLSL_VERSION = new GLSLVersion(null, 110, GLSLVersion.Profile.core);
 	
 	/**
 	 * A cache for instantiated (used) token tables.
@@ -26,14 +30,14 @@ public class GLSLTokenTable {
 	 * we might have to switch between the same token tables multiple times, but
 	 * the set of used tables will still be small in a single project.
 	 */
-	public static final ObjectCache<Integer, GLSLTokenTable> cache = new ObjectCache<Integer, GLSLTokenTable>(4);
+	public static final ObjectCache<GLSLVersion, GLSLTokenTable> cache = new ObjectCache<GLSLVersion, GLSLTokenTable>(4);
 	
 	
 	// TODO: combine with AST builtin type entries
 
 	public static final GLSLPunctuators COMMON_PUNCTUATORS = new GLSLPunctuators();
 	
-	public static GLSLTokenTable get(int version) {
+	public static GLSLTokenTable get(GLSLVersion version) {
 		GLSLTokenTable table = cache.get(version);
 		if (table == null) {
 			// cache miss -> create new
@@ -44,40 +48,7 @@ public class GLSLTokenTable {
 	}
 	
 	
-	static {
-		boolean validate = false;
-		assert validate = true;
-		
-		if (validate) {
-			// assertions enabled -> validate all keyword files
-			
-			// OpenGL ES
-			get(100);
-			get(300);
-			get(310);
-			
-			// OpenGL Standard
-			get(110);
-			get(120);
-			get(130);
-			get(140);
-			get(150);
-
-			get(330);
-
-			get(400);
-			get(410);
-			get(420);
-			get(430);
-			get(440);
-			get(450);
-			get(460);
-		}
-	}
-
-
-
-	protected int version;
+	protected GLSLVersion version;
 	
 	
 	protected HashMap<String, Integer> keywords;
@@ -85,7 +56,7 @@ public class GLSLTokenTable {
 	protected HashMap<String, Integer> builtinTypes;
 	protected HashMap<String, Integer> punctuators = COMMON_PUNCTUATORS;
 
-	protected GLSLTokenTable(int version) {
+	protected GLSLTokenTable(GLSLVersion version) {
 		this.version = version;
 		punctuators = COMMON_PUNCTUATORS;
 		builtinTypes = new HashMap<String, Integer>();

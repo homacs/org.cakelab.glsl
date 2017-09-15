@@ -1,7 +1,6 @@
 package org.cakelab.glsl.lang;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.BitSet;
 import java.util.Map.Entry;
@@ -13,7 +12,7 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.cakelab.glsl.GLSLErrorHandlerInterface;
+import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Interval;
@@ -21,7 +20,6 @@ import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.SymbolTable;
-import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.lang.ast.Scope;
 import org.cakelab.glsl.lang.ast.Type;
@@ -38,7 +36,19 @@ import org.cakelab.glsl.util.ObjectCache;
 import org.cakelab.glsl.versioning.LookupResource;
 
 public class GLSLBuiltinSymbols extends SymbolTable {
-	private static class InternalErrorHandler implements GLSLErrorHandlerInterface {
+	
+	/**
+	 * This error handler throws an internal error on any error or 
+	 * warning report.
+	 * <p>
+	 * This error handler is used only for internal purposes, such as
+	 * parsing of preamble files (with builtin declarations). Any error
+	 * in those files has to be considered as internal error (not user level error).
+	 * </p>
+	 * @author homac
+	 *
+	 */
+	private static class InternalErrorHandler implements GLSLErrorHandler {
 
 		@Override
 		public void error(Node node, String message) throws SyntaxError {
@@ -96,14 +106,12 @@ public class GLSLBuiltinSymbols extends SymbolTable {
 
 		@Override
 		public void setResourceManager(ResourceManager resources) {
-			// TODO Auto-generated method stub
-			
+			// not required
 		}
 
 		@Override
 		public void setLocations(TokenStream tokens, LocationMap locations) {
-			// TODO Auto-generated method stub
-			
+			// not required
 		}
 
 		@Override
@@ -115,7 +123,8 @@ public class GLSLBuiltinSymbols extends SymbolTable {
 	
 	static final InternalErrorHandler INTERNAL_ERROR_HANDLER = new InternalErrorHandler();
 	
-	static final ObjectCache<Integer, GLSLBuiltinSymbols> cache = new ObjectCache<Integer, GLSLBuiltinSymbols>(4);
+	/** cache for recently parsed preambles */
+	static final ObjectCache<GLSLVersion, GLSLBuiltinSymbols> cache = new ObjectCache<GLSLVersion, GLSLBuiltinSymbols>(4);
 	
 	
 	private MacroMap macros;
@@ -132,26 +141,22 @@ public class GLSLBuiltinSymbols extends SymbolTable {
 	}
 	
 	public static GLSLBuiltinSymbols get(GLSLVersion version) {
-		GLSLBuiltinSymbols result = cache.get(version.number);
+		GLSLBuiltinSymbols result = cache.get(version);
 		if (result == null) {
 			result = create(version);
-			cache.put(version.number, result);
+			cache.put(version, result);
 		}
 		return result;
 	}
 
 	private static GLSLBuiltinSymbols create(GLSLVersion version) {
-		// TODO: implement builtin resource manager
-		ResourceManager resourceManager = new BuiltinResourceManager(LookupResource.getVersionPath(version.number));
-//		InputStream data = LookupResource.getInputStream(version.number, "preamble.glsl");
-//		String versionSpecifier = "V" + version.number;
-//		Resource resource = new Resource("builtin://"+ versionSpecifier + "/preamble.glsl", "-1", data);
+		ResourceManager resourceManager = new BuiltinResourceManager(LookupResource.getBaseDirectory());
 
 		Resource resource;
 		try {
-			resource = resourceManager.resolve("preamble.glsl");
+			resource = resourceManager.resolve(LookupResource.getResourceDirectory(version) + "/preamble.glsl");
 		} catch (IOException e) {
-			throw new Error("internal error: cant parse preamble.", e);
+			throw new Error("internal error: cant parse preamble. GLSLVersion parser should have avoided this case.", e);
 		}
 		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(resourceManager);
 		Preprocessor pp = new Preprocessor(resource, buffer);
@@ -165,7 +170,7 @@ public class GLSLBuiltinSymbols extends SymbolTable {
 		pp.process();
 
 
-		GLSLTokenTable tokenTable = GLSLTokenTable.get(version.number);
+		GLSLTokenTable tokenTable = GLSLTokenTable.get(version);
 		GLSLBuiltinSymbols symbolTable = new GLSLBuiltinSymbols(pp.getState().getMacros(), tokenTable);
 
 		PPTokenStream tokens = new PPTokenStream(buffer, tokenTable, symbolTable, INTERNAL_ERROR_HANDLER);
