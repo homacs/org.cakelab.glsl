@@ -165,7 +165,7 @@ public class GLSLKeywords {
 		
 		parserTokens.put("float", GLSLParser.BUILTIN_TYPE);
 		parserTokens.put("int", GLSLParser.BUILTIN_TYPE);
-		parserTokens.put("void", GLSLParser.VOID);
+		parserTokens.put("void", GLSLParser.BUILTIN_TYPE);
 		
 		parserTokens.put("long", GLSLParser.BUILTIN_TYPE);
 		parserTokens.put("short", GLSLParser.BUILTIN_TYPE);

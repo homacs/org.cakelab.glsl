@@ -3,7 +3,7 @@ package org.cakelab.glsl.lang.lexer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.cakelab.glsl.GLSLErrorHandler;
+import org.cakelab.glsl.GLSLErrorHandlerInterface;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
@@ -111,10 +111,10 @@ public class GLSL_ANTLR_PPOutputBuffer extends PPHelper implements PPOutputSink 
 	}
 
 
-	public GLSLErrorHandler getGLSLErrorHandler() {
+	public GLSLErrorHandlerInterface getGLSLErrorHandler() {
 		ErrorHandler handler = state.getErrorHandler();
-		if (handler instanceof GLSLErrorHandler) {
-			return (GLSLErrorHandler) handler;
+		if (handler instanceof GLSLErrorHandlerInterface) {
+			return (GLSLErrorHandlerInterface) handler;
 		} else {
 			return null;
 		}

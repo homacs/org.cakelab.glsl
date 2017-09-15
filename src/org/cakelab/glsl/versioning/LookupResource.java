@@ -9,10 +9,16 @@ public class LookupResource {
 	
 
 	public static InputStream getInputStream(int version, String filename) {
-		String url = DIRECTORY + "/V" + version + "/" + filename;
+		String url = getVersionPath(version) + "/" + filename;
 		InputStream in = loader.getResourceAsStream(url);
 		if (in == null) throw new Error("internal error: missing version specific file '" + url + "'");
 		return in;
+	}
+
+
+
+	public static String getVersionPath(int version) {
+		return DIRECTORY + "/V" + version;
 	}
 
 }

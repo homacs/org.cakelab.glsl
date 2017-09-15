@@ -1,5 +1,7 @@
 package org.cakelab.glsl;
 
+import java.io.PrintStream;
+
 import org.cakelab.glsl.lang.ast.Function;
 import org.cakelab.glsl.lang.ast.Scope;
 import org.cakelab.glsl.lang.ast.Type;
@@ -7,16 +9,25 @@ import org.cakelab.glsl.lang.ast.Variable;
 
 public class SymbolTable {
 
-	/** top level scope contains all builtin symbols */
+	/** builtin scope contains all builtin symbols */
+	private Scope builtin;
+	/** toplevel scope is the first and only child of the builtin scope */
 	private Scope toplevel;
 	private Scope scope;
+	
+	
+	public SymbolTable(Scope builtinScope) {
+		this.builtin = builtinScope;
+		reset();
+	}
+	
 	
 	public Scope getScope() {
 		return scope;
 	}
 
 	public void reset() {
-		scope = new Scope(Scope.BUILTIN_SCOPE);
+		scope = new Scope(builtin);
 		toplevel = scope;
 	}
 
@@ -103,6 +114,11 @@ public class SymbolTable {
 
 	public Scope getTopLevelScope() {
 		return toplevel;
+	}
+
+
+	public void dump(PrintStream out) {
+		toplevel.dump(out, "");
 	}
 
 

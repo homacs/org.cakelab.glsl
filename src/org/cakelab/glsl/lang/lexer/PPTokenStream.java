@@ -7,7 +7,7 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenSource;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.Interval;
-import org.cakelab.glsl.GLSLErrorHandler;
+import org.cakelab.glsl.GLSLErrorHandlerInterface;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
@@ -53,15 +53,15 @@ public class PPTokenStream implements TokenStream {
 	private EOFToken eofToken;
 	private boolean fetchedEOF;
 	private GLSLTokenTable tokenTable;
-	private GLSLErrorHandler errorHandler;
+	private GLSLErrorHandlerInterface errorHandler;
 	private SymbolTable symbolTable;
 
-	public PPTokenStream(GLSL_ANTLR_PPOutputBuffer output, SymbolTable symbolTable, GLSLErrorHandler errorHandler) {
+	public PPTokenStream(GLSL_ANTLR_PPOutputBuffer output, GLSLTokenTable tokenTable, SymbolTable symbolTable, GLSLErrorHandlerInterface errorHandler) {
 		this.symbolTable = symbolTable;
 		this.p = 0;
 		this.errorHandler = errorHandler;
 		this.tokens = filter(output.getTokens());
-		this.tokenTable = GLSLTokenTable.get(output.getVersion().number);
+		this.tokenTable = tokenTable;
 		
 		//
 		// add EOF token
@@ -91,13 +91,13 @@ public class PPTokenStream implements TokenStream {
 			source.setTokenStream(this);
 		}
 	}
-	
 
 	private ArrayList<PPOutputToken> filter(ArrayList<PPOutputToken> tokens) {
 		ArrayList<PPOutputToken> filtered = new ArrayList<PPOutputToken>();
 		for (PPOutputToken token : tokens) {
 			org.cakelab.glsl.pp.tokens.Token t = token.getPPToken();
 			if (!(t instanceof TWhitespace)) {
+				token.setIndex(filtered.size());
 				filtered.add(token);
 			}
 		}
@@ -106,6 +106,7 @@ public class PPTokenStream implements TokenStream {
 
 
 	private int getTokenType(org.cakelab.glsl.pp.tokens.Token t) {
+		
 		if (t instanceof TWhitespace) {
 			// TWhitespace is base of TCrlf, TLineContinuation, TComment and TUnknownToken
 			throw new Error("internal error: preprocessor is supposed to remove all whitespace tokens");
@@ -116,6 +117,7 @@ public class PPTokenStream implements TokenStream {
 				identifierToken.setKeyword(true);
 				return tokenTable.mapLanguageKeyword(ident);
 			} else if (tokenTable.isBuiltinType(ident)) {
+				identifierToken.setKeyword(true);
 				identifierToken.setReferencedNode(symbolTable.getType(ident));
 				return tokenTable.mapBuiltintType(ident);
 			} else {
@@ -233,6 +235,18 @@ public class PPTokenStream implements TokenStream {
 
 	@Override
 	public void seek(int index) {
+		// TODO: not sure, if we have to reset token information in TokenStream.seek
+		/*
+		for (int i = index; i <= this.p; i++) {
+			PPOutputToken t = tokens.get(i);
+			org.cakelab.glsl.pp.tokens.Token ppt = t.getPPToken();
+			if (ppt instanceof TIdentifier) {
+				// reset token types to revert probably misinterpreted type
+				t.setType(PPOutputToken.INVALID_TYPE);
+				((TIdentifier) ppt).setReferencedNode(null);
+			}
+		}
+		*/
 		this.p = index;
 	}
 

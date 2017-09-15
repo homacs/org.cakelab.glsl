@@ -4,7 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.cakelab.glsl.GLSLBaseListener;
-import org.cakelab.glsl.GLSLErrorHandler;
+import org.cakelab.glsl.GLSLErrorHandlerInterface;
 import org.cakelab.glsl.GLSLParser.GlslCompoundStatementContext;
 import org.cakelab.glsl.GLSLParser.GlslFunctionDefinitionContext;
 import org.cakelab.glsl.GLSLParser.GlslFunctionPrototypeContext;
@@ -27,24 +27,19 @@ public class ASTBuilder extends GLSLBaseListener {
 	private ASTFactory factory;
 	private LocationMap locations;
 	private TokenStream tokens;
-	private GLSLErrorHandler errorHandler;
+	private GLSLErrorHandlerInterface errorHandler;
 	private SymbolTable symbolTable;
 	private boolean functionDefinitionContext;
 	private Function functionDefinition;
 	
 	
 	
-	public ASTBuilder(TokenStream tokens, LocationMap locations, SymbolTable symbolTable, GLSLErrorHandler errorHandler) {
-		configure(tokens, locations, symbolTable, errorHandler);
-	}
-	
-	void configure(TokenStream tokens, LocationMap locations, SymbolTable symbolTable, GLSLErrorHandler errorHandler) {
+	public ASTBuilder(TokenStream tokens, LocationMap locations, SymbolTable symbolTable, GLSLErrorHandlerInterface errorHandler) {
 		this.locations = locations;
 		this.symbolTable = symbolTable;
 		this.errorHandler = errorHandler;
 		this.tokens = tokens;
 		factory = new ASTFactory(symbolTable, errorHandler);
-		symbolTable.reset();
 	}
 	
 

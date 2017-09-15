@@ -2,7 +2,6 @@ package org.cakelab.glsl;
 
 import java.util.BitSet;
 
-import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
@@ -15,7 +14,7 @@ import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
 import org.cakelab.glsl.pp.LocationMap;
 import org.cakelab.glsl.pp.StandardErrorHandler;
 
-public class GLSLErrorHandler extends StandardErrorHandler implements ANTLRErrorListener {
+public class GLSLErrorHandler extends StandardErrorHandler implements GLSLErrorHandlerInterface {
 	
 	private boolean DEBUG = false;
 	private LocationMap locations;
@@ -36,7 +35,7 @@ public class GLSLErrorHandler extends StandardErrorHandler implements ANTLRError
 		DEBUG = enabled;
 	}
 	
-	
+	@Override
 	public void setResourceManager(ResourceManager resources) {
 		this.resources = resources;
 	}
@@ -57,6 +56,7 @@ public class GLSLErrorHandler extends StandardErrorHandler implements ANTLRError
 		error(loc, msg);
 	}
 
+	@Override
 	public void error(ParseTree node, String message) {
 		if (node.getChildCount() == 0) {
 			error(((PPOutputToken)(node.getPayload())).getPPToken(), message);

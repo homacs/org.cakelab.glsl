@@ -10,7 +10,7 @@ public class MemberReference extends Value {
 	Value compound;
 
 	public MemberReference(Interval interval, Value compound, Member member) {
-		super(interval, member.type, member);
+		super(interval, member.getType(), member);
 		this.compound = compound;
 	}
 

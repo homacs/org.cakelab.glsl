@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
-import org.cakelab.glsl.GLSLErrorHandler;
+import org.cakelab.glsl.GLSLErrorHandlerInterface;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLParser.*;
 import org.cakelab.glsl.Interval;
@@ -18,9 +18,9 @@ import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
 public class ASTFactory {
 
 	private SymbolTable symbols;
-	private GLSLErrorHandler errorHandler;
+	private GLSLErrorHandlerInterface errorHandler;
 
-	public ASTFactory(SymbolTable symbols, GLSLErrorHandler errorHandler) {
+	public ASTFactory(SymbolTable symbols, GLSLErrorHandlerInterface errorHandler) {
 		this.errorHandler = errorHandler;
 		this.symbols = symbols;
 	}
@@ -318,16 +318,21 @@ public class ASTFactory {
 			Type memberType = basetype;
 			
 			List<GlslArrayDimensionContext> arrayDims = m.glslArrayDimension();
-			if (arrayDims != null) {
+			if (empty(arrayDims)) {
 				memberType = createArrayType(memberType, arrayDims);
 			}
 			if (qualifiers != null) {
 				memberType = Type._qualified(memberType, qualifiers);
 			}
-			struct.addMember(new Struct.Member(memberType, memberName));
+			struct.addMember(new Struct.MemberVariable(memberType, memberName));
 		}
 	}
 	
+	private boolean empty(List<?> list) {
+		return list != null && !list.isEmpty();
+	}
+
+
 	private Type create(GlslFullySpecifiedTypeContext ctx) {
 		return create(ctx.glslTypeQualifier(), ctx.glslTypeSpecifier());
 	}
@@ -349,7 +354,13 @@ public class ASTFactory {
 		Type type;
 		String typeName = null;
 		if (basic.glslBuiltinType() != null) {
-			typeName = basic.glslBuiltinType().getText();
+			if (basic.glslBuiltinType().BUILTIN_TYPE() != null) {
+				typeName = basic.glslBuiltinType().BUILTIN_TYPE().getText();
+			} else if (basic.glslBuiltinType().VOID() != null) {
+				typeName = basic.glslBuiltinType().VOID().getText();
+			} else {
+				throw new Error("internal error: unrecognized type '" + basic.glslBuiltinType().getText() + "'");
+			}
 			type = symbols.getType(typeName);
 		} else if (basic.glslTypeName() != null) {
 			typeName = basic.glslTypeName().getText();
@@ -481,8 +492,9 @@ public class ASTFactory {
 		if (ctx == null) return null;
 		List<GlslParameterDeclarationContext> paramCtx = ctx.glslParameterDeclaration();
 		int length = paramCtx != null ? paramCtx.size() : 0;
+		ParameterDeclaration[] params = null;
 		if (length > 0) {
-			ParameterDeclaration[] params = new ParameterDeclaration[length];
+			params = new ParameterDeclaration[length];
 			int i = 0;
 			for (GlslParameterDeclarationContext p : ctx.glslParameterDeclaration()) {
 				Type type = create(p.glslTypeQualifier(), p.glslTypeSpecifier());
@@ -496,7 +508,7 @@ public class ASTFactory {
 				i++;
 			}
 		}
-		return null;
+		return params;
 	}
 
 

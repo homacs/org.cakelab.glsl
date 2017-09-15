@@ -34,4 +34,12 @@ public class Variable extends Value implements LValue {
 		return this;
 	}
 
+	public String getSignature() {
+		return type.signature + " " + name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
 }

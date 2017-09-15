@@ -12,8 +12,9 @@ import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
-import org.cakelab.glsl.impl.StandardFileManager;
+import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.lang.EvaluationException;
+import org.cakelab.glsl.lang.GLSLBuiltinSymbols;
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.pp.ast.Macro;
@@ -62,7 +63,7 @@ import org.cakelab.glsl.pp.tokens.TWhitespace;
 import org.cakelab.glsl.pp.tokens.Token;
 import org.cakelab.glsl.pp.tokens.TokenList;
 
-public class Preprocessor extends Parser implements MacroInterpreter {
+public class Preprocessor extends Parser implements MacroInterpreter, PPState.Listener {
 	
 	
 	/** this is where only valid preprocessed output goes. */
@@ -110,17 +111,18 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 
 	public Preprocessor(Resource resource, PPOutputSink out) {
 		super(new PPState(resource));
+		state.addListener(this);
 		state.setInputResource(resource);
 		originalSourceLexer = new PPLexer(new StreamScanner(resource), state);
 		
-		state.setErrorHandler(new StandardErrorHandler());
 		state.setLexer(originalSourceLexer);
+		state.setResourceManager(new FileSystemResourceManager());
+		state.setErrorHandler(new StandardErrorHandler());
 		state.setInsertLineDirectives(true);
 
 		out.init(state);
-		
 		outputStream = out;
-		state.setResourceManager(new StandardFileManager());
+		
 		globalScope = new PPGroupScope(null);
 		pushScope(globalScope);
 		
@@ -327,7 +329,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			if (WHITESPACE()) {
 				t = token;
 			} else if (IDENTIFIER()) {
-				state.setSeenCodeLineBeforeVersion(true);
+				firstCodeLineDetection(false);
 				TIdentifier id = (TIdentifier) token;
 				Macro macro = state.getMacros().get(id.getText());
 				if (macro != null) {
@@ -374,8 +376,7 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 				}
 			} else {
 				t = preprocessing_token(acceptHashes);
-				if (t != null) state.setSeenCodeLineBeforeVersion(true);
-
+				firstCodeLineDetection(false);
 			}
 
 			
@@ -446,6 +447,10 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 			result = true;
 			while (WHITESPACE());
 			
+			// special case: lazy symbol table initialisation
+			firstCodeLineDetection(true);
+			
+			
 			if (
 				   ifgroup()
 				|| elifgroup()
@@ -480,13 +485,41 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 					// no recovery necessary
 				}
 			}
-			state.setSeenCodeLineBeforeVersion(true);
 		}
 		return result;
 	}
 
 
 	
+
+	private void firstCodeLineDetection(boolean directiveLine) {
+		if (!state.isSeenCodeLine()) {
+			boolean initDefaultVersion = (state.getGlslVersion() == null);
+			if (directiveLine) {
+				Token la = state.getLexer().lookahead(1);
+				assert !(la instanceof TWhitespace) : "internal error: expected non-white token";
+				if ((la instanceof TIdentifier) && la.getText().equals("version")) {
+					initDefaultVersion = false;
+				} else {
+					state.setSeenCodeLine(true);
+					initDefaultVersion = true;
+				}
+			} else {
+				Token la = state.getLexer().lookahead(1);
+				if (la instanceof TWhitespace || (la instanceof TPunctuator && la.getText().equals("#"))) {
+					// not sure yet, might be a directive line start (to be analysed later)
+					initDefaultVersion = false;
+				} else {
+					// text line
+					state.setSeenCodeLine(true);
+					initDefaultVersion = true;
+				}
+			}
+			if (initDefaultVersion) {
+				state.setGlslVersion(new GLSLVersion(null, 110, null));
+			}
+		}
+	}
 
 	private boolean define() {
 		
@@ -1107,8 +1140,17 @@ public class Preprocessor extends Parser implements MacroInterpreter {
 	 * </p>
 	 * @param version
 	 */
-	public void setDefaultVersion(int version) {
+	public void setForceVersion(int version) {
+		state.setForcedVersion(true);
 		state.setGlslVersion(new GLSLVersion(null, version, null));
+	}
+
+	@Override
+	public void reportModifiedVersion(GLSLVersion version) {
+		if (!state.isForcedVersion()) {
+			GLSLBuiltinSymbols symbols = GLSLBuiltinSymbols.get(version);
+			state.getMacros().putAll(symbols.getMacros());
+		}
 	}
 
 	

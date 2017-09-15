@@ -13,10 +13,10 @@
 				Tasks for tomorrow:
 				
 				1. Finish General Concept for Versioning
-				   - Use lazy initialisation to circumvent initialisation of DEFAULT token table
+				   - Concept for Builtin Macros (GL_compatibility_profile, __LINE__ etc.) 
+				   - and Symbols (language parser, functions etc.)
+				   
 				   - Consider profiles (compatibility, core, es)
 				   - Consider extensions maybe?
 				   
-				   - Concept for Builtin Macros (GL_compatibility_profile, preprocessor, __LINE__ etc.) 
-				   - and Symbols (language parser, functions etc.)
 				

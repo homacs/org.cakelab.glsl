@@ -56,6 +56,7 @@ public class PPState {
 	/* ************** Context specific data *************** */
 	private Macro currentMacroDefinition = null;
 	private boolean seenCodeLineBeforeVersion = false;
+	private boolean forcedVersion;
 	
 	
 
@@ -133,11 +134,11 @@ public class PPState {
 		this.insertLineDirectives = insertLineDirectives;
 	}
 
-	public boolean isSeenCodeLineBeforeVersion() {
+	public boolean isSeenCodeLine() {
 		return seenCodeLineBeforeVersion;
 	}
 
-	public void setSeenCodeLineBeforeVersion(boolean seenCodeLineBeforeVersion) {
+	public void setSeenCodeLine(boolean seenCodeLineBeforeVersion) {
 		this.seenCodeLineBeforeVersion = seenCodeLineBeforeVersion;
 	}
 
@@ -176,6 +177,14 @@ public class PPState {
 
 	public void setInputResource(Resource resource) {
 		this.input = resource;
+	}
+
+	public void setForcedVersion(boolean forced) {
+		this.forcedVersion = true;
+	}
+
+	public boolean isForcedVersion() {
+		return this.forcedVersion;
 	}
 
 	

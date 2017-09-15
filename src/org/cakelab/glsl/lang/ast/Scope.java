@@ -1,5 +1,6 @@
 package org.cakelab.glsl.lang.ast;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,20 +9,7 @@ import java.util.List;
 
 
 public class Scope {
-	static class Builtin extends Scope {
-		Builtin() {
-			super(null);
-			for (Type t : Type.BUILTIN_TYPES) {
-				types.put(t.signature, t);
-			}
-			for (Function f : Function.BUILTIN_FUNCTIONS) {
-				super.addFunction(f);
-			}
-		}
-	}
 
-	public static final Scope BUILTIN_SCOPE = new Builtin();
-	
 	protected Scope parent;
 	ArrayList<Scope> children = new ArrayList<Scope>();
 	
@@ -135,6 +123,27 @@ public class Scope {
 
 	public Collection<Type> getTypes() {
 		return types.values();
+	}
+
+	public void dump(PrintStream out, String indent) {
+		out.println(indent + "{");
+		String innerIndent = indent + "\t";
+		for (ArrayList<Function> fg : functions.values()) {
+			for (Function f : fg) {
+				out.println(innerIndent + f.getSignature());
+			}
+		}
+		for (Variable v : variables.values()) {
+			out.println(innerIndent + v.getSignature());
+		}
+		for (Type t : types.values()) {
+			out.println(innerIndent + t.getSignature());
+			if (t instanceof Struct) {
+				((Struct)t).body.dump(out, innerIndent);
+			}
+		}
+		
+		out.println(indent + "}");
 	}
 
 

@@ -1097,14 +1097,20 @@ keywords or builtin types. The latter will be identified using the builtin symbo
 Implementation:
 ---------------
 
-The preamble will be split into a preprocessor preamble and a language parser preamble. The preprocessor
-preamble contains #define directives only and the language parser preamble contains language tokens only.
-Thus, both can be parsed independent of each other.
-
 Valid language tokens are split into keywords and reserved keywords. For each version there will be two
-files, which contain each a whitespace separated list of (reserved) keywords of that version.
+files, which contain each a whitespace separated list of (reserved) keywords of that version. All token
+locations of the preamble will have a special source identifier (<0) to differentiate them from user 
+source code.
+
+The preamble contains #define directives and declarations of builtin symbols.
 
 For each version X exists:
 - versioning/X/keywords.txt  (keywords)
 - versioning/X/reserved.txt  (reserved keywords)
 - versioning/X/preamble.glsl (builtin symbols)
+
+Usual builtin macros such as __VERSION__, GL_compatibility_profile, etc. will be added to the preamble.glsl.
+
+Special builtin macros such as __LINE__ and __FILE__ require a specific implementation and will be 
+added by the preprocessor.
+

@@ -82,4 +82,8 @@ public class PPOutputToken implements org.antlr.v4.runtime.Token {
 		this.type = type;
 	}
 
+	public void setIndex(int index) {
+		this.index = index;
+	}
+
 }

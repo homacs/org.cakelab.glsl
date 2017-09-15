@@ -49,9 +49,6 @@ public class Type extends NodeImpl implements Comparable<Type> {
 			}
 			return false;
 		}
-		
-		
-		
 
 	}
 	
@@ -643,6 +640,10 @@ public class Type extends NodeImpl implements Comparable<Type> {
 
 	public boolean hasKind(int kind) {
 		return 0 != (kind|this.kind);
+	}
+
+	public String getSignature() {
+		return this.signature;
 	}
 
 

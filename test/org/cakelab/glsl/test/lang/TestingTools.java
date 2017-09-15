@@ -17,14 +17,16 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLParser;
+import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.SymbolTable;
-import org.cakelab.glsl.impl.StandardFileManager;
+import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.lang.ASTBuilder;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.PPTokenStream;
+import org.cakelab.glsl.lang.lexer.tokens.GLSLTokenTable;
 import org.cakelab.glsl.pp.Preprocessor;
 
 public class TestingTools {
@@ -39,7 +41,7 @@ public class TestingTools {
 	protected static boolean ALLOW_FULL_CONTEXT = false;
 	protected static boolean IGNORE_CONTEXT_SENSITIVITY = false;
 
-	private static ResourceManager resourceManager = new StandardFileManager();
+	private static ResourceManager resourceManager = new FileSystemResourceManager();
 	
 	public static class ParserErrorHandler extends GLSLErrorHandler {
 		public String message;
@@ -276,7 +278,7 @@ public class TestingTools {
 		Resource resource = new Resource("0", "-- testing --", new ByteArrayInputStream(sourceCode.getBytes()));
 		Preprocessor pp = new Preprocessor(resource, buffer);
 
-		pp.setDefaultVersion(450);
+		pp.setForceVersion(450);
 		pp.setResourceManager(resourceManager);
 		pp.setErrorHandler(error);
 		pp.enableInclude(true);
@@ -284,8 +286,11 @@ public class TestingTools {
 		
 		pp.parse();
 
-		SymbolTable symbolTable = new SymbolTable();
-		PPTokenStream tokens = new PPTokenStream(buffer, symbolTable, error);
+		GLSLVersion version = buffer.getVersion();
+		GLSLTokenTable tokenTable = GLSLTokenTable.get(version.number);
+		assert false : "adapt to new builtin apporach";
+		SymbolTable symbolTable = new SymbolTable(null);
+		PPTokenStream tokens = new PPTokenStream(buffer, tokenTable, symbolTable, error);
 		parser = new GLSLParser(tokens);
 
 		error.setLocations(tokens, buffer.getLocations());

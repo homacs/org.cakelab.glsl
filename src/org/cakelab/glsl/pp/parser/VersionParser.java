@@ -78,10 +78,14 @@ public class VersionParser extends Parser {
 	
 					
 					if (state.getGlslVersion() == null) {
-						if (state.isSeenCodeLineBeforeVersion()) syntaxWarning(start, "#version directive can not be preceeded by code lines");
+						if (state.isSeenCodeLine()) syntaxWarning(start, "#version directive can not be preceeded by code lines");
 						if (number > 0) {
 							state.setGlslVersion(new GLSLVersion(new Interval(start, end), number, profile));
 						}
+						// in any case, we have seen a code line now.
+						state.setSeenCodeLine(true);
+					} else if (state.isForcedVersion()) {
+						syntaxWarning(start, "#version ignored due to forced version (see method (setForcedVersion())");
 					} else {
 						syntaxWarning(start, "version redefined");
 					}

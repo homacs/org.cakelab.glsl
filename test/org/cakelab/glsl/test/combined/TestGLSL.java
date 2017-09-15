@@ -7,7 +7,7 @@ import org.cakelab.glsl.CombinedAST;
 import org.cakelab.glsl.GLSL;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
-import org.cakelab.glsl.impl.StandardFileManager;
+import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.lang.ast.Struct;
 
 public class TestGLSL {
@@ -17,7 +17,7 @@ public class TestGLSL {
 	
 	
 	public static void test() {
-		ResourceManager resources = new StandardFileManager();
+		ResourceManager resources = new FileSystemResourceManager();
 		GLSL glsl = new GLSL(resources);
 		Resource resource;
 		try {

@@ -1,10 +1,9 @@
 package org.cakelab.glsl.lang.ast;
 
 
-import static org.cakelab.glsl.lang.ast.Qualifier.*;
-import static org.cakelab.glsl.lang.ast.Type.*;
+import org.cakelab.glsl.lang.ast.impl.NodeImpl;
 
-public class Function implements Comparable<Function> {
+public class Function extends NodeImpl implements Comparable<Function> {
 
 	public static class Body extends Scope {
 		public Body(Scope parent, ParameterDeclaration[] parameters) {
@@ -21,6 +20,7 @@ public class Function implements Comparable<Function> {
 	final String name;
 	final ParameterDeclaration[] parameters;
 	Body body;
+	
 	
 	@Override
 	public int compareTo(Function that) {
@@ -42,11 +42,27 @@ public class Function implements Comparable<Function> {
 
 	
 	public Function(Type type, String name, ParameterDeclaration ... parameters) {
+		assert (type != null && name != null);
 		this.type = type;
 		this.name = name;
 		this.parameters = parameters;
 	}
 
+	public String getSignature() {
+		String signature = type.signature + " " + this.name + "(";
+		for (int i = 0; i < parameters.length; i++) {
+			ParameterDeclaration p = parameters[i]; 
+			signature += p.type.signature + " " + p.name;
+			if (i+1 < parameters.length) {
+				signature += ", ";
+			}
+		}
+		signature += ")";
+		return signature;
+	}
+
+
+	
 	public Body createBody(Scope parentScope) {
 		this.body = new Body(parentScope, parameters);
 		return this.body;
@@ -57,7 +73,19 @@ public class Function implements Comparable<Function> {
 	}
 
 
-	
+
+	public String getName() {
+		return name;
+	}
+
+
+
+	public Type getType() {
+		return type;
+	}
+
+
+	/*
 	public static final Function[] BUILTIN_FUNCTIONS = {
 			// TODO header for builtin functions/methods/defines etc.
 		new Function(_float, "radians", new ParameterDeclaration(_float, "degrees")),
@@ -769,6 +797,6 @@ public class Function implements Comparable<Function> {
 		
 		// TODO [2] list of builtin functions unfinished
     };
-
+*/
 	
 }
