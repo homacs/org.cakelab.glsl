@@ -37,8 +37,6 @@ public class GLSL {
 		this.errorHandler.setResourceManager(resources);
 	}
 	
-
-	
 	public CombinedAST parse(Resource resource) throws IOException {
 		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(resourceManager);
 		Preprocessor pp = new Preprocessor(resource, buffer);
@@ -50,7 +48,7 @@ public class GLSL {
 		
 		List<PPGroupScope> ppAST = pp.process();
 
-		// TODO consider glsl version, profile and extensions in symbol table
+		// TODO consider glsl extensions in symbol table
 		GLSLVersion version = buffer.getVersion();
 		GLSLBuiltinSymbols builtinSymbols = GLSLBuiltinSymbols.get(version);
 		

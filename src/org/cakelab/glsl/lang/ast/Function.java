@@ -42,7 +42,8 @@ public class Function extends NodeImpl implements Comparable<Function> {
 
 	
 	public Function(Type type, String name, ParameterDeclaration ... parameters) {
-		assert (type != null && name != null);
+		assert (type != null) : "internal error: return type of a function cannot be null";
+		assert (name != null) : "internal error: name of a function cannot be null";
 		this.type = type;
 		this.name = name;
 		this.parameters = parameters;

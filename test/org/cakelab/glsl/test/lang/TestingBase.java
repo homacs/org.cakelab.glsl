@@ -29,7 +29,6 @@ public class TestingBase extends TestingTools {
 			"atomic_uint",
 			
 			"float",
-			"double",
 			"int",
 			"uint",
 			"bool",
@@ -37,9 +36,6 @@ public class TestingBase extends TestingTools {
 			"vec2",
 			"vec3",
 			"vec4",
-			"dvec2",
-			"dvec3",
-			"dvec4",
 			"bvec2",
 			"bvec3",
 			"bvec4",
@@ -106,8 +102,6 @@ public class TestingBase extends TestingTools {
 			"usampler2DArray",
 			"usamplerCubeArray",
 			
-			"sampler2DRect",
-			"sampler2DRectShadow",
 			"isampler2DRect",
 			"usampler2DRect",
 

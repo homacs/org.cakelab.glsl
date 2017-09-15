@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLVersion;
+import org.cakelab.glsl.GLSLVersion.Profile;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.scanner.StreamScanner;
 import org.cakelab.glsl.util.ObjectCache;
@@ -66,11 +67,22 @@ public class GLSLTokenTable {
 		//
 		// Initialise token type tables
 		//
+		Profile profile = version.profile;
+		switch(version.profile) {
+		case compatibility:
+			profile = Profile.core;
+			break;
+		case core:
+		case es:
+			break;
+		default:
+			throw new Error("internal error: unknown profile '" + profile.name() + "'");
 		
-		InputStream in = LookupResource.getInputStream(version, "keywords.txt");
+		}
+		InputStream in = LookupResource.getInputStream(version.number, profile, "keywords.txt");
 		readKeywordList(in, false);
 		
-		in = LookupResource.getInputStream(version, "reserved.txt");
+		in = LookupResource.getInputStream(version.number, profile, "reserved.txt");
 		readKeywordList(in, true);
 
 		//

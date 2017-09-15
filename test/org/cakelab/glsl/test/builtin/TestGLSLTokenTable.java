@@ -1,10 +1,14 @@
 package org.cakelab.glsl.test.builtin;
 
-import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.lang.lexer.tokens.GLSLTokenTable;
 
-public class TestGLSLTokenTable {
+public class TestGLSLTokenTable extends TestBuiltinBase {
 	public static void main(String[] args) {
+		test();
+	}
+	
+	
+	public static void test() {
 		
 		GLSLTokenTable.get(es(100));
 		GLSLTokenTable.get(es(300));
@@ -42,13 +46,4 @@ public class TestGLSLTokenTable {
 		GLSLTokenTable.get(compatibility(460));
 	}
 
-	private static GLSLVersion core(int number) {
-		return new GLSLVersion(null, number, GLSLVersion.Profile.core);
-	}
-	private static GLSLVersion compatibility(int number) {
-		return new GLSLVersion(null, number, GLSLVersion.Profile.compatibility);
-	}
-	private static GLSLVersion es(int number) {
-		return new GLSLVersion(null, number, GLSLVersion.Profile.es);
-	}
 }

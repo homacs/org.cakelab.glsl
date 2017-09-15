@@ -24,10 +24,12 @@ import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.impl.GLSLErrorHandlerImpl;
 import org.cakelab.glsl.lang.ASTBuilder;
+import org.cakelab.glsl.lang.GLSLBuiltinSymbols;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.PPTokenStream;
 import org.cakelab.glsl.lang.lexer.tokens.GLSLTokenTable;
 import org.cakelab.glsl.pp.Preprocessor;
+import org.cakelab.glsl.test.builtin.TestBuiltinBase;
 
 public class TestingTools {
 
@@ -270,6 +272,10 @@ public class TestingTools {
 		return parser.getTokenStream().getText(interval);
 	}
 
+	/** 
+	 * Does not setup builtin functions and variables to prevent 
+	 * preprocessing and language parsing of preambles here. 
+	 * */
 	public static void setup(String sourceCode) {
 		error.reset();
 
@@ -278,7 +284,7 @@ public class TestingTools {
 		Resource resource = new Resource("0", "-- testing --", new ByteArrayInputStream(sourceCode.getBytes()));
 		Preprocessor pp = new Preprocessor(resource, buffer);
 
-		pp.setForceVersion(450);
+		pp.setForceVersion(new GLSLVersion(null, 450, GLSLVersion.Profile.core));
 		pp.setResourceManager(resourceManager);
 		pp.setErrorHandler(error);
 		pp.enableInclude(true);
@@ -288,8 +294,9 @@ public class TestingTools {
 
 		GLSLVersion version = buffer.getVersion();
 		GLSLTokenTable tokenTable = GLSLTokenTable.get(version);
-		assert false : "adapt to new builtin apporach";
-		SymbolTable symbolTable = new SymbolTable(null);
+		GLSLBuiltinSymbols builtin = TestBuiltinBase.getTestBuiltinSymbols(tokenTable);
+		//	TODO: think of a method to 
+		SymbolTable symbolTable = new SymbolTable(builtin.getBuiltinScope());
 		PPTokenStream tokens = new PPTokenStream(buffer, tokenTable, symbolTable, error);
 		parser = new GLSLParser(tokens);
 

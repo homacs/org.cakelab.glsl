@@ -129,7 +129,7 @@ public class GLSLBuiltinSymbols extends SymbolTable {
 	
 	private MacroMap macros;
 
-	private GLSLBuiltinSymbols(MacroMap macros, GLSLTokenTable tokenTable) {
+	GLSLBuiltinSymbols(MacroMap macros, GLSLTokenTable tokenTable) {
 		super(null);
 		this.macros = macros;
 		for (Type t : Type.BUILTIN_TYPES) {
@@ -165,7 +165,7 @@ public class GLSLBuiltinSymbols extends SymbolTable {
 		pp.setErrorHandler(INTERNAL_ERROR_HANDLER);
 		pp.enableInclude(true);
 		pp.enableLineDirectiveInsertion(false);
-		pp.setForceVersion(version.number);
+		pp.setForceVersion(version);
 
 		pp.process();
 
@@ -200,6 +200,11 @@ public class GLSLBuiltinSymbols extends SymbolTable {
 
 	public MacroMap getMacros() {
 		return macros;
+	}
+
+	/** this is for testing purposes only! */
+	public static GLSLBuiltinSymbols getTestSymbolTable(GLSLTokenTable tokens) {
+		return new GLSLBuiltinSymbols(new MacroMap(), tokens);
 	}
 	
 }

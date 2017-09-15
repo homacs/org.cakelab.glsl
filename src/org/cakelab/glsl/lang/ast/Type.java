@@ -49,6 +49,16 @@ public class Type extends NodeImpl implements Comparable<Type> {
 			}
 			return false;
 		}
+		
+		public String getSignature() {
+			String fqn = this.signature;
+			if (qualifiers != null && qualifiers.length > 0) {
+				for (Qualifier q : qualifiers) {
+					fqn = q.name + " " + fqn;
+				}
+			}
+			return fqn;
+		}
 
 	}
 	

@@ -51,7 +51,7 @@ public class TestDirective extends TestingPPBase {
 	private void testGLSLExtensions() {
 		
 		assertValid("#version 450 core\n");
-		assertValid("#version 450 es\n");
+		assertValid("#version 300 es\n");
 		assertValid("#version 450 compatibility\n");
 		
 		assertValid("#pragma optimize(on)\n");

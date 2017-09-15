@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cakelab.glsl.GLSLVersion;
+import org.cakelab.glsl.GLSLVersion.Profile;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
@@ -495,9 +496,9 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	private void firstCodeLineDetection(boolean directiveLine) {
 		if (!state.isSeenCodeLine()) {
 			boolean initDefaultVersion = (state.getGlslVersion() == null);
+			Token la = state.getLexer().lookahead(1);
 			if (directiveLine) {
-				Token la = state.getLexer().lookahead(1);
-				assert !(la instanceof TWhitespace) : "internal error: expected non-white token";
+				assert (la instanceof TCrlf) || !(la instanceof TWhitespace) : "internal error: expected non-white token";
 				if ((la instanceof TIdentifier) && la.getText().equals("version")) {
 					initDefaultVersion = false;
 				} else {
@@ -505,7 +506,6 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 					initDefaultVersion = true;
 				}
 			} else {
-				Token la = state.getLexer().lookahead(1);
 				if (la instanceof TWhitespace || (la instanceof TPunctuator && la.getText().equals("#"))) {
 					// not sure yet, might be a directive line start (to be analysed later)
 					initDefaultVersion = false;
@@ -515,8 +515,9 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 					initDefaultVersion = true;
 				}
 			}
-			if (initDefaultVersion) {
-				state.setGlslVersion(new GLSLVersion(null, 110, null));
+			if (initDefaultVersion && !state.isForcedVersion()) {
+				Interval interval = new Interval(la.getStart(),la.getStart());
+				state.setGlslVersion(new GLSLVersion(interval, 110, Profile.core));
 			}
 		}
 	}
@@ -1140,9 +1141,9 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	 * </p>
 	 * @param version
 	 */
-	public void setForceVersion(int version) {
+	public void setForceVersion(GLSLVersion version) {
 		state.setForcedVersion(true);
-		state.setGlslVersion(new GLSLVersion(null, version, null));
+		state.setGlslVersion(version);
 	}
 
 	@Override
