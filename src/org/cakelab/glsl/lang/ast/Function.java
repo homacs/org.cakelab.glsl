@@ -49,7 +49,7 @@ public class Function extends NodeImpl implements Comparable<Function> {
 		this.parameters = parameters;
 	}
 
-	public String getSignature() {
+	public String toString() {
 		String signature = type.signature + " " + this.name + "(";
 		for (int i = 0; i < parameters.length; i++) {
 			ParameterDeclaration p = parameters[i]; 

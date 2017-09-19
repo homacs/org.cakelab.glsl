@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLVersion;
@@ -49,6 +50,8 @@ public class GLSLBuiltinSymbols extends SymbolTable {
 	 *
 	 */
 	private static class InternalErrorHandler implements GLSLErrorHandler {
+
+		private ResourceManager resources;
 
 		@Override
 		public void error(Node node, String message) throws SyntaxError {
@@ -106,7 +109,7 @@ public class GLSLBuiltinSymbols extends SymbolTable {
 
 		@Override
 		public void setResourceManager(ResourceManager resources) {
-			// not required
+			this.resources = resources;
 		}
 
 		@Override
@@ -116,7 +119,29 @@ public class GLSLBuiltinSymbols extends SymbolTable {
 
 		@Override
 		public void error(ParseTree node, String message) {
-			throw new Error("internal error: " + message);
+			throw new Error("internal error: " + getLocation(node) + message);
+		}
+
+		private String getLocation(ParseTree node) {
+			if (node instanceof TerminalNode) {
+				PPOutputToken token = ((PPOutputToken)(((TerminalNode)node).getSymbol()));
+				Location start = token.getPPToken().getStart();
+				if (start != null) {
+					Resource resource = resources.getResourceById(start.getSourceIdentifier());
+					String source;
+					if (resource != null) {
+						source = resource.getPath();
+					} else {
+						source = start.getSourceIdentifier();
+					}
+					return source + ":" + start.getLine() + ":" + start.getColumn() + ": ";
+				}
+				else return "unknown location: ";
+			} else if (node.getChildCount() > 0) {
+				return getLocation(node.getChild(0));
+			} else {
+				return "unknown location: ";
+			}
 		}
 		
 	}
@@ -151,7 +176,7 @@ public class GLSLBuiltinSymbols extends SymbolTable {
 
 	private static GLSLBuiltinSymbols create(GLSLVersion version) {
 		ResourceManager resourceManager = new BuiltinResourceManager(LookupResource.getBaseDirectory());
-
+		INTERNAL_ERROR_HANDLER.setResourceManager(resourceManager);
 		Resource resource;
 		try {
 			resource = resourceManager.resolve(LookupResource.getResourceDirectory(version) + "/preamble.glsl");

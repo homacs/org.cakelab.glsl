@@ -22,36 +22,97 @@ public class Qualifier {
 		}
 		final Parameter[] layoutParams;
 
-		public LayoutQualifier(Parameter[] layoutParams) {
+		LayoutQualifier(Parameter[] layoutParams) {
 			super(LAYOUT);
 			this.layoutParams = layoutParams;
 		}
+		
+		public String toString() {
+			StringBuffer result = new StringBuffer("layout(");
+			for (int i = 0; i < layoutParams.length; i++) {
+				result.append(layoutParams[i].name);
+				String value = layoutParams[i].value;
+				if (value != null) {
+					result.append(" = ").append(value);
+				}
+				if (i+1 < layoutParams.length) result.append(", ");
+			}
+			return result.toString();
+		}
+
 	}
 
 	public static class SubroutineQualifier extends Qualifier {
 		final Function[] functions;
 
-		public SubroutineQualifier(Function ... functions) {
+		SubroutineQualifier(Function ... functions) {
 			super("subroutine");
 			this.functions = functions;
 		}
+		
+		public String toString() {
+			StringBuffer result = new StringBuffer("subroutine(");
+			for (int i = 0; i < functions.length; i++) {
+				result.append(functions[i].name);
+				if (i+1 < functions.length) result.append(' ');
+			}
+			return result.toString();
+		}
 	}
 	
+
+	public static class InvariantQualifier extends Qualifier {
+		InvariantQualifier(String name) {
+			super(name);
+		}
+	}
 	
+	public static class InterpolationQualifier extends Qualifier {
+		InterpolationQualifier(String name) {
+			super(name);
+		}
+	}
+
+
+	public static class PreciseQualifier extends Qualifier {
+		PreciseQualifier(String name) {
+			super(name);
+		}
+	}
+	
+	public static class PrecisionQualifier extends Qualifier {
+		PrecisionQualifier(String name) {
+			super(name);
+		}
+	}
+
+	public static class StorageQualifier extends Qualifier {
+		StorageQualifier(String name) {
+			super(name);
+		}
+	}
+	
+
 	final String name;
 
 	Qualifier(String name) {
 		this.name = name;
 	}
 	
-	public static Qualifier _invariant = new Qualifier("invariant");
+	
+	public String toString() {
+		return this.name;
+	}
+	
+	
+	public static InvariantQualifier _invariant = new InvariantQualifier("invariant");
 
 	//
 	// Interpolation
 	//
-	public static Qualifier _smooth = new Qualifier("smooth");
-	public static Qualifier _flat   = new Qualifier("flat");
-	public static Qualifier _noperspective = new Qualifier("noperspective");
+	public static InterpolationQualifier _smooth = new InterpolationQualifier("smooth");
+	public static InterpolationQualifier _flat   = new InterpolationQualifier("flat");
+	public static InterpolationQualifier _noperspective = new InterpolationQualifier("noperspective");
 	
 	//
 	// Layout qualifiers need to be instantiated for each specific layout
@@ -59,7 +120,7 @@ public class Qualifier {
 	public static String LAYOUT = "layout";
 	public static String LAYOUT_SHARED = "shared";
 	
-	public static Qualifier _layout(LayoutQualifier.Parameter[] layoutParams) {
+	public static LayoutQualifier _layout(LayoutQualifier.Parameter[] layoutParams) {
 		return new LayoutQualifier(layoutParams);
 	}
 	
@@ -67,38 +128,39 @@ public class Qualifier {
 	//
 	// precise
 	//
-	public static Qualifier _precise = new Qualifier("precise");
+	public static PreciseQualifier _precise = new PreciseQualifier("precise");
 	
 	//
 	// Storage qualifiers
 	//
-	public static Qualifier _const = new Qualifier("const");
-	public static Qualifier _attribute = new Qualifier("attribute");
-	public static Qualifier _varying = new Qualifier("varying");
-	public static Qualifier _inout = new Qualifier("inout");
-	public static Qualifier _in = new Qualifier("in");
-	public static Qualifier _out = new Qualifier("out");
-	public static Qualifier _centroid = new Qualifier("centroid");
-	public static Qualifier _patch = new Qualifier("patch");
-	public static Qualifier _sample = new Qualifier("sample");
-	public static Qualifier _uniform = new Qualifier("uniform");
-	public static Qualifier _buffer = new Qualifier("buffer");
-	public static Qualifier _shared = new Qualifier("shared");
-	public static Qualifier _coherent = new Qualifier("coherent");
-	public static Qualifier _volatile = new Qualifier("volatile");
-	public static Qualifier _restrict = new Qualifier("restrict");
-	public static Qualifier _readonly = new Qualifier("readonly");
-	public static Qualifier _writeonly = new Qualifier("writeonly");
-	public static Qualifier _subroutine(Function ...functions) {
+	public static StorageQualifier _const = new StorageQualifier("const");
+	public static StorageQualifier _attribute = new StorageQualifier("attribute");
+	public static StorageQualifier _varying = new StorageQualifier("varying");
+	public static StorageQualifier _inout = new StorageQualifier("inout");
+	public static StorageQualifier _in = new StorageQualifier("in");
+	public static StorageQualifier _out = new StorageQualifier("out");
+	public static StorageQualifier _centroid = new StorageQualifier("centroid");
+	public static StorageQualifier _patch = new StorageQualifier("patch");
+	public static StorageQualifier _sample = new StorageQualifier("sample");
+	public static StorageQualifier _uniform = new StorageQualifier("uniform");
+	public static StorageQualifier _buffer = new StorageQualifier("buffer");
+	public static StorageQualifier _shared = new StorageQualifier("shared");
+	public static StorageQualifier _coherent = new StorageQualifier("coherent");
+	public static StorageQualifier _volatile = new StorageQualifier("volatile");
+	public static StorageQualifier _restrict = new StorageQualifier("restrict");
+	public static StorageQualifier _readonly = new StorageQualifier("readonly");
+	public static StorageQualifier _writeonly = new StorageQualifier("writeonly");
+
+	public static SubroutineQualifier _subroutine(Function ...functions) {
 		return new SubroutineQualifier(functions);
 	}
 	
 	//
 	// precision qualifier
 	//
-	public static Qualifier _highp = new Qualifier("highp");
-	public static Qualifier _mediump = new Qualifier("mediump");
-	public static Qualifier _lowp = new Qualifier("lowp");
+	public static PrecisionQualifier _highp = new PrecisionQualifier("highp");
+	public static PrecisionQualifier _mediump = new PrecisionQualifier("mediump");
+	public static PrecisionQualifier _lowp = new PrecisionQualifier("lowp");
 
 	
 	static HashMap<String, Qualifier> byname = new HashMap<String, Qualifier>();
@@ -152,6 +214,16 @@ public class Qualifier {
 	
 	public static Qualifier get(String name) {
 		return byname.get(name);
+	}
+
+	/** Selects one of _highp, _midp, _lowp */
+	public static PrecisionQualifier _precision(String text) {
+		Qualifier q = byname.get(text);
+		if (q instanceof PrecisionQualifier) {
+			return (PrecisionQualifier) q;
+		} else {
+			throw new Error("internal error: precision qualifier '" + text + "' does not exist");
+		}
 	}
 
 }

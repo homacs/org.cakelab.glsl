@@ -30,14 +30,13 @@ public class IncludeParser extends Parser {
 	private Resource resource;
 	private PPGLSLRuleSet extendedRules;
 	private Interval interval;
-	private boolean result;
 	private Preprocessor preprocessor;
 	
 	
 	
 	public IncludeParser(Preprocessor preprocessor) {
 		super(preprocessor.getState());
-		
+		this.preprocessor = preprocessor;
 		extendedRules = new PPGLSLRuleSet(state);
 		extendedRules.prependRule(new RHeaderPath(state));
 	}
@@ -47,7 +46,7 @@ public class IncludeParser extends Parser {
 	@Override
 	public boolean parse() {
 		
-		result = false;
+		boolean result = false;
 		
 		if (IDENTIFIER("include")) {
 			this.interval = new Interval(token.getInterval());

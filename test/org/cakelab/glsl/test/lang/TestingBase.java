@@ -162,7 +162,6 @@ public class TestingBase extends TestingTools {
 			"iimage2DMSArray",
 			"uimage2DMSArray",
 			
-			"samplerExternalOES",
 
 	};
 	

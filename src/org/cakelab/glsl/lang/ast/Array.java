@@ -7,25 +7,6 @@ import org.cakelab.glsl.lang.ast.Struct.Method;
 
 public class Array extends Type {
 	
-	public static class QualifiedArrayImpl extends Array implements QualifiedType {
-		private Qualifier[] qualifiers;
-		
-		public QualifiedArrayImpl(Array type, Qualifier[] qualifiers) {
-			super(type);
-			if (type instanceof QualifiedType) {
-				throw new Error("can't add qualifiers to qualified type.");
-			}
-
-			this.qualifiers = qualifiers;
-		}
-
-		@Override
-		public Qualifier[] qualifiers() {
-			return qualifiers;
-		}
-		
-	}
-
 	public static final Method LENGTH = null;
 	
 	Expression[] dimensions;
@@ -34,7 +15,7 @@ public class Array extends Type {
 	private Type componentType;
 	
 	public Array(Interval interval, Type baseType, Expression ... dimensions) {
-		super(interval, signature(baseType.signature, dimensions.length), KIND_ARRAY);
+		super(interval, signature(baseType.signature, dimensions.length), KIND_ARRAY, baseType.getQualifiers().clone());
 		if (baseType instanceof Array) {
 			Array that = ((Array)baseType);
 			this.baseType = that.baseType;
@@ -49,11 +30,21 @@ public class Array extends Type {
 	}
 
 	public Array(Array that) {
-		super(that.interval, that.signature, KIND_ARRAY);
+		super(that.interval, that.signature, KIND_ARRAY, that.getQualifiers().clone());
 		this.baseType = that.baseType;
 		this.dimensions = that.dimensions;
+		
 	}
 
+	public String toString() {
+		return this.signature;
+	}
+	
+	public Array clone() {
+		return new Array(this);
+	}
+	
+	
 	public String getName() {
 		return baseType.getName();
 	}

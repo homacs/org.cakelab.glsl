@@ -130,14 +130,14 @@ public class Scope {
 		String innerIndent = indent + "\t";
 		for (ArrayList<Function> fg : functions.values()) {
 			for (Function f : fg) {
-				out.println(innerIndent + f.getSignature());
+				out.println(innerIndent + f.toString());
 			}
 		}
 		for (Variable v : variables.values()) {
-			out.println(innerIndent + v.getSignature());
+			out.println(innerIndent + v.toString());
 		}
 		for (Type t : types.values()) {
-			out.println(innerIndent + t.getSignature());
+			out.println(innerIndent + t.toString());
 			if (t instanceof Struct) {
 				((Struct)t).body.dump(out, innerIndent);
 			}

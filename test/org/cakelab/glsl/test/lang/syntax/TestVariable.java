@@ -52,7 +52,9 @@ public class TestVariable extends TestingBase {
 
 	private static void testScalarVariableQualifiers() {
 		
-		assertValid("void a(); void b(); subroutine(a, b) void c();");
+		assertValid("void a();\n"
+				+ "void b();\n"
+				+ "subroutine(a, b) void c();");
 		
 		
 		for (String qualifier : TYPE_QUALIFIER_EXAMPLES) {
@@ -70,12 +72,16 @@ public class TestVariable extends TestingBase {
 			}
 		}
 		
-		// without type
+		// test variable qualifier assignment
 		qualifier1 = TYPE_QUALIFIER_EXAMPLES[0];
 		for (String qualifier2 : TYPE_QUALIFIER_EXAMPLES) {
-			String text = qualifier1 + " " + qualifier2 + " " + " u;";
+			// declare variables u and v
+			String preamble = "int u,v;\n";
+			// assign new qualifiers to u
+			String text = preamble + qualifier1 + " " + qualifier2 + " " + " u;";
 			assertValid(text, GlslDeclarationContext.class);
-			text = qualifier1 + " " + qualifier2 + " " + " u,v;";
+			// assign new qualifiers to u and v
+			text = preamble + qualifier1 + " " + qualifier2 + " " + " u,v;";
 			assertValid(text, GlslDeclarationContext.class);
 		}
 	}

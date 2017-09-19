@@ -6,7 +6,7 @@ import org.cakelab.glsl.lang.EvaluationException;
 public class Variable extends Value implements LValue {
 	String name;
 	
-	public Variable(Type type, String name, Qualifier ... qualifiers) {
+	public Variable(Type type, String name, Qualifiers qualifiers) {
 		this(Type._qualified(type, qualifiers), name);
 	}
 
@@ -17,6 +17,10 @@ public class Variable extends Value implements LValue {
 
 	protected Variable(Type type) {
 		super(Interval.NONE, type, null);
+	}
+
+	public void setType(Type type) {
+		this.type = type;
 	}
 
 	public void value(Value newValue) {
@@ -34,7 +38,7 @@ public class Variable extends Value implements LValue {
 		return this;
 	}
 
-	public String getSignature() {
+	public String toString() {
 		return type.signature + " " + name;
 	}
 

@@ -1,3 +1,17 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//                             
+//                            Open GL Shading Language 
+//                                    V 1.10
+//                                 Core Profile
+//
+//                     Built-in Macros, Variables and Functions
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
 #define __VERSION__ 110
 #define GL_core_profile 1
 
@@ -250,8 +264,8 @@ GENERIC_FUNCTION_SET(vec4)
 //                           Exponential Functions
 // -----------------------------------------------------------------------------------
 #define GENERIC_FUNCTION_SET(genType) \
-genType pow (genType x, genType y);\
-genType exp (genType x);\
+genType pow(genType x, genType y);\
+genType exp(genType x);\
 genType log(genType x);\
 genType exp2(genType x);\
 genType log2(genType x);\
@@ -434,15 +448,33 @@ GENERIC_FUNCTION_SET(vec2)
 GENERIC_FUNCTION_SET(vec3)
 GENERIC_FUNCTION_SET(vec4)
 
+#undef GENERIC_FUNCTION_SET
 
+
+
+// -----------------------------------------------------------------------------------
+//                           Noise Functions
+// -----------------------------------------------------------------------------------
+#define GENERIC_FUNCTION_SET(genType) \
+float noise1(genType x);\
+vec2 noise2(genType x);\
+vec3 noise3(genType x);\
+vec4 noise4(genType x);
+
+// genType is float, vec2, vec3, or vec4.
+GENERIC_FUNCTION_SET(float)
+GENERIC_FUNCTION_SET(vec2)
+GENERIC_FUNCTION_SET(vec3)
+GENERIC_FUNCTION_SET(vec4)
 
 
 #undef GENERIC_FUNCTION_SET
 
 
 
-
-
+//////////////////////////////////////////////////////////////////////////////////////
+//                           F I N I S H E D
+//////////////////////////////////////////////////////////////////////////////////////
 
 
 

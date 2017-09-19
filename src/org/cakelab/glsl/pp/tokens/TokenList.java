@@ -35,5 +35,14 @@ public class TokenList extends NodeList<Token> {
 		return get(size()-1);
 	}
 
+	public String toString() {
+		StringBuffer s = new StringBuffer();
+		for (Token t : this) {
+			s.append(t.getText());
+		}
+		return s.toString();
+	}
+	
+	
 
 }

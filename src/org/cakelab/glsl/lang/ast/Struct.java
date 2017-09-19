@@ -6,24 +6,8 @@ import org.cakelab.glsl.Interval;
 
 public class Struct extends Type {
 
-	public static class QualifiedStructImpl extends Struct implements QualifiedType {
-
-		private Qualifier[] qualifiers;
-
-		public QualifiedStructImpl(Struct struct, Qualifier[] qualifiers) {
-			super(struct);
-			this.qualifiers = qualifiers;
-		}
-
-		@Override
-		public Qualifier[] qualifiers() {
-			return qualifiers;
-		}
-
-	}
-
 	public static interface Member {
-		String getSignature();
+		String toString();
 		Node getNode();
 		String getName();
 		Type getType();
@@ -45,6 +29,10 @@ public class Struct extends Type {
 			return this;
 		}
 		
+		public MemberType clone() {
+			return new MemberType(this);
+		}
+		
 	}
 
 	
@@ -53,7 +41,7 @@ public class Struct extends Type {
 		public MemberVariable(Type type, String name) {
 			super(type, name);
 		}
-		public MemberVariable(Type type, String name, Qualifier ...qualifiers) {
+		public MemberVariable(Type type, String name, Qualifiers qualifiers) {
 			super(type, name, qualifiers);
 		}
 		@Override
@@ -132,8 +120,8 @@ public class Struct extends Type {
 	
 	Body body;
 
-	public Struct(Interval interval, Scope parent, String name) {
-		super(name, KIND_STRUCT);
+	public Struct(Interval interval, Scope parent, String name, Qualifiers qualifiers) {
+		super(interval, name, KIND_STRUCT, qualifiers);
 		this.body = new Body(parent);
 	}
 	
@@ -141,6 +129,11 @@ public class Struct extends Type {
 		super(that);
 		this.body = that.body;
 	}
+
+	public Struct clone() {
+		return new Struct(this);
+	}
+	
 	
 	
 	public void addMember(Member member) {

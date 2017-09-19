@@ -1,10 +1,10 @@
-package org.cakelab.glsl.test.builtin;
+package org.cakelab.glsl.test.versioning;
 
 import org.cakelab.glsl.lang.GLSLBuiltinSymbols;
 
 public class TestBuiltinSymbols extends TestBuiltinBase {
 	public static void main(String[] args) {
-		GLSLBuiltinSymbols symbols = GLSLBuiltinSymbols.get(core(110));
+		GLSLBuiltinSymbols symbols = GLSLBuiltinSymbols.get(core(120));
 		symbols.dump(System.out);
 	}
 	

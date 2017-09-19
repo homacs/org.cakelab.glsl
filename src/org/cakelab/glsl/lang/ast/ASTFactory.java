@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLParser.*;
@@ -294,23 +295,46 @@ public class ASTFactory {
 		return new CallExpression(operand, arguments, getEndLocation(args));
 	}
 
+	
+
 	public Struct create(GlslStructSpecifierContext context) {
 		String name = context.IDENTIFIER().getText();
-		Struct struct = new Struct(createInterval(context), symbols.getScope(), name);
-		symbols.enterScope(struct.body);
+		Struct struct = new Struct(createInterval(context), symbols.getScope(), name, null);
 		GlslStructBodyContext members = context.glslStructBody();
+		addStructOrInterfaceBody(struct, members);
+		return struct;
+	}
+
+
+	private void addStructOrInterfaceBody(Struct struct, GlslStructBodyContext members) {
+		symbols.enterScope(struct.body);
 		List<GlslStructMemberGroupContext> groups = members.glslStructMemberGroup();
 		for (GlslStructMemberGroupContext group : groups) {
 			addMembers(struct, group);
 		}
 		symbols.leaveScope();
-		return struct;
 	}
 
 
+	public InterfaceBlock create(GlslInterfaceBlockStructureContext ctx) {
+		Qualifiers qualifiers = create(ctx.glslTypeQualifier());
+		String identifier = ctx.IDENTIFIER().getText();
+		InterfaceBlock interfaceBlock;
+		if (qualifiers != null && qualifiers.size() > 0) {
+			interfaceBlock = new InterfaceBlock(createInterval(ctx), symbols.getScope(), identifier, qualifiers);
+			interfaceBlock = (InterfaceBlock) Type._qualified(interfaceBlock, qualifiers);
+		} else {
+			interfaceBlock = new InterfaceBlock(createInterval(ctx), symbols.getScope(), identifier, null);
+		}
+		addStructOrInterfaceBody(interfaceBlock, ctx.glslStructBody());
+		return interfaceBlock;
+	}
+
+
+
 	public void addMembers(Struct struct, GlslStructMemberGroupContext group) {
-		Qualifier[] qualifiers = getQualifiers(group.glslTypeQualifier());
-		Type basetype = getType(group.glslTypeSpecifier());
+		Qualifiers qualifiers = create(group.glslTypeQualifier());
+		Type basetype = getType(group.glslTypeSpecifier(), false);
 
 		List<GlslStructMemberDeclaratorContext> dcontext = group.glslStructMemberDeclaratorList().glslStructMemberDeclarator();
 		for (GlslStructMemberDeclaratorContext m : dcontext) {
@@ -333,38 +357,29 @@ public class ASTFactory {
 	}
 
 
-	private Type create(GlslFullySpecifiedTypeContext ctx) {
-		return create(ctx.glslTypeQualifier(), ctx.glslTypeSpecifier());
+	private Type create(GlslFullySpecifiedTypeContext ctx, boolean declaration) {
+		return create(ctx.glslTypeQualifier(), ctx.glslTypeSpecifier(), declaration);
 	}
 
 	
-	private Type create(GlslTypeQualifierContext qualifierCtx, GlslTypeSpecifierContext specifierCtx) {
-		Qualifier[] qualifiers = getQualifiers(qualifierCtx);
-		Type type = getType(specifierCtx);
-		if (qualifiers != null && qualifiers.length > 0) {
+	private Type create(GlslTypeQualifierContext qualifierCtx, GlslTypeSpecifierContext specifierCtx, boolean declaration) {
+		Qualifiers qualifiers = create(qualifierCtx);
+		Type type = getType(specifierCtx, declaration);
+		if (qualifiers != null && qualifiers.size() > 0) {
 			type = Type._qualified(type, qualifiers);
 		}
 		return type;
 	}
 
 
-	private Type getType(GlslTypeSpecifierContext context) {
+	public Type getType(GlslTypeSpecifierContext context, boolean declaration) {
 		if (context == null) return null;
 		GlslTypeSpecifierNonarrayContext basic = context.glslTypeSpecifierNonarray();
 		Type type;
-		String typeName = null;
 		if (basic.glslBuiltinType() != null) {
-			if (basic.glslBuiltinType().BUILTIN_TYPE() != null) {
-				typeName = basic.glslBuiltinType().BUILTIN_TYPE().getText();
-			} else if (basic.glslBuiltinType().VOID() != null) {
-				typeName = basic.glslBuiltinType().VOID().getText();
-			} else {
-				throw new Error("internal error: unrecognized type '" + basic.glslBuiltinType().getText() + "'");
-			}
-			type = symbols.getType(typeName);
+			type = getType(basic.glslBuiltinType());
 		} else if (basic.glslTypeName() != null) {
-			typeName = basic.glslTypeName().getText();
-			type = symbols.getType(typeName);
+			type = getType(basic.glslTypeName(), declaration);
 		} else if (basic.glslStructSpecifier() != null) {
 			GlslStructSpecifierContext specifier = basic.glslStructSpecifier();
 			type = create(specifier);
@@ -383,16 +398,63 @@ public class ASTFactory {
 		return type;
 	}
 
-	private Type createArrayType(Type type, List<GlslArrayDimensionContext> dcontext) {
-		Expression[] dimensions = new Expression[dcontext.size()];
-		Location end = type.getEnd();
-		for (int i = 0; i < dimensions.length; i++) {
-			dimensions[i] = create(dcontext.get(i).glslIntegerExpression());
-			end = dimensions[i].getEnd();
+	public Type getType(GlslBuiltinTypeContext glslBuiltinType) {
+		String typeName;
+		if (glslBuiltinType.BUILTIN_TYPE() != null) {
+			typeName = glslBuiltinType.BUILTIN_TYPE().getText();
+		} else if (glslBuiltinType.VOID() != null) {
+			typeName = glslBuiltinType.VOID().getText();
+		} else {
+			throw new Error("internal error: unhandled case in built-in type context: '" + glslBuiltinType.getText() + "'");
 		}
-		type = new Array(new Interval(type.getStart(), end), type, dimensions);
+		Type type = symbols.getType(typeName);
+		if (type == null) {
+			throw new Error("internal error: built-in type '" + typeName + "' not registered");
+		}
+	
 		return type;
 	}
+
+
+	public Type getType(GlslTypeNameContext ctxTypeName, boolean declaration) {
+		String typeName = ctxTypeName.getText();
+		Type type;
+		if (declaration) {
+			// this is actually not possible, because glsl does not support
+			// typedefs. But we do it anyway to maintain maximum language 
+			// adaptability.
+			Interval interval = createInterval(ctxTypeName);
+			type = new Type(interval, typeName, Type.KIND_SCALAR, null);
+		} else {
+			type = symbols.getType(typeName);
+			if (type == null && !declaration) {
+				GlslTypeNameContext typeNameCtx = ctxTypeName;
+				errorHandler.error(typeNameCtx, "undefined type '" + typeName + "'");
+				// add undefined type to recover from error
+				Interval interval = createInterval(ctxTypeName);
+				type = new Type(interval, typeName, Type.KIND_UNDEFINED, null);
+			}
+		}
+		return type;
+	}
+
+
+
+	
+	
+	public Type createArrayType(Type type, List<GlslArrayDimensionContext> dcontext) {
+		Expression[] dimensions = new Expression[dcontext.size()];
+		for (int i = 0; i < dimensions.length; i++) {
+			Expression dimSize = create(dcontext.get(i).glslIntegerExpression());
+			if (dimSize == null) {
+				dimSize = ConstantValue.ZERO;
+			}
+			dimensions[i] = dimSize;
+		}
+		type = new Array(createInterval(dcontext), type, dimensions);
+		return type;
+	}
+
 
 	private Type createArrayType(Type type, GlslArrayDimensionContext dim) {
 		Expression dimension = create(dim.glslIntegerExpression());
@@ -408,12 +470,12 @@ public class ASTFactory {
 		}
 	}
 
-	private Qualifier[] getQualifiers(GlslTypeQualifierContext context) {
+	public Qualifiers create(GlslTypeQualifierContext context) {
 		if (context == null) return null;
 		List<GlslSingleTypeQualifierContext> qcontext = context.glslSingleTypeQualifier();
-		Qualifier[] qualifiers = new Qualifier[qcontext.size()];
-		for (int i = 0; i < qualifiers.length; i++) {
-			qualifiers[i] = create(qcontext.get(i));
+		Qualifiers qualifiers = new Qualifiers();
+		for (GlslSingleTypeQualifierContext q : qcontext) {
+			qualifiers.add(create(q));
 		}
 		return qualifiers;
 	}
@@ -453,16 +515,24 @@ public class ASTFactory {
 				}
 			}
 			return Qualifier._layout(params);
-		}
+		} 
 		
 		//
 		// all other cases refer to constants
 		//
-		return Qualifier.get(context.getText());
+		String text = getText(context);
+		Qualifier qualifier = Qualifier.get(text);
+		if (qualifier == null) throw new Error("internal error: unhandled qualifier '" + text + "'");
+		return qualifier;
 	}
 
 	
 	
+	private String getText(ParseTree node) {
+		return node != null ? node.getText() : null;
+	}
+
+
 	private Location getStartLocation(ParserRuleContext context) {
 		Token start = context.getStart();
 		return ((PPOutputToken)start).getPPToken().getStart();
@@ -473,13 +543,17 @@ public class ASTFactory {
 		return ((PPOutputToken)end).getPPToken().getEnd();
 	}
 
+	private Interval createInterval(List<? extends ParserRuleContext> dcontext) {
+		return new Interval(getStartLocation(dcontext.get(0)), getEndLocation(dcontext.get(dcontext.size()-1)));
+	}
+
 	public Interval createInterval(ParserRuleContext context) {
 		return new Interval(getStartLocation(context), getEndLocation(context));
 	}
 
 
 	public Function create(GlslFunctionPrototypeContext ctx) {
-		Type type = create(ctx.glslFullySpecifiedType());
+		Type type = create(ctx.glslFullySpecifiedType(), false);
 		
 		String name = ctx.glslFunctionName().getText();
 		ParameterDeclaration[] params = create(ctx.glslFunctionParameters());
@@ -497,7 +571,7 @@ public class ASTFactory {
 			params = new ParameterDeclaration[length];
 			int i = 0;
 			for (GlslParameterDeclarationContext p : ctx.glslParameterDeclaration()) {
-				Type type = create(p.glslTypeQualifier(), p.glslTypeSpecifier());
+				Type type = create(p.glslTypeQualifier(), p.glslTypeSpecifier(), false);
 				String name = getName(p.glslVariableIdentifier());
 				List<GlslArrayDimensionContext> dims = p.glslArrayDimension();
 				if (dims != null && !dims.isEmpty()) {
@@ -515,6 +589,9 @@ public class ASTFactory {
 	private String getName(GlslVariableIdentifierContext ident) {
 		return ident != null ? ident.getText() : null;
 	}
+
+
+
 
 
 }

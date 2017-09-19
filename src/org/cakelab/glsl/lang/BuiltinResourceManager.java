@@ -5,6 +5,17 @@ import java.io.IOException;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.impl.JarResourceManager;
 
+/**
+ * <h3>ATTENTION!<h3>
+ * Builtin Resource Manager is used to retrieve references of 
+ * files containing built-in symbols. All resources will be 
+ * assigned with a <b>negative</b> source id, which is usually
+ * invalid. Thus, this resource manager is only for built-in 
+ * purposes!
+ * 
+ * @author homac
+ *
+ */
 public class BuiltinResourceManager extends JarResourceManager implements ResourceManager {
 
 	private static final String BUILTIN_URL_PROTOCOL = "builtin://";
@@ -17,6 +28,7 @@ public class BuiltinResourceManager extends JarResourceManager implements Resour
 
 	@Override
 	protected String getNextId() {
+		// we mess with the super dooper super counter!!!!!
 		return Integer.toString(super.count--);
 	}
 

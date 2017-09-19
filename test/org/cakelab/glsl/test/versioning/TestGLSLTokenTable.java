@@ -1,4 +1,4 @@
-package org.cakelab.glsl.test.builtin;
+package org.cakelab.glsl.test.versioning;
 
 import org.cakelab.glsl.lang.lexer.tokens.GLSLTokenTable;
 

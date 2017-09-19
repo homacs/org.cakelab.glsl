@@ -8,81 +8,47 @@ import org.cakelab.glsl.lang.ast.impl.NodeImpl;
  * Signature is the fully specified type name 
  * (e.g. 'int[]' or 'void', but not 'int[3]').
  * 
- * There is always just one type of certain 
- * signature in the same scope.
+ * There is always just one declared type of a certain 
+ * signature in the same scope. But there may be 
+ * different instances of the declared type with 
+ * different qualifiers used by variables for example.
  * 
- * A qualified type is a type with one basic 
- * type and qualifiers. The basic type of a 
- * qualified type can be of non-qualified type 
- * only. Qualified types have the signature of
- * their basic type.
+ * Qualifiers declared for a type will be inherited by
+ * all variables or functions using that type. The same 
+ * goes for arrays which use a qualified type as component 
+ * type.
  * 
  * @author homac
  *
  */
 public class Type extends NodeImpl implements Comparable<Type> {
 
-	public interface QualifiedType {
-		Qualifier[] qualifiers();
-	}
-
-
-	public static class QualifiedTypeImpl extends Type implements QualifiedType {
-		private final Qualifier[] qualifiers;
-		
-		public QualifiedTypeImpl(Type type, Qualifier ... qualifiers) {
-			super(type);
-			if (type instanceof QualifiedType) {
-				throw new Error("can't add qualifiers to qualified type.");
-			}
-			this.qualifiers = qualifiers;
-		}
-
-		@Override
-		public Qualifier[] qualifiers() {
-			return qualifiers;
-		}
-
-		public boolean hasQualifier(Qualifier qualifier) {
-			for (Qualifier q : qualifiers) {
-				if (q.equals(qualifier)) return true;
-			}
-			return false;
-		}
-		
-		public String getSignature() {
-			String fqn = this.signature;
-			if (qualifiers != null && qualifiers.length > 0) {
-				for (Qualifier q : qualifiers) {
-					fqn = q.name + " " + fqn;
-				}
-			}
-			return fqn;
-		}
-
-	}
-	
+	public static int KIND_UNDEFINED = 0;
 	public static int KIND_SCALAR = 1<<0;
 	public static int KIND_ARRAY  = 1<<1;
 	public static int KIND_STRUCT = 1<<2;
-	public static int KIND_VECTOR = KIND_ARRAY|KIND_STRUCT;
 	public static int KIND_MATRIX = KIND_ARRAY|KIND_STRUCT;
-	public static int KIND_UNDEFINED = 0;
+	public static int KIND_VECTOR = KIND_MATRIX;
 	
 	/** Signature is the fully specified type name (e.g. 'int[]' or 'void' but not 'int[3]'). */
+	private Qualifiers qualifiers = new Qualifiers();
 	final String signature;
 
 	final int kind;
 	
 	
 	Type(String signature, int kind) {
-		this(Interval.NONE, signature, kind);
+		this(Interval.NONE, signature, kind, null);
 	}
 	
-	public Type(Interval interval, String signature, int kind) {
+	public Type(Interval interval, String signature, int kind, Qualifiers qualifiers) {
 		super(interval);
 		this.signature = signature;
 		this.kind = kind;
+		if (qualifiers != null) {
+			// ignore null list
+			this.qualifiers = qualifiers;
+		}
 	}
 
 	
@@ -90,13 +56,65 @@ public class Type extends NodeImpl implements Comparable<Type> {
 		super(that);
 		this.signature = that.signature;
 		this.kind = that.kind;
+		this.qualifiers = that.qualifiers.clone();
 	}
 
 	public String getName() {
 		return signature;
 	}
 	
+	public Value newInstance(Value[] arguments) {
+		// TODO [interpreter] constructor calls
+		throw new Error("not yet supported");
+	}
+
+
+	public boolean hasQualifier(Qualifier qualifier) {
+		return qualifiers.contains(qualifier);
+	}
 	
+	public void addQualifier(Qualifier q) {
+		qualifiers.add(q);
+	}
+
+	public boolean hasQualifiers() {
+		return qualifiers.size() > 0;
+	}
+	
+	public void addQualifiers(Qualifiers qualifiers) {
+		this.qualifiers.add(qualifiers);
+	}
+
+	
+	public String toString() {
+		String fqn = this.signature;
+		if (qualifiers != null) {
+			fqn = qualifiers.toString() + " " + fqn;
+		}
+		return fqn;
+	}
+
+
+
+	public boolean hasKind(int kind) {
+		return 0 != (kind|this.kind);
+	}
+
+
+	public Qualifiers getQualifiers() {
+		return qualifiers;
+	}
+
+	public void setQualifiers(Qualifiers qualifiers) {
+		if (qualifiers != null) {
+			this.qualifiers = qualifiers;
+		} else {
+			this.qualifiers.clear();
+		}
+	}
+
+
+
 	
 
 	@Override
@@ -118,8 +136,9 @@ public class Type extends NodeImpl implements Comparable<Type> {
 		if (signature == null) {
 			if (other.signature != null)
 				return false;
-		} else if (!signature.equals(other.signature))
+		} else if (!signature.equals(other.signature)) {
 			return false;
+		}
 		return true;
 	}
 
@@ -136,13 +155,25 @@ public class Type extends NodeImpl implements Comparable<Type> {
 		return 0;
 	}
 	
+	public Type clone() {
+		return new Type(this);
+	}
+	
 	
 	public static Type _qualified(Type type, Qualifier ... qualifiers) {
-		if (type.getClass() == Array.class) return new Array.QualifiedArrayImpl((Array)type, qualifiers);
-		else if (type.getClass() == Struct.class) return new Struct.QualifiedStructImpl((Struct)type, qualifiers);
-		else if (type.getClass() == InterfaceBlock.class) return new InterfaceBlock.QualifiedInterfaceBlockImpl((InterfaceBlock)type, qualifiers);
-		else if (type.getClass() == Type.class) return new QualifiedTypeImpl(type, qualifiers);
-		else throw new Error("unexpected type of qualified type '" + type.getClass().getCanonicalName() + "'");
+		type = type.clone();
+		if (qualifiers != null && qualifiers.length > 0) {
+			type.getQualifiers().add(qualifiers);
+		}
+		return type;
+	}
+
+	public static Type _qualified(Type type, Qualifiers qualifiers) {
+		type = type.clone();
+		if (qualifiers != null && qualifiers.size() > 0) {
+			type.getQualifiers().add(qualifiers);
+		}
+		return type;
 	}
 
 	/** non-glsl type, for preprocessor only */
@@ -623,38 +654,6 @@ public class Type extends NodeImpl implements Comparable<Type> {
 		throw new Error("internal error: undefined type cast");
 	}
 
-
-	public static Type checkSign(Type type, long v) {
-		Rank rank = Rank.of(type);
-		if (v < 0  &&  rank == Rank.UINT) {
-			if (type == _uint || type == _atomic_uint) {
-				return _int;
-			} else if (type instanceof QualifiedType) {
-				return new QualifiedTypeImpl(_int, ((QualifiedType) type).qualifiers());
-			}
-		}
-		return type;
-	}
-
-
-	public Value newInstance(Value[] arguments) {
-		// TODO [interpreter]
-		throw new Error("not yet supported");
-	}
-
-
-	public boolean hasQualifier(Qualifier qualifier) {
-		return false;
-	}
-
-
-	public boolean hasKind(int kind) {
-		return 0 != (kind|this.kind);
-	}
-
-	public String getSignature() {
-		return this.signature;
-	}
 
 
 
