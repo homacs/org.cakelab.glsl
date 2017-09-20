@@ -23,7 +23,7 @@ public class Resource {
 		return path;
 	}
 
-	public String getIdentifier() {
+	public String getSourceIdentifier() {
 		return identifier;
 	}
 

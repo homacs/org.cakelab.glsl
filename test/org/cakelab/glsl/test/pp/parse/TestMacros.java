@@ -10,6 +10,7 @@ public class TestMacros extends TestingPPBase {
 	
 	public static void test() {
 		TestMacros tester = new TestMacros();
+		tester.testBuiltinMacros();
 		tester.testObjectMacros();
 		tester.testFunctionMacros();
 		tester.testStringify();
@@ -19,6 +20,16 @@ public class TestMacros extends TestingPPBase {
 	}
 	
 	
+	private void testBuiltinMacros() {
+		assertValid("__LINE__\n", "1\n");
+		assertValid("\n\n__LINE__\n", "\n\n3\n");
+		assertValid("#if __LINE__ > 0\n"
+				+ "success\n"
+				+ "#endif", "success\n");
+		// note: we have set source identifier to "-- testing --"
+		assertValid("__FILE__\n", "-- testing --\n");
+	}
+
 	public void testObjectMacros() {
 		assertValid("#define A", "");
 		assertValid("#define A x\n"

@@ -6,7 +6,7 @@ import org.cakelab.glsl.pp.MacroExpandedLocation;
  * 
  * Source code resource (e.g. file or source string) is
  * identified by the resource identifier 
- * (see {@link Resource#getIdentifier()}.
+ * (see {@link Resource#getSourceIdentifier()}.
  * 
  * The exact cursor position is either <br/>
  * <pre>

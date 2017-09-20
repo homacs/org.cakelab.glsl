@@ -8,6 +8,12 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+//
+// Changes:
+// 1: added gl_MaxLights (missing in specification)
+//
+
+
 
 #define __VERSION__ 130
 #define GL_core_profile 1
@@ -41,11 +47,19 @@ const int  gl_MaxTextureImageUnits = 16;
 const int  gl_MaxFragmentUniformComponents = 1024;
 const int  gl_MaxDrawBuffers = 8;
 const int  gl_MaxClipDistances = 8;
+
 //
 // The following are deprecated.
 //
 const int  gl_MaxClipPlanes = 8;                // deprecated
 const int  gl_MaxTextureCoords = 8;             // deprecated
+
+//
+// The following were missing in the specification
+//
+const int gl_MaxLights = 8;
+
+
 
 
 // -----------------------------------------------------------------------------------
@@ -169,9 +183,7 @@ struct gl_LightSourceParameters
     float linearAttenuation;   // K1
     float quadraticAttenuation;// K2
 };
-uniform gl_LightSourceParameters  gl_LightSource
-[gl_MaxLights
-];
+uniform gl_LightSourceParameters  gl_LightSource[gl_MaxLights];
 struct gl_LightModelParameters
  {
     vec4  ambient;       // Acs
@@ -331,10 +343,10 @@ vec2 trunc(vec2 x);
 vec3 trunc(vec3 x);
 vec4 trunc(vec4 x);
 
-float round(float x)
-vec2 round(vec2 x)
-vec3 round(vec3 x)
-vec4 round(vec4 x)
+float round(float x);
+vec2 round(vec2 x);
+vec3 round(vec3 x);
+vec4 round(vec4 x);
 
 float roundEven(float x);
 vec2 roundEven(vec2 x);
@@ -571,4 +583,4 @@ GENERIC_FUNCTION_SET(bvec4, uvec4)
 
 
 
-#error unfinished preamble
+// #error unfinished preamble

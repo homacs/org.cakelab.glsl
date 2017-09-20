@@ -5,8 +5,6 @@ import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.PrefixExpression;
 import org.cakelab.glsl.lang.ast.PrimaryExpression;
-import org.cakelab.glsl.lang.ast.Type;
-import org.cakelab.glsl.lang.ast.Value;
 
 public class PPDefinedExpression extends PrefixExpression {
 

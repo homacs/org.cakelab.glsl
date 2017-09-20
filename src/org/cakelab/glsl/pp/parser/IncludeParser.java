@@ -119,7 +119,7 @@ public class IncludeParser extends Parser {
 
 			Location locationReference = line_start(getInterval().getStart());
 			if (state.isInsertLineDirectives()) {
-				state.getOutput().print(createLineTokens(locationReference, 1, resource.getIdentifier()));
+				state.getOutput().print(createLineTokens(locationReference, 1, resource.getSourceIdentifier()));
 			}
 			
 			

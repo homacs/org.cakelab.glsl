@@ -16,8 +16,8 @@ import java.util.Set;
  * 
  * Key requires to have the following methods implemented:
  * <ul>
- * <li>hashCode()</li>
- * <li>boolean equals(Object)</li>
+ * <li>{@link java.lang.Object#hashCode()}</li>
+ * <li>{@link java.lang.Object#equals(Object)}</li>
  * <ul>
  * 
  * 

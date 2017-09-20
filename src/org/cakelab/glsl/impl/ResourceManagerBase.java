@@ -30,7 +30,7 @@ public abstract class ResourceManagerBase implements ResourceManager {
 		if (r == null) {
 			r = load(relpath);
 			resources.put(uniquePath, r);
-			ids.put(r.getIdentifier(), r);
+			ids.put(r.getSourceIdentifier(), r);
 		}
 		return r;
 	}
@@ -60,7 +60,7 @@ public abstract class ResourceManagerBase implements ResourceManager {
 	@Override
 	public void add(Resource resource) throws IOException {
 		String uniquePath = toUrl(resource.getPath());
-		String id = resource.getIdentifier();
+		String id = resource.getSourceIdentifier();
 		Resource occupied = ids.get(id);
 		if (occupied != null) {
 			String oPath = toUrl(occupied.getPath());
@@ -68,7 +68,7 @@ public abstract class ResourceManagerBase implements ResourceManager {
 		}
 
 		resources.put(uniquePath, resource);
-		ids.put(resource.getIdentifier(), resource);
+		ids.put(resource.getSourceIdentifier(), resource);
 	}
 
 

@@ -138,8 +138,15 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 		
 		pragmaParser.appendPragma(new GlslPragmasParser(this));
 		
-		
 		expressionParser = new ExpressionParser(this);
+
+		//
+		// add context specific builtin macros
+		//
+		Macro __LINE__ = new BuiltinMacro__LINE__();
+		state.getMacros().put(__LINE__.getName(), __LINE__);
+		Macro __FILE__ = new BuiltinMacro__FILE__();
+		state.getMacros().put(__FILE__.getName(), __FILE__);
 		
 	}
 
