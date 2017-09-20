@@ -320,7 +320,7 @@ GENERIC_FUNCTION_SET_FLOAT(vec4)
 
 
 // -----------------------------------------------------------------------------------
-//                           Common Functions
+//                           8.4 Geometric Functions
 // -----------------------------------------------------------------------------------
 #define GENERIC_FUNCTION_SET(genType) \
 float length(genType x);\

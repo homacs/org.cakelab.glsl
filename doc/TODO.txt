@@ -12,11 +12,5 @@
 				
 				Tasks for tomorrow:
 				
-				1. Finish General Concept for Versioning
-				   - Concept for Builtin Macros (GL_compatibility_profile, __LINE__ etc.) 
-				   - and Symbols (language parser, functions etc.)
-				   
-				   - Consider profiles (compatibility, core, es)
-				   - Consider extensions maybe?
-				   
+				- Rewrite operator "defined".				   
 				

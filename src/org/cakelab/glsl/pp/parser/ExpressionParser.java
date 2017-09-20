@@ -36,6 +36,7 @@ import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.NodeList;
 import org.cakelab.glsl.pp.ast.PPDefinedExpression;
 import org.cakelab.glsl.pp.ast.StringConstant;
+import org.cakelab.glsl.pp.error.Recovery;
 import org.cakelab.glsl.pp.error.TokenFormatException;
 import org.cakelab.glsl.pp.lexer.FilteringLexer;
 import org.cakelab.glsl.pp.lexer.ILexer;
@@ -474,11 +475,28 @@ public class ExpressionParser extends Parser {
 			}
 		} else if(optional(TIdentifier.class, "defined")) {
 			Token opTok = token;
-			if (null != (primary = unary_expression())) {
+			boolean needClosingBracket = false;
+			if (PUNCTUATOR('(')) {
+				needClosingBracket = true;
+			}
+			if (IDENTIFIER()) {
+				Token ident = token;
+				if (state.getMacros().containsKey(ident.getText())) {
+					primary = ConstantValue.ONE;
+				} else {
+					primary = ConstantValue.ZERO;
+				}
+				if (needClosingBracket) {
+					try {
+						mandatory(TPunctuator.class, ")");
+					} catch (Recovery e) {
+					}
+				}
 				return new PPDefinedExpression(opTok.getStart(), primary);
 			} else {
-				return expressionError(opTok.getInterval(), "missing expression after unary operator 'defined'");
+				return expressionError(opTok.getInterval(), "missing identifier after unary operator 'defined'");
 			}
+			
 		} else {
 			return primary_expression();
 		}
@@ -521,7 +539,7 @@ public class ExpressionParser extends Parser {
 		expr = constant_boolean();
 		if (expr != null) return expr;
 		
-		expr = identifier();
+		expr = undefined_identifier();
 		if (expr != null) return expr;
 		
 		expr = character_constant();
@@ -568,15 +586,18 @@ public class ExpressionParser extends Parser {
 		return null;
 	}
 
-	private Expression identifier() {
+	private Expression undefined_identifier() {
+		// undefined identifiers (i.e. not a macro name)
+
+		// any undefined identifier is replaced by 
+		// const integer 0, according to ISO C spec.
+
 		if (IDENTIFIER()) {
-			// undefined identifiers (i.e. not a macro name)
-			// are replaced by 0 integer constant in
-			// preprocessor conditional expressions
 			return ConstantValue.ZERO;
 		}
 		return null;
 	}
+
 
 	public Expression constant_boolean() {
 		

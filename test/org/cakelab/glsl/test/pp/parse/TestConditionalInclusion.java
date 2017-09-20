@@ -67,6 +67,17 @@ public class TestConditionalInclusion extends TestingPPBase {
 		
 		assertValid("#if defined(A)\n"
 				+ "#endif\n");
+
+		assertValid("#if !defined(A)\n"
+				+ "success\n"
+				+ "#endif\n",
+				"success\n");
+		
+		assertValid("#define A\n"
+				+ "#if defined(A)\n"
+				+ "success\n"
+				+ "#endif\n",
+				"success\n");
 		
 		assertValid("#if A\n"
 				+ "#endif\n");

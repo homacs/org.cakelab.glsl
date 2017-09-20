@@ -16,12 +16,8 @@ public class PPDefinedExpression extends PrefixExpression {
 
 	@Override
 	public PrimaryExpression eval() throws EvaluationException {
-		Object result = operand.eval();
-		if (result instanceof MacroReference) {
-			return new Value(this.interval, Type._bool, true);
-		} else {
-			return new Value(this.interval, Type._bool, false);
-		}
+		PrimaryExpression result = operand.eval();
+		return result;
 	}
 
 }

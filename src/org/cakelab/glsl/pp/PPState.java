@@ -6,6 +6,7 @@ import org.cakelab.glsl.GLSLExtension;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
+import org.cakelab.glsl.lang.GLSLBuiltinSymbols.ShaderType;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.ast.PPGroupScope;
 import org.cakelab.glsl.pp.error.ErrorHandler;
@@ -57,16 +58,19 @@ public class PPState {
 	private Macro currentMacroDefinition = null;
 	private boolean seenCodeLineBeforeVersion = false;
 	private boolean forcedVersion;
+	private ShaderType shaderType;
 	
 	
 
 	
-	public PPState(Resource input, ErrorHandler errorHandler) {
-		this(input);
+	public PPState(Resource input, ShaderType shaderType, ErrorHandler errorHandler) {
+		this(input, shaderType);
 		this.errorHandler = errorHandler;
+		
 	}
 	
-	public PPState(Resource input) {
+	public PPState(Resource input, ShaderType shaderType) {
+		this.shaderType = shaderType;
 		listeners = new ListenerSet();
 	}
 
@@ -185,6 +189,10 @@ public class PPState {
 
 	public boolean isForcedVersion() {
 		return this.forcedVersion;
+	}
+
+	public ShaderType getShaderType() {
+		return shaderType;
 	}
 
 	

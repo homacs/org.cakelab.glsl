@@ -8,6 +8,7 @@ import org.cakelab.glsl.GLSL;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
+import org.cakelab.glsl.lang.GLSLBuiltinSymbols.ShaderType;
 import org.cakelab.glsl.lang.ast.Struct;
 
 public class TestGLSL {
@@ -22,7 +23,7 @@ public class TestGLSL {
 		Resource resource;
 		try {
 			resource = resources.resolve("test_files/100.frag");
-			CombinedAST result = glsl.parse(resource);
+			CombinedAST result = glsl.parse(resource, ShaderType.FRAGMENT_SHADER);
 
 			List<Struct> structs = result.getStructs();
 			if (structs.isEmpty()) {

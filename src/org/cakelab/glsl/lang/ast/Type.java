@@ -88,7 +88,7 @@ public class Type extends NodeImpl implements Comparable<Type> {
 	
 	public String toString() {
 		String fqn = this.signature;
-		if (qualifiers != null) {
+		if (!qualifiers.isEmpty()) {
 			fqn = qualifiers.toString() + " " + fqn;
 		}
 		return fqn;

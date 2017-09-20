@@ -16,6 +16,7 @@ import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.GLSLBuiltinSymbols;
+import org.cakelab.glsl.lang.GLSLBuiltinSymbols.ShaderType;
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.pp.ast.Macro;
@@ -106,12 +107,12 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	 * @param in
 	 * @param out
 	 */
-	public Preprocessor(Resource resource, OutputStream out) {
-		this(resource, new PreprocessedOutputStream(out));
+	public Preprocessor(Resource resource, ShaderType shaderType, OutputStream out) {
+		this(resource, shaderType, new PreprocessedOutputStream(out));
 	}
 
-	public Preprocessor(Resource resource, PPOutputSink out) {
-		super(new PPState(resource));
+	public Preprocessor(Resource resource, ShaderType shaderType, PPOutputSink out) {
+		super(new PPState(resource, shaderType));
 		state.addListener(this);
 		state.setInputResource(resource);
 		originalSourceLexer = new PPLexer(new StreamScanner(resource), state);
@@ -206,7 +207,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	 * @param define
 	 */
 	public void addDefine(String define) {
-		define = "#define " + define;
+		define = "define " + define;
 		
 		ByteArrayInputStream in = new ByteArrayInputStream(define.getBytes());
 		StreamScanner scanner = new StreamScanner("-- predefined --", in);
@@ -288,25 +289,21 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 				return true;
 			}
 
-			String output = text(true, true);
-			if (output == null) {
-				return false;
-			} else {
-				if (ENDL()) {
-					if (token instanceof TCrlf) state.getOutput().print(token);
-					// TODO: not sure if we should add CRLF at EOF generally or not
-//					else out.print(new TCrlf(token.getInterval(), "\n"));
-					else assert token instanceof TEof;
-				} else if (!getLexer().eof()) {
-					try {
-						syntaxError(getLexer().lookahead(1), "invalid tokens");
-					} catch (Recovery escape) {
-						// just consume and keep going
-						getLexer().consume(1);
-					}
+			text_tokens(true, true);
+			if (ENDL()) {
+				if (token instanceof TCrlf) state.getOutput().print(token);
+				// TODO: not sure if we should add CRLF at EOF generally or not
+				//					else out.print(new TCrlf(token.getInterval(), "\n"));
+				else assert token instanceof TEof;
+			} else if (!getLexer().eof()) {
+				try {
+					syntaxError(getLexer().lookahead(1), "invalid tokens");
+				} catch (Recovery escape) {
+					// just consume and keep going
+					getLexer().consume(1);
 				}
-				return true;
 			}
+			return true;
 		}
 		return false;
 	}
@@ -329,6 +326,8 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 			
 			if (WHITESPACE()) {
 				t = token;
+			} else if (!print && defined_statement(result)) {
+				continue;
 			} else if (IDENTIFIER()) {
 				firstCodeLineDetection(false);
 				TIdentifier id = (TIdentifier) token;
@@ -395,15 +394,33 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	}
 
 	
-	private String text(boolean print, boolean acceptHashes) {
-		StringBuffer result = new StringBuffer();
-		TokenList tokens = text_tokens(print,acceptHashes);
-		for (Token t : tokens) {
-			result.append(t.getText());
-		}
-		return result.toString();
-	}
 
+	private boolean defined_statement(TokenList result) {
+		if (IDENTIFIER("defined")) {
+			result.add(token);
+			while(WHITESPACE()) result.add(token);
+			boolean needBracket = false;
+			if (optional(TPunctuator.class, "(")) {
+				result.add(token);
+				needBracket = true;
+				while(WHITESPACE()) result.add(token);
+			}
+			if (IDENTIFIER()) {
+				result.add(token);
+			} else {
+				// error will be detected in expression parser
+				return true;
+			}
+			if (needBracket && optional(TPunctuator.class, ")")) {
+				result.add(token);
+				needBracket = true;
+				while(WHITESPACE()) result.add(token);
+			}
+			return true;
+		}
+		return false;
+	}
+	
 	private void macro_expansion(MacroInvocation macroInvocation, boolean print) {
 		TokenList prependingText;
 		try {
@@ -1149,7 +1166,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	@Override
 	public void reportModifiedVersion(GLSLVersion version) {
 		if (!state.isForcedVersion()) {
-			GLSLBuiltinSymbols symbols = GLSLBuiltinSymbols.get(version);
+			GLSLBuiltinSymbols symbols = GLSLBuiltinSymbols.get(version, state.getShaderType());
 			state.getMacros().putAll(symbols.getMacros());
 		}
 	}

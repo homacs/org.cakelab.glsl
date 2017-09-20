@@ -39,7 +39,7 @@ public class Variable extends Value implements LValue {
 	}
 
 	public String toString() {
-		return type.signature + " " + name;
+		return type.toString() + " " + name;
 	}
 
 	public String getName() {

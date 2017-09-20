@@ -92,7 +92,9 @@ public class ObjectCache<K, V> implements Map<K, V>{
 	}
 
 	private int index(Object key) {
-		return key.hashCode() % capacity;
+		int i = key.hashCode();
+		if (i < 0) i = -i;
+		return i % capacity;
 	}
 
 

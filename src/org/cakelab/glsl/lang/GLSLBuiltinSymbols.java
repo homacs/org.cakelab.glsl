@@ -38,6 +38,52 @@ import org.cakelab.glsl.versioning.LookupResource;
 
 public class GLSLBuiltinSymbols extends SymbolTable {
 	
+	private static class Key {
+
+		private GLSLVersion version;
+		private ShaderType type;
+
+		public Key(GLSLVersion version, ShaderType type) {
+			this.version = version;
+			this.type = type;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((type == null) ? 0 : type.hashCode());
+			result = prime * result + ((version == null) ? 0 : version.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			Key other = (Key) obj;
+			if (type != other.type)
+				return false;
+			if (version == null) {
+				if (other.version != null)
+					return false;
+			} else if (!version.equals(other.version))
+				return false;
+			return true;
+		}
+
+	}
+
+	public static enum ShaderType {
+		VERTEX_SHADER,
+		FRAGMENT_SHADER,
+		GENERIC_SHADER
+	}
+
 	/**
 	 * This error handler throws an internal error on any error or 
 	 * warning report.
@@ -77,7 +123,19 @@ public class GLSLBuiltinSymbols extends SymbolTable {
 		}
 
 		private String toString(Location start, String message) {
-			return start.toString() + ": " + message;
+			String errLoc = "unknown location: ";
+			if (start != null) {
+				Resource resource = resources.getResourceById(start.getSourceIdentifier());
+				String source;
+				if (resource != null) {
+					source = resource.getPath();
+				} else {
+					source = start.getSourceIdentifier();
+				}
+				errLoc = source + ":" + start.getLine() + ":" + start.getColumn() + ": ";
+			}
+
+			return errLoc + ": " + message;
 		}
 
 		
@@ -119,28 +177,17 @@ public class GLSLBuiltinSymbols extends SymbolTable {
 
 		@Override
 		public void error(ParseTree node, String message) {
-			throw new Error("internal error: " + getLocation(node) + message);
+			throw new Error("internal error: " + toString(getLocation(node), message));
 		}
 
-		private String getLocation(ParseTree node) {
+		private Location getLocation(ParseTree node) {
 			if (node instanceof TerminalNode) {
 				PPOutputToken token = ((PPOutputToken)(((TerminalNode)node).getSymbol()));
-				Location start = token.getPPToken().getStart();
-				if (start != null) {
-					Resource resource = resources.getResourceById(start.getSourceIdentifier());
-					String source;
-					if (resource != null) {
-						source = resource.getPath();
-					} else {
-						source = start.getSourceIdentifier();
-					}
-					return source + ":" + start.getLine() + ":" + start.getColumn() + ": ";
-				}
-				else return "unknown location: ";
+				return token.getPPToken().getStart();
 			} else if (node.getChildCount() > 0) {
 				return getLocation(node.getChild(0));
 			} else {
-				return "unknown location: ";
+				return null;
 			}
 		}
 		
@@ -149,7 +196,7 @@ public class GLSLBuiltinSymbols extends SymbolTable {
 	static final InternalErrorHandler INTERNAL_ERROR_HANDLER = new InternalErrorHandler();
 	
 	/** cache for recently parsed preambles */
-	static final ObjectCache<GLSLVersion, GLSLBuiltinSymbols> cache = new ObjectCache<GLSLVersion, GLSLBuiltinSymbols>(4);
+	static final ObjectCache<Key, GLSLBuiltinSymbols> cache = new ObjectCache<Key, GLSLBuiltinSymbols>(4);
 	
 	
 	private MacroMap macros;
@@ -165,16 +212,17 @@ public class GLSLBuiltinSymbols extends SymbolTable {
 		}
 	}
 	
-	public static GLSLBuiltinSymbols get(GLSLVersion version) {
-		GLSLBuiltinSymbols result = cache.get(version);
+	public static GLSLBuiltinSymbols get(GLSLVersion version, ShaderType type) {
+		Key key = new Key(version, type);
+		GLSLBuiltinSymbols result = cache.get(key);
 		if (result == null) {
-			result = create(version);
-			cache.put(version, result);
+			result = create(version, type);
+			cache.put(key, result);
 		}
 		return result;
 	}
 
-	private static GLSLBuiltinSymbols create(GLSLVersion version) {
+	private static GLSLBuiltinSymbols create(GLSLVersion version, ShaderType type) {
 		ResourceManager resourceManager = new BuiltinResourceManager(LookupResource.getBaseDirectory());
 		INTERNAL_ERROR_HANDLER.setResourceManager(resourceManager);
 		Resource resource;
@@ -184,8 +232,10 @@ public class GLSLBuiltinSymbols extends SymbolTable {
 			throw new Error("internal error: cant parse preamble. GLSLVersion parser should have avoided this case.", e);
 		}
 		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(resourceManager);
-		Preprocessor pp = new Preprocessor(resource, buffer);
+		Preprocessor pp = new Preprocessor(resource, ShaderType.GENERIC_SHADER, buffer);
 
+		pp.addDefine(type.name());
+		
 		pp.setResourceManager(resourceManager);
 		pp.setErrorHandler(INTERNAL_ERROR_HANDLER);
 		pp.enableInclude(true);

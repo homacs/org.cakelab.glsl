@@ -50,10 +50,10 @@ public class Function extends NodeImpl implements Comparable<Function> {
 	}
 
 	public String toString() {
-		String signature = type.signature + " " + this.name + "(";
+		String signature = type.toString() + " " + this.name + "(";
 		for (int i = 0; i < parameters.length; i++) {
 			ParameterDeclaration p = parameters[i]; 
-			signature += p.type.signature + " " + p.name;
+			signature += p.toString();
 			if (i+1 < parameters.length) {
 				signature += ", ";
 			}

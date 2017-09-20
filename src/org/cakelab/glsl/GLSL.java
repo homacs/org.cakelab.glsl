@@ -7,6 +7,7 @@ import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.impl.GLSLErrorHandlerImpl;
 import org.cakelab.glsl.lang.ASTBuilder;
 import org.cakelab.glsl.lang.GLSLBuiltinSymbols;
+import org.cakelab.glsl.lang.GLSLBuiltinSymbols.ShaderType;
 import org.cakelab.glsl.lang.ast.Scope;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.PPTokenStream;
@@ -37,9 +38,9 @@ public class GLSL {
 		this.errorHandler.setResourceManager(resources);
 	}
 	
-	public CombinedAST parse(Resource resource) throws IOException {
+	public CombinedAST parse(Resource resource, ShaderType shaderType) throws IOException {
 		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(resourceManager);
-		Preprocessor pp = new Preprocessor(resource, buffer);
+		Preprocessor pp = new Preprocessor(resource, shaderType, buffer);
 		
 		pp.setResourceManager(resourceManager);
 		pp.setErrorHandler(errorHandler);
@@ -50,7 +51,7 @@ public class GLSL {
 
 		// TODO consider glsl extensions in symbol table
 		GLSLVersion version = buffer.getVersion();
-		GLSLBuiltinSymbols builtinSymbols = GLSLBuiltinSymbols.get(version);
+		GLSLBuiltinSymbols builtinSymbols = GLSLBuiltinSymbols.get(version, shaderType);
 		
 		GLSLTokenTable tokenTable = GLSLTokenTable.get(version);
 		SymbolTable symbolTable = new SymbolTable(builtinSymbols.getBuiltinScope());
