@@ -1,4 +1,4 @@
-package org.cakelab.glsl.builtin;
+package org.cakelab.glsl.versioning;
 
 import java.io.InputStream;
 

@@ -21,7 +21,6 @@ import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.SymbolTable;
-import org.cakelab.glsl.builtin.LookupResource;
 import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.lang.ast.Scope;
 import org.cakelab.glsl.lang.ast.Type;
@@ -35,6 +34,7 @@ import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.error.SyntaxError;
 import org.cakelab.glsl.util.ObjectCache;
+import org.cakelab.glsl.versioning.LookupResource;
 
 public class GLSLBuiltin extends SymbolTable {
 	
