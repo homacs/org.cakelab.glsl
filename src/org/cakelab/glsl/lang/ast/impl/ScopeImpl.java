@@ -1,4 +1,4 @@
-package org.cakelab.glsl.lang.ast;
+package org.cakelab.glsl.lang.ast.impl;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -7,11 +7,17 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.cakelab.glsl.lang.ast.Function;
+import org.cakelab.glsl.lang.ast.IScope;
+import org.cakelab.glsl.lang.ast.Struct;
+import org.cakelab.glsl.lang.ast.Type;
+import org.cakelab.glsl.lang.ast.Variable;
 
-public class Scope {
 
-	protected Scope parent;
-	protected ArrayList<Scope> children = new ArrayList<Scope>();
+public class ScopeImpl implements IScope {
+
+	protected IScope parent;
+	protected ArrayList<IScope> children = new ArrayList<IScope>();
 	
 	protected HashMap<String, ArrayList<Function>> functions = new HashMap<String, ArrayList<Function>>();
 	protected HashMap<String, Variable> variables = new HashMap<String, Variable>();
@@ -19,8 +25,8 @@ public class Scope {
 	
 	
 	
-	public Scope(Scope parent) {
-		this.parent = parent;
+	public ScopeImpl(IScope builtin) {
+		this.parent = builtin;
 	}
 
 	public void reset() {
@@ -29,25 +35,29 @@ public class Scope {
 		types.clear();
 	}
 	
+	@Override
 	public boolean containsType(String name) {
 		return types.containsKey(name);
 	}
 	
+	@Override
 	public boolean containsFunction(String name) {
 		return functions.containsKey(name);
 	}
 
+	@Override
 	public boolean containsVariable(String name) {
 		return variables.containsKey(name);
 	}
 
+	@Override
 	public Type getType(String name) {
 		return types.get(name);
 	}
 
 
+	@Override
 	public Function getFunction(String name) {
-		// TODO consider function signature somehow? or associate with the group of functions?
 		ArrayList<Function> group = functions.get(name);
 		if (group != null) {
 			return group.get(0);
@@ -55,11 +65,13 @@ public class Scope {
 		else return null;
 	}
 	
-	public void add(Scope child) {
+	@Override
+	public void add(IScope child) {
 		children.add(child);
 	}
 
-	public Scope getParent() {
+	@Override
+	public IScope getParent() {
 		return parent;
 	}
 
@@ -73,8 +85,9 @@ public class Scope {
 		return functionGroup;
 	}
 	
+	@Override
 	public void addFunction(Function func) {
-		List<Function> functionGroup = getFunctionGroup(func.name);
+		List<Function> functionGroup = getFunctionGroup(func.getName());
 		int i = Collections.binarySearch(functionGroup, func);
 		if (i >= 0) {
 			// exists
@@ -85,7 +98,7 @@ public class Scope {
 	}
 
 	public void addFunctionDefinition(Function function) {
-		List<Function> group = getFunctionGroup(function.name);
+		List<Function> group = getFunctionGroup(function.getName());
 		int i = Collections.binarySearch(group, function);
 		if (i >= 0) {
 			// exists in this scope -> ignore error here, just override
@@ -96,29 +109,34 @@ public class Scope {
 		}
 		
 	}
-
 	
+	@Override
 	public void addVariable(String name, Variable var) {
 		variables.put(name, var);
 	}
 
+	@Override
 	public void addType(String name, Type type) {
 		types.put(name, type);
 	}
 
+	@Override
 	public Variable getVariable(String identifier) {
 		return variables.get(identifier);
 	}
 
 	
-	public ArrayList<Scope> getChildren() {
+	@Override
+	public ArrayList<IScope> getChildren() {
 		return children;
 	}
 
+	@Override
 	public Collection<Type> getTypes() {
 		return types.values();
 	}
 
+	@Override
 	public void dump(PrintStream out, String indent) {
 		out.println(indent + "{");
 		String innerIndent = indent + "\t";
@@ -133,17 +151,10 @@ public class Scope {
 		for (Type t : types.values()) {
 			out.println(innerIndent + t.toString());
 			if (t instanceof Struct) {
-				((Struct)t).body.dump(out, innerIndent);
+				((Struct)t).getBody().dump(out, innerIndent);
 			}
 		}
 		out.println(indent + "}");
-	}
-
-	protected void flatcopy(Scope that) {
-		this.children.addAll(that.children);
-		this.functions.putAll(that.functions);
-		this.types.putAll(that.types);
-		this.variables.putAll(that.variables);
 	}
 
 

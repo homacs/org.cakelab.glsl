@@ -409,6 +409,7 @@ public class ASTFactory {
 		}
 		Type type = symbols.getType(typeName);
 		if (type == null) {
+			System.out.println("DEBUG");
 			throw new Error("internal error: built-in type '" + typeName + "' not registered");
 		}
 	

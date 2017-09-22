@@ -55,7 +55,7 @@ public class ASTBuilder extends GLSLBaseListener {
 	public void exitGlslFunctionPrototype(GlslFunctionPrototypeContext ctx) {
 		if (functionDefinitionContext) {
 			functionDefinition = factory.create(ctx);
-			symbolTable.addFunctionDefinition(functionDefinition);
+			symbolTable.addFunction(functionDefinition);
 		} else {
 			symbolTable.addFunction(factory.create(ctx));
 		}
@@ -300,7 +300,7 @@ public class ASTBuilder extends GLSLBaseListener {
 		symbolTable.addType(name, type);
 	}
 
-	public Scope getToplevelScope() {
+	public IScope getToplevelScope() {
 		return symbolTable.getTopLevelScope();
 	}
 

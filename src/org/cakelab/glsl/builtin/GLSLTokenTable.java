@@ -1,4 +1,4 @@
-package org.cakelab.glsl.lang.lexer.tokens;
+package org.cakelab.glsl.builtin;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -6,10 +6,11 @@ import java.util.HashMap;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.GLSLVersion.Profile;
+import org.cakelab.glsl.lang.lexer.tokens.GLSLKeywords;
+import org.cakelab.glsl.lang.lexer.tokens.GLSLPunctuators;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.scanner.StreamScanner;
 import org.cakelab.glsl.util.ObjectCache;
-import org.cakelab.glsl.versioning.LookupResource;
 
 
 
@@ -79,10 +80,10 @@ public class GLSLTokenTable {
 			throw new Error("internal error: unknown profile '" + profile.name() + "'");
 		
 		}
-		InputStream in = LookupResource.getInputStream(version.number, profile, "keywords.txt");
+		InputStream in = BuiltinResources.getInputStream(version.number, profile, "keywords.txt");
 		readKeywordList(in, false);
 		
-		in = LookupResource.getInputStream(version.number, profile, "reserved.txt");
+		in = BuiltinResources.getInputStream(version.number, profile, "reserved.txt");
 		readKeywordList(in, true);
 
 		//

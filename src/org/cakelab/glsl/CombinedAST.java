@@ -3,7 +3,7 @@ package org.cakelab.glsl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cakelab.glsl.lang.ast.Scope;
+import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.Struct;
 import org.cakelab.glsl.lang.ast.Type;
 import org.cakelab.glsl.pp.ast.PPGroupScope;
@@ -15,9 +15,9 @@ public class CombinedAST {
 
 	// TODO [1] implement proper combined ast
 	private List<PPGroupScope> ppAST;
-	private Scope langAST;
+	private IScope langAST;
 
-	public CombinedAST(List<PPGroupScope> ppAST, Scope langAST) {
+	public CombinedAST(List<PPGroupScope> ppAST, IScope langAST) {
 		this.ppAST = ppAST;
 		this.langAST = langAST;
 	}
@@ -26,7 +26,7 @@ public class CombinedAST {
 		return ppAST;
 	}
 
-	public Scope getLangAST() {
+	public IScope getLangAST() {
 		return langAST;
 	}
 
@@ -44,12 +44,12 @@ public class CombinedAST {
 		return structs;
 	}
 
-	private <R extends Type> void getTypes(Scope scope, Filter<Type, R> filter, List<R> result) {
+	private <R extends Type> void getTypes(IScope scope, Filter<Type, R> filter, List<R> result) {
 		for (Type type : scope.getTypes()) {
 			R passed = filter.pass(type);
 			if (passed != null) result.add(passed);
 		}
-		for (Scope s : scope.getChildren()) {
+		for (IScope s : scope.getChildren()) {
 			getTypes(s, filter, result);
 		}
 	}

@@ -7,8 +7,8 @@ import org.cakelab.glsl.CombinedAST;
 import org.cakelab.glsl.GLSL;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
+import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
-import org.cakelab.glsl.lang.GLSLBuiltin.ShaderType;
 import org.cakelab.glsl.lang.ast.Struct;
 
 public class TestGLSL {

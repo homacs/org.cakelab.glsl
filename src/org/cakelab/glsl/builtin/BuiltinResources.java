@@ -1,12 +1,12 @@
-package org.cakelab.glsl.versioning;
+package org.cakelab.glsl.builtin;
 
 import java.io.InputStream;
 
 import org.cakelab.glsl.GLSLVersion;
 
-public class LookupResource {
-	private static final String DIRECTORY = LookupResource.class.getPackage().getName().replace('.', '/');
-	private static final ClassLoader loader = LookupResource.class.getClassLoader();
+public class BuiltinResources {
+	private static final String DIRECTORY = BuiltinResources.class.getPackage().getName().replace('.', '/');
+	private static final ClassLoader loader = BuiltinResources.class.getClassLoader();
 	
 	
 

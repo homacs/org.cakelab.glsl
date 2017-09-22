@@ -13,11 +13,11 @@ import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
+import org.cakelab.glsl.builtin.GLSLBuiltin;
+import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
+import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.lang.EvaluationException;
-import org.cakelab.glsl.lang.GLSLBuiltin;
-import org.cakelab.glsl.lang.GLSLBuiltin.ShaderType;
-import org.cakelab.glsl.lang.GLSLExtension;
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.pp.ast.Macro;
@@ -139,14 +139,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 		pragmaParser.appendPragma(new GlslPragmasParser(this));
 		
 		expressionParser = new ExpressionParser(this);
-
-		//
-		// add context specific builtin macros
-		//
-		Macro __LINE__ = new BuiltinMacro__LINE__();
-		state.getMacros().put(__LINE__.getName(), __LINE__);
-		Macro __FILE__ = new BuiltinMacro__FILE__();
-		state.getMacros().put(__FILE__.getName(), __FILE__);
+		
 		
 	}
 
@@ -1174,19 +1167,20 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	public void reportModifiedVersion(GLSLVersion version) {
 		if (!state.isForcedVersion()) {
 			GLSLBuiltin symbols = GLSLBuiltin.get(version, state.getShaderType());
-			state.getMacros().setBuiltin(symbols.getBuiltinMacros());
+			WorkingSet workingSet = symbols.createWorkingSet();
+			state.setBuiltinWorkingSet(workingSet);
 		}
 	}
 
 	@Override
 	public void process(PPExtensionDirective directive) {
+		WorkingSet workingSet = state.getWorkingSet();
 		switch(directive.behaviour) {
 		case DISABLE:
-			state.getExtensions().disable(directive.identifier);
+			workingSet.disableExtension(directive.identifier);
 			break;
 		case ENABLE:
-			GLSLExtension e = GLSLExtension.get(directive.identifier, state.getGlslVersion(), state.getShaderType());
-			state.getExtensions().enable(e);
+			workingSet.enableExtension(directive.identifier);
 			break;
 		case REQUIRE:
 			break;

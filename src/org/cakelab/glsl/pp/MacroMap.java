@@ -4,7 +4,8 @@ package org.cakelab.glsl.pp;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.cakelab.glsl.lang.GLSLExtensionSet;
+import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
+import org.cakelab.glsl.builtin.GLSLExtensionSet;
 import org.cakelab.glsl.pp.ast.Macro;
 
 
@@ -15,12 +16,8 @@ public class MacroMap {
 	HashMap<String, Macro> macros = new HashMap<String, Macro>();
 
 	
-	public MacroMap(GLSLExtensionSet extensions) {
-		this.extensions = extensions;
-	}
-	
-	public GLSLExtensionSet getExtensions() {
-		return extensions;
+	public MacroMap(HashMap<String, Macro> defaultBuiltinMacros) {
+		this.builtin = defaultBuiltinMacros;
 	}
 
 	public void put(String name, Macro macro) {
@@ -29,10 +26,11 @@ public class MacroMap {
 
 	public Macro get(String name) {
 		Macro macro;
+		if (extensions != null) {
+			macro = extensions.getMacro(name);
+			if (macro != null) return macro;
+		}
 		
-		macro = extensions.getMacro(name);
-		if (macro != null) return macro;
-
 		if (builtin != null) {
 			macro = builtin.get(name);
 			if (macro != null) return macro;
@@ -53,9 +51,16 @@ public class MacroMap {
 		macros.remove(name);
 	}
 
-	public void setBuiltin(HashMap<String, Macro> macros) {
-		builtin = macros;
+	public void setBuiltinWorkingSet(WorkingSet workingSet) {
+		builtin = workingSet.getBuiltinMacros();
+		extensions = workingSet.getExtensions();
 	}
+	
+	public void setDefaultBuiltinMacros(HashMap<String, Macro> builtinMacros) {
+		this.builtin = builtinMacros;
+	}
+
+	
 
 	public HashMap<String, Macro> getUserLevelMacros() {
 		return macros;
@@ -71,5 +76,6 @@ public class MacroMap {
 		
 		return all;
 	}
+
 
 }

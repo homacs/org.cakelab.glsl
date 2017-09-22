@@ -1,8 +1,10 @@
 package org.cakelab.glsl.lang.ast;
 
-public class CompoundStatement extends Scope {
+import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
 
-	public CompoundStatement(Scope parent) {
+public class CompoundStatement extends ScopeImpl {
+
+	public CompoundStatement(IScope parent) {
 		super(parent);
 	}
 

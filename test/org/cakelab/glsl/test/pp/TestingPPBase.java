@@ -5,7 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
 import org.cakelab.glsl.Resource;
-import org.cakelab.glsl.lang.GLSLBuiltin.ShaderType;
+import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.output.PreprocessedOutputBuffer;
 import org.cakelab.glsl.pp.parser.Parser;

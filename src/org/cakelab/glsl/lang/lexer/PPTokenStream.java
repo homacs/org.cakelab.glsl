@@ -12,7 +12,7 @@ import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.SymbolTable;
-import org.cakelab.glsl.lang.lexer.tokens.GLSLTokenTable;
+import org.cakelab.glsl.builtin.GLSLTokenTable;
 import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
 import org.cakelab.glsl.pp.error.TokenFormatException;
 import org.cakelab.glsl.pp.tokens.TEof;

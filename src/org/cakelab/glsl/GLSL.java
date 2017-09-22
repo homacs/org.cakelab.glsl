@@ -3,15 +3,15 @@ package org.cakelab.glsl;
 import java.io.IOException;
 import java.util.List;
 
+import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
+import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
+import org.cakelab.glsl.builtin.GLSLTokenTable;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.impl.GLSLErrorHandlerImpl;
 import org.cakelab.glsl.lang.ASTBuilder;
-import org.cakelab.glsl.lang.GLSLBuiltin;
-import org.cakelab.glsl.lang.GLSLBuiltin.ShaderType;
-import org.cakelab.glsl.lang.ast.Scope;
+import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.PPTokenStream;
-import org.cakelab.glsl.lang.lexer.tokens.GLSLTokenTable;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.PPGroupScope;
 
@@ -49,12 +49,13 @@ public class GLSL {
 		
 		List<PPGroupScope> ppAST = pp.process();
 
-		// TODO consider glsl extensions in symbol table
+		WorkingSet workingSet = pp.getState().getWorkingSet();
+		
 		GLSLVersion version = buffer.getVersion();
-		GLSLBuiltin builtinSymbols = GLSLBuiltin.get(version, shaderType);
 		
 		GLSLTokenTable tokenTable = GLSLTokenTable.get(version);
-		SymbolTable symbolTable = new SymbolTable(builtinSymbols.getBuiltinScope());
+		
+		SymbolTable symbolTable = new SymbolTable(workingSet.getBuiltinScope());
 		
 		PPTokenStream tokens = new PPTokenStream(buffer, tokenTable, symbolTable, errorHandler);
 		errorHandler.setLocations(tokens, buffer.getLocations());
@@ -67,7 +68,7 @@ public class GLSL {
 		
 		parser.glsl();
 		
-		Scope langAST = astBuilder.getToplevelScope();
+		IScope langAST = astBuilder.getToplevelScope();
 		return new CombinedAST(ppAST, langAST);
 	}
 

@@ -59,7 +59,8 @@ public class TestDirective extends TestingPPBase {
 		
 		assertValid("#pragma STDGL\n");
 		
-		assertValid("#extension ARB_compatibility : enable\n");
+		assertValid("#version 140\n"
+				+ "#extension ARB_compatibility : enable\n");
 		assertValid("#extension ARB_compatibility :\\\n enable\n");
 		assertValid("#extension ARB_compatibility :\\\r\n enable\n");
 		assertInvalid("#extension ARB_compatibility : nable\n");

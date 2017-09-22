@@ -1,4 +1,4 @@
-package org.cakelab.glsl.lang;
+package org.cakelab.glsl.builtin;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -6,15 +6,13 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.cakelab.glsl.lang.ast.Function;
-import org.cakelab.glsl.lang.ast.Scope;
+import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.Type;
 import org.cakelab.glsl.lang.ast.Variable;
 import org.cakelab.glsl.pp.ast.Macro;
 
-// TODO Scope should be an interface for exactly this purpose
-public class GLSLExtensionSet extends Scope {
+public class GLSLExtensionSet implements IScope {
 	public GLSLExtensionSet() {
-		super(null);
 	}
 
 	private HashMap<String, GLSLExtension> extensionsLookup = new HashMap<String, GLSLExtension>();
@@ -45,17 +43,12 @@ public class GLSLExtensionSet extends Scope {
 	}
 
 	@Override
-	public void reset() {
+	public void add(IScope child) {
 		throw new Error("not supported");
 	}
 
 	@Override
-	public void add(Scope child) {
-		throw new Error("not supported");
-	}
-
-	@Override
-	public Scope getParent() {
+	public IScope getParent() {
 		throw new Error("not supported");
 	}
 
@@ -119,11 +112,6 @@ public class GLSLExtensionSet extends Scope {
 	}
 
 	@Override
-	public void addFunctionDefinition(Function function) {
-		throw new Error("not supported");
-	}
-
-	@Override
 	public void addVariable(String name, Variable var) {
 		throw new Error("not supported");
 	}
@@ -134,8 +122,8 @@ public class GLSLExtensionSet extends Scope {
 	}
 
 	@Override
-	public ArrayList<Scope> getChildren() {
-		ArrayList<Scope> children = new ArrayList<Scope>();
+	public ArrayList<IScope> getChildren() {
+		ArrayList<IScope> children = new ArrayList<IScope>();
 		for (GLSLExtension e : extensions) {
 			children.addAll(e.getChildren());
 		}
@@ -154,6 +142,8 @@ public class GLSLExtensionSet extends Scope {
 	@Override
 	public void dump(PrintStream out, String indent) {
 		for (GLSLExtension e : extensions) {
+			out.print("extension " + e.getName() + " ");
+
 			e.dump(out, indent);
 		}
 	}

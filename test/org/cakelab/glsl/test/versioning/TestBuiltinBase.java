@@ -1,8 +1,8 @@
 package org.cakelab.glsl.test.versioning;
 
 import org.cakelab.glsl.GLSLVersion;
-import org.cakelab.glsl.lang.GLSLBuiltin;
-import org.cakelab.glsl.lang.lexer.tokens.GLSLTokenTable;
+import org.cakelab.glsl.builtin.GLSLBuiltin;
+import org.cakelab.glsl.builtin.GLSLTokenTable;
 
 public class TestBuiltinBase {
 	protected static GLSLVersion core(int number) {

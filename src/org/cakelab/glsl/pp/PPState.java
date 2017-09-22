@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
-import org.cakelab.glsl.lang.GLSLBuiltin.ShaderType;
-import org.cakelab.glsl.lang.GLSLExtensionSet;
+import org.cakelab.glsl.builtin.GLSLBuiltin;
+import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
+import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.ast.PPGroupScope;
 import org.cakelab.glsl.pp.error.ErrorHandler;
@@ -61,22 +62,16 @@ public class PPState {
 	private boolean insertLineDirectives = false;
 
 	
-	/* ************** Context specific data *************** */
 	private Macro currentMacroDefinition = null;
 	private boolean seenCodeLineBeforeVersion = false;
 	private boolean forcedVersion;
 	private ShaderType shaderType;
-	private GLSLExtensionSet extensionSet = new GLSLExtensionSet();
-	private MacroMap macros = new MacroMap(extensionSet);
+	
+	private MacroMap macros = new MacroMap(GLSLBuiltin.getDefaultBuiltinMacros());
+	private WorkingSet workingSet;
 	
 	
 
-	
-	public PPState(Resource input, ShaderType shaderType, ErrorHandler errorHandler) {
-		this(input, shaderType);
-		this.errorHandler = errorHandler;
-		
-	}
 	
 	public PPState(Resource input, ShaderType shaderType) {
 		this.shaderType = shaderType;
@@ -174,10 +169,6 @@ public class PPState {
 		return extensions;
 	}
 
-	public GLSLExtensionSet getExtensions() {
-		return extensionSet;
-	}
-	
 	public ILexer getLexer() {
 		return lexer;
 	}
@@ -212,6 +203,15 @@ public class PPState {
 
 	public ShaderType getShaderType() {
 		return shaderType;
+	}
+
+	public void setBuiltinWorkingSet(WorkingSet workingSet) {
+		this.workingSet = workingSet;
+		this.macros.setBuiltinWorkingSet(workingSet);
+	}
+
+	public WorkingSet getWorkingSet() {
+		return workingSet;
 	}
 
 	

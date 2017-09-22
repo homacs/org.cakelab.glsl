@@ -1,4 +1,4 @@
-package org.cakelab.glsl.lang;
+package org.cakelab.glsl.builtin;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -21,12 +21,12 @@ import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.SymbolTable;
+import org.cakelab.glsl.lang.ASTBuilder;
 import org.cakelab.glsl.lang.ast.Node;
-import org.cakelab.glsl.lang.ast.Scope;
 import org.cakelab.glsl.lang.ast.Type;
+import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.PPTokenStream;
-import org.cakelab.glsl.lang.lexer.tokens.GLSLTokenTable;
 import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
 import org.cakelab.glsl.pp.LocationMap;
 import org.cakelab.glsl.pp.MacroMap;
@@ -34,7 +34,6 @@ import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.error.SyntaxError;
 import org.cakelab.glsl.util.ObjectCache;
-import org.cakelab.glsl.versioning.LookupResource;
 
 public class GLSLBuiltin extends SymbolTable {
 	
@@ -193,8 +192,62 @@ public class GLSLBuiltin extends SymbolTable {
 		
 	}
 	
+	
+	public static class WorkingSet {
+		private Key key;
+		private BuiltinScope builtinScope;
+		private HashMap<String, Macro> builtinMacros;
+
+		
+		
+		public WorkingSet(Key key, BuiltinScope builtinScope, HashMap<String, Macro> builtinMacros) {
+			super();
+			this.key = key;
+			this.builtinScope = builtinScope;
+			this.builtinMacros = builtinMacros;
+		}
+
+		public ShaderType getShaderType() {
+			return key.type;
+		}
+		
+		public GLSLVersion getGLSLVersion() {
+			return key.version;
+		}
+		
+		public BuiltinScope getBuiltinScope() {
+			return builtinScope;
+		}
+
+		public HashMap<String, Macro> getBuiltinMacros() {
+			return builtinMacros;
+		}
+
+		public void enableExtension(String identifier) {
+			GLSLExtension e = GLSLExtension.get(builtinScope, identifier, key.version, key.type);
+			builtinScope.extensions.enable(e);
+		}
+
+		public void disableExtension(String identifier) {
+			builtinScope.extensions.disable(identifier);
+		}
+
+		public GLSLExtensionSet getExtensions() {
+			return builtinScope.extensions;
+		}
+
+		public void dump(PrintStream out) {
+			builtinScope.dump(out, "");
+			for (Macro m : builtinMacros.values()) {
+				out.println("macro: " + m.getName());
+			}
+		}
+		
+	}
+	
+	
 	static final InternalErrorHandler INTERNAL_ERROR_HANDLER = new InternalErrorHandler();
-	static final BuiltinResourceManager BUILTIN_RESOURCE_MANAGER = new BuiltinResourceManager(LookupResource.getBaseDirectory());
+	static final BuiltinResourceManager BUILTIN_RESOURCE_MANAGER = new BuiltinResourceManager(BuiltinResources.getBaseDirectory());
 	static {
 		INTERNAL_ERROR_HANDLER.setResourceManager(BUILTIN_RESOURCE_MANAGER);
 	}
@@ -204,10 +257,10 @@ public class GLSLBuiltin extends SymbolTable {
 	
 	
 	private Key key;
-	private MacroMap macros;
+	private HashMap<String, Macro> macros;
 
 
-	GLSLBuiltin(Key key, MacroMap macros, GLSLTokenTable tokenTable) {
+	GLSLBuiltin(Key key, HashMap<String, Macro> macros, GLSLTokenTable tokenTable) {
 		super(null);
 		this.key = key;
 		this.macros = macros;
@@ -220,7 +273,7 @@ public class GLSLBuiltin extends SymbolTable {
 	}
 	
 	public void reset() {
-		scope = new BuiltinScope();
+		scope = new ScopeImpl(null);
 		toplevel = scope;
 	}
 
@@ -231,55 +284,23 @@ public class GLSLBuiltin extends SymbolTable {
 		Key key = new Key(version, type);
 		GLSLBuiltin result = BUILTIN_SYMBOLS_CACHE.get(key);
 		if (result == null) {
-			result = create(key);
+			result = loadBuiltins(key);
 			BUILTIN_SYMBOLS_CACHE.put(key, result);
 		}
 		return result;
 	}
 
-	private static GLSLBuiltin create(Key key) {
-		Resource resource;
-		try {
-			resource = BUILTIN_RESOURCE_MANAGER.resolve(LookupResource.getResourceDirectory(key.version) + "/preamble.glsl");
-		} catch (IOException e) {
-			throw new Error("internal error: cant parse preamble. GLSLVersion parser should have avoided this case.", e);
-		}
-		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(BUILTIN_RESOURCE_MANAGER);
-		Preprocessor pp = new Preprocessor(resource, key.type, buffer);
-		
-		
-		String shaderTypeBuiltinMacro = key.type.name();
-		
-		pp.addDefine(shaderTypeBuiltinMacro);
-		
-		pp.setResourceManager(BUILTIN_RESOURCE_MANAGER);
-		pp.setErrorHandler(INTERNAL_ERROR_HANDLER);
-		pp.enableInclude(true);
-		pp.enableLineDirectiveInsertion(false);
-		pp.setForceVersion(key.version);
+	private static void addCommonBuiltinMacros(HashMap<String, Macro> builtinMacros) {
+		//
+		// add context specific builtin macros
+		//
+		Macro __LINE__ = new BuiltinMacro__LINE__();
+		builtinMacros.put(__LINE__.getName(), __LINE__);
+		Macro __FILE__ = new BuiltinMacro__FILE__();
+		builtinMacros.put(__FILE__.getName(), __FILE__);
 
-		pp.process();
-
-		MacroMap builtinMacros = pp.getState().getMacros();
-		
-		builtinMacros.remove(shaderTypeBuiltinMacro);
-
-		GLSLTokenTable tokenTable = GLSLTokenTable.get(key.version);
-		GLSLBuiltin symbolTable = new GLSLBuiltin(key, builtinMacros, tokenTable);
-
-		PPTokenStream tokens = new PPTokenStream(buffer, tokenTable, symbolTable, INTERNAL_ERROR_HANDLER);
-		INTERNAL_ERROR_HANDLER.setLocations(tokens, buffer.getLocations());
-		ASTBuilder astBuilder = new ASTBuilder(tokens, buffer.getLocations(), symbolTable, INTERNAL_ERROR_HANDLER);
-		
-		GLSLParser parser = new GLSLParser(tokens);
-		parser.removeErrorListeners();
-		parser.addErrorListener(INTERNAL_ERROR_HANDLER);
-		parser.addParseListener(astBuilder);
-		
-		parser.glsl();
-		
-		return symbolTable;
 	}
+	
 
 	
 	public GLSLVersion getVersion() {
@@ -289,66 +310,86 @@ public class GLSLBuiltin extends SymbolTable {
 	public ShaderType getShaderType() {
 		return key.type;
 	}
-	
-	public BuiltinScope getBuiltinScope() {
-		return (BuiltinScope) super.getTopLevelScope();
-	}
 
+	public WorkingSet createWorkingSet() {
+		return new WorkingSet(key, new BuiltinScope(super.getTopLevelScope()), getBuiltinMacros());
+	}
+	
 	public void dump(PrintStream out) {
 		super.dump(out);
-		for (Macro e : macros.getAll()) {
+		for (Macro e : macros.values()) {
 			out.println("macro: '" + e.getName() + "'");
 		}
 	}
 
 	public HashMap<String, Macro> getBuiltinMacros() {
-		return macros.getUserLevelMacros();
+		return macros;
 	}
 
+	
+	public static HashMap<String, Macro> getDefaultBuiltinMacros() {
+		HashMap<String, Macro> builtinMacros = new HashMap<String, Macro>();
+		addCommonBuiltinMacros(builtinMacros);
+		return builtinMacros;
+	}
+	
 	/** this is for testing purposes only! */
 	public static GLSLBuiltin getTestSymbolTable(GLSLTokenTable tokens) {
 		Key key = new Key(tokens.getVersion(), ShaderType.GENERIC_SHADER);
-		return new GLSLBuiltin(key, new MacroMap(new GLSLExtensionSet()), tokens);
+		return new GLSLBuiltin(key, getDefaultBuiltinMacros(), tokens);
 	}
 
-	public static GLSLExtension loadExtension(String extension, GLSLVersion version, ShaderType type) {
+	private static GLSLBuiltin loadBuiltins(Key key) {
 		Resource resource;
 		try {
-			resource = BUILTIN_RESOURCE_MANAGER.resolve(LookupResource.getExtensionDirectory(extension) + "/preamble.glsl");
+			resource = BUILTIN_RESOURCE_MANAGER.resolve(BuiltinResources.getResourceDirectory(key.version) + "/preamble.glsl");
 		} catch (IOException e) {
-			throw new Error("internal error: cant parse preamble for extension '" + extension + "' . GLSLExtension parser should have avoided this case.", e);
+			throw new Error("internal error: cant parse preamble. GLSLVersion parser should have avoided this case.", e);
 		}
 		
 		
 		
 		
 		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(BUILTIN_RESOURCE_MANAGER);
-		Preprocessor pp = new Preprocessor(resource, type, buffer);
-		
-		
-		String shaderTypeBuiltinMacro = type.name();
-		
-		pp.addDefine(shaderTypeBuiltinMacro);
-		
-		pp.setResourceManager(BUILTIN_RESOURCE_MANAGER);
-		pp.setErrorHandler(INTERNAL_ERROR_HANDLER);
-		pp.enableInclude(true);
-		pp.enableLineDirectiveInsertion(false);
-		pp.setForceVersion(version);
 
-		pp.process();
+		HashMap<String, Macro> builtinMacros = preprocess(resource, key.version, key.type, buffer);
+		addCommonBuiltinMacros(builtinMacros);
 
-		MacroMap macroMap = pp.getState().getMacros();
-		macroMap.remove(shaderTypeBuiltinMacro);
+		GLSLTokenTable tokenTable = GLSLTokenTable.get(key.version);
+		GLSLBuiltin builtinSymbols = new GLSLBuiltin(key, builtinMacros, tokenTable);
+
+		parse(buffer, tokenTable, builtinSymbols);
 		
-		HashMap<String, Macro> extensionMacros = macroMap.getUserLevelMacros();
+		return builtinSymbols;
+	}
+	
+	public static GLSLExtension loadExtension(BuiltinScope builtinScope, String extension, GLSLVersion version, ShaderType shaderType) {
+		Resource resource;
+		try {
+			resource = BUILTIN_RESOURCE_MANAGER.resolve(BuiltinResources.getExtensionDirectory(extension) + "/preamble.glsl");
+		} catch (IOException e) {
+			throw new Error("internal error: cant parse preamble for extension '" + extension + "' . GLSLExtension parser should have avoided this case.", e);
+		}
+		
+		
+		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(BUILTIN_RESOURCE_MANAGER);
+
+		HashMap<String, Macro> extensionMacros = preprocess(resource, version, shaderType, buffer);
 
 		GLSLTokenTable tokenTable = GLSLTokenTable.get(version);
-		
-		BuiltinScope builtinScope = GLSLBuiltin.get(version, type).getBuiltinScope();
 
-		SymbolTable symbolTable = new SymbolTable(builtinScope);
+		GLSLExtension e = new GLSLExtension(extension, version, shaderType, extensionMacros);
+		GLSLExtensionSymbolTable symbolTable = new GLSLExtensionSymbolTable(e, builtinScope);
+
+		parse(buffer, tokenTable, symbolTable);
+
+		e.finishLoad();
 		
+		return e;
+	}
+
+	private static void parse(GLSL_ANTLR_PPOutputBuffer buffer, GLSLTokenTable tokenTable,
+			SymbolTable symbolTable) {
 		PPTokenStream tokens = new PPTokenStream(buffer, tokenTable, symbolTable, INTERNAL_ERROR_HANDLER);
 		INTERNAL_ERROR_HANDLER.setLocations(tokens, buffer.getLocations());
 		ASTBuilder astBuilder = new ASTBuilder(tokens, buffer.getLocations(), symbolTable, INTERNAL_ERROR_HANDLER);
@@ -359,11 +400,27 @@ public class GLSLBuiltin extends SymbolTable {
 		parser.addParseListener(astBuilder);
 		
 		parser.glsl();
+	}
+
+	private static HashMap<String, Macro> preprocess(Resource resource, GLSLVersion version, ShaderType shaderType,
+			GLSL_ANTLR_PPOutputBuffer buffer) {
+		Preprocessor pp = new Preprocessor(resource, shaderType, buffer);
 		
-		Scope extensionSymbols = symbolTable.getTopLevelScope();
+		pp.addDefine(shaderType.name());
 		
-		GLSLExtension e = new GLSLExtension(extension, version, type, extensionMacros, extensionSymbols);
-		return e;
+		pp.setResourceManager(BUILTIN_RESOURCE_MANAGER);
+		pp.setErrorHandler(INTERNAL_ERROR_HANDLER);
+		pp.enableInclude(true);
+		pp.enableLineDirectiveInsertion(false);
+		pp.setForceVersion(version);
+
+		pp.process();
+		
+		MacroMap macroMap = pp.getState().getMacros();
+		macroMap.remove(shaderType.name());
+		
+
+		return macroMap.getUserLevelMacros();
 	}
 
 

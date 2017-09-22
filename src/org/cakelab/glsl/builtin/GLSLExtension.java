@@ -1,16 +1,22 @@
-package org.cakelab.glsl.lang;
+package org.cakelab.glsl.builtin;
 
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.HashMap;
 
 import org.cakelab.glsl.GLSLVersion;
-import org.cakelab.glsl.lang.GLSLBuiltin.ShaderType;
-import org.cakelab.glsl.lang.ast.Scope;
+import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
+import org.cakelab.glsl.lang.ast.IScope;
+import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.util.ObjectCache;
 
-public class GLSLExtension extends Scope {
+public class GLSLExtension extends ScopeImpl {
+	// TODO: when using cached builtins, extensions may reference 
+	// for example global variables from different instances of the same builtins or extensions
+	// TODO: extensions may depend on other extensions
+	
+	
 	public static class Key {
 		GLSLVersion version;
 		String name;
@@ -58,18 +64,19 @@ public class GLSLExtension extends Scope {
 
 	static final ObjectCache<Key, GLSLExtension> CACHE = new ObjectCache<Key, GLSLExtension>(4);
 
-	public static GLSLExtension get(String extension, GLSLVersion version, ShaderType type) {
+	public static GLSLExtension get(BuiltinScope builtins, String extension, GLSLVersion version, ShaderType type) {
 		Key key = new Key(extension, version, type);
 		GLSLExtension e = CACHE.get(key);
 		if (e == null) {
-			e = loadExtension(extension, version, type);
+			e = loadExtension(builtins, extension, version, type);
 			CACHE.put(key, e);
 		}
 		return e;
 	}
 
-	private static GLSLExtension loadExtension(String extension, GLSLVersion version, ShaderType type) {
-		return GLSLBuiltin.loadExtension(extension, version, type);
+	private static GLSLExtension loadExtension(BuiltinScope builtins, String extension, GLSLVersion version, ShaderType type) {
+		GLSLExtension ext = GLSLBuiltin.loadExtension(builtins, extension, version, type);
+		return ext;
 	}
 
 	static void put(GLSLExtension extension) {
@@ -80,16 +87,14 @@ public class GLSLExtension extends Scope {
 	private final Key key;
 	private HashMap<String, Macro> macros;
 	
-	GLSLExtension(Key key, HashMap<String, Macro> macros, Scope extensionSymbols) {
+	GLSLExtension(Key key, HashMap<String, Macro> macros) {
 		super(null);
 		this.key = key;
 		this.macros = macros;
-		this.flatcopy(extensionSymbols);
 	}
 
-	public GLSLExtension(String extension, GLSLVersion version, ShaderType type, HashMap<String, Macro> extensionMacros,
-			Scope extensionSymbols) {
-		this(new Key(extension, version, type), extensionMacros, extensionSymbols);
+	public GLSLExtension(String extension, GLSLVersion version, ShaderType type, HashMap<String, Macro> extensionMacros) {
+		this(new Key(extension, version, type), extensionMacros);
 	}
 
 	public String getName() {
@@ -110,6 +115,14 @@ public class GLSLExtension extends Scope {
 		for (Macro m : macros.values()) {
 			out.println(indent + "macro: " + m.getName());
 		}
+	}
+
+	public void setParent(IScope builtinScope) {
+		this.parent = builtinScope;
+	}
+
+	public void finishLoad() {
+		setParent(null);
 	}
 	
 	

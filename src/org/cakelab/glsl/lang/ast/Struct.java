@@ -3,6 +3,7 @@ package org.cakelab.glsl.lang.ast;
 import java.util.ArrayList;
 
 import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
 
 public class Struct extends Type {
 
@@ -84,11 +85,11 @@ public class Struct extends Type {
 	}
 
 	
-	public static class Body extends Scope {
+	public static class Body extends ScopeImpl {
 		// FIXME: Struct body unfinished: it is supposed to translate declarations into member declarations
 		ArrayList<Member> members = new ArrayList<Member>();
 		
-		public Body(Scope parent) {
+		public Body(IScope parent) {
 			super(parent);
 		}
 
@@ -120,7 +121,7 @@ public class Struct extends Type {
 	
 	Body body;
 
-	public Struct(Interval interval, Scope parent, String name, Qualifiers qualifiers) {
+	public Struct(Interval interval, IScope parent, String name, Qualifiers qualifiers) {
 		super(interval, name, KIND_STRUCT, qualifiers);
 		this.body = new Body(parent);
 	}
@@ -141,5 +142,9 @@ public class Struct extends Type {
 	}
 	public Member getMember(String identifier) {
 		return body.getMember(identifier);
+	}
+
+	public IScope getBody() {
+		return body;
 	}
 }

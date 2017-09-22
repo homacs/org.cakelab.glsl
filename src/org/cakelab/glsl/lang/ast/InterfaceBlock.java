@@ -4,7 +4,7 @@ import org.cakelab.glsl.Interval;
 
 public class InterfaceBlock extends Struct {
 
-	public InterfaceBlock(Interval interval, Scope parent, String name, Qualifiers qualifiers) {
+	public InterfaceBlock(Interval interval, IScope parent, String name, Qualifiers qualifiers) {
 		super(interval, parent, name, qualifiers);
 	}
 

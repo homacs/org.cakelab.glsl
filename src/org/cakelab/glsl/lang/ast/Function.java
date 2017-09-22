@@ -2,11 +2,12 @@ package org.cakelab.glsl.lang.ast;
 
 
 import org.cakelab.glsl.lang.ast.impl.NodeImpl;
+import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
 
 public class Function extends NodeImpl implements Comparable<Function> {
 
-	public static class Body extends Scope {
-		public Body(Scope parent, ParameterDeclaration[] parameters) {
+	public static class Body extends ScopeImpl {
+		public Body(IScope parent, ParameterDeclaration[] parameters) {
 			super(parent);
 			for (ParameterDeclaration p : parameters) {
 				if (p.name != null) {
@@ -64,7 +65,7 @@ public class Function extends NodeImpl implements Comparable<Function> {
 
 
 	
-	public Body createBody(Scope parentScope) {
+	public Body createBody(IScope parentScope) {
 		this.body = new Body(parentScope, parameters);
 		return this.body;
 	}

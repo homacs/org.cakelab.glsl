@@ -1,6 +1,6 @@
 package org.cakelab.glsl.test.versioning;
 
-import org.cakelab.glsl.lang.lexer.tokens.GLSLTokenTable;
+import org.cakelab.glsl.builtin.GLSLTokenTable;
 
 public class TestGLSLTokenTable extends TestBuiltinBase {
 	public static void main(String[] args) {

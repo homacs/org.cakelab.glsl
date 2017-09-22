@@ -1,4 +1,4 @@
-package org.cakelab.glsl.lang;
+package org.cakelab.glsl.builtin;
 
 import java.io.IOException;
 
