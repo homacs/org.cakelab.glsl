@@ -2,11 +2,11 @@ package org.cakelab.glsl.pp;
 
 import java.util.ArrayList;
 
-import org.cakelab.glsl.GLSLExtension;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
-import org.cakelab.glsl.lang.GLSLBuiltinSymbols.ShaderType;
+import org.cakelab.glsl.lang.GLSLBuiltin.ShaderType;
+import org.cakelab.glsl.lang.GLSLExtensionSet;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.ast.PPGroupScope;
 import org.cakelab.glsl.pp.error.ErrorHandler;
@@ -16,6 +16,8 @@ public class PPState {
 	
 	public static interface Listener {
 		void reportModifiedVersion(GLSLVersion version);
+
+		void process(PPExtensionDirective directive);
 	}
 	
 	@SuppressWarnings("serial")
@@ -24,6 +26,12 @@ public class PPState {
 		public void reportModifiedVersion(GLSLVersion version) {
 			for (Listener listener : this) {
 				listener.reportModifiedVersion(version);
+			}
+		}
+		@Override
+		public void process(PPExtensionDirective directive) {
+			for (Listener listener : this) {
+				listener.process(directive);
 			}
 		}
 	}
@@ -42,11 +50,10 @@ public class PPState {
 
 	private ILexer lexer;
 	
-	private MacroMap macros = new MacroMap();
 	private PPGroupScope groupScope;
 
 	private GLSLVersion glslVersion;
-	private ArrayList<GLSLExtension> extensions = new ArrayList<GLSLExtension>();
+	private ArrayList<PPExtensionDirective> extensions = new ArrayList<PPExtensionDirective>();
 	
 	
 	/* ************** config *************** */
@@ -59,6 +66,8 @@ public class PPState {
 	private boolean seenCodeLineBeforeVersion = false;
 	private boolean forcedVersion;
 	private ShaderType shaderType;
+	private GLSLExtensionSet extensionSet = new GLSLExtensionSet();
+	private MacroMap macros = new MacroMap(extensionSet);
 	
 	
 
@@ -155,10 +164,20 @@ public class PPState {
 		listeners.reportModifiedVersion(glslVersion);
 	}
 
-	public ArrayList<GLSLExtension> getExtensions() {
+	public void addExtensionDirective(PPExtensionDirective directive) {
+		extensions.add(directive);
+		listeners.process(directive);
+	}
+
+
+	public ArrayList<PPExtensionDirective> getDirectivesExtensions() {
 		return extensions;
 	}
 
+	public GLSLExtensionSet getExtensions() {
+		return extensionSet;
+	}
+	
 	public ILexer getLexer() {
 		return lexer;
 	}

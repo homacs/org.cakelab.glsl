@@ -1,8 +1,9 @@
-package org.cakelab.glsl;
+package org.cakelab.glsl.pp;
 
+import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.ast.impl.NodeImpl;
 
-public class GLSLExtension extends NodeImpl {
+public class PPExtensionDirective extends NodeImpl {
 	public static enum Behaviour {
 		REQUIRE,
 		ENABLE,
@@ -13,7 +14,7 @@ public class GLSLExtension extends NodeImpl {
 	public String identifier;
 	public Behaviour behaviour;
 	
-	public GLSLExtension(Interval interval, String identifier, Behaviour behaviour) {
+	public PPExtensionDirective(Interval interval, String identifier, Behaviour behaviour) {
 		super(interval);
 		this.identifier = identifier;
 		this.behaviour = behaviour;

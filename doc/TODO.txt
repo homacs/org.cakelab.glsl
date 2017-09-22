@@ -10,7 +10,31 @@
 
 
 				
-				Tasks for tomorrow:
-				
-				- Rewrite operator "defined".				   
+				Tasks for tomorrow:    Concept for Extensions				   
+				- requires list of available extensions from user (or compiler)
+				- allow to create list of all known extensions
+				- allow to accept any extension
+				- every extension has in GLSL
+				  - a GL_<extension_name> macro variable set to 1
+				  - its vendor specific range of supported GLSL versions
+				  - possibly a set of additional keywords         (keywords.txt)
+				  - possibly a set of additional extension symbols (preamble.glsl)
+				- extensions can be dynamically loaded and unloaded (enable/disable)
+				- files of extensions will be stored in directory versioning/extensions/
+				  - no version required!
+				  - user can add a path to look for extensions
+
+				- support for known extensions
+				  - allow to check availability based on given availability list 
+				  - add its keywords to builtin keyword table
+				  - add extension symbol table to builtin symbol table
+				  - allow disabling in glsl which then removes its 
+				    extension symbol table from builtin symbol-table 
+				- basic support for unknown extensions in the availability list:
+				  - report warning about unknown extension (may be ignored on higher level)
+				  - enable/disable and add/remove extension symbol table with macro variable only
+				- error strategy for unknown extensions
+				  - report error
+
+				  
 				

@@ -1,4 +1,4 @@
-package org.cakelab.glsl.versioning;
+package org.cakelab.glsl.builtin;
 
 import java.io.InputStream;
 
@@ -31,6 +31,10 @@ public class LookupResource {
 
 	public static String getBaseDirectory() {
 		return DIRECTORY;
+	}
+
+	public static String getExtensionDirectory(String extension) {
+		return DIRECTORY + "/extensions/" + extension;
 	}
 
 

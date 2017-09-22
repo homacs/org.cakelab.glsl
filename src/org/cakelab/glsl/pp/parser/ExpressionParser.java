@@ -481,7 +481,7 @@ public class ExpressionParser extends Parser {
 			}
 			if (IDENTIFIER()) {
 				Token ident = token;
-				if (state.getMacros().containsKey(ident.getText())) {
+				if (state.getMacros().contains(ident.getText())) {
 					primary = ConstantValue.ONE;
 				} else {
 					primary = ConstantValue.ZERO;

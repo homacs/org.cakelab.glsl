@@ -4,7 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
 
 import org.cakelab.glsl.Resource;
-import org.cakelab.glsl.lang.GLSLBuiltinSymbols.ShaderType;
+import org.cakelab.glsl.lang.GLSLBuiltin.ShaderType;
 import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.lexer.PPLexer;
 import org.cakelab.glsl.pp.parser.ExpressionParser;

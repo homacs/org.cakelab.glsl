@@ -1,13 +1,19 @@
 package org.cakelab.glsl.test.versioning;
 
 import org.cakelab.glsl.GLSLVersion;
-import org.cakelab.glsl.lang.GLSLBuiltinSymbols;
-import org.cakelab.glsl.lang.GLSLBuiltinSymbols.ShaderType;
+import org.cakelab.glsl.SymbolTable;
+import org.cakelab.glsl.lang.GLSLBuiltin;
+import org.cakelab.glsl.lang.GLSLExtension;
+import org.cakelab.glsl.lang.GLSLBuiltin.ShaderType;
 
 public class TestBuiltinSymbols extends TestBuiltinBase {
 	public static void main(String[] args) {
-		GLSLBuiltinSymbols symbols = GLSLBuiltinSymbols.get(core(130), ShaderType.VERTEX_SHADER);
-		symbols.dump(System.out);
+		GLSLBuiltin symbols = GLSLBuiltin.get(core(140), ShaderType.VERTEX_SHADER);
+		// symbols.dump(System.out);
+		
+		GLSLExtension extenion = GLSLExtension.get("ARB_compatibility", symbols.getVersion(), symbols.getShaderType());
+		extenion.dump(System.out, "");
+		throw new Error("add extension set to symbol table for example");
 	}
 	
 	
@@ -52,9 +58,7 @@ public class TestBuiltinSymbols extends TestBuiltinBase {
 
 	private static void test(GLSLVersion es) {
 		for (ShaderType t : ShaderType.values()) {
-			GLSLBuiltinSymbols.get(es, ShaderType.GENERIC_SHADER);
-			GLSLBuiltinSymbols.get(es, ShaderType.FRAGMENT_SHADER);
-			GLSLBuiltinSymbols.get(es, ShaderType.VERTEX_SHADER);
+			GLSLBuiltin.get(es, t);
 		}
 	}
 }

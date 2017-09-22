@@ -18,8 +18,7 @@ bool
     vec2   vec3  vec4    ivec2   ivec3   ivec4    bvec2   bvec3   bvec4
     uint    uvec2    uvec3    uvec4
     lowp    mediump    highp    precision
-    sampler1D   sampler2D   sampler3D   
-samplerCube
+    sampler1D   sampler2D   sampler3D   samplerCube
     sampler1DShadow   sampler2DShadow    samplerCubeShadow
     sampler1DArray   sampler2DArray
     sampler1DArrayShadow   sampler2DArrayShadow

@@ -11,11 +11,11 @@ import java.util.List;
 public class Scope {
 
 	protected Scope parent;
-	ArrayList<Scope> children = new ArrayList<Scope>();
+	protected ArrayList<Scope> children = new ArrayList<Scope>();
 	
-	HashMap<String, ArrayList<Function>> functions = new HashMap<String, ArrayList<Function>>();
-	HashMap<String, Variable> variables = new HashMap<String, Variable>();
-	HashMap<String, Type> types = new HashMap<String, Type>();
+	protected HashMap<String, ArrayList<Function>> functions = new HashMap<String, ArrayList<Function>>();
+	protected HashMap<String, Variable> variables = new HashMap<String, Variable>();
+	protected HashMap<String, Type> types = new HashMap<String, Type>();
 	
 	
 	
@@ -23,12 +23,6 @@ public class Scope {
 		this.parent = parent;
 	}
 
-	public Scope global() {
-		Scope global = this;
-		while (global.parent != null) global = global.parent;
-		return global;
-	}
-	
 	public void reset() {
 		functions.clear();
 		variables.clear();
@@ -142,8 +136,14 @@ public class Scope {
 				((Struct)t).body.dump(out, innerIndent);
 			}
 		}
-		
 		out.println(indent + "}");
+	}
+
+	protected void flatcopy(Scope that) {
+		this.children.addAll(that.children);
+		this.functions.putAll(that.functions);
+		this.types.putAll(that.types);
+		this.variables.putAll(that.variables);
 	}
 
 

@@ -435,7 +435,7 @@ vec4 shadow2DProjLod(sampler2DShadow sampler, vec4 coord, float lod);
 
 
 // -----------------------------------------------------------------------------------
-//                           Vector Relational Functions
+//                           8.6 Vector Relational Functions
 // -----------------------------------------------------------------------------------
 #define GENERIC_FUNCTION_SET(genType) \
 genType dFdx (genType p);\

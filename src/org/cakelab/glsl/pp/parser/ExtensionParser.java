@@ -1,8 +1,8 @@
 package org.cakelab.glsl.pp.parser;
 
-import org.cakelab.glsl.GLSLExtension;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
+import org.cakelab.glsl.pp.PPExtensionDirective;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.error.Recovery;
 import org.cakelab.glsl.pp.tokens.TIdentifier;
@@ -13,6 +13,7 @@ public class ExtensionParser extends Parser {
 	private Interval interval;
 	@SuppressWarnings("unused")
 	private Preprocessor control;
+	private PPExtensionDirective directive;
 	
 	
 	
@@ -39,19 +40,19 @@ public class ExtensionParser extends Parser {
 				mandatory(TPunctuator.class, ":");
 				while(WHITESPACE());
 				
-				GLSLExtension.Behaviour behaviour = null;
+				PPExtensionDirective.Behaviour behaviour = null;
 				Location end = null;
 				if (IDENTIFIER()) {
 					TIdentifier ident = (TIdentifier) token;
 					end = ident.getEnd();
 					if (ident.getText().equals("require")) {
-						behaviour = GLSLExtension.Behaviour.REQUIRE;
+						behaviour = PPExtensionDirective.Behaviour.REQUIRE;
 					} else if (ident.getText().equals("enable")) {
-						behaviour = GLSLExtension.Behaviour.ENABLE;
+						behaviour = PPExtensionDirective.Behaviour.ENABLE;
 					} else if (ident.getText().equals("warn")) {
-						behaviour = GLSLExtension.Behaviour.WARN;
+						behaviour = PPExtensionDirective.Behaviour.WARN;
 					} else if (ident.getText().equals("disable")) {
-						behaviour = GLSLExtension.Behaviour.DISABLE;
+						behaviour = PPExtensionDirective.Behaviour.DISABLE;
 					} else {
 						syntaxError(ident.getStart(), "extension behaviour has to be one of [require, enable, warn, disable])");
 					}
@@ -62,7 +63,8 @@ public class ExtensionParser extends Parser {
 				mandatory_endl();
 				
 				if (extensionName != null && behaviour != null) {
-					state.getExtensions().add(new GLSLExtension(new Interval(start, end), extensionName.getText(), behaviour));
+					this.directive = new PPExtensionDirective(new Interval(start, end), extensionName.getText(), behaviour);
+					state.addExtensionDirective(directive);
 				}
 				
 			}

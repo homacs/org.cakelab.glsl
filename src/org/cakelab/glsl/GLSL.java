@@ -6,8 +6,8 @@ import java.util.List;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.impl.GLSLErrorHandlerImpl;
 import org.cakelab.glsl.lang.ASTBuilder;
-import org.cakelab.glsl.lang.GLSLBuiltinSymbols;
-import org.cakelab.glsl.lang.GLSLBuiltinSymbols.ShaderType;
+import org.cakelab.glsl.lang.GLSLBuiltin;
+import org.cakelab.glsl.lang.GLSLBuiltin.ShaderType;
 import org.cakelab.glsl.lang.ast.Scope;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.PPTokenStream;
@@ -51,7 +51,7 @@ public class GLSL {
 
 		// TODO consider glsl extensions in symbol table
 		GLSLVersion version = buffer.getVersion();
-		GLSLBuiltinSymbols builtinSymbols = GLSLBuiltinSymbols.get(version, shaderType);
+		GLSLBuiltin builtinSymbols = GLSLBuiltin.get(version, shaderType);
 		
 		GLSLTokenTable tokenTable = GLSLTokenTable.get(version);
 		SymbolTable symbolTable = new SymbolTable(builtinSymbols.getBuiltinScope());

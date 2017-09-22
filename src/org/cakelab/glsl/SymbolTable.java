@@ -12,8 +12,8 @@ public class SymbolTable {
 	/** builtin scope contains all builtin symbols */
 	private Scope builtin;
 	/** toplevel scope is the first and only child of the builtin scope */
-	private Scope toplevel;
-	private Scope scope;
+	protected Scope toplevel;
+	protected Scope scope;
 	
 	
 	public SymbolTable(Scope builtinScope) {

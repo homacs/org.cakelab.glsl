@@ -24,8 +24,8 @@ import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.impl.GLSLErrorHandlerImpl;
 import org.cakelab.glsl.lang.ASTBuilder;
-import org.cakelab.glsl.lang.GLSLBuiltinSymbols;
-import org.cakelab.glsl.lang.GLSLBuiltinSymbols.ShaderType;
+import org.cakelab.glsl.lang.GLSLBuiltin;
+import org.cakelab.glsl.lang.GLSLBuiltin.ShaderType;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.PPTokenStream;
 import org.cakelab.glsl.lang.lexer.tokens.GLSLTokenTable;
@@ -295,7 +295,7 @@ public class TestingTools {
 
 		GLSLVersion version = buffer.getVersion();
 		GLSLTokenTable tokenTable = GLSLTokenTable.get(version);
-		GLSLBuiltinSymbols builtin = TestBuiltinBase.getTestBuiltinSymbols(tokenTable);
+		GLSLBuiltin builtin = TestBuiltinBase.getTestBuiltinSymbols(tokenTable);
 		//	TODO: think of a method to 
 		SymbolTable symbolTable = new SymbolTable(builtin.getBuiltinScope());
 		PPTokenStream tokens = new PPTokenStream(buffer, tokenTable, symbolTable, error);

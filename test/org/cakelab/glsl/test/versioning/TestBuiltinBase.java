@@ -1,7 +1,7 @@
 package org.cakelab.glsl.test.versioning;
 
 import org.cakelab.glsl.GLSLVersion;
-import org.cakelab.glsl.lang.GLSLBuiltinSymbols;
+import org.cakelab.glsl.lang.GLSLBuiltin;
 import org.cakelab.glsl.lang.lexer.tokens.GLSLTokenTable;
 
 public class TestBuiltinBase {
@@ -14,8 +14,8 @@ public class TestBuiltinBase {
 	protected static GLSLVersion es(int number) {
 		return new GLSLVersion(null, number, GLSLVersion.Profile.es);
 	}
-	public static GLSLBuiltinSymbols getTestBuiltinSymbols(GLSLTokenTable tokens) {
-		return GLSLBuiltinSymbols.getTestSymbolTable(tokens);
+	public static GLSLBuiltin getTestBuiltinSymbols(GLSLTokenTable tokens) {
+		return GLSLBuiltin.getTestSymbolTable(tokens);
 	}
 
 }

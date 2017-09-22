@@ -6,10 +6,10 @@ import java.util.HashMap;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.GLSLVersion.Profile;
+import org.cakelab.glsl.builtin.LookupResource;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.scanner.StreamScanner;
 import org.cakelab.glsl.util.ObjectCache;
-import org.cakelab.glsl.versioning.LookupResource;
 
 
 
@@ -176,6 +176,11 @@ public class GLSLTokenTable {
 
 	public static GLSLTokenTable getDefault() {
 		return get(DEFAULT_GLSL_VERSION);
+	}
+
+
+	public GLSLVersion getVersion() {
+		return version;
 	}
 
 

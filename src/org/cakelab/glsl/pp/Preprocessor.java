@@ -15,8 +15,9 @@ import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.lang.EvaluationException;
-import org.cakelab.glsl.lang.GLSLBuiltinSymbols;
-import org.cakelab.glsl.lang.GLSLBuiltinSymbols.ShaderType;
+import org.cakelab.glsl.lang.GLSLBuiltin;
+import org.cakelab.glsl.lang.GLSLBuiltin.ShaderType;
+import org.cakelab.glsl.lang.GLSLExtension;
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.pp.ast.Macro;
@@ -84,7 +85,6 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	private ErrorParser errorParser;
 	private LineParser lineParser;
 	private PragmaParserSet pragmaParser;
-
 
 	private ExtensionParser extensionParser;
 
@@ -1173,8 +1173,28 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	@Override
 	public void reportModifiedVersion(GLSLVersion version) {
 		if (!state.isForcedVersion()) {
-			GLSLBuiltinSymbols symbols = GLSLBuiltinSymbols.get(version, state.getShaderType());
-			state.getMacros().putAll(symbols.getMacros());
+			GLSLBuiltin symbols = GLSLBuiltin.get(version, state.getShaderType());
+			state.getMacros().setBuiltin(symbols.getBuiltinMacros());
+		}
+	}
+
+	@Override
+	public void process(PPExtensionDirective directive) {
+		switch(directive.behaviour) {
+		case DISABLE:
+			state.getExtensions().disable(directive.identifier);
+			break;
+		case ENABLE:
+			GLSLExtension e = GLSLExtension.get(directive.identifier, state.getGlslVersion(), state.getShaderType());
+			state.getExtensions().enable(e);
+			break;
+		case REQUIRE:
+			break;
+		case WARN:
+			break;
+		default:
+			break;
+		
 		}
 	}
 
