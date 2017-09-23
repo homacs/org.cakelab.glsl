@@ -3,20 +3,21 @@ package org.cakelab.glsl.builtin;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
 import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
 import org.cakelab.glsl.pp.ast.Macro;
-import org.cakelab.glsl.util.ObjectCache;
 
 public class GLSLExtension extends ScopeImpl {
-	// TODO: when using cached builtins, extensions may reference 
-	// for example global variables from different instances of the same builtins or extensions
-	// TODO: extensions may depend on other extensions
-	
-	
+
+	/**
+	 * Hash key attributes for a loaded extension. 
+	 * 
+	 * @author homac
+	 */
 	public static class Key {
 		GLSLVersion version;
 		String name;
@@ -58,11 +59,14 @@ public class GLSLExtension extends ScopeImpl {
 				return false;
 			return true;
 		}
-		
-		
 	}
-
-	static final ObjectCache<Key, GLSLExtension> CACHE = new ObjectCache<Key, GLSLExtension>(4);
+	
+	
+	// TODO: performance: think about a better way to cache extensions and builtin symbols
+	//       builtins and extensions cannot be removed from cache as long as symbols still in use 
+	//      (because of duplicate symbol instantiation when loading it again)
+	// maybe with weak references?
+	static final Map<Key, GLSLExtension> CACHE = new HashMap<Key, GLSLExtension>(4);
 
 	public static GLSLExtension get(BuiltinScope builtins, String extension, GLSLVersion version, ShaderType type) {
 		Key key = new Key(extension, version, type);

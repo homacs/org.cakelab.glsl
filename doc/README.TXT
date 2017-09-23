@@ -1114,3 +1114,128 @@ Usual builtin macros such as __VERSION__, GL_compatibility_profile, etc. will be
 Special builtin macros such as __LINE__ and __FILE__ require a specific implementation and will be 
 added by the preprocessor.
 
+
+Extensions
+==========
+
+Extensions are generally extensions to a specific version
+of the GLSL specification, but they may support even previous
+versions, if the required features are available.
+
+Extensions may define additional features for glsl:
+	- Keywords
+	- Types
+	- Macros
+	- Functions
+	- Variables
+	
+Extensions have dependencies on features of
+	- A specific range of GLSL version, profile and hardware combinations
+	- Other extensions
+	- A set of extension out of a group of equivalent extensions 
+	  and/or extension sets, which can be mutually exclusive.
+
+Extensions may conflict with
+	- A specific range of GLSL version and profile combinations
+	- Other extensions
+	- Certain compiler (hardware/software)
+
+Due to the fact, that equivalent extensions can be mutually exclusive 
+a specific GLSL version and profile can have multiple sets of valid
+extension combinations. This is the reason, why the preprocessor
+directive 
+  #extension all : enable
+is invalid.
+
+The hardware provides a list of _all_ extensions supported by it. 
+	 glGetIntegerv(GL_NUM_EXTENSIONS)
+	 glGetStringi(GL_EXTENSIONS)
+
+
+Before loading an extension, the following requirements have to be checked:
+- GLSL version and profile (min/max versions and list of supported profiles)
+- Availability (list of all supported extensions of this compiler)
+- Conflicts    (list of conflicting extensions)
+- Dependencies (list of extensions and groups of equivalent extensions)
+
+If one of the above requirements is not met, the load gets aborted, 
+warning is reported and the translation continues.
+
+
+Concept:
+--------
+
+Extensions will be declared by a set of files in a directory <extension-name>, 
+equivalent to the files for profiles:
+- <extension-name>/properties.json : set of requirements except availability.
+- <extension-name>/preamble.glsl : all declared GLSL symbols.
+
+Properties file has the following content:
+
+{
+	"name" : "EXT_example",               // name of the extension
+	"number" : 58,                        // number of the extension
+	"since" : 140,
+	"requirements" : {
+		"versions" : {
+			"core" : "[110,140],430",     // core profile, 110 <= version <= 140 or version == 430 
+			"es" : "100"                  // es profile, version == 100
+		},
+		"dependencies" :                  
+		{"all":[                          // all top level dependencies must be met
+			"EXT_dep1",                   // 1st mandatory dependency
+			{"any":[                      // 2nd dependency is set of optional dependencies (one is required)
+				"EXT_dep2_opt1",          // 1st option of the 2nd dependency
+				{"any":[                  // 2nd option of the 2nd dependency (another set of options, 1 required)
+					"EXT_dep2_opt2_opt1",
+					"EXT_dep2_opt2_opt2"          
+				]},
+				{"all":[                  // 3rd option of the 2nd dependency (group of dependencies, all required)
+					{"any":[
+						"EXT_dep2_opt3_dep1",            
+						"EXT_dep2_opt3_dep2",
+						{"any":[          // set of options for the 3rd member of the dependencies group
+							"EXT_dep2_opt3_dep3_opt1",
+							"EXT_dep2_opt3_dep3_opt2"
+					    ]}
+					]}
+				]}
+			]}
+		]},
+		"conflicts" : [                   // list of all conflicting extensions
+			"EXT_conflict1",
+			"EXT_conflict2"
+		]
+	}
+}
+
+
+
+				- requires list of available extensions from user (or compiler)
+				- allow to create list of all known extensions
+				- allow to accept any extension
+				- every extension has in GLSL
+				  - a GL_<extension_name> macro variable set to 1
+				  - its vendor specific range of supported GLSL versions
+				  - possibly a set of additional keywords         (keywords.txt)
+				  - possibly a set of additional extension symbols (preamble.glsl)
+				- extensions can be dynamically loaded and unloaded (enable/disable)
+				- files of extensions will be stored in directory versioning/extensions/
+				  - no version required!
+				  - user can add a path to look for extensions
+
+				- support for known extensions
+				  - allow to check availability based on given availability list 
+				  - add its keywords to builtin keyword table
+				  - add extension symbol table to builtin symbol table
+				  - allow disabling in glsl which then removes its 
+				    extension symbol table from builtin symbol-table 
+				- basic support for unknown extensions in the availability list:
+				  - report warning about unknown extension (may be ignored on higher level)
+				  - enable/disable and add/remove extension symbol table with macro variable only
+				- error strategy for unknown extensions
+				  - report error
+
+
+
+

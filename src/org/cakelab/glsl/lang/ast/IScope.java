@@ -3,7 +3,6 @@ package org.cakelab.glsl.lang.ast;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public interface IScope {
 

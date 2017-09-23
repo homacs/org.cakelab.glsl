@@ -1,0 +1,8 @@
+{
+	"name" : "ARB_compatibility",
+	"number" : 58,
+	"since" : 140,
+	"versions" : {
+		"core" : "[110,140]"
+	}
+}

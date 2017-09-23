@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
@@ -33,7 +34,6 @@ import org.cakelab.glsl.pp.MacroMap;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.error.SyntaxError;
-import org.cakelab.glsl.util.ObjectCache;
 
 public class GLSLBuiltin extends SymbolTable {
 	
@@ -253,7 +253,7 @@ public class GLSLBuiltin extends SymbolTable {
 	}
 	
 	/** cache for recently parsed preambles */
-	static final ObjectCache<Key, GLSLBuiltin> BUILTIN_SYMBOLS_CACHE = new ObjectCache<Key, GLSLBuiltin>(4);
+	static final Map<Key, GLSLBuiltin> BUILTIN_SYMBOLS_CACHE = new HashMap<Key, GLSLBuiltin>(4);
 	
 	
 	private Key key;
