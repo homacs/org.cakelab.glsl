@@ -38,9 +38,9 @@ public class CallExpression extends PostfixExpression {
 		if (addressed instanceof TypeReference) {
 			return ((TypeReference)addressed).call(args);
 		} else if (addressed instanceof FunctionReference) {
-			return ((FunctionReference)addressed).getFunction().call(args);
+			return ((FunctionReference)addressed).getFunction(args).call(args);
 		} else if (addressed instanceof MemberReference) {
-			return ((MemberReference)addressed).getMethod().call(((MemberReference)addressed).getCompound(), args);
+			return ((MemberReference)addressed).getMethod(args).call(((MemberReference)addressed).getCompound(), args);
 		} else {
 			throw new Error("neither a function, method nor constructor call.");
 		}

@@ -5,6 +5,9 @@ import java.io.PrintStream;
 import org.cakelab.glsl.builtin.BuiltinScope;
 import org.cakelab.glsl.lang.ast.Function;
 import org.cakelab.glsl.lang.ast.IScope;
+import org.cakelab.glsl.lang.ast.InterfaceBlock;
+import org.cakelab.glsl.lang.ast.Qualifier;
+import org.cakelab.glsl.lang.ast.Qualifier.DirectionQualifier;
 import org.cakelab.glsl.lang.ast.Type;
 import org.cakelab.glsl.lang.ast.Variable;
 import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
@@ -59,6 +62,36 @@ public class SymbolTable {
 		}
 		return false;
 	}
+	public boolean containsConflictingInterface(InterfaceBlock block) {
+		for (IScope s = scope; s != null; s = s.getParent()) {
+			if (s.containsInterface(block)) return true;
+		}
+		return false;
+	}
+
+	public boolean containsConflictingInterface(DirectionQualifier direction, String name) {
+		if (direction == Qualifier._in) {
+			for (IScope s = scope; s != null; s = s.getParent()) {
+				if (s.containsInterface(Qualifier._in, name)) return true;
+				if (s.containsInterface(Qualifier._inout, name)) return true;
+			}
+		} else if (direction == Qualifier._inout) {
+			for (IScope s = scope; s != null; s = s.getParent()) {
+				if (s.containsInterface(Qualifier._in, name)) return true;
+				if (s.containsInterface(Qualifier._inout, name)) return true;
+				if (s.containsInterface(Qualifier._out, name)) return true;
+			}
+		} else if (direction == Qualifier._out) {
+			for (IScope s = scope; s != null; s = s.getParent()) {
+				if (s.containsInterface(Qualifier._inout, name)) return true;
+				if (s.containsInterface(Qualifier._out, name)) return true;
+			}
+		} else {
+			throw new Error("internal error: unhandled or null direction qualifier");
+		}
+		return false;
+	}
+
 
 	public boolean containsFunction(String name) {
 		for (IScope s = scope; s != null; s = s.getParent()) {
@@ -82,14 +115,23 @@ public class SymbolTable {
 		return null;
 	}
 
-	public Function getFunction(String name) {
+	public Function getFunction(String name, Type[] parameterTypes) {
 		for (IScope s = scope; s != null; s = s.getParent()) {
-			Function f = s.getFunction(name);
+			Function f = s.getFunction(name, parameterTypes);
 			if (f != null) return f;
 		}
 		return null;
 	}
 
+	public boolean containsFunctionGroup(String name) {
+		for (IScope s = scope; s != null; s = s.getParent()) {
+			if (s.containsFunction(name)) return true;
+		}
+		return false;
+	}
+
+
+	
 	public Variable getVariable(String id) {
 		for (IScope s = scope; s != null; s = s.getParent()) {
 			Variable v = s.getVariable(id);
@@ -103,12 +145,16 @@ public class SymbolTable {
 		scope.addFunction(func);
 	}
 
-	public void addVariable(String name, Variable var) {
-		scope.addVariable(name, var);
+	public void addVariable(Variable var) {
+		scope.addVariable(var);
 	}
 
-	public void addType(String name, Type type) {
-		scope.addType(name, type);
+	public void addType(Type type) {
+		scope.addType(type);
+	}
+
+	public void addInterface(InterfaceBlock block) {
+		scope.addInterface(block);
 	}
 
 	public IScope getTopLevelScope() {
@@ -119,6 +165,7 @@ public class SymbolTable {
 	public void dump(PrintStream out) {
 		toplevel.dump(out, "");
 	}
+
 
 
 }

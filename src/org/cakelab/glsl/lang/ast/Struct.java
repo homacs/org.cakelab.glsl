@@ -98,21 +98,25 @@ public class Struct extends Type {
 			if (member instanceof Method) {
 				super.addFunction(((Method)member));
 			} else if (member instanceof MemberVariable){
-				super.addVariable(member.getName(), (Variable) member);
+				super.addVariable((Variable) member);
 			} else if (member instanceof Type) {
-				super.addType(member.getName(), (Type) member);
+				super.addType((Type) member);
 			} else {
 				throw new Error("internal error: unrecognized kind of member in struct");
 			}
 		}
 
 		public Member getMember(String identifier) {
-			Member m = (Member) getFunction(identifier);
-			if (m != null) return m;
-			m = (Member) super.getType(identifier);
+			Member m = (Member) super.getType(identifier);
 			if (m != null) return m;
 			return (Member) super.getVariable(identifier);
 		}
+
+		public Method getMethod(String name, Type[] parameterTypes) {
+			Method m = (Method) getFunction(name, parameterTypes);
+			return m;
+		}
+		
 		
 		public ArrayList<Member> getMembers() {
 			return members;
@@ -147,4 +151,13 @@ public class Struct extends Type {
 	public IScope getBody() {
 		return body;
 	}
+	
+	public String toString() {
+		String fqn = "struct " + this.signature;
+		if (!qualifiers.isEmpty()) {
+			fqn = qualifiers.toString() + " " + fqn;
+		}
+		return fqn;
+	}
+	
 }

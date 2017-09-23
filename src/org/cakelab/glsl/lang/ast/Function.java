@@ -1,17 +1,61 @@
 package org.cakelab.glsl.lang.ast;
 
 
+import java.util.Arrays;
+
 import org.cakelab.glsl.lang.ast.impl.NodeImpl;
 import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
 
 public class Function extends NodeImpl implements Comparable<Function> {
+
+	public static class Key {
+		String name;
+		Type[] parameterTypes;
+
+		public Key(String name, Type[] parameterTypes) {
+			super();
+			this.name = name;
+			this.parameterTypes = parameterTypes;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((name == null) ? 0 : name.hashCode());
+			result = prime * result + Arrays.hashCode(parameterTypes);
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			Key other = (Key) obj;
+			if (name == null) {
+				if (other.name != null)
+					return false;
+			} else if (!name.equals(other.name))
+				return false;
+			if (!Arrays.equals(parameterTypes, other.parameterTypes))
+				return false;
+			return true;
+		}
+		
+	}
+
+
 
 	public static class Body extends ScopeImpl {
 		public Body(IScope parent, ParameterDeclaration[] parameters) {
 			super(parent);
 			for (ParameterDeclaration p : parameters) {
 				if (p.name != null) {
-					addVariable(p.name, p);
+					addVariable(p);
 				}
 			}
 		}
@@ -50,6 +94,35 @@ public class Function extends NodeImpl implements Comparable<Function> {
 		this.parameters = parameters;
 	}
 
+	/** Compares the given sequence of types to the types of the parameters of this function.
+	 *  Considers void functions, meaning that an empty (or null) list of parameter types equals void.*/
+	public boolean compareParameters(Type[] parameterTypes) {
+		if (parameters == null || parameters.length == 0 || parameters[0].type == Type._void) {
+			return (parameterTypes == null || parameterTypes.length == 0 || parameterTypes[0] == Type._void);
+		} else {
+			if (parameterTypes == null || parameterTypes.length == 0) {
+				return false;
+			} else {
+				// both are not null, not of zero length, and not void
+				if (parameters.length != parameterTypes.length) {
+					// not the same number of parameters
+					return false;
+				} else {
+					for (int i = 0; i < parameters.length; i++) {
+						
+						if (!parameters[i].getType().equals(parameterTypes[i])) {
+							return false;
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+
+	
+	
 	public String toString() {
 		String signature = type.toString() + " " + this.name + "(";
 		for (int i = 0; i < parameters.length; i++) {
@@ -85,6 +158,8 @@ public class Function extends NodeImpl implements Comparable<Function> {
 	public Type getType() {
 		return type;
 	}
+
+
 
 
 	/*

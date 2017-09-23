@@ -19,6 +19,35 @@ public class Qualifiers extends ArrayList<Qualifier>{
 		throw new Error("not implemented");
 	}
 	
+	public boolean hasQualifier(Qualifier query) {
+		return this.contains(query);
+	}
+
+	
+	public Qualifiers getAll(Class<? extends Qualifier> qualifierType) {
+		Qualifiers result = null;
+		for (Qualifier q : this) {
+			if (qualifierType.isInstance(q)) {
+				if (result == null) {
+					result = new Qualifiers();
+				}
+				result.add(q);
+			}
+		}
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Qualifier> T get(Class<T> qualifierType) {
+		T result = null;
+		for (Qualifier q : this) {
+			if (qualifierType.isInstance(q)) {
+				result = (T) q;
+			}
+		}
+		return result;
+	}
+
 	public String toString() {
 		StringBuffer result = new StringBuffer();
 		for (int i = 0; i < size(); i++) {
@@ -40,4 +69,6 @@ public class Qualifiers extends ArrayList<Qualifier>{
 	public void add(Qualifiers qualifiers) {
 		addAll(qualifiers);
 	}
+
+
 }

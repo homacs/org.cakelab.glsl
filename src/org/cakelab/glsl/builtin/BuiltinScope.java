@@ -6,6 +6,8 @@ import java.util.Collection;
 
 import org.cakelab.glsl.lang.ast.Function;
 import org.cakelab.glsl.lang.ast.IScope;
+import org.cakelab.glsl.lang.ast.InterfaceBlock;
+import org.cakelab.glsl.lang.ast.Qualifier;
 import org.cakelab.glsl.lang.ast.Type;
 import org.cakelab.glsl.lang.ast.Variable;
 
@@ -31,6 +33,17 @@ public class BuiltinScope implements IScope {
 	}
 
 	@Override
+	public boolean containsInterface(Qualifier direction, String name) {
+		return builtins.containsInterface(direction, name) || extensions.containsInterface(direction, name);
+	}
+
+	@Override
+	public boolean containsInterface(InterfaceBlock block) {
+		return builtins.containsInterface(block) || extensions.containsInterface(block);
+	}
+
+
+	@Override
 	public boolean containsFunction(String name) {
 		return builtins.containsFunction(name) || extensions.containsFunction(name);
 	}
@@ -49,10 +62,26 @@ public class BuiltinScope implements IScope {
 	}
 
 	@Override
-	public Function getFunction(String name) {
-		Function f = builtins.getFunction(name);
+	public InterfaceBlock getInterface(Qualifier direction, String name) {
+		InterfaceBlock t = builtins.getInterface(direction, name);
+		if (t != null) return t;
+		
+		return extensions.getInterface(direction, name);
+	}
+
+	@Override
+	public Collection<InterfaceBlock> getInterfaces() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	
+	@Override
+	public Function getFunction(String name, Type[] parameterTypes) {
+		Function f = builtins.getFunction(name, parameterTypes);
 		if (f != null) return f;
-		return extensions.getFunction(name);
+		return extensions.getFunction(name, parameterTypes);
 	}
 
 	@Override
@@ -91,7 +120,7 @@ public class BuiltinScope implements IScope {
 
 	@Override
 	public void add(IScope child) {
-		throw new Error("not supported");
+		// ignore
 	}
 
 
@@ -108,13 +137,18 @@ public class BuiltinScope implements IScope {
 
 
 	@Override
-	public void addVariable(String name, Variable var) {
+	public void addVariable(Variable var) {
 		throw new Error("not supported");
 	}
 
 
 	@Override
-	public void addType(String name, Type type) {
+	public void addType(Type type) {
+		throw new Error("not supported");
+	}
+
+	@Override
+	public void addInterface(InterfaceBlock block) {
 		throw new Error("not supported");
 	}
 

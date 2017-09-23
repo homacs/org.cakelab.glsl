@@ -216,7 +216,7 @@ public class ASTBuilder extends GLSLBaseListener {
 					// create qualified variable
 					Variable var = new Variable(block, id);
 					
-					symbolTable.addVariable(var.getName(), var);
+					symbolTable.addVariable(var);
 				}
 			}
 		} else if (ctx.glslFunctionPrototype() != null) {
@@ -248,8 +248,19 @@ public class ASTBuilder extends GLSLBaseListener {
 
 
 	private void addTypeIfMissing(Type type) {
-		if (!symbolTable.containsType(type.getName())) {
-			symbolTable.addType(type.getName(), type);
+		if (type instanceof InterfaceBlock) {
+			InterfaceBlock block = (InterfaceBlock)type;
+			if (symbolTable.containsConflictingInterface(block.getDirection(), block.getName())) {
+				errorHandler.error(block.getStart(), "interface block " + block.getKey() + " already exists");
+			} else {
+				symbolTable.addInterface(block);
+			}
+		} else {
+			if (!symbolTable.containsType(type.getName())) {
+				errorHandler.error(type.getStart(), "type " + type.getName() + " already exists");
+			} else {
+				symbolTable.addType(type);
+			}
 		}
 	}
 
@@ -270,7 +281,7 @@ public class ASTBuilder extends GLSLBaseListener {
 			// create qualified variable
 			Variable var = new Variable(varType, id, qualifiers);
 			
-			symbolTable.addVariable(var.getName(), var);
+			symbolTable.addVariable(var);
 		}
 	}
 
@@ -293,11 +304,11 @@ public class ASTBuilder extends GLSLBaseListener {
 
 
 	public void addDeclaredVariable(String name, Variable var) {
-		symbolTable.addVariable(name, var);
+		symbolTable.addVariable(var);
 	}
 
 	public void addDeclaredType(String name, Type type) {
-		symbolTable.addType(name, type);
+		symbolTable.addType(type);
 	}
 
 	public IScope getToplevelScope() {

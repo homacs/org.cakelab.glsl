@@ -7,13 +7,18 @@ import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 
 public class TestBuiltinSymbols extends TestBuiltinBase {
 	public static void main(String[] args) {
+		GLSLBuiltin symbols = GLSLBuiltin.get(core(150), ShaderType.GEOMETRY_SHADER);
+		symbols.dump(System.out);
+	}
+
+	
+	public static void testExtension() {
 		GLSLBuiltin symbols = GLSLBuiltin.get(core(140), ShaderType.VERTEX_SHADER);
 		
 		WorkingSet workingSet = symbols.createWorkingSet();
 		workingSet.enableExtension("ARB_compatibility");
 		workingSet.dump(System.out);
 	}
-	
 	
 	public static void test() {
 		

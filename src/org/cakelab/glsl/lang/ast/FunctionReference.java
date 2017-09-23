@@ -4,26 +4,27 @@ import org.cakelab.glsl.Interval;
 
 public class FunctionReference extends PrimaryExpression implements Identifier {
 
-	protected Function function;
 
-	public FunctionReference(Interval interval, Function function) {
+	private String name;
+
+	public FunctionReference(Interval interval, String name) {
 		super(interval);
-		this.function = function;
+		this.name = name;
 	}
 
 	@Override
 	public String getName() {
-		return function.name;
-	}
-
-	public Function getFunction() {
-		return function;
+		return name;
 	}
 
 	@Override
 	public Value value() {
 		// TODO implement value of function. Is it a function?
 		return null;
+	}
+
+	public Function getFunction(Value[] args) {
+		throw new Error("not yet implemented");
 	}
 
 

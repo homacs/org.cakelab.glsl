@@ -22,6 +22,10 @@ public class MemberReference extends Value {
 		return compound;
 	}
 
+	public Method getMethod(Value[] args) {
+		throw new Error("not yet implemented");
+	}
+
 	
 	
 }

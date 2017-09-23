@@ -6,22 +6,31 @@ import java.util.Collection;
 
 public interface IScope {
 
+	void addInterface(InterfaceBlock block);
+	InterfaceBlock getInterface(Qualifier direction, String name);
+	boolean containsInterface(Qualifier direction, String name);
+	boolean containsInterface(InterfaceBlock block);
+
+	Collection<InterfaceBlock> getInterfaces();
+
+	void addType(Type type);
 	boolean containsType(String name);
-	// FIXME: Function lookup has to consider return parameter types!
-	boolean containsFunction(String name);
-	boolean containsVariable(String name);
 	Type getType(String name);
-	Function getFunction(String name);
+	Collection<Type> getTypes();
+	
+	// FIXME: Function lookup has to consider return parameter types!
+	void addFunction(Function func);
+	boolean containsFunction(String name);
+	Function getFunction(String name, Type[] parameterTypes);
+	
+	void addVariable(Variable var);
+	boolean containsVariable(String name);
+	Variable getVariable(String name);
+	
 	void add(IScope child);
 	IScope getParent();
-	void addFunction(Function func);
-	void addVariable(String name, Variable var);
-	void addType(String name, Type type);
-	Variable getVariable(String identifier);
 	ArrayList<IScope> getChildren();
-	Collection<Type> getTypes();
-	void dump(PrintStream out, String indent);
 	
-
+	void dump(PrintStream out, String indent);
 
 }

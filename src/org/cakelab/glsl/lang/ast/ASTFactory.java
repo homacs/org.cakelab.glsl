@@ -196,8 +196,7 @@ public class ASTFactory {
 			Type type = symbols.getType(id);
 			if (type != null) return new TypeReference(interval, type);
 			
-			Function fun = symbols.getFunction(id);
-			if (fun != null) return new FunctionReference(interval, (Function)fun);
+			if (symbols.containsFunctionGroup(id)) return new FunctionReference(interval, id);
 			
 			
 			// non of the above
@@ -291,7 +290,6 @@ public class ASTFactory {
 		for (int i = 0; i < assignments.size(); i++) {
 			arguments[i] = create(assignments.get(i));
 		}
-		
 		return new CallExpression(operand, arguments, getEndLocation(args));
 	}
 
@@ -322,7 +320,6 @@ public class ASTFactory {
 		InterfaceBlock interfaceBlock;
 		if (qualifiers != null && qualifiers.size() > 0) {
 			interfaceBlock = new InterfaceBlock(createInterval(ctx), symbols.getScope(), identifier, qualifiers);
-			interfaceBlock = (InterfaceBlock) Type._qualified(interfaceBlock, qualifiers);
 		} else {
 			interfaceBlock = new InterfaceBlock(createInterval(ctx), symbols.getScope(), identifier, null);
 		}
@@ -491,10 +488,11 @@ public class ASTFactory {
 				GlslFunctionNameListContext flist = storage.glslFunctionNameList();
 				if (flist != null) {
 					List<GlslFunctionNameContext> names = flist.glslFunctionName();
-					Function[] function = new Function[names.size()];
+					FunctionReference[] function = new FunctionReference[names.size()];
 					for (int i = 0; i < function.length; i++) {
 						GlslFunctionNameContext n = names.get(i);
-						function[i] = symbols.getFunction(n.getText());
+						String ident = n.getText();
+						function[i] = new FunctionReference(createInterval(n), ident);
 					}
 					return Qualifier._subroutine();
 				} else {

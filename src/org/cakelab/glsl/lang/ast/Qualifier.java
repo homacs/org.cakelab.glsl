@@ -92,6 +92,12 @@ public class Qualifier {
 		}
 	}
 	
+	public static class DirectionQualifier extends StorageQualifier {
+		DirectionQualifier(String name) {
+			super(name);
+		}
+	}
+	
 
 	final String name;
 
@@ -136,9 +142,9 @@ public class Qualifier {
 	public static StorageQualifier _const = new StorageQualifier("const");
 	public static StorageQualifier _attribute = new StorageQualifier("attribute");
 	public static StorageQualifier _varying = new StorageQualifier("varying");
-	public static StorageQualifier _inout = new StorageQualifier("inout");
-	public static StorageQualifier _in = new StorageQualifier("in");
-	public static StorageQualifier _out = new StorageQualifier("out");
+	public static DirectionQualifier _inout = new DirectionQualifier("inout");
+	public static DirectionQualifier _in = new DirectionQualifier("in");
+	public static DirectionQualifier _out = new DirectionQualifier("out");
 	public static StorageQualifier _centroid = new StorageQualifier("centroid");
 	public static StorageQualifier _patch = new StorageQualifier("patch");
 	public static StorageQualifier _sample = new StorageQualifier("sample");

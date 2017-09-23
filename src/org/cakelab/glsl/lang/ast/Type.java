@@ -31,7 +31,7 @@ public class Type extends NodeImpl implements Comparable<Type> {
 	public static int KIND_VECTOR = KIND_MATRIX;
 	
 	/** Signature is the fully specified type name (e.g. 'int[]' or 'void' but not 'int[3]'). */
-	private Qualifiers qualifiers = new Qualifiers();
+	protected Qualifiers qualifiers = new Qualifiers();
 	final String signature;
 
 	final int kind;

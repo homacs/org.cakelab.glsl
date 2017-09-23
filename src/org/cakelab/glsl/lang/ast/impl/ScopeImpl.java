@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.cakelab.glsl.lang.ast.Function;
 import org.cakelab.glsl.lang.ast.IScope;
+import org.cakelab.glsl.lang.ast.InterfaceBlock;
+import org.cakelab.glsl.lang.ast.Qualifier;
 import org.cakelab.glsl.lang.ast.Struct;
 import org.cakelab.glsl.lang.ast.Type;
 import org.cakelab.glsl.lang.ast.Variable;
@@ -19,9 +21,10 @@ public class ScopeImpl implements IScope {
 	protected IScope parent;
 	protected ArrayList<IScope> children = new ArrayList<IScope>();
 	
-	protected HashMap<String, ArrayList<Function>> functions = new HashMap<String, ArrayList<Function>>();
+	protected HashMap<String, FunctionGroup> functions = new HashMap<String, FunctionGroup>();
 	protected HashMap<String, Variable> variables = new HashMap<String, Variable>();
 	protected HashMap<String, Type> types = new HashMap<String, Type>();
+	private HashMap<String, InterfaceBlock> interfaces = new HashMap<String, InterfaceBlock>();
 	
 	
 	
@@ -57,10 +60,10 @@ public class ScopeImpl implements IScope {
 
 
 	@Override
-	public Function getFunction(String name) {
-		ArrayList<Function> group = functions.get(name);
+	public Function getFunction(String name, Type[] parameterTypes) {
+		FunctionGroup group = functions.get(name);
 		if (group != null) {
-			return group.get(0);
+			return group.get(parameterTypes);
 		}
 		else return null;
 	}
@@ -77,9 +80,9 @@ public class ScopeImpl implements IScope {
 
 	
 	private List<Function> getFunctionGroup(String name) {
-		ArrayList<Function> functionGroup = functions.get(name);
+		FunctionGroup functionGroup = functions.get(name);
 		if (functionGroup == null) {
-			functionGroup = new ArrayList<Function>(1);
+			functionGroup = new FunctionGroup();
 			functions.put(name, functionGroup);
 		}
 		return functionGroup;
@@ -111,18 +114,21 @@ public class ScopeImpl implements IScope {
 	}
 	
 	@Override
-	public void addVariable(String name, Variable var) {
-		variables.put(name, var);
+	public void addVariable(Variable var) {
+		variables.put(var.getName(), var);
 	}
 
 	@Override
-	public void addType(String name, Type type) {
-		types.put(name, type);
+	public void addType(Type type) {
+		if (type instanceof InterfaceBlock) {
+			throw new Error("internal error: interface blocks have to be registered through addInterface()");
+		}
+		types.put(type.getName(), type);
 	}
 
 	@Override
-	public Variable getVariable(String identifier) {
-		return variables.get(identifier);
+	public Variable getVariable(String name) {
+		return variables.get(name);
 	}
 
 	
@@ -135,6 +141,33 @@ public class ScopeImpl implements IScope {
 	public Collection<Type> getTypes() {
 		return types.values();
 	}
+
+	@Override
+	public void addInterface(InterfaceBlock block) {
+		String key = block.getKey();
+		interfaces.put(key, block);
+	}
+
+	@Override
+	public InterfaceBlock getInterface(Qualifier direction, String name) {
+		return interfaces.get(InterfaceBlock.key(direction, name));
+	}
+
+	@Override
+	public boolean containsInterface(Qualifier direction, String name) {
+		return interfaces.containsKey(InterfaceBlock.key(direction, name));
+	}
+
+	@Override
+	public Collection<InterfaceBlock> getInterfaces() {
+		return interfaces.values();
+	}
+
+	@Override
+	public boolean containsInterface(InterfaceBlock block) {
+		return interfaces.containsKey(block.getKey());
+	}
+
 
 	@Override
 	public void dump(PrintStream out, String indent) {
@@ -154,9 +187,12 @@ public class ScopeImpl implements IScope {
 				((Struct)t).getBody().dump(out, innerIndent);
 			}
 		}
+		for (InterfaceBlock i : interfaces.values()) {
+			out.println(innerIndent + i.toString());
+			i.getBody().dump(out, innerIndent);
+		}
 		out.println(indent + "}");
 	}
-
 
 
 

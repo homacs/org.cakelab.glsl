@@ -7,6 +7,8 @@ import java.util.HashMap;
 
 import org.cakelab.glsl.lang.ast.Function;
 import org.cakelab.glsl.lang.ast.IScope;
+import org.cakelab.glsl.lang.ast.InterfaceBlock;
+import org.cakelab.glsl.lang.ast.Qualifier;
 import org.cakelab.glsl.lang.ast.Type;
 import org.cakelab.glsl.lang.ast.Variable;
 import org.cakelab.glsl.pp.ast.Macro;
@@ -88,9 +90,9 @@ public class GLSLExtensionSet implements IScope {
 	}
 
 	@Override
-	public Function getFunction(String name) {
+	public Function getFunction(String name, Type[] parameterTypes) {
 		for (GLSLExtension e : extensions) {
-			Function f = e.getFunction(name);
+			Function f = e.getFunction(name, parameterTypes);
 			if (f != null) return f;
 		}
 		return null;
@@ -112,12 +114,12 @@ public class GLSLExtensionSet implements IScope {
 	}
 
 	@Override
-	public void addVariable(String name, Variable var) {
+	public void addVariable(Variable var) {
 		throw new Error("not supported");
 	}
 
 	@Override
-	public void addType(String name, Type type) {
+	public void addType(Type type) {
 		throw new Error("not supported");
 	}
 
@@ -159,9 +161,54 @@ public class GLSLExtensionSet implements IScope {
 	public Collection<? extends Macro> getMacros() {
 		ArrayList<Macro> macros = new ArrayList<Macro>();
 		for (GLSLExtension e : extensions) {
-			macros.addAll(e.getMacros());
+			Collection<? extends Macro> ms = e.getMacros();
+			if (ms != null) macros.addAll(ms);
 		}
 		return macros;
+	}
+
+	@Override
+	public void addInterface(InterfaceBlock block) {
+		throw new Error("not supported");
+	}
+
+	@Override
+	public InterfaceBlock getInterface(Qualifier direction, String name) {
+		for (GLSLExtension e : extensions) {
+			InterfaceBlock ib = e.getInterface(direction, name);
+			if (ib != null) return ib;
+		}
+		return null;
+	}
+
+	@Override
+	public boolean containsInterface(Qualifier direction, String name) {
+		for (GLSLExtension e : extensions) {
+			if (e.containsInterface(direction, name)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public Collection<InterfaceBlock> getInterfaces() {
+		ArrayList<InterfaceBlock> interfaces = new ArrayList<InterfaceBlock>();
+		for (GLSLExtension e : extensions) {
+			Collection<InterfaceBlock> is = e.getInterfaces();
+			if (is != null) interfaces.addAll(is);
+		}
+		return interfaces;
+	}
+
+	@Override
+	public boolean containsInterface(InterfaceBlock block) {
+		for (GLSLExtension e : extensions) {
+			if (e.containsInterface(block)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	

@@ -79,8 +79,11 @@ public class GLSLBuiltin extends SymbolTable {
 
 	public static enum ShaderType {
 		VERTEX_SHADER,
+		GEOMETRY_SHADER,
+		TESSELATION_SHADER,
 		FRAGMENT_SHADER,
-		GENERIC_SHADER
+		COMPUTE_SHADER,
+		GENERIC_SHADER, 
 	}
 
 	/**
@@ -267,7 +270,7 @@ public class GLSLBuiltin extends SymbolTable {
 		for (Type t : Type.BUILTIN_TYPES) {
 			// add those builtin types only, which are known in this version.
 			if (tokenTable.isBuiltinType(t.getName()) || t.equals(Type._void)) {
-				super.addType(t.getName(), t);
+				super.addType(t);
 			}
 		}
 	}
