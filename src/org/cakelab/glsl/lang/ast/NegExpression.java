@@ -28,4 +28,9 @@ public class NegExpression extends PrefixExpression {
 		}
 	}
 
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return operand.evaluateType();
+	}
+
 }

@@ -55,6 +55,20 @@ public class Struct extends Type {
 		}
 	}
 
+	
+	public class Constructor extends Function implements Member {
+		public Constructor(Type type, ParameterDeclaration[] parameters) {
+			super(type, type.getName(), parameters);
+		}
+
+		@Override
+		public Node getNode() {
+			return this;
+		}
+	}
+
+
+	
 	/** method is a function with a this pointer as implicit first argument */
 	public class Method extends Function implements Member {
 
@@ -139,7 +153,10 @@ public class Struct extends Type {
 		return new Struct(this);
 	}
 	
-	
+	public void addConstructor(ParameterDeclaration ... params) {
+		Constructor constructor = new Constructor(this, params);
+		addMember(constructor);
+	}
 	
 	public void addMember(Member member) {
 		body.addMember(member);

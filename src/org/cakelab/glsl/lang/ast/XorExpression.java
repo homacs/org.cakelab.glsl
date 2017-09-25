@@ -19,5 +19,8 @@ public class XorExpression extends BinaryExpression {
 			throw new EvaluationException(this, e);
 		}
 	}
-	
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return Type._int;
+	}
 }

@@ -20,5 +20,10 @@ public class LtExpression extends BinaryExpression {
 			throw new EvaluationException(this, e);
 		}
 	}
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return Type._bool;
+	}
+
 
 }

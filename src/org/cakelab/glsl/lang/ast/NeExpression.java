@@ -19,4 +19,9 @@ public class NeExpression extends BinaryExpression {
 		}
 	}
 
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return Type._bool;
+	}
+
 }

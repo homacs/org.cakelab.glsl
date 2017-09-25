@@ -15,17 +15,20 @@ public class MemberReference extends Value {
 	}
 
 	public Struct.Method getMethod() {
-		return (Method) this.value;
+		if (this.value instanceof Method) {
+			return (Method) this.value;
+		} else {
+			return null;
+		}
 	}
 
 	public Value getCompound() {
 		return compound;
 	}
 
-	public Method getMethod(Value[] args) {
-		throw new Error("not yet implemented");
+	public Member getMember() {
+		return (Member)this.value;
 	}
 
-	
 	
 }

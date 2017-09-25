@@ -19,4 +19,9 @@ public class DivExpression extends BinaryExpression {
 		}
 	}
 
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return leftOperand.evaluateType();
+	}
+
 }

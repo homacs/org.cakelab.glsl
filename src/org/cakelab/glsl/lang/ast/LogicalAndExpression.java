@@ -14,6 +14,11 @@ public class LogicalAndExpression extends BinaryExpression {
 		return InstructionProcessor.logAnd(leftOperand.eval().value(), rightOperand.eval().value());
 	}
 
-	
+
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return Type._bool;
+	}
+
 	
 }

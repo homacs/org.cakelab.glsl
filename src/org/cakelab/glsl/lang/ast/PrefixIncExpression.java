@@ -17,5 +17,10 @@ public class PrefixIncExpression extends PrefixExpression {
 		InstructionProcessor.store(result.lvalue(), val);
 		return val;
 	}
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return operand.evaluateType();
+	}
+
 
 }

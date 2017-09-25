@@ -19,4 +19,9 @@ public class GeExpression extends BinaryExpression {
 		}
 	}
 
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return Type._bool;
+	}
+
 }

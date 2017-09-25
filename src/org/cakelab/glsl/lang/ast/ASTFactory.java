@@ -12,6 +12,7 @@ import org.cakelab.glsl.GLSLParser.*;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.SymbolTable;
+import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Qualifier.LayoutQualifier;
 import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
 
@@ -190,6 +191,8 @@ public class ASTFactory {
 		if (identifier != null) {
 			Interval interval = createInterval(identifier);
 			String id = identifier.getText();
+			
+			
 			Variable var = symbols.getVariable(id);
 			if (var != null) return new VariableReference(interval, var);
 
@@ -285,14 +288,24 @@ public class ASTFactory {
 	}
 
 	public CallExpression create(Expression operand, GlslCallArgumentsContext args) {
+		// TODO test function, method and constructor calls
 		List<GlslAssignmentExpressionContext> assignments = args.glslAssignmentExpression();
 		Expression[] arguments = new Expression[assignments.size()];
 		for (int i = 0; i < assignments.size(); i++) {
 			arguments[i] = create(assignments.get(i));
 		}
-		return new CallExpression(operand, arguments, getEndLocation(args));
+		
+		CallExpression call = new CallExpression(operand, arguments, getEndLocation(args));
+		try {
+			Function f = call.resolve(symbols);
+			if (f == null) {
+				errorHandler.error(call, "function, method or constructor not found");
+			}
+		} catch (EvaluationException e) {
+			errorHandler.error(e.getOrigin(), e.getMessage());
+		}
+		return call;
 	}
-
 	
 
 	public Struct create(GlslStructSpecifierContext context) {

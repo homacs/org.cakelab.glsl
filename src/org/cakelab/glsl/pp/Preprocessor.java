@@ -67,7 +67,7 @@ import org.cakelab.glsl.pp.tokens.Token;
 import org.cakelab.glsl.pp.tokens.TokenList;
 
 public class Preprocessor extends Parser implements MacroInterpreter, PPState.Listener {
-	
+	// TODO support concatenation of multiple shaders source files.
 	
 	/** this is where only valid preprocessed output goes. */
 	private PPOutputSink outputStream;

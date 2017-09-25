@@ -15,5 +15,10 @@ public class LogicalOrExpression extends BinaryExpression {
 	}
 
 
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return Type._bool;
+	}
+
 
 }

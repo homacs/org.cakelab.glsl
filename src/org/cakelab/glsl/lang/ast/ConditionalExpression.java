@@ -23,4 +23,9 @@ public class ConditionalExpression extends ExpressionImpl {
 		return cond ? caseTrue.eval() : caseFalse.eval();
 	}
 
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return caseTrue.evaluateType();
+	}
+
 }

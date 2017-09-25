@@ -5,6 +5,7 @@ import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.PrefixExpression;
 import org.cakelab.glsl.lang.ast.PrimaryExpression;
+import org.cakelab.glsl.lang.ast.Type;
 
 public class PPDefinedExpression extends PrefixExpression {
 
@@ -18,4 +19,11 @@ public class PPDefinedExpression extends PrefixExpression {
 		return result;
 	}
 
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		throw new Error("not supported");
+	}
+
+
+	
 }

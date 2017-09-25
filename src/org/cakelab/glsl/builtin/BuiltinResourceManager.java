@@ -10,8 +10,8 @@ import org.cakelab.glsl.impl.JarResourceManager;
  * Builtin Resource Manager is used to retrieve references of 
  * files containing built-in symbols. All resources will be 
  * assigned with a <b>negative</b> source id, which is usually
- * invalid. Thus, this resource manager is only for built-in 
- * purposes!
+ * invalid. Thus, this resource manager is for built-in 
+ * purposes only!
  * 
  * @author homac
  *

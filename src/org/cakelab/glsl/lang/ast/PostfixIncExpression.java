@@ -19,5 +19,10 @@ public class PostfixIncExpression extends PostfixExpression {
 		return tmp;
 	}
 
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return operand.evaluateType();
+	}
+
 
 }

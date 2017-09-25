@@ -25,6 +25,10 @@
 
 #define GL_ARB_compatibility 1
 
+// required constants not available in #version 100 es. 
+#if __VERSION__ < 110
+const int  gl_MaxTextureUnits = 2;              // GL 1.3
+#endif
 
 
 //

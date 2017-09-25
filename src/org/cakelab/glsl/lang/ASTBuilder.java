@@ -32,7 +32,6 @@ public class ASTBuilder extends GLSLBaseListener {
 		this.tokens = tokens;
 		factory = new ASTFactory(symbolTable, errorHandler);
 	}
-	
 
 	@Override
 	public void exitGlslStructSpecifier(GlslStructSpecifierContext context) {

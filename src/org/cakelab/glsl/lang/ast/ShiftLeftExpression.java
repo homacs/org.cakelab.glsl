@@ -19,5 +19,10 @@ public class ShiftLeftExpression extends BinaryExpression {
 		}
 	}
 	
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return Type._int;
+	}
+
 
 }

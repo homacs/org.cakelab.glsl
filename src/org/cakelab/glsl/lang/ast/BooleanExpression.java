@@ -34,5 +34,10 @@ public class BooleanExpression extends ExpressionImpl {
 		}
 	}
 
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return Type._bool;
+	}
+
 
 }

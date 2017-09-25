@@ -1,6 +1,7 @@
 package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.lang.EvaluationException;
 
 public class FunctionReference extends PrimaryExpression implements Identifier {
 
@@ -25,6 +26,11 @@ public class FunctionReference extends PrimaryExpression implements Identifier {
 
 	public Function getFunction(Value[] args) {
 		throw new Error("not yet implemented");
+	}
+
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		throw new Error("not applicable");
 	}
 
 

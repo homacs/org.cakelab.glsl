@@ -19,7 +19,12 @@ public class NotExpression extends PrefixExpression {
 			throw new EvaluationException(this, e);
 		}
 	}
-	
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return Type._int;
+	}
+
+
 	
 
 }

@@ -2,6 +2,7 @@ package org.cakelab.glsl;
 
 import java.io.InputStream;
 
+
 public class Resource {
 
 	private final String path;

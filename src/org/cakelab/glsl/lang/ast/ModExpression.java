@@ -19,4 +19,10 @@ public class ModExpression extends BinaryExpression {
 		}
 	}
 
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return leftOperand.evaluateType();
+	}
+
+
 }

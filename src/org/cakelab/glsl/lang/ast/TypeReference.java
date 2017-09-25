@@ -27,5 +27,12 @@ public class TypeReference extends PrimaryExpression implements Identifier {
 		throw new EvaluationException(this, "expecting a value");
 	}
 
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		throw new Error("not applicable");
+	}
 
+	public Type getType() {
+		return type;
+	}
 }

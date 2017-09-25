@@ -16,5 +16,10 @@ public class MinusExpression extends BinaryExpression {
 		return InstructionProcessor.sub(leftOperand.eval().value(), rightOperand.eval().value());
 	}
 
-	
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return leftOperand.evaluateType();
+	}
+
+
 }

@@ -15,5 +15,10 @@ public class LogicalNotExpression extends PrefixExpression {
 		return InstructionProcessor.logNot(operand.eval().value());
 	}
 
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return Type._bool;
+	}
+
 
 }

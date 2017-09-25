@@ -654,6 +654,116 @@ public class Type extends NodeImpl implements Comparable<Type> {
 		throw new Error("internal error: undefined type cast");
 	}
 
+	/** whether given type can be casted to this type. */
+	public boolean castable(Type type) {
+		if (type != null) {
+			if (this == type || this.equals(type)) return true;
+
+			
+			switch(Rank.of(type)) {
+				case BOOL: 
+				{
+					switch(Rank.of(this)) {
+					case BOOL:
+					case CHAR:
+					case DOUBLE:
+					case FLOAT:
+					case INT:
+					case UINT:
+						return true;
+					case NON_SCALAR:
+						return false;
+					}
+				}
+				case CHAR:
+				{
+					switch(Rank.of(type)) {
+					case BOOL:
+					case CHAR:
+					case DOUBLE:
+					case FLOAT:
+					case INT:
+					case UINT:
+						return true;
+					case NON_SCALAR:
+						return false;
+					}
+				}
+				case UINT:
+				{
+					switch(Rank.of(type)) {
+					case BOOL:
+					case CHAR:
+					case DOUBLE:
+					case FLOAT:
+					case INT:
+					case UINT:
+						return true;
+					case NON_SCALAR:
+						return false;
+					}
+				}
+				case INT:
+				{
+					switch(Rank.of(type)) {
+					case BOOL:
+					case CHAR:
+					case DOUBLE:
+					case FLOAT:
+					case INT:
+					case UINT:
+						return true;
+					case NON_SCALAR:
+						return false;
+					}
+				}
+				case FLOAT:
+				{
+					switch(Rank.of(type)) {
+					case BOOL:
+					case CHAR:
+					case DOUBLE:
+					case FLOAT:
+					case INT:
+					case UINT:
+						return true;
+					case NON_SCALAR:
+						return false;
+					}
+				}
+				case DOUBLE:
+				{
+					switch(Rank.of(type)) {
+					case BOOL:
+					case CHAR:
+					case DOUBLE:
+					case FLOAT:
+					case INT:
+					case UINT:
+						return true;
+					case NON_SCALAR:
+						return false;
+					}
+				}
+				case NON_SCALAR:
+				{
+					return false;
+				}
+			}
+			throw new Error("internal error: undefined type cast");
+		
+		}
+		return false;
+	}
+
+	public Function getConstructor(Type[] argumentTypes) {
+		return null;
+	}
+
+	public Function getMethod(Type[] argumentTypes) {
+		return null;
+	}
+
 
 
 

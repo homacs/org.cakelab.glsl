@@ -16,4 +16,9 @@ public class ConstantExpression extends ExpressionImpl {
 		return expr.eval();
 	}
 
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return expr.evaluateType();
+	}
+
 }

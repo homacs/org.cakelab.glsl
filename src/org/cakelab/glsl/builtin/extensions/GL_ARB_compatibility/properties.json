@@ -3,6 +3,6 @@
 	"number" : 58,
 	"since" : 140,
 	"versions" : {
-		"core" : "[110,140]"
+		"core" : "[100,140]"
 	}
 }

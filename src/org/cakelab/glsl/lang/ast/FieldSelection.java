@@ -35,4 +35,10 @@ public class FieldSelection extends PostfixExpression {
 		return null;
 	}
 
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		PrimaryExpression primary = eval();
+		return primary.evaluateType();
+	}
+
 }

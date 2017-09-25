@@ -23,5 +23,10 @@ public class ExpressionList extends ExpressionImpl {
 		
 		return result;
 	}
+
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return list.get(list.size()-1).evaluateType();
+	}
 	
 }

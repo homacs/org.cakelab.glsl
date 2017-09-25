@@ -1,6 +1,7 @@
 package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.lang.EvaluationException;
 
 public class Value extends PrimaryExpression {
 	
@@ -32,6 +33,11 @@ public class Value extends PrimaryExpression {
 
 	public Value copy() {
 		return new Value(interval, type, value);
+	}
+
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return type;
 	}
 
 

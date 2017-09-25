@@ -19,5 +19,10 @@ public class OrExpression extends BinaryExpression {
 		}
 	}
 
-	
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return Type._int;
+	}
+
+
 }

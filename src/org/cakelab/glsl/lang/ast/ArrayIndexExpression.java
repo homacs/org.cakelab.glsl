@@ -32,4 +32,9 @@ public class ArrayIndexExpression extends PostfixExpression {
 		}
 	}
 
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return Type._int;
+	}
+
 }

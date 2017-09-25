@@ -6,17 +6,26 @@ import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 
 public class TestBuiltinSymbols extends TestBuiltinBase {
+	
+	
+	
 	public static void main(String[] args) {
+		testExtension(es(100), ShaderType.VERTEX_SHADER, "GL_ARB_compatibility");
+	}
+
+	public static void testSingle() {
 		GLSLBuiltin symbols = GLSLBuiltin.get(core(150), ShaderType.GEOMETRY_SHADER);
 		symbols.dump(System.out);
 	}
 
 	
-	public static void testExtension() {
-		GLSLBuiltin symbols = GLSLBuiltin.get(core(140), ShaderType.VERTEX_SHADER);
+	public static void testExtension(GLSLVersion version, ShaderType shaderType, String ... extensions) {
+		GLSLBuiltin symbols = GLSLBuiltin.get(version, shaderType);
 		
 		WorkingSet workingSet = symbols.createWorkingSet();
-		workingSet.enableExtension("ARB_compatibility");
+		for (String extension : extensions) {
+			workingSet.enableExtension(extension);
+		}
 		workingSet.dump(System.out);
 	}
 	

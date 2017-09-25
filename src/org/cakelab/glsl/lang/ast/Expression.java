@@ -42,12 +42,12 @@ import org.cakelab.glsl.lang.EvaluationException;
  *
  */
 public interface Expression extends Node {
-
+	// TODO support determination of result type to match function signatures
 	/**
 	 * @return result of the expression represented as primary expression
 	 * @throws EvaluationException
 	 */
 	PrimaryExpression eval() throws EvaluationException;
 
-
+	Type evaluateType() throws EvaluationException;
 }

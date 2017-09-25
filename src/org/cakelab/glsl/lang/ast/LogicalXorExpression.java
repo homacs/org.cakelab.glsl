@@ -14,5 +14,10 @@ public class LogicalXorExpression extends BinaryExpression {
 	public PrimaryExpression eval() throws EvaluationException {
 		return InstructionProcessor.logXor(leftOperand.eval().value(), rightOperand.eval().value());
 	}
+	@Override
+	public Type evaluateType() throws EvaluationException {
+		return Type._bool;
+	}
+
 
 }
