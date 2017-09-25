@@ -77,10 +77,12 @@ public class GLSLBuiltin extends SymbolTable {
 
 	}
 
+	// TODO: this should be part of a Resource class named GLSLResource
 	public static enum ShaderType {
 		VERTEX_SHADER,
+		TESS_EVALUATION_SHADER,
+		TESS_CONTROL_SHADER,
 		GEOMETRY_SHADER,
-		TESSELATION_SHADER,
 		FRAGMENT_SHADER,
 		COMPUTE_SHADER,
 		GENERIC_SHADER, 

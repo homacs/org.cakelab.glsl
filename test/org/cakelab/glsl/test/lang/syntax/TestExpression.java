@@ -3,6 +3,10 @@ package org.cakelab.glsl.test.lang.syntax;
 import org.cakelab.glsl.GLSLParser.GlslArrayDimensionContext;
 import org.cakelab.glsl.GLSLParser.GlslBuiltinTypeContext;
 import org.cakelab.glsl.GLSLParser.GlslCallArgumentsContext;
+import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.lang.ast.Struct;
+import org.cakelab.glsl.lang.ast.Type;
+import org.cakelab.glsl.lang.ast.Variable;
 import org.cakelab.glsl.test.lang.TestingBase;
 import org.cakelab.glsl.test.lang.TestingTools;
 
@@ -69,8 +73,8 @@ public class TestExpression extends TestingBase {
 	
 	public static void setupMultiTest() {
 		autoTearDown = false;
-		validator.addDeclaredType("MyStruct", null);
-		validator.addDeclaredVariable("var", null);
+		validator.addDeclaredType("MyStruct", new Struct(Interval.NONE, null, "MyStruct", null));
+		validator.addDeclaredVariable("var", new Variable(Type._int, "var"));
 		validator.addDeclaredFunction("func");
 	}
 	
