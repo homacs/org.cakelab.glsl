@@ -23,8 +23,13 @@ public class BuiltinScope implements IScope {
 	IScope builtins;
 	GLSLExtensionSet extensions = new GLSLExtensionSet();
 	
-	public BuiltinScope(IScope iScope) {
-		this.builtins = iScope;
+	/**
+	 * Creates a new builtin scope with the given builtin symbols and an empty set of extensions.
+	 * 
+	 * @param builtinScopeSymbols
+	 */
+	public BuiltinScope(IScope builtinScopeSymbols) {
+		this.builtins = builtinScopeSymbols;
 	}
 
 	@Override
@@ -55,10 +60,11 @@ public class BuiltinScope implements IScope {
 
 	@Override
 	public Type getType(String name) {
-		Type t = builtins.getType(name);
-		if (t != null) return t;
+		Type t = null;
 		
-		return extensions.getType(name);
+		if (builtins != null) t = builtins.getType(name);
+		if (t != null) return t;
+		else return extensions.getType(name);
 	}
 
 	@Override
@@ -71,8 +77,11 @@ public class BuiltinScope implements IScope {
 
 	@Override
 	public Collection<InterfaceBlock> getInterfaces() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<InterfaceBlock> alltypes = new ArrayList<InterfaceBlock>();
+		alltypes.addAll(builtins.getInterfaces());
+		alltypes.addAll(extensions.getInterfaces());
+		
+		return alltypes;
 	}
 
 
@@ -82,6 +91,13 @@ public class BuiltinScope implements IScope {
 		Function f = builtins.getFunction(name, parameterTypes);
 		if (f != null) return f;
 		return extensions.getFunction(name, parameterTypes);
+	}
+
+	@Override
+	public Function getFunctionBestMatch(String name, Type[] parameterTypes) {
+		Function f = builtins.getFunctionBestMatch(name, parameterTypes);
+		if (f != null) return f;
+		return extensions.getFunctionBestMatch(name, parameterTypes);
 	}
 
 	@Override
@@ -126,6 +142,7 @@ public class BuiltinScope implements IScope {
 
 	@Override
 	public IScope getParent() {
+		// builtin scope does never have a parent scope
 		return null;
 	}
 

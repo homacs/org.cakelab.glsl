@@ -23,9 +23,9 @@ import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.lang.ASTBuilder;
+import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.lang.ast.Type;
-import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.PPTokenStream;
 import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
@@ -35,7 +35,36 @@ import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.error.SyntaxError;
 
-public class GLSLBuiltin extends SymbolTable {
+
+/**
+ * The class GLSLBuiltin provides access to builtin symbols and macros.
+ * <p>
+ * There exists a specific set of builtin symbols for each combination of:
+ * </p>
+ * <ul>
+ * <li>GLSL version</li>
+ * <li>profile</li>
+ * <li>shader type</li>
+ * </ul>
+ * <p>
+ * A specific set of builtin symbols and macros is represented by one instance of GLSLBuiltin
+ * available via {@link GLSLBuiltin#get(GLSLVersion, ShaderType)}. Those instances are cached
+ * globally and reused if the application parses multiple glsl source files. 
+ * </p>
+ * <p>
+ * During preprocessing phase, the preprocessor will determine version and profile and retrieve
+ * associated builtins in-flight.
+ * </p>
+ * <p>
+ * The set of builtin symbols and macros actually changes during preprocessing when extensions
+ * get loaded. Thus, preprocessor and the language parser use a shared {@link WorkingSet} which 
+ * contains builtins and extensions.
+ * </p>
+ * 
+ * @author homac
+ *
+ */
+public class GLSLBuiltin {
 	
 	private static class Key {
 
@@ -197,15 +226,27 @@ public class GLSLBuiltin extends SymbolTable {
 		
 	}
 	
-	
+	/**
+	 * A working set provides access to data which is valid throughout preprocessing and parse
+	 * of a specific glsl source file, namely:
+	 * <ul>
+	 * <li>GLSL version ({@link GLSLVersion})</li>
+	 * <li>selected profile ({@link GLSLVersion#Profile})</li>
+	 * <li>type of the shader to be processed ({@link ShaderType})</li>
+	 * <li>set of builtin symbols ({@link BuiltinScope})</li>
+	 * <li>set of builtin macros (<b><code>HashMap&lt;String, Macro&gt;</code></b>)</li>
+	 * <li>enabled extensions ({@link GLSLExtensionSet}, via {@link BuiltinScope#extensions})</li>
+	 * </ul>
+	 * A working set is created by {@link GLSLBuiltin#createWorkingSet()}.
+	 * @author homac
+	 *
+	 */
 	public static class WorkingSet {
 		private Key key;
 		private BuiltinScope builtinScope;
 		private HashMap<String, Macro> builtinMacros;
-
 		
-		
-		public WorkingSet(Key key, BuiltinScope builtinScope, HashMap<String, Macro> builtinMacros) {
+		private WorkingSet(Key key, BuiltinScope builtinScope, HashMap<String, Macro> builtinMacros) {
 			super();
 			this.key = key;
 			this.builtinScope = builtinScope;
@@ -263,27 +304,14 @@ public class GLSLBuiltin extends SymbolTable {
 	
 	private Key key;
 	private HashMap<String, Macro> macros;
+	private IScope builtinScopeSymbols;
 
 
 	GLSLBuiltin(Key key, HashMap<String, Macro> macros, GLSLTokenTable tokenTable) {
-		super(null);
 		this.key = key;
 		this.macros = macros;
-		for (Type t : Type.BUILTIN_TYPES) {
-			// add those builtin types only, which are known in this version.
-			if (tokenTable.isBuiltinType(t.getName()) || t.equals(Type._void)) {
-				super.addType(t);
-			}
-		}
-	}
-	
-	public void reset() {
-		scope = new ScopeImpl(null);
-		toplevel = scope;
-	}
 
-
-	
+	}
 	
 	public static GLSLBuiltin get(GLSLVersion version, ShaderType type) {
 		Key key = new Key(version, type);
@@ -306,8 +334,6 @@ public class GLSLBuiltin extends SymbolTable {
 
 	}
 	
-
-	
 	public GLSLVersion getVersion() {
 		return key.version;
 	}
@@ -317,11 +343,11 @@ public class GLSLBuiltin extends SymbolTable {
 	}
 
 	public WorkingSet createWorkingSet() {
-		return new WorkingSet(key, new BuiltinScope(super.getTopLevelScope()), getBuiltinMacros());
+		return new WorkingSet(key, new BuiltinScope(builtinScopeSymbols), macros);
 	}
 	
 	public void dump(PrintStream out) {
-		super.dump(out);
+		builtinScopeSymbols.dump(out, "");
 		for (Macro e : macros.values()) {
 			out.println("macro: '" + e.getName() + "'");
 		}
@@ -338,10 +364,17 @@ public class GLSLBuiltin extends SymbolTable {
 		return builtinMacros;
 	}
 	
-	/** this is for testing purposes only! */
-	public static GLSLBuiltin getTestSymbolTable(GLSLTokenTable tokens) {
+	/** 
+	 * This is for testing purposes only! 
+	 * It circumvents parsing of the builtin preambles, 
+	 * and registers builtin types only.
+	 */
+	public static GLSLBuiltin getTestBuiltins(GLSLTokenTable tokens) {
 		Key key = new Key(tokens.getVersion(), ShaderType.GENERIC_SHADER);
-		return new GLSLBuiltin(key, getDefaultBuiltinMacros(), tokens);
+		SymbolTable builtinSymbols = createMinimumBuiltinSymbols(tokens);
+		GLSLBuiltin builtin = new GLSLBuiltin(key, getDefaultBuiltinMacros(), tokens);
+		builtin.builtinScopeSymbols = builtinSymbols.getTopLevelScope();
+		return builtin;
 	}
 
 	private static GLSLBuiltin loadBuiltins(Key key) {
@@ -361,19 +394,35 @@ public class GLSLBuiltin extends SymbolTable {
 		addCommonBuiltinMacros(builtinMacros);
 
 		GLSLTokenTable tokenTable = GLSLTokenTable.get(key.version);
-		GLSLBuiltin builtinSymbols = new GLSLBuiltin(key, builtinMacros, tokenTable);
-
+		GLSLBuiltin builtin = new GLSLBuiltin(key, builtinMacros, tokenTable);
+		SymbolTable builtinSymbols = createMinimumBuiltinSymbols(tokenTable);
+				
 		parse(buffer, tokenTable, builtinSymbols);
+
+		builtin.builtinScopeSymbols = builtinSymbols.getTopLevelScope();
 		
-		return builtinSymbols;
+		return builtin;
 	}
 	
-	public static GLSLExtension loadExtension(BuiltinScope builtinScope, String extension, GLSLVersion version, ShaderType shaderType) {
+	private static SymbolTable createMinimumBuiltinSymbols(GLSLTokenTable tokenTable) {
+		SymbolTable builtinSymbols = new SymbolTable(null);
+		for (Type t : Type.BUILTIN_TYPES) {
+			// add those builtin types only, which are known in this version.
+			if (tokenTable.isBuiltinType(t.getName()) || t.equals(Type._void)) {
+				builtinSymbols.addType(t);
+			}
+		}
+		return builtinSymbols;
+	}
+
+	
+	public static GLSLExtension loadExtension(BuiltinScope builtinScope, GLSLExtension.Properties properties, GLSLVersion version, ShaderType shaderType) {
+		// resource directory of the extension
 		Resource resource;
 		try {
-			resource = BUILTIN_RESOURCE_MANAGER.resolve(BuiltinResources.getExtensionDirectory(extension) + "/preamble.glsl");
+			resource = properties.getPreamble();
 		} catch (IOException e) {
-			throw new Error("internal error: cant parse preamble for extension '" + extension + "' . GLSLExtension parser should have avoided this case.", e);
+			throw new Error("internal error: can't parse preamble for extension '" + properties.name + "' . GLSLExtension parser should have avoided this case.", e);
 		}
 		
 		
@@ -383,7 +432,7 @@ public class GLSLBuiltin extends SymbolTable {
 
 		GLSLTokenTable tokenTable = GLSLTokenTable.get(version);
 
-		GLSLExtension e = new GLSLExtension(extension, version, shaderType, extensionMacros);
+		GLSLExtension e = new GLSLExtension(properties, version, shaderType, extensionMacros);
 		GLSLExtensionSymbolTable symbolTable = new GLSLExtensionSymbolTable(e, builtinScope);
 
 		parse(buffer, tokenTable, symbolTable);

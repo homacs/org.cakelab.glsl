@@ -1,10 +1,13 @@
 package org.cakelab.glsl.lang.ast;
 
+import java.util.ArrayList;
+
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.ast.Qualifier.DirectionQualifier;
 
 public class InterfaceBlock extends Struct {
-
+	// FIXME: variables of interface blocks alias at global space if the interface declaration is not associated with a variable declaration?
+	// FIXME: adding qualifiers and array dimensions to variables of interface blocks (see gl_TexCoord in 1.50)
 	private DirectionQualifier direction;
 
 	public InterfaceBlock(Interval interval, IScope parent, String name, Qualifiers qualifiers) {
@@ -50,6 +53,10 @@ public class InterfaceBlock extends Struct {
 
 	public DirectionQualifier getDirection() {
 		return direction;
+	}
+
+	public ArrayList<Member> getMembers() {
+		return body.members;
 	}
 
 

@@ -1,7 +1,6 @@
 package org.cakelab.glsl.impl;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -54,7 +53,7 @@ public abstract class ResourceManagerBase implements ResourceManager {
 
 
 	public void add(File file) throws IOException {
-		add(new Resource(file.getPath(), getNextId(), new FileInputStream(file)));
+		add(new ResourceFile(file.getPath(), getNextId()));
 	}
 	
 	@Override

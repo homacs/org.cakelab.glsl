@@ -358,7 +358,7 @@ public class ASTFactory {
 			if (qualifiers != null) {
 				memberType = Type._qualified(memberType, qualifiers);
 			}
-			struct.addMember(new Struct.MemberVariable(memberType, memberName));
+			struct.addMember(new Struct.MemberVariable(struct, memberType, memberName));
 		}
 	}
 	
@@ -569,8 +569,12 @@ public class ASTFactory {
 		
 		String name = ctx.glslFunctionName().getText();
 		ParameterDeclaration[] params = create(ctx.glslFunctionParameters());
-		if (params == null) return new Function(type, name);
-		else return new Function(type, name, params);
+		Interval interval = new Interval(createInterval(ctx));
+		if (params == null) {
+			return new Function(interval, type, name);
+		} else {
+			return new Function(interval, type, name, params);
+		}
 	}
 
 
@@ -589,7 +593,8 @@ public class ASTFactory {
 				if (dims != null && !dims.isEmpty()) {
 					type = createArrayType(type, dims);
 				}
-				ParameterDeclaration param = new ParameterDeclaration(type, name);
+				// scope will be assigned if there is a body attached to the function
+				ParameterDeclaration param = new ParameterDeclaration(IScope.NONE, type, name);
 				params[i] = param;
 				i++;
 			}

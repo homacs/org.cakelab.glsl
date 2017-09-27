@@ -5,18 +5,20 @@ import org.cakelab.glsl.lang.EvaluationException;
 
 public class Variable extends Value implements LValue {
 	String name;
+	private IScope scope;
 	
-	public Variable(Type type, String name, Qualifiers qualifiers) {
-		this(Type._qualified(type, qualifiers), name);
+	public Variable(IScope scope, Type type, String name, Qualifiers qualifiers) {
+		this(scope, Type._qualified(type, qualifiers), name);
 	}
 
-	public Variable(Type type, String name) {
-		this(type);
+	public Variable(IScope scope, Type type, String name) {
+		this(scope, type);
 		this.name = name;
 	}
 
-	protected Variable(Type type) {
+	protected Variable(IScope scope, Type type) {
 		super(Interval.NONE, type, null);
+		this.scope = scope;
 	}
 
 	public void setType(Type type) {
@@ -44,6 +46,15 @@ public class Variable extends Value implements LValue {
 
 	public String getName() {
 		return name;
+	}
+
+	public IScope getScope() {
+		return scope;
+	}
+
+	public void setScope(IScope scope) {
+		this.scope = scope;
+		
 	}
 
 }

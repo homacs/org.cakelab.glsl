@@ -11,8 +11,8 @@
 
 				
 				Tasks for tomorrow:   
-					TODS. aufschreiben
+				1. TODOS. aufschreiben
 					- Function Signature und Subroutine
 					- Identifikation von Funktionsaufrufen und Construktoraufrufen, wenn Typ und Function selber Name
 					- Beenden von Extensions Loading bzgl. Dependencies				  
-				
+				2. Symboltabelle überarbeiten (siehe FIXME)

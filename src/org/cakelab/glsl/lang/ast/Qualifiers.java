@@ -3,7 +3,7 @@ package org.cakelab.glsl.lang.ast;
 import java.util.ArrayList;
 
 @SuppressWarnings("serial")
-public class Qualifiers extends ArrayList<Qualifier>{
+public class Qualifiers extends ArrayList<Qualifier> {
 	public Qualifiers(Qualifiers qualifiers) {
 		add(qualifiers);
 	}
@@ -23,6 +23,14 @@ public class Qualifiers extends ArrayList<Qualifier>{
 		return this.contains(query);
 	}
 
+	public boolean equals(Qualifiers qualifiers) {
+		if (qualifiers == null) return false;
+		if (qualifiers.size() != size()) return false;
+		for (Qualifier q : this) {
+			if (qualifiers.hasQualifier(q)) return false;
+		}
+		return true;
+	}
 	
 	public Qualifiers getAll(Class<? extends Qualifier> qualifierType) {
 		Qualifiers result = null;

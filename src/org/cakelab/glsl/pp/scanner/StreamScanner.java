@@ -149,7 +149,7 @@ public class StreamScanner extends IScanner {
 	}
 
 	public StreamScanner(Resource resource) {
-		this(new Location(resource.getSourceIdentifier()), resource.getData());
+		this(new Location(resource.getSourceIdentifier()), resource.openInputStream());
 	}
 
 	public int current() {

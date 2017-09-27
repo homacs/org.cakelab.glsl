@@ -569,10 +569,7 @@ bvec lessThanEqual(vec x, vec y);\
 bvec greaterThan(vec x, vec y);\
 bvec greaterThanEqual(vec x, vec y);\
 bvec equal(vec x, vec y);\
-bvec notEqual(vec x, vec y);\
-bool any(bvec x);\
-bool all(bvec x);\
-bvec not(bvec x);
+bvec notEqual(vec x, vec y);
 
 GENERIC_FUNCTION_SET(bvec2, vec2)
 GENERIC_FUNCTION_SET(bvec3, vec3)
@@ -585,6 +582,19 @@ GENERIC_FUNCTION_SET(bvec4, ivec4)
 GENERIC_FUNCTION_SET(bvec2, uvec2)
 GENERIC_FUNCTION_SET(bvec3, uvec3)
 GENERIC_FUNCTION_SET(bvec4, uvec4)
+
+#undef GENERIC_FUNCTION_SET
+
+#define GENERIC_FUNCTION_SET(bvec) \
+bvec equal(bvec x, bvec y);\
+bvec notEqual(bvec x, bvec y);\
+bool any(bvec x);\
+bool all(bvec x);\
+bvec not(bvec x);
+
+GENERIC_FUNCTION_SET(bvec2)
+GENERIC_FUNCTION_SET(bvec3)
+GENERIC_FUNCTION_SET(bvec4)
 
 #undef GENERIC_FUNCTION_SET
 

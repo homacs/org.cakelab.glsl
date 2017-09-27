@@ -6,6 +6,7 @@ public class TestGLSLSyntax {
 		TestComment.test();
 		TestArray.test();
 		TestStruct.test();
+		TestInterface.test();
 		TestVariable.test();
 		TestFunction.test();
 		TestExpression.test();

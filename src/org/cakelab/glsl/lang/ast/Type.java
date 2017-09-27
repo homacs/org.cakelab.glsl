@@ -23,6 +23,26 @@ import org.cakelab.glsl.lang.ast.impl.NodeImpl;
  */
 public class Type extends NodeImpl implements Comparable<Type> {
 
+	public enum Assignability {
+		/** Types are equal and data of that type can be directly assigned to each other */
+		Direct,
+		/** Types are not equal but implicitly castable */
+		ImplictCastable,
+		/** Types are not equal and require an explicit cast */
+		ExplicitCastable,
+		/** Types are completely different in memory layout */
+		NotAssignable;
+
+		public boolean betterThan(Assignability that) {
+			return this.ordinal() < that.ordinal();
+		}
+		
+		public boolean worseThan(Assignability that) {
+			return this.ordinal() > that.ordinal();
+		}
+		
+	}
+
 	public static int KIND_UNDEFINED = 0;
 	public static int KIND_SCALAR = 1<<0;
 	public static int KIND_ARRAY  = 1<<1;
@@ -501,7 +521,7 @@ public class Type extends NodeImpl implements Comparable<Type> {
 				return UINT;
 			} else if (type.equals(_atomic_uint)) {
 				return UINT;
-			} else if (type.equals(_int)||type.equals(_char)) {
+			} else if (type.equals(_int)) {
 				return INT;
 			} else if (type.equals(_float)) {
 				return FLOAT;
@@ -654,25 +674,27 @@ public class Type extends NodeImpl implements Comparable<Type> {
 		throw new Error("internal error: undefined type cast");
 	}
 
-	/** whether given type can be casted to this type. */
-	public boolean castable(Type type) {
+	/** whether a variable of given type can be assigned to a variable of this type. */
+	public Assignability assignability(Type type) {
 		if (type != null) {
-			if (this == type || this.equals(type)) return true;
-
+			if (this == type || this.equals(type)) {
+				return Assignability.Direct;
+			}
 			
-			switch(Rank.of(type)) {
+			switch(Rank.of(this)) {
 				case BOOL: 
 				{
-					switch(Rank.of(this)) {
+					switch(Rank.of(type)) {
 					case BOOL:
 					case CHAR:
-					case DOUBLE:
-					case FLOAT:
 					case INT:
 					case UINT:
-						return true;
+						return Assignability.ImplictCastable;
+					case DOUBLE:
+					case FLOAT:
+						return Assignability.ExplicitCastable;
 					case NON_SCALAR:
-						return false;
+						return Assignability.NotAssignable;
 					}
 				}
 				case CHAR:
@@ -680,13 +702,14 @@ public class Type extends NodeImpl implements Comparable<Type> {
 					switch(Rank.of(type)) {
 					case BOOL:
 					case CHAR:
-					case DOUBLE:
-					case FLOAT:
 					case INT:
 					case UINT:
-						return true;
+						return Assignability.ImplictCastable;
+					case DOUBLE:
+					case FLOAT:
+						return Assignability.ExplicitCastable;
 					case NON_SCALAR:
-						return false;
+						return Assignability.NotAssignable;
 					}
 				}
 				case UINT:
@@ -694,13 +717,13 @@ public class Type extends NodeImpl implements Comparable<Type> {
 					switch(Rank.of(type)) {
 					case BOOL:
 					case CHAR:
-					case DOUBLE:
-					case FLOAT:
 					case INT:
 					case UINT:
-						return true;
+					case DOUBLE:
+					case FLOAT:
+						return Assignability.ImplictCastable;
 					case NON_SCALAR:
-						return false;
+						return Assignability.NotAssignable;
 					}
 				}
 				case INT:
@@ -712,9 +735,9 @@ public class Type extends NodeImpl implements Comparable<Type> {
 					case FLOAT:
 					case INT:
 					case UINT:
-						return true;
+						return Assignability.ImplictCastable;
 					case NON_SCALAR:
-						return false;
+						return Assignability.NotAssignable;
 					}
 				}
 				case FLOAT:
@@ -726,9 +749,9 @@ public class Type extends NodeImpl implements Comparable<Type> {
 					case FLOAT:
 					case INT:
 					case UINT:
-						return true;
+						return Assignability.ImplictCastable;
 					case NON_SCALAR:
-						return false;
+						return Assignability.NotAssignable;
 					}
 				}
 				case DOUBLE:
@@ -740,20 +763,22 @@ public class Type extends NodeImpl implements Comparable<Type> {
 					case FLOAT:
 					case INT:
 					case UINT:
-						return true;
+						return Assignability.ImplictCastable;
 					case NON_SCALAR:
-						return false;
+						return Assignability.NotAssignable;
 					}
 				}
 				case NON_SCALAR:
 				{
-					return false;
+					// has to be handled by struct or array type implementation
+					return Assignability.NotAssignable;
 				}
 			}
 			throw new Error("internal error: undefined type cast");
 		
 		}
-		return false;
+		// given type is null, should not happen but conceptually it is not assignable
+		return Assignability.NotAssignable;
 	}
 
 	public Function getConstructor(Type[] argumentTypes) {
@@ -763,8 +788,6 @@ public class Type extends NodeImpl implements Comparable<Type> {
 	public Function getMethod(Type[] argumentTypes) {
 		return null;
 	}
-
-
 
 
 }

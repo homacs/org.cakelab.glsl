@@ -34,7 +34,11 @@ import org.cakelab.glsl.pp.tokens.TWhitespace;
  *
  */
 public class PPTokenStream implements TokenStream {
-
+	// TODO: we could assign matching sets of symbols to identifiers in TokenStream
+	// this would allow 
+	// 1. late resolution of identifiers (e.g. in editors) 
+	// 2. lookup of overridden functions and redeclared variables
+	// OR we leave it to the Validator implementation, whether to do it or not.
 	
 	public class EOFToken extends PPOutputToken {
 

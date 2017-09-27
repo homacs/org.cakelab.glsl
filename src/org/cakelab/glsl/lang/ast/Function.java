@@ -3,6 +3,8 @@ package org.cakelab.glsl.lang.ast;
 
 import java.util.Arrays;
 
+import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.lang.ast.Type.Assignability;
 import org.cakelab.glsl.lang.ast.impl.NodeImpl;
 import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
 
@@ -56,6 +58,7 @@ public class Function extends NodeImpl implements Comparable<Function> {
 			for (ParameterDeclaration p : parameters) {
 				if (p.name != null) {
 					addVariable(p);
+					p.setScope(this);
 				}
 			}
 		}
@@ -86,9 +89,10 @@ public class Function extends NodeImpl implements Comparable<Function> {
 	
 
 	
-	public Function(Type type, String name, ParameterDeclaration ... parameters) {
+	public Function(Interval interval, Type type, String name, ParameterDeclaration ... parameters) {
 		assert (type != null) : "internal error: return type of a function cannot be null";
 		assert (name != null) : "internal error: name of a function cannot be null";
+		super.setInterval(interval);
 		this.type = type;
 		this.name = name;
 		this.parameters = parameters;
@@ -96,28 +100,40 @@ public class Function extends NodeImpl implements Comparable<Function> {
 
 	/** Compares the given sequence of types to the types of the parameters of this function.
 	 *  Considers void functions, meaning that an empty (or null) list of parameter types equals void.*/
-	public boolean compareParameters(Type[] parameterTypes) {
+	public Type.Assignability compareParameters(Type[] parameterTypes) {
+		// think positive!
+		Type.Assignability result = Type.Assignability.Direct;
+		
 		if (parameters == null || parameters.length == 0 || parameters[0].type == Type._void) {
-			return (parameterTypes == null || parameterTypes.length == 0 || parameterTypes[0] == Type._void);
+			// short cut for void functions
+			if (parameterTypes != null && parameterTypes.length != 0 && !(parameterTypes.length == 1 && parameterTypes[0] != Type._void)) {
+				result = Type.Assignability.NotAssignable;
+			}
 		} else {
+			// this function has parameters (not void)
 			if (parameterTypes == null || parameterTypes.length == 0) {
-				return false;
+				// other function is void function
+				result = Type.Assignability.NotAssignable;
 			} else {
-				// both are not null, not of zero length, and not void
+				// both have parameters
 				if (parameters.length != parameterTypes.length) {
-					// not the same number of parameters
-					return false;
+					// shortcut: functions have different number of parameters
+					result = Type.Assignability.NotAssignable;
 				} else {
+					// comparison of all parameters
 					for (int i = 0; i < parameters.length; i++) {
-						
-						if (!parameters[i].getType().equals(parameterTypes[i])) {
-							return false;
+						Type.Assignability assignability = parameters[i].getType().assignability(parameterTypes[i]);
+						if (result.betterThan(assignability)) {
+							result = assignability;
+							if (result.worseThan(Assignability.ImplictCastable)) {
+								return result;
+							}
 						}
 					}
 				}
 			}
 		}
-		return true;
+		return result;
 	}
 
 
@@ -158,6 +174,22 @@ public class Function extends NodeImpl implements Comparable<Function> {
 	public Type getType() {
 		return type;
 	}
+
+
+
+	public Type[] getParameterTypes() {
+		if (this.parameters == null || this.parameters.length == 0) return null;
+		
+		Type[] result = new Type[this.parameters.length];
+		for (int i = 0; i < parameters.length; i++) {
+			result[i] = parameters[i].type;
+		}
+		
+		return result;
+	}
+
+
+
 
 
 

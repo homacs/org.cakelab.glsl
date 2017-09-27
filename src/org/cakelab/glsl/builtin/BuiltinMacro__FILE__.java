@@ -19,5 +19,4 @@ public class BuiltinMacro__FILE__ extends Macro {
 		return result;
 	}
 
-
 }

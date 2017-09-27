@@ -1,11 +1,11 @@
 package org.cakelab.glsl.test.pp;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
+import org.cakelab.glsl.impl.ResourceString;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.output.PreprocessedOutputBuffer;
 import org.cakelab.glsl.pp.parser.Parser;
@@ -16,7 +16,7 @@ public class TestingPPBase extends TestingBase {
 		try {
 			error = null;
 			warning = null;
-			Resource resource = new Resource("0", "-- testing --", new ByteArrayInputStream(source.getBytes()));
+			Resource resource = new ResourceString("0", "-- testing --", source);
 			if (usePPBuffer) {
 				ByteArrayOutputStream outStream;
 				if (out instanceof ByteArrayOutputStream) {

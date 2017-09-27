@@ -16,6 +16,7 @@ import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
 import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
+import org.cakelab.glsl.builtin.GLSLExtension;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Expression;
@@ -1173,22 +1174,35 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	}
 
 	@Override
-	public void process(PPExtensionDirective directive) {
+	public void process(PPExtensionDirective directive) throws SyntaxError {
 		WorkingSet workingSet = state.getWorkingSet();
-		switch(directive.behaviour) {
-		case DISABLE:
-			workingSet.disableExtension(directive.identifier);
-			break;
-		case ENABLE:
-			workingSet.enableExtension(directive.identifier);
-			break;
-		case REQUIRE:
-			break;
-		case WARN:
-			break;
-		default:
-			break;
-		
+		try {
+			if (!GLSLExtension.isRegistered(directive.identifier)) {
+				syntaxError(directive, "unknown extension '" + directive.identifier + "'");
+			}
+	
+			switch(directive.behaviour) {
+			case DISABLE:
+				workingSet.disableExtension(directive.identifier);
+				break;
+			case ENABLE:
+				try {
+					GLSLExtension.checkRequirements(directive.identifier, state.getGlslVersion(), state.getWorkingSet().getBuiltinScope());
+					workingSet.enableExtension(directive.identifier);
+				} catch (IllegalArgumentException e) {
+					syntaxError(directive, e.getMessage());
+				}
+				break;
+			case REQUIRE:
+				break;
+			case WARN:
+				break;
+			default:
+				break;
+			
+			}
+		} catch (Recovery e) {
+			// nothing to do here
 		}
 	}
 

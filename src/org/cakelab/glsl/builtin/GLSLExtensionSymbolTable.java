@@ -9,19 +9,12 @@ public class GLSLExtensionSymbolTable extends SymbolTable {
 	public GLSLExtensionSymbolTable(GLSLExtension extension, BuiltinScope builtinScope) {
 		super(builtinScope);
 		this.extension = extension;
-		super.toplevel = extension;
-		reset();
+		
+		super.toplevel = this.extension;
+		super.scope = toplevel;
+		this.extension.setParent(builtin);
 	}
 
-	@Override
-	public void reset() {
-		if (extension != null) {
-			extension.setParent(builtin);
-			extension.reset();
-			toplevel = extension;
-			scope = toplevel;
-		}
-	}
 	
 	
 

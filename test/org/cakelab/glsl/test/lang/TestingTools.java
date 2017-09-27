@@ -1,6 +1,5 @@
 package org.cakelab.glsl.test.lang;
 
-import java.io.ByteArrayInputStream;
 import java.io.PrintStream;
 import java.util.BitSet;
 
@@ -22,11 +21,12 @@ import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
-import org.cakelab.glsl.builtin.GLSLTokenTable;
 import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
+import org.cakelab.glsl.builtin.GLSLTokenTable;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.impl.GLSLErrorHandlerImpl;
+import org.cakelab.glsl.impl.ResourceString;
 import org.cakelab.glsl.lang.ASTBuilder;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.PPTokenStream;
@@ -283,7 +283,7 @@ public class TestingTools {
 
 		
 		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(resourceManager);
-		Resource resource = new Resource("0", "-- testing --", new ByteArrayInputStream(sourceCode.getBytes()));
+		Resource resource = new ResourceString("0", "-- testing --", sourceCode);
 		Preprocessor pp = new Preprocessor(resource, ShaderType.GENERIC_SHADER, buffer);
 
 		pp.setForceVersion(new GLSLVersion(null, 450, GLSLVersion.Profile.core));

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public interface IScope {
+	IScope NONE = null;
 
 	void addInterface(InterfaceBlock block);
 	InterfaceBlock getInterface(Qualifier direction, String name);
@@ -22,6 +23,7 @@ public interface IScope {
 	void addFunction(Function func);
 	boolean containsFunction(String name);
 	Function getFunction(String name, Type[] parameterTypes);
+	Function getFunctionBestMatch(String name, Type[] parameterTypes);
 	
 	void addVariable(Variable var);
 	boolean containsVariable(String name);

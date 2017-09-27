@@ -99,6 +99,15 @@ public class GLSLExtensionSet implements IScope {
 	}
 
 	@Override
+	public Function getFunctionBestMatch(String name, Type[] parameterTypes) {
+		for (GLSLExtension e : extensions) {
+			Function f = e.getFunctionBestMatch(name, parameterTypes);
+			if (f != null) return f;
+		}
+		return null;
+	}
+
+	@Override
 	public Variable getVariable(String identifier) {
 		for (GLSLExtension e : extensions) {
 			Variable v = e.getVariable(identifier);
@@ -205,6 +214,15 @@ public class GLSLExtensionSet implements IScope {
 	public boolean containsInterface(InterfaceBlock block) {
 		for (GLSLExtension e : extensions) {
 			if (e.containsInterface(block)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean containsExtension(String extension) {
+		for (GLSLExtension e : extensions) {
+			if (e.getName().equals(extension)) {
 				return true;
 			}
 		}

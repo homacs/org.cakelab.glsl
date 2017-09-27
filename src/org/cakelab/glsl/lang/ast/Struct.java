@@ -12,12 +12,21 @@ public class Struct extends Type {
 		Node getNode();
 		String getName();
 		Type getType();
+		/** Returns the struct or interface block, which contains this member. */
+		Struct getCompoundType();
 	}
 
 	
 	public static class MemberType extends Type implements Member {
-		public MemberType(Type type) {
+		private Struct struct;
+
+		public MemberType(MemberType that) {
+			this(that.struct, that);
+		}
+
+		public MemberType(Struct struct, Type type) {
 			super(type);
+			this.struct = struct;
 		}
 
 		@Override
@@ -33,17 +42,25 @@ public class Struct extends Type {
 		public MemberType clone() {
 			return new MemberType(this);
 		}
+
+		@Override
+		public Struct getCompoundType() {
+			return struct;
+		}
 		
 	}
 
 	
 	
 	public static class MemberVariable extends Variable implements Member {
-		public MemberVariable(Type type, String name) {
-			super(type, name);
+		private Struct struct;
+		public MemberVariable(Struct struct, Type type, String name) {
+			super(struct.body, type, name);
+			this.struct = struct;
 		}
-		public MemberVariable(Type type, String name, Qualifiers qualifiers) {
-			super(type, name, qualifiers);
+		public MemberVariable(Struct struct, Type type, String name, Qualifiers qualifiers) {
+			super(struct.body, type, name, qualifiers);
+			this.struct = struct;
 		}
 		@Override
 		public Node getNode() {
@@ -53,17 +70,26 @@ public class Struct extends Type {
 		public String getName() {
 			return super.getName();
 		}
+		@Override
+		public Struct getCompoundType() {
+			return struct;
+		}
 	}
 
 	
 	public class Constructor extends Function implements Member {
-		public Constructor(Type type, ParameterDeclaration[] parameters) {
-			super(type, type.getName(), parameters);
+		public Constructor(Interval interval, Struct struct, ParameterDeclaration[] parameters) {
+			super(interval, struct, struct.getName(), parameters);
 		}
 
 		@Override
 		public Node getNode() {
 			return this;
+		}
+
+		@Override
+		public Struct getCompoundType() {
+			return (Struct) super.type;
 		}
 	}
 
@@ -72,8 +98,11 @@ public class Struct extends Type {
 	/** method is a function with a this pointer as implicit first argument */
 	public class Method extends Function implements Member {
 
-		public Method(Type type, String name, ParameterDeclaration... parameters) {
-			super(type, name, parameters);
+		private Struct struct;
+
+		public Method(Interval interval, Struct struct, Type returnType, String name, ParameterDeclaration... parameters) {
+			super(interval, returnType, name, parameters);
+			this.struct = struct;
 		}
 
 		public Value call(Value _this, Value[] args) {
@@ -93,6 +122,11 @@ public class Struct extends Type {
 		@Override
 		public Type getType() {
 			return super.getType();
+		}
+
+		@Override
+		public Struct getCompoundType() {
+			return struct;
 		}
 		
 		
@@ -153,8 +187,8 @@ public class Struct extends Type {
 		return new Struct(this);
 	}
 	
-	public void addConstructor(ParameterDeclaration ... params) {
-		Constructor constructor = new Constructor(this, params);
+	public void addConstructor(Interval interval, ParameterDeclaration ... params) {
+		Constructor constructor = new Constructor(interval, this, params);
 		addMember(constructor);
 	}
 	

@@ -1,23 +1,42 @@
 package org.cakelab.glsl.test.versioning;
 
+import java.io.FileInputStream;
+
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
 import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
+import org.cakelab.glsl.builtin.GLSLExtension;
+import org.cakelab.glsl.builtin.GLSLExtension.Properties;
 
 public class TestBuiltinSymbols extends TestBuiltinBase {
 	
 	
 	
 	public static void main(String[] args) {
-		testExtension(es(100), ShaderType.VERTEX_SHADER, "GL_ARB_compatibility");
+//		testExtensionProperties();
+//		testDump();
+		testExtension(core(150), ShaderType.VERTEX_SHADER, "GL_ARB_compatibility");
+		
 	}
 
-	public static void testSingle() {
-		GLSLBuiltin symbols = GLSLBuiltin.get(core(150), ShaderType.GEOMETRY_SHADER);
+	public static void testDump() {
+		GLSLBuiltin symbols;
+//		symbols = GLSLBuiltin.get(core(150), ShaderType.GEOMETRY_SHADER);
+		symbols = GLSLBuiltin.get(compatibility(150), ShaderType.FRAGMENT_SHADER);
 		symbols.dump(System.out);
 	}
 
+	public static void testExtensionProperties() {
+		try {
+			String dir = "test/" + TestBuiltinSymbols.class.getPackage().getName().replace('.', '/');
+			FileInputStream props = new FileInputStream(dir + "/example.extension.properties.json");
+			new GLSLExtension.Properties(props);
+		} catch (Exception e) {
+			throw new Error(e);
+		}
+	}
+	
 	
 	public static void testExtension(GLSLVersion version, ShaderType shaderType, String ... extensions) {
 		GLSLBuiltin symbols = GLSLBuiltin.get(version, shaderType);

@@ -32,12 +32,6 @@ public class ScopeImpl implements IScope {
 		this.parent = builtin;
 	}
 
-	public void reset() {
-		functions.clear();
-		variables.clear();
-		types.clear();
-	}
-	
 	@Override
 	public boolean containsType(String name) {
 		return types.containsKey(name);
@@ -63,10 +57,29 @@ public class ScopeImpl implements IScope {
 	public Function getFunction(String name, Type[] parameterTypes) {
 		FunctionGroup group = functions.get(name);
 		if (group != null) {
-			return group.get(parameterTypes);
+			return group.getExactMatch(parameterTypes);
 		}
-		else return null;
+		else 
+		{
+			return null;
+		}
 	}
+	
+	
+	@Override
+	public Function getFunctionBestMatch(String name, Type[] parameterTypes) {
+		FunctionGroup group = functions.get(name);
+		if (group != null) {
+			return group.getBestMatch(parameterTypes);
+		}
+		else 
+		{
+			return null;
+		}
+	}
+	
+	
+	
 	
 	@Override
 	public void add(IScope child) {

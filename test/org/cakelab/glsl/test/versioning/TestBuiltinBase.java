@@ -15,7 +15,7 @@ public class TestBuiltinBase {
 		return new GLSLVersion(null, number, GLSLVersion.Profile.es);
 	}
 	public static GLSLBuiltin getTestBuiltinSymbols(GLSLTokenTable tokens) {
-		return GLSLBuiltin.getTestSymbolTable(tokens);
+		return GLSLBuiltin.getTestBuiltins(tokens);
 	}
 
 }

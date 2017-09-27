@@ -9,11 +9,17 @@ public class NodeImpl implements Node {
 	protected Interval interval;
 
 	public NodeImpl(Interval interval) {
-		this.interval = interval;
+		setInterval(interval);
 	}
 	
 	public NodeImpl(Location start, Location end) {
-		this.interval = new Interval(start, end);
+		if (start == null) start = Location.NONE;
+		if (end == null) end = Location.NONE;
+		if (start == Location.NONE && end == Location.NONE) {
+			this.interval = Interval.NONE;
+		} else {
+			this.interval = new Interval(start, end);
+		}
 	}
 	
 	public NodeImpl(NodeImpl that) {
@@ -21,7 +27,9 @@ public class NodeImpl implements Node {
 	}
 
 	
-	protected NodeImpl() {}
+	protected NodeImpl() {
+		this.interval = Interval.NONE;
+	}
 	
 	@Override
 	public Interval getInterval() {
@@ -29,7 +37,8 @@ public class NodeImpl implements Node {
 	}
 
 	public void setInterval(Interval interval) {
-		this.interval = interval;
+		if (interval == null) this.interval = Interval.NONE;
+		else this.interval = interval;
 	}
 	
 	

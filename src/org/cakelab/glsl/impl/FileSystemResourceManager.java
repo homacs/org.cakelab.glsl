@@ -1,7 +1,6 @@
 package org.cakelab.glsl.impl;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -15,7 +14,7 @@ public class FileSystemResourceManager extends ResourceManagerBase {
 		if (!file.exists()) throw new FileNotFoundException("resource '" + relpath + "' not found");
 		if (!file.canRead()) throw new IOException("don't have read permissions on '" + uniquePath + "'");
 		String id = getNextId();
-		return new Resource(relpath, id, new FileInputStream(file));
+		return new ResourceFile(relpath, id);
 	}
 
 

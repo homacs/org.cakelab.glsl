@@ -8,13 +8,17 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.cakelab.glsl.GLSLBaseListener;
 import org.cakelab.glsl.GLSLErrorHandler;
+import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.GLSLParser.*;
 import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.lang.ast.*;
 import org.cakelab.glsl.lang.ast.Function.Body;
+import org.cakelab.glsl.lang.ast.Struct.Member;
 import org.cakelab.glsl.pp.LocationMap;
 
 public class ASTBuilder extends GLSLBaseListener {
+	// FIXME: allow redeclaration of array dimensions of variables (see gl_TexCoord in 1.50)
+	
 	
 	private ASTFactory factory;
 	private LocationMap locations;
@@ -52,11 +56,23 @@ public class ASTBuilder extends GLSLBaseListener {
 
 	@Override
 	public void exitGlslFunctionPrototype(GlslFunctionPrototypeContext ctx) {
+		
+		Function f = factory.create(ctx);
+		// lookup a declared function with the exact same signature
+		Function declared = symbolTable.getFunction(f.getName(), f.getParameterTypes());
 		if (functionDefinitionContext) {
-			functionDefinition = factory.create(ctx);
-			symbolTable.addFunction(functionDefinition);
+			if (declared == null) {
+				functionDefinition = f;
+				symbolTable.addFunction(functionDefinition);
+			} else {
+				functionDefinition = declared;
+			}
 		} else {
-			symbolTable.addFunction(factory.create(ctx));
+			if (declared != null) {
+				errorHandler.error(f, "function " + f.toString() + " already exists");
+			} else {
+				symbolTable.addFunction(f);
+			}
 		}
 	}
 
@@ -207,15 +223,29 @@ public class ASTBuilder extends GLSLBaseListener {
 		} else if (ctx.glslInterfaceBlockStructure() != null) {
 			// glslInterfaceBlockStructure (glslVariableIdentifier glslArrayDimension*)?
 			InterfaceBlock block = factory.create(ctx.glslInterfaceBlockStructure());
-			addTypeIfMissing(block);
 			if (variableIdentifierCtxs != null) {
+				addTypeIfMissing(block);
 				for (GlslVariableIdentifierContext varIdCtx : variableIdentifierCtxs) {
 					
 					String id = getText(varIdCtx);
 					// create qualified variable
-					Variable var = new Variable(block, id);
+					Variable var = new Variable(symbolTable.getScope(), block, id);
 					
 					symbolTable.addVariable(var);
+				}
+			} else {
+				// all member variables global
+				IScope globalScope = symbolTable.getTopLevelScope();
+				for (Member m : block.getMembers()) {
+					if (m instanceof Function) {
+						// ignore (internal use probably);
+					} else if (m instanceof Variable) {
+						Variable var = (Variable)m;
+						var.setScope(globalScope);
+						globalScope.addVariable(var);
+					} else {
+						errorHandler.error(block, "internal error: unhandled interface block member type " + m.getClass().getSimpleName());
+					}
 				}
 			}
 		} else if (ctx.glslFunctionPrototype() != null) {
@@ -249,7 +279,7 @@ public class ASTBuilder extends GLSLBaseListener {
 	private void addTypeIfMissing(Type type) {
 		if (type instanceof InterfaceBlock) {
 			InterfaceBlock block = (InterfaceBlock)type;
-			if (symbolTable.containsConflictingInterface(block.getDirection(), block.getName())) {
+			if (symbolTable.containsConflictingInterface(block)) {
 				errorHandler.error(block.getStart(), "interface block " + block.getKey() + " already exists");
 			} else {
 				symbolTable.addInterface(block);
@@ -278,8 +308,15 @@ public class ASTBuilder extends GLSLBaseListener {
 			
 			String id = getText(varDecl.glslVariableIdentifier());
 			// create qualified variable
-			Variable var = new Variable(varType, id, qualifiers);
-			
+			Variable var = new Variable(symbolTable.getScope(), varType, id, qualifiers);
+			Variable declared = symbolTable.getVariable(var.getName());
+			if (declared != null && declared.getScope() == var.getScope()) {
+				if (var.getType().equals(declared.getType())) {
+					if (var.getType().getQualifiers().equals(var.getType().getQualifiers())) {
+						errorHandler.error(var, "variable already exists with the same signature: " + var.toString());
+					}
+				}
+			}
 			symbolTable.addVariable(var);
 		}
 	}
@@ -315,7 +352,7 @@ public class ASTBuilder extends GLSLBaseListener {
 	}
 
 	public void addDeclaredFunction(String string) {
-		symbolTable.addFunction(new Function(Type._void, string));
+		symbolTable.addFunction(new Function(Interval.NONE, Type._void, string));
 	}
 
 

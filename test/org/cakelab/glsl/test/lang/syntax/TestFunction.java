@@ -45,6 +45,12 @@ public class TestFunction extends TestingBase {
 		
 		source = "void myfunction(void, double b, float r);";
 		assertValid(source, expected);
+
+		
+		source = "void myfunction();\n"
+				+ "void myfunction();\n";
+		assertInvalid(source, expected);
+
 		
 	}
 
