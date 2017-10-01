@@ -9,7 +9,7 @@ import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
-import org.cakelab.glsl.lang.ast.Struct;
+import org.cakelab.glsl.lang.ast.types.Struct;
 
 public class TestGLSL {
 	public static void main(String[] args) {

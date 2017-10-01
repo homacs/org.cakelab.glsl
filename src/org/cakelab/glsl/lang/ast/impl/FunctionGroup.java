@@ -2,10 +2,11 @@ package org.cakelab.glsl.lang.ast.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.cakelab.glsl.lang.ast.Function;
-import org.cakelab.glsl.lang.ast.Type;
-import org.cakelab.glsl.lang.ast.Type.Assignability;
+import org.cakelab.glsl.lang.ast.types.Type;
+import org.cakelab.glsl.lang.ast.types.Type.AssignabilityVerdict;
 
 @SuppressWarnings("serial")
 public class FunctionGroup extends ArrayList<Function> {
@@ -18,9 +19,22 @@ public class FunctionGroup extends ArrayList<Function> {
 		super(1);
 	}
 
+	public boolean add(Function f) {
+		int i = Collections.binarySearch(this, f);
+		if (i >= 0) {
+			// exists
+			super.set(i, f);
+		} else {
+			i = (-(i) - 1);
+			super.add(i, f);
+		}
+		return true;
+	}
+	
+	
 	public Function getBestMatch(Type[] parameterTypes) {
 		Function bestMatch = null;
-		Assignability assignabilityBestMatch = Assignability.NotAssignable;
+		AssignabilityVerdict assignabilityBestMatch = AssignabilityVerdict.NotAssignable;
 		
 		//
 		// search all function until we either find a function whose parameter types
@@ -29,11 +43,11 @@ public class FunctionGroup extends ArrayList<Function> {
 		//
 		for (Function f : this) {
 			
-			Assignability assignability = f.compareParameters(parameterTypes);
+			AssignabilityVerdict assignability = f.compareParameters(parameterTypes);
 			if (assignability.betterThan(assignabilityBestMatch)) {
 				assignabilityBestMatch = assignability;
 				bestMatch = f;
-				if (assignability.equals(Assignability.Direct)) {
+				if (assignability.equals(AssignabilityVerdict.Direct)) {
 					break;
 				}
 			}
@@ -49,8 +63,8 @@ public class FunctionGroup extends ArrayList<Function> {
 		//
 		for (Function f : this) {
 			
-			Assignability assignability = f.compareParameters(parameterTypes);
-			if (assignability.equals(Assignability.Direct)) return f;
+			AssignabilityVerdict assignability = f.compareParameters(parameterTypes);
+			if (assignability.equals(AssignabilityVerdict.Direct)) return f;
 		}
 		return null;
 	}

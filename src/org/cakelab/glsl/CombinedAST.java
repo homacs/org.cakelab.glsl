@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cakelab.glsl.lang.ast.IScope;
-import org.cakelab.glsl.lang.ast.Struct;
-import org.cakelab.glsl.lang.ast.Type;
+import org.cakelab.glsl.lang.ast.types.Struct;
+import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.pp.ast.PPGroupScope;
 
 public class CombinedAST {

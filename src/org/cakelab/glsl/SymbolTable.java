@@ -5,15 +5,19 @@ import java.io.PrintStream;
 import org.cakelab.glsl.builtin.BuiltinScope;
 import org.cakelab.glsl.lang.ast.Function;
 import org.cakelab.glsl.lang.ast.IScope;
-import org.cakelab.glsl.lang.ast.InterfaceBlock;
-import org.cakelab.glsl.lang.ast.Type;
 import org.cakelab.glsl.lang.ast.Variable;
 import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
+import org.cakelab.glsl.lang.ast.types.InterfaceBlock;
+import org.cakelab.glsl.lang.ast.types.Type;
 
 public class SymbolTable {
 	// FIXME: variable, function and type declaration checks wrong: overriding in sub-scope allowed
 	// FIXME: variable, function and type declaration checks have to at a single location (i.e. in SymbolTable)
-	
+	// FIXME: interface blocks group global variables
+	// FIXME: global interface variables (in/out/inout) are separated in respect to their direction:
+	//        there can exist two variables with the same name but different (non-conflicting) directions
+	// FIXME: array variables can be redeclared in respect to their dimension but not their type signature
+	// FIXME: qualifiers of variables may be added through redeclaration
 	
 	
 	
@@ -38,7 +42,7 @@ public class SymbolTable {
 		return scope;
 	}
 
-	public void enterScope(ScopeImpl child) {
+	public void enterScope(IScope child) {
 		scope.add(child);
 		scope = child;
 	}

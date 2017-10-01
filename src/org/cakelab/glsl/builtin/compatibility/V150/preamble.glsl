@@ -188,27 +188,6 @@ uniform gl_FogParameters gl_Fog;
 
 
 
-// -----------------------------------------------------------------------------------
-//                           7.6 Compatibility Profile Vertex and Fragment Interface
-// -----------------------------------------------------------------------------------
-
-
-out gl_PerVertex {
-    // in addition to other gl_PerVertex members...
-	vec4  gl_FrontColor;
-	vec4  gl_BackColor;
-	vec4  gl_FrontSecondaryColor;
-	vec4  gl_BackSecondaryColor;
-	vec4  gl_TexCoord[];
-	float gl_FogFragCoord; 
-};
-
-
-
-
-
-
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //

@@ -13,7 +13,10 @@ import org.cakelab.glsl.GLSLParser.*;
 import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.lang.ast.*;
 import org.cakelab.glsl.lang.ast.Function.Body;
-import org.cakelab.glsl.lang.ast.Struct.Member;
+import org.cakelab.glsl.lang.ast.types.CompoundType;
+import org.cakelab.glsl.lang.ast.types.InterfaceBlock;
+import org.cakelab.glsl.lang.ast.types.Struct;
+import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.pp.LocationMap;
 
 public class ASTBuilder extends GLSLBaseListener {
@@ -58,20 +61,29 @@ public class ASTBuilder extends GLSLBaseListener {
 	public void exitGlslFunctionPrototype(GlslFunctionPrototypeContext ctx) {
 		
 		Function f = factory.create(ctx);
-		// lookup a declared function with the exact same signature
+		// lookup a declared function with the same name and parameter types
 		Function declared = symbolTable.getFunction(f.getName(), f.getParameterTypes());
+		
 		if (functionDefinitionContext) {
 			if (declared == null) {
 				functionDefinition = f;
 				symbolTable.addFunction(functionDefinition);
 			} else {
-				functionDefinition = declared;
+				if (!f.getType().equals(declared.getType())) {
+					errorHandler.error(f, "function " + f.toString() + " already declared with different return type '" + declared.getType().toString() + "'");
+					functionDefinition = f;
+				} else if (declared.getBody() != null) {
+					errorHandler.error(f, "function " + f.toString() + " already defined (has a body)");
+					functionDefinition = f;
+				} else {
+					functionDefinition = declared;
+				}
 			}
 		} else {
-			if (declared != null) {
-				errorHandler.error(f, "function " + f.toString() + " already exists");
-			} else {
+			if (declared == null) {
 				symbolTable.addFunction(f);
+			} else if (!f.getType().equals(declared.getType())) {
+				errorHandler.error(f, "function " + f.toString() + " already declared with different return type '" + declared.getType().toString() + "'");
 			}
 		}
 	}
@@ -236,8 +248,8 @@ public class ASTBuilder extends GLSLBaseListener {
 			} else {
 				// all member variables global
 				IScope globalScope = symbolTable.getTopLevelScope();
-				for (Member m : block.getMembers()) {
-					if (m instanceof Function) {
+				for (CompoundType.Member m : block.getMembers()) {
+					if (m instanceof Function || m instanceof Constructor) {
 						// ignore (internal use probably);
 					} else if (m instanceof Variable) {
 						Variable var = (Variable)m;
@@ -249,8 +261,7 @@ public class ASTBuilder extends GLSLBaseListener {
 				}
 			}
 		} else if (ctx.glslFunctionPrototype() != null) {
-			Function function = factory.create(ctx.glslFunctionPrototype());
-			symbolTable.addFunction(function);
+			// already handled in exitGlslFunctionPrototype
 		} else if (containsError(ctx)) {
 			// ignore declarations with errors
 		} else {

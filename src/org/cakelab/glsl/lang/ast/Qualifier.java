@@ -99,15 +99,20 @@ public class Qualifier {
 	}
 	
 
-	final String name;
+	private final String name;
 
 	Qualifier(String name) {
 		this.name = name;
 	}
 	
 	
+	public String getName() {
+		return name;
+	}
+
+
 	public String toString() {
-		return this.name;
+		return this.getName();
 	}
 	
 	

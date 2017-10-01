@@ -14,6 +14,10 @@ import org.cakelab.glsl.Location;
 import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Qualifier.LayoutQualifier;
+import org.cakelab.glsl.lang.ast.types.Array;
+import org.cakelab.glsl.lang.ast.types.InterfaceBlock;
+import org.cakelab.glsl.lang.ast.types.Struct;
+import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
 
 // TODO [2] supposed to be an interface in parser package
@@ -318,7 +322,7 @@ public class ASTFactory {
 
 
 	private void addStructOrInterfaceBody(Struct struct, GlslStructBodyContext members) {
-		symbols.enterScope(struct.body);
+		symbols.enterScope(struct.getBody());
 		List<GlslStructMemberGroupContext> groups = members.glslStructMemberGroup();
 		for (GlslStructMemberGroupContext group : groups) {
 			addMembers(struct, group);

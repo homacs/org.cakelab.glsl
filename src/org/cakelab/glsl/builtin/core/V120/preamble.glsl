@@ -1,5 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //                             
+//                                  OpenGL 2.1
 //                            Open GL Shading Language 
 //                                    V 1.20
 //                                 Core Profile
@@ -16,6 +17,17 @@
 #define __VERSION__ 120
 
 
+//
+// The following special macros are available only when parsing the preamble
+//
+#if !defined(VERTEX_SHADER)          \
+ && !defined(FRAGMENT_SHADER)        \
+ && !defined(COMPUTE_SHADER)         \
+ && !defined(GENERIC_SHADER)
+// and this error message is just a reminder when developing preambles
+#error undefined or unsupported shader type!
+#endif
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -31,8 +43,9 @@
 // -----------------------------------------------------------------------------------
 //                           Varying Variables
 // -----------------------------------------------------------------------------------
+#ifdef FRAGMENT_SHADER
 varying vec2 gl_PointCoord;
-
+#endif // FRAGMENT_SHADER
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

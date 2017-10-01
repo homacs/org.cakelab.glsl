@@ -2,6 +2,7 @@ package org.cakelab.glsl.pp.parser;
 
 import java.util.ArrayList;
 
+import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.ast.AndExpression;
 import org.cakelab.glsl.lang.ast.ConditionalExpression;
 import org.cakelab.glsl.lang.ast.ConstantValue;
@@ -28,15 +29,17 @@ import org.cakelab.glsl.lang.ast.PlusExpression;
 import org.cakelab.glsl.lang.ast.PosExpression;
 import org.cakelab.glsl.lang.ast.ShiftLeftExpression;
 import org.cakelab.glsl.lang.ast.ShiftRightExpression;
-import org.cakelab.glsl.lang.ast.Type;
-import org.cakelab.glsl.lang.ast.Type.Rank;
 import org.cakelab.glsl.lang.ast.Value;
 import org.cakelab.glsl.lang.ast.XorExpression;
+import org.cakelab.glsl.lang.ast.types.Type;
+import org.cakelab.glsl.lang.ast.types.Type.Rank;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.NodeList;
 import org.cakelab.glsl.pp.ast.PPDefinedExpression;
 import org.cakelab.glsl.pp.ast.StringConstant;
+import org.cakelab.glsl.pp.error.ExpressionError;
 import org.cakelab.glsl.pp.error.Recovery;
+import org.cakelab.glsl.pp.error.SyntaxError;
 import org.cakelab.glsl.pp.error.TokenFormatException;
 import org.cakelab.glsl.pp.lexer.FilteringLexer;
 import org.cakelab.glsl.pp.lexer.ILexer;
@@ -68,6 +71,17 @@ public class ExpressionParser extends Parser {
 		myLexer = new FilteringLexer(pplexer, state, NodeList.Filter_WHITESPACE);
 	}
 
+	protected ExpressionError expressionError(Interval interval, String message) throws SyntaxError {
+		try {
+			syntaxError(interval.getStart(), message);
+		} catch (Recovery e) {
+			throw new Error("internal error: expression parsers are not supposed to use Recovery exceptions");
+		}
+		return new ExpressionError(interval, message);
+	}
+
+
+	
 
 	public ILexer getLexer() {
 		return myLexer;

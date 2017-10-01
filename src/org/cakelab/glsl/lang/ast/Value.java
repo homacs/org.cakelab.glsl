@@ -2,6 +2,7 @@ package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.EvaluationException;
+import org.cakelab.glsl.lang.ast.types.Type;
 
 public class Value extends PrimaryExpression {
 	
@@ -22,6 +23,12 @@ public class Value extends PrimaryExpression {
 	public Type getType() {
 		return type;
 	}
+
+	@Override
+	/** same as getType() */
+	public Type evaluateType() throws EvaluationException {
+		return type;
+	}
 	
 	public Object getNativeValue() {
 		return value;
@@ -33,11 +40,6 @@ public class Value extends PrimaryExpression {
 
 	public Value copy() {
 		return new Value(interval, type, value);
-	}
-
-	@Override
-	public Type evaluateType() throws EvaluationException {
-		return type;
 	}
 
 

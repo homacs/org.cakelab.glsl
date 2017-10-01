@@ -30,6 +30,10 @@ public abstract class Parser extends PPHelper  {
 		super(false, state);
 	}
 
+	public Parser(boolean enableRecovery, PPState state) {
+		super(enableRecovery, state);
+	}
+
 
 	public boolean atEOF() {
 		return getLexer().eof() || getLexer().lookahead(1) instanceof TEof;
@@ -39,12 +43,11 @@ public abstract class Parser extends PPHelper  {
 	public abstract boolean parse() throws Recovery;
 	
 	
-	
 	protected ExpressionError expressionError(Interval interval, String message) throws SyntaxError {
 		try {
 			syntaxError(interval.getStart(), message);
 		} catch (Recovery e) {
-			throw new Error("internal error: expression parsers are not supposed to use Recovery exceptions");
+			// creating the expression error is the recovery (see below)
 		}
 		return new ExpressionError(interval, message);
 	}

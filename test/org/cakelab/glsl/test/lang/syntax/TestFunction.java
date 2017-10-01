@@ -47,10 +47,9 @@ public class TestFunction extends TestingBase {
 		assertValid(source, expected);
 
 		
-		source = "void myfunction();\n"
-				+ "void myfunction();\n";
-		assertInvalid(source, expected);
-
+		source = "void myfunction(){};\n"
+				+ "void myfunction(){};\n";
+		assertInvalid(source);
 		
 	}
 

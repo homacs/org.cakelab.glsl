@@ -1,7 +1,8 @@
 package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.lang.EvaluationException;
-import org.cakelab.glsl.lang.ast.Type.Rank;
+import org.cakelab.glsl.lang.ast.types.Type;
+import org.cakelab.glsl.lang.ast.types.Type.Rank;
 
 public class ArrayIndexExpression extends PostfixExpression {
 	protected Expression index;
@@ -23,7 +24,7 @@ public class ArrayIndexExpression extends PostfixExpression {
 		int i = ((Long)indexValue.value).intValue();
 		
 		LValue lvalue = operand.eval().lvalue();
-		if (lvalue.getType().kind != Type.KIND_ARRAY) {
+		if (lvalue.getType().getKind() != Type.KIND_ARRAY) {
 			throw new Error("syntax: not an array");
 		} else {
 			// Turn VariableReference or ArrayReference into 

@@ -9,11 +9,11 @@ import java.util.List;
 
 import org.cakelab.glsl.lang.ast.Function;
 import org.cakelab.glsl.lang.ast.IScope;
-import org.cakelab.glsl.lang.ast.InterfaceBlock;
 import org.cakelab.glsl.lang.ast.Qualifier;
-import org.cakelab.glsl.lang.ast.Struct;
-import org.cakelab.glsl.lang.ast.Type;
 import org.cakelab.glsl.lang.ast.Variable;
+import org.cakelab.glsl.lang.ast.types.InterfaceBlock;
+import org.cakelab.glsl.lang.ast.types.Struct;
+import org.cakelab.glsl.lang.ast.types.Type;
 
 
 public class ScopeImpl implements IScope {
@@ -104,13 +104,7 @@ public class ScopeImpl implements IScope {
 	@Override
 	public void addFunction(Function func) {
 		List<Function> functionGroup = getFunctionGroup(func.getName());
-		int i = Collections.binarySearch(functionGroup, func);
-		if (i >= 0) {
-			// exists
-		} else {
-			i = (-(i) - 1);
-			functionGroup.add(i, func);
-		}
+		functionGroup.add(func);
 	}
 
 	public void addFunctionDefinition(Function function) {

@@ -7,23 +7,29 @@ import org.cakelab.glsl.builtin.GLSLBuiltin;
 import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.GLSLExtension;
-import org.cakelab.glsl.builtin.GLSLExtension.Properties;
 
 public class TestBuiltinSymbols extends TestBuiltinBase {
 	
 	
 	
 	public static void main(String[] args) {
+		testDump();
 //		testExtensionProperties();
-//		testDump();
-		testExtension(core(150), ShaderType.VERTEX_SHADER, "GL_ARB_compatibility");
+//		testExtension(core(150), ShaderType.VERTEX_SHADER, "GL_ARB_compatibility");
 		
 	}
 
 	public static void testDump() {
 		GLSLBuiltin symbols;
-//		symbols = GLSLBuiltin.get(core(150), ShaderType.GEOMETRY_SHADER);
-		symbols = GLSLBuiltin.get(compatibility(150), ShaderType.FRAGMENT_SHADER);
+		
+		int version = 410;
+		
+		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.VERTEX_SHADER);
+		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.FRAGMENT_SHADER);
+		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.TESS_CONTROL_SHADER);
+		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.TESS_EVALUATION_SHADER);
+		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.FRAGMENT_SHADER);
+		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.GEOMETRY_SHADER);
 		symbols.dump(System.out);
 	}
 

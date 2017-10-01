@@ -1,5 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //                             
+//                                  OpenGL 2.0
 //                            Open GL Shading Language 
 //                                    V 1.10
 //                                 Core Profile
@@ -16,6 +17,17 @@
 #define GL_core_profile 1
 
 
+//
+// The following special macros are available only when parsing the preamble
+//
+#if !defined(VERTEX_SHADER)          \
+ && !defined(FRAGMENT_SHADER)        \
+ && !defined(COMPUTE_SHADER)         \
+ && !defined(GENERIC_SHADER)
+// and this error message is just a reminder when developing preambles
+#error undefined or unsupported shader type!
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //                           B U I L T - I N    V A R I A B L E S
@@ -28,6 +40,7 @@
 // -----------------------------------------------------------------------------------
 //                           Vertex Shader Built-In Attributes
 // -----------------------------------------------------------------------------------
+#ifdef VERTEX_SHADER
 attribute vec4  gl_Color;
 attribute vec4  gl_SecondaryColor;
 attribute vec3  gl_Normal;
@@ -41,6 +54,7 @@ attribute vec4  gl_MultiTexCoord5;
 attribute vec4  gl_MultiTexCoord6;
 attribute vec4  gl_MultiTexCoord7;
 attribute float gl_FogCoord;
+#endif // VERTEX_SHADER
 
 // -----------------------------------------------------------------------------------
 //                            Built-In Constants
@@ -66,18 +80,22 @@ const int  gl_MaxDrawBuffers = 1;               // proposed ARB_draw_buffers
 // -----------------------------------------------------------------------------------
 //                           Vertex Shader Special Variables
 // -----------------------------------------------------------------------------------
+
+#ifdef VERTEX_SHADER
 vec4  gl_Position;
 float gl_PointSize;
 vec4  gl_ClipVertex;
-
+#endif
 // -----------------------------------------------------------------------------------
 //                           Fragment Shader Special Variables
 // -----------------------------------------------------------------------------------
+#ifdef FRAGMENT_SHADER
 vec4  gl_FragCoord;
 bool  gl_FrontFacing;
 vec4  gl_FragColor;
 vec4  gl_FragData[gl_MaxDrawBuffers];
 float gl_FragDepth;
+#endif
 
 // -----------------------------------------------------------------------------------
 //                           Built-In Uniform State
@@ -215,19 +233,21 @@ uniform gl_FogParameters gl_Fog;
 // -----------------------------------------------------------------------------------
 //                           Varying Variables
 // -----------------------------------------------------------------------------------
-
+#ifdef VERTEX_SHADER
 varying vec4  gl_FrontColor;
 varying vec4  gl_BackColor;
 varying vec4  gl_FrontSecondaryColor;
 varying vec4  gl_BackSecondaryColor;
 varying vec4  gl_TexCoord[];  // at most will be gl_MaxTextureCoords
 varying float gl_FogFragCoord;
+#endif // VERTEX_SHADER
 
+#ifdef FRAGMENT_SHADER
 varying vec4  gl_Color;
 varying vec4  gl_SecondaryColor;
 varying vec4  gl_TexCoord[];  // at most will be gl_MaxTextureCoords
 varying float gl_FogFragCoord;
-
+#endif // FRAGMENT_SHADER
 
 
 
@@ -445,8 +465,10 @@ vec4 shadow2DProjLod(sampler2DShadow sampler, vec4 coord, float lod);
 
 
 // -----------------------------------------------------------------------------------
-//                           8.6 Vector Relational Functions
+//                           8.8 Fragment Processing Functions
 // -----------------------------------------------------------------------------------
+#ifdef FRAGMENT_SHADER
+
 #define GENERIC_FUNCTION_SET(genType) \
 genType dFdx (genType p);\
 genType dFdy (genType p);\
@@ -460,11 +482,14 @@ GENERIC_FUNCTION_SET(vec4)
 
 #undef GENERIC_FUNCTION_SET
 
+#endif // FRAGMENT_SHADER
 
 
 // -----------------------------------------------------------------------------------
 //                           Noise Functions
 // -----------------------------------------------------------------------------------
+
+#if defined(VERTEX_SHADER) || defined(FRAGMENT_SHADER)
 #define GENERIC_FUNCTION_SET(genType) \
 float noise1(genType x);\
 vec2 noise2(genType x);\
@@ -479,6 +504,7 @@ GENERIC_FUNCTION_SET(vec4)
 
 
 #undef GENERIC_FUNCTION_SET
+#endif // defined(VERTEX_SHADER) || defined(GEOMETRY_SHADER) || defined(FRAGMENT_SHADER)
 
 
 

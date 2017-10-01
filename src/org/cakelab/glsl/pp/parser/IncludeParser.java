@@ -1,6 +1,7 @@
 package org.cakelab.glsl.pp.parser;
 
 import java.io.IOException;
+import java.util.Stack;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
@@ -31,6 +32,7 @@ public class IncludeParser extends Parser {
 	private PPGLSLRuleSet extendedRules;
 	private Interval interval;
 	private Preprocessor preprocessor;
+	private Stack<Resource> includeStack = new Stack<Resource>();
 	
 	
 	
@@ -108,9 +110,20 @@ public class IncludeParser extends Parser {
 	private void exec() {
 		if (resource == null) return;
 		
+		Interval interval = this.interval;
+		
 		// exec include
 		ILexer previous = getLexer();
 		try {
+			int index = includeStack.indexOf(resource);
+			if (index >= 0) {
+				StringBuffer includedBy = new StringBuffer();
+				for (int i = includeStack.size()-1; i >= index; i--) {
+					includedBy.append("\tincluded by: '").append(includeStack.get(i).getPath()).append("'\n");
+				}
+				syntaxError(interval.getStart(), "detected include cycle on resource '" + resource.getPath() + "'\n" + includedBy);
+			}
+			includeStack.push(resource);
 
 			Token next = getLexer().lookahead(1);
 			
@@ -124,7 +137,7 @@ public class IncludeParser extends Parser {
 			
 			
 			state.setLexer(includeLexer);
-			preprocessor.process();
+			preprocessor.process(false);
 			
 			
 			// insert CRLF if necessary
@@ -134,7 +147,9 @@ public class IncludeParser extends Parser {
 			if (state.isInsertLineDirectives()) {
 				state.getOutput().print(createLineTokens(locationReference, next.getStart().getLine(), next.getStart().getSourceIdentifier()));
 			}
-		
+			includeStack.pop();
+		} catch(Recovery e) {
+			// can't actually do anything ..
 		} finally {
 			state.setLexer(previous);
 		}

@@ -2,8 +2,8 @@ package org.cakelab.glsl.lang;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.ast.LValue;
-import org.cakelab.glsl.lang.ast.Type;
 import org.cakelab.glsl.lang.ast.Value;
+import org.cakelab.glsl.lang.ast.types.Type;
 
 public class InstructionProcessor {
 	

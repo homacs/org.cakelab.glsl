@@ -113,7 +113,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	}
 
 	public Preprocessor(Resource resource, ShaderType shaderType, PPOutputSink out) {
-		super(new PPState(resource, shaderType));
+		super(true, new PPState(resource, shaderType));
 		state.addListener(this);
 		state.setInputResource(resource);
 		originalSourceLexer = new PPLexer(new StreamScanner(resource), state);
@@ -255,11 +255,11 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 
 	
 	public boolean parse() {
-		process();
+		process(true);
 		return groups != null && !groups.isEmpty();
 	}
 	
-	public List<PPGroupScope> process() {
+	public List<PPGroupScope> process(boolean checkIfGroupConsistency) {
 		// main parser loop
 		try {
 			while(!atEOF()) {
@@ -268,7 +268,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 				}
 			}
 			// check if all scopes of conditional inclusion are complete
-			if (state.getGroupScope() != globalScope) 
+			if (checkIfGroupConsistency && state.getGroupScope() != globalScope) 
 			{
 				syntaxError(getLexer().previous(), "missing #endif");
 			}
@@ -705,6 +705,8 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 		return null;
 	}
 
+	
+	
 	private Node single_hash_expression() {
 		if (PUNCTUATOR('#')) {
 			Token hashTok = token;

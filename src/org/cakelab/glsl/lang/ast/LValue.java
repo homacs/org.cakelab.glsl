@@ -1,6 +1,7 @@
 package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.lang.EvaluationException;
+import org.cakelab.glsl.lang.ast.types.Type;
 
 /**
  * Storage location actually.

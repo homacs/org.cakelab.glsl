@@ -3,6 +3,7 @@ package org.cakelab.glsl.lang.ast;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ProcessingException;
+import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.lang.InstructionProcessor;
 
 /**

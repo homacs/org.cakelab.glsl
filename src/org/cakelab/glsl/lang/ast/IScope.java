@@ -4,6 +4,9 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.cakelab.glsl.lang.ast.types.InterfaceBlock;
+import org.cakelab.glsl.lang.ast.types.Type;
+
 public interface IScope {
 	IScope NONE = null;
 

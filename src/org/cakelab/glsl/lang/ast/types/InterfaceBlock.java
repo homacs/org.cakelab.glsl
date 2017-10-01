@@ -1,8 +1,11 @@
-package org.cakelab.glsl.lang.ast;
+package org.cakelab.glsl.lang.ast.types;
 
 import java.util.ArrayList;
 
 import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.lang.ast.IScope;
+import org.cakelab.glsl.lang.ast.Qualifier;
+import org.cakelab.glsl.lang.ast.Qualifiers;
 import org.cakelab.glsl.lang.ast.Qualifier.DirectionQualifier;
 
 public class InterfaceBlock extends Struct {
@@ -30,7 +33,7 @@ public class InterfaceBlock extends Struct {
 	 * @return
 	 */
 	public static String key(Qualifier direction, String name) {
-		return direction.name + " " + name;
+		return direction.getName() + " " + name;
 	}
 
 	/** 
@@ -44,7 +47,7 @@ public class InterfaceBlock extends Struct {
 
 	
 	public String toString() {
-		String fqn = this.signature;
+		String fqn = this.getSignature();
 		if (!qualifiers.isEmpty()) {
 			fqn = qualifiers.toString() + " " + fqn;
 		}
@@ -57,6 +60,11 @@ public class InterfaceBlock extends Struct {
 
 	public ArrayList<Member> getMembers() {
 		return body.members;
+	}
+
+	@Override
+	protected void createStandardConstructors() {
+		// no constructors
 	}
 
 

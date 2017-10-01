@@ -1,6 +1,8 @@
 package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.lang.ast.types.Array;
+import org.cakelab.glsl.lang.ast.types.Type;
 
 public class ArrayElementReference extends Value implements LValue {
 	/* we need to keep array object and index, to be able to set the 

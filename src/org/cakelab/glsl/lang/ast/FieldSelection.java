@@ -2,7 +2,10 @@ package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.EvaluationException;
-import org.cakelab.glsl.lang.ast.Struct.Member;
+import org.cakelab.glsl.lang.ast.types.Array;
+import org.cakelab.glsl.lang.ast.types.CompoundType;
+import org.cakelab.glsl.lang.ast.types.CompoundType.Member;
+import org.cakelab.glsl.lang.ast.types.Type;
 
 public class FieldSelection extends PostfixExpression {
 
@@ -17,19 +20,20 @@ public class FieldSelection extends PostfixExpression {
 	public PrimaryExpression eval() throws EvaluationException {
 		// TODO syntax checks outside
 		Value compound = operand.eval().value();
-		int kind = compound.getType().kind;
+		int kind = compound.getType().getKind();
 		if (kind == Type.KIND_ARRAY) {
 			if (!identifier.equals("length")) {
 				// TODO check for syntax error outside
-				throw new Error("syntax: undefined member '" + identifier + "' for array type " + compound.getType().signature);
+				throw new Error("syntax: undefined member '" + identifier + "' for array type " + compound.getType().getSignature());
 			} else {
 				// TODO add methods to type
-				return new MemberReference(this.interval, compound, Array.LENGTH);
+				return new MemberReference(this.interval, compound, Array.DEFAULT_LENGTH_METHOD);
 			}
 		} 
 		else if (kind == Type.KIND_STRUCT) 
 		{
-			Member member = ((Struct)compound.getType()).getMember(identifier);
+			// FIXME: field selections needs CompoundType.getMemberReference() to deal with method groups
+			Member member = ((CompoundType)(compound.getType())).getMember(identifier);
 			return new MemberReference(this.interval, compound, member);
 		}
 		return null;

@@ -1,9 +1,9 @@
 package org.cakelab.glsl.pp.ast;
 
 import org.cakelab.glsl.Interval;
-import org.cakelab.glsl.lang.ast.Array;
 import org.cakelab.glsl.lang.ast.ConstantValue;
-import org.cakelab.glsl.lang.ast.Type;
+import org.cakelab.glsl.lang.ast.types.Array;
+import org.cakelab.glsl.lang.ast.types.Type;
 
 /** String constant: const char[] */
 public class StringConstant extends ConstantValue<String> {

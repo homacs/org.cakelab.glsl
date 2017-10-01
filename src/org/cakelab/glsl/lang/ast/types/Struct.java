@@ -1,30 +1,28 @@
-package org.cakelab.glsl.lang.ast;
+package org.cakelab.glsl.lang.ast.types;
 
 import java.util.ArrayList;
 
 import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.lang.ast.Constructor;
+import org.cakelab.glsl.lang.ast.IScope;
+import org.cakelab.glsl.lang.ast.Method;
+import org.cakelab.glsl.lang.ast.Node;
+import org.cakelab.glsl.lang.ast.ParameterDeclaration;
+import org.cakelab.glsl.lang.ast.Qualifiers;
+import org.cakelab.glsl.lang.ast.Variable;
 import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
 
-public class Struct extends Type {
-
-	public static interface Member {
-		String toString();
-		Node getNode();
-		String getName();
-		Type getType();
-		/** Returns the struct or interface block, which contains this member. */
-		Struct getCompoundType();
-	}
+public class Struct extends Type implements CompoundType {
 
 	
 	public static class MemberType extends Type implements Member {
-		private Struct struct;
+		private CompoundType struct;
 
 		public MemberType(MemberType that) {
 			this(that.struct, that);
 		}
 
-		public MemberType(Struct struct, Type type) {
+		public MemberType(CompoundType struct, Type type) {
 			super(type);
 			this.struct = struct;
 		}
@@ -44,7 +42,7 @@ public class Struct extends Type {
 		}
 
 		@Override
-		public Struct getCompoundType() {
+		public CompoundType getCompoundType() {
 			return struct;
 		}
 		
@@ -77,9 +75,9 @@ public class Struct extends Type {
 	}
 
 	
-	public class Constructor extends Function implements Member {
-		public Constructor(Interval interval, Struct struct, ParameterDeclaration[] parameters) {
-			super(interval, struct, struct.getName(), parameters);
+	public class CompoundTypeConstructor extends Constructor implements Member {
+		public CompoundTypeConstructor(Interval interval, Struct struct, ParameterDeclaration[] parameters) {
+			super(interval, struct, parameters);
 		}
 
 		@Override
@@ -95,56 +93,20 @@ public class Struct extends Type {
 
 
 	
-	/** method is a function with a this pointer as implicit first argument */
-	public class Method extends Function implements Member {
-
-		private Struct struct;
-
-		public Method(Interval interval, Struct struct, Type returnType, String name, ParameterDeclaration... parameters) {
-			super(interval, returnType, name, parameters);
-			this.struct = struct;
-		}
-
-		public Value call(Value _this, Value[] args) {
-			// TODO [interpreter]
-			throw new Error("not yet implemented");
-		}
-		
-		@Override
-		public Node getNode() {
-			return this;
-		}
-		@Override
-		public String getName() {
-			return super.getName();
-		}
-
-		@Override
-		public Type getType() {
-			return super.getType();
-		}
-
-		@Override
-		public Struct getCompoundType() {
-			return struct;
-		}
-		
-		
-	}
-
-	
 	public static class Body extends ScopeImpl {
 		// FIXME: Struct body unfinished: it is supposed to translate declarations into member declarations
 		ArrayList<Member> members = new ArrayList<Member>();
 		
-		public Body(IScope parent) {
-			super(parent);
+		public Body(Struct compoundType, IScope parentScope) {
+			super(parentScope);
 		}
 
 		public void addMember(Member member) {
 			members.add(member);
 			if (member instanceof Method) {
 				super.addFunction(((Method)member));
+			} else if (member instanceof Constructor){
+				super.addFunction((Constructor) member);
 			} else if (member instanceof MemberVariable){
 				super.addVariable((Variable) member);
 			} else if (member instanceof Type) {
@@ -173,9 +135,9 @@ public class Struct extends Type {
 	
 	Body body;
 
-	public Struct(Interval interval, IScope parent, String name, Qualifiers qualifiers) {
+	public Struct(Interval interval, IScope parentScope, String name, Qualifiers qualifiers) {
 		super(interval, name, KIND_STRUCT, qualifiers);
-		this.body = new Body(parent);
+		this.body = new Body(this, parentScope);
 	}
 	
 	public Struct(Struct that) {
@@ -187,28 +149,42 @@ public class Struct extends Type {
 		return new Struct(this);
 	}
 	
-	public void addConstructor(Interval interval, ParameterDeclaration ... params) {
-		Constructor constructor = new Constructor(interval, this, params);
+	public Constructor addConstructor(Interval interval, ParameterDeclaration ... params) {
+		CompoundTypeConstructor constructor = new CompoundTypeConstructor(interval, this, params);
 		addMember(constructor);
+		return constructor;
 	}
 	
 	public void addMember(Member member) {
 		body.addMember(member);
 	}
+	
 	public Member getMember(String identifier) {
 		return body.getMember(identifier);
 	}
 
+	
+	
 	public IScope getBody() {
 		return body;
 	}
 	
 	public String toString() {
-		String fqn = "struct " + this.signature;
+		String fqn = "struct " + this.getSignature();
 		if (!qualifiers.isEmpty()) {
 			fqn = qualifiers.toString() + " " + fqn;
 		}
 		return fqn;
 	}
+
+	@Override
+	public Constructor getConstructor(Type[] argumentTypes) {
+		Constructor constructor = super.getConstructor(argumentTypes);
+		if (constructor == null) {
+			constructor = (Constructor) body.getFunction(this.getName(), argumentTypes);
+		}
+		return constructor;
+	}
+
 	
 }

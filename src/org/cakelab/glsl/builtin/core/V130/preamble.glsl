@@ -1,5 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //                             
+//                                  OpenGL 3.0
 //                            Open GL Shading Language 
 //                                    V 1.30
 //                                 Core Profile
@@ -18,12 +19,19 @@
 #define __VERSION__ 130
 #define GL_core_profile 1
 
+
 //
 // The following special macros are available only when parsing the preamble
 //
-#if !defined(VERTEX_SHADER) &&  !defined(FRAGMENT_SHADER) && !defined(GENERIC_SHADER)
-#error undefined shader type!
+#if !defined(VERTEX_SHADER)          \
+ && !defined(FRAGMENT_SHADER)        \
+ && !defined(COMPUTE_SHADER)         \
+ && !defined(GENERIC_SHADER)
+// and this error message is just a reminder when developing preambles
+#error undefined or unsupported shader type!
 #endif
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //                           B U I L T - I N    V A R I A B L E S
@@ -656,7 +664,7 @@ GENERIC_FUNCTION_SET_I_U(vec4, sampler1DArray, vec2)
 GENERIC_FUNCTION_SET_I_U(vec4, sampler2DArray, vec3)
 
 GENERIC_FUNCTION_SET(float, sampler1DArrayShadow, vec3)
-GENERIC_FUNCTION_SET(float, sampler2DArrayShadow, vec4)
+float texture(sampler2DArrayShadow sampler, vec4 P);
 
 #undef GENERIC_FUNCTION_SET
 
@@ -975,6 +983,7 @@ GENERIC_FUNCTION_SET(vec4)
 // -----------------------------------------------------------------------------------
 //                           8.9 Noise Functions
 // -----------------------------------------------------------------------------------
+#if defined(VERTEX_SHADER) || defined(FRAGMENT_SHADER)
 #define GENERIC_FUNCTION_SET(genType) \
 float noise1(genType x);\
 vec2 noise2(genType x);\
@@ -989,6 +998,7 @@ GENERIC_FUNCTION_SET(vec4)
 
 
 #undef GENERIC_FUNCTION_SET
+#endif // defined(VERTEX_SHADER) || defined(FRAGMENT_SHADER)
 
 
 

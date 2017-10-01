@@ -1,8 +1,7 @@
 package org.cakelab.glsl.lang.ast;
 
 import org.cakelab.glsl.Interval;
-import org.cakelab.glsl.lang.ast.Struct.Member;
-import org.cakelab.glsl.lang.ast.Struct.Method;
+import org.cakelab.glsl.lang.ast.types.CompoundType.Member;
 
 public class MemberReference extends Value {
 
@@ -14,7 +13,7 @@ public class MemberReference extends Value {
 		this.compound = compound;
 	}
 
-	public Struct.Method getMethod() {
+	public Method getMethod() {
 		if (this.value instanceof Method) {
 			return (Method) this.value;
 		} else {

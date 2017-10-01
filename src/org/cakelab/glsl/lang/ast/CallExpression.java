@@ -3,8 +3,7 @@ package org.cakelab.glsl.lang.ast;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.lang.EvaluationException;
-import org.cakelab.glsl.lang.ast.Struct.Constructor;
-import org.cakelab.glsl.lang.ast.Struct.Method;
+import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.pp.error.ExpressionError;
 
 
@@ -12,7 +11,6 @@ public class CallExpression extends PostfixExpression {
 	public static final Value[] EMPTY_ARGUMENT_LIST = new Value[0];
 	
 	
-	// TODO [3] should be abstract base of constructor, function, method and macro call
 	protected Expression[] arguments;
 	protected Type[] argumentTypes;
 	protected Function function;

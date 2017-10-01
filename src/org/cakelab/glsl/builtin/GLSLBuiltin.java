@@ -25,7 +25,7 @@ import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.lang.ASTBuilder;
 import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.Node;
-import org.cakelab.glsl.lang.ast.Type;
+import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.PPTokenStream;
 import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
@@ -109,8 +109,8 @@ public class GLSLBuiltin {
 	// TODO: this should be part of a Resource class named GLSLResource
 	public static enum ShaderType {
 		VERTEX_SHADER,
-		TESS_EVALUATION_SHADER,
 		TESS_CONTROL_SHADER,
+		TESS_EVALUATION_SHADER,
 		GEOMETRY_SHADER,
 		FRAGMENT_SHADER,
 		COMPUTE_SHADER,
@@ -468,7 +468,7 @@ public class GLSLBuiltin {
 		pp.enableLineDirectiveInsertion(false);
 		pp.setForceVersion(version);
 
-		pp.process();
+		pp.process(true);
 		
 		MacroMap macroMap = pp.getState().getMacros();
 		macroMap.remove(shaderType.name());

@@ -7,10 +7,10 @@ import java.util.HashMap;
 
 import org.cakelab.glsl.lang.ast.Function;
 import org.cakelab.glsl.lang.ast.IScope;
-import org.cakelab.glsl.lang.ast.InterfaceBlock;
 import org.cakelab.glsl.lang.ast.Qualifier;
-import org.cakelab.glsl.lang.ast.Type;
 import org.cakelab.glsl.lang.ast.Variable;
+import org.cakelab.glsl.lang.ast.types.InterfaceBlock;
+import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.pp.ast.Macro;
 
 public class GLSLExtensionSet implements IScope {

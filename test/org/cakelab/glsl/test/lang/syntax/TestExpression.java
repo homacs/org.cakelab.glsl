@@ -5,9 +5,9 @@ import org.cakelab.glsl.GLSLParser.GlslBuiltinTypeContext;
 import org.cakelab.glsl.GLSLParser.GlslCallArgumentsContext;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.ast.IScope;
-import org.cakelab.glsl.lang.ast.Struct;
-import org.cakelab.glsl.lang.ast.Type;
 import org.cakelab.glsl.lang.ast.Variable;
+import org.cakelab.glsl.lang.ast.types.Struct;
+import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.test.lang.TestingBase;
 import org.cakelab.glsl.test.lang.TestingTools;
 

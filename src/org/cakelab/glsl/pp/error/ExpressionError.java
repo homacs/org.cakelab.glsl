@@ -3,8 +3,8 @@ package org.cakelab.glsl.pp.error;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.PrimaryExpression;
-import org.cakelab.glsl.lang.ast.Type;
 import org.cakelab.glsl.lang.ast.Value;
+import org.cakelab.glsl.lang.ast.types.Type;
 
 
 public class ExpressionError extends Value {

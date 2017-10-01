@@ -1,5 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //                             
+//                                  OpenGL 3.1
 //                            Open GL Shading Language 
 //                                    V 1.40
 //                                 Core Profile
@@ -12,11 +13,16 @@
 #define __VERSION__ 140
 #define GL_core_profile 1
 
+
 //
 // The following special macros are available only when parsing the preamble
 //
-#if !defined(VERTEX_SHADER) &&  !defined(FRAGMENT_SHADER) && !defined(GENERIC_SHADER)
-#error undefined shader type!
+#if !defined(VERTEX_SHADER)          \
+ && !defined(FRAGMENT_SHADER)        \
+ && !defined(COMPUTE_SHADER)         \
+ && !defined(GENERIC_SHADER)
+// and this error message is just a reminder when developing preambles
+#error undefined or unsupported shader type!
 #endif
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -507,7 +513,7 @@ GENERIC_FUNCTION_SET_I_U(vec4, sampler1DArray, vec2)
 GENERIC_FUNCTION_SET_I_U(vec4, sampler2DArray, vec3)
 
 GENERIC_FUNCTION_SET(float, sampler1DArrayShadow, vec3)
-GENERIC_FUNCTION_SET(float, sampler2DArrayShadow, vec4)
+float texture(sampler2DArrayShadow sampler, vec4 P);
 
 vec4 texture(sampler2DRect sampler, vec2 P);
 ivec4 texture(isampler2DRect sampler, vec2 P);
@@ -793,6 +799,7 @@ float textureProjGrad (sampler2DShadow sampler, vec4 P, vec2 dPdx, vec2 dPdy);
 
 #undef GENERIC_FUNCTION_SET_I_U
 
+
 //   ------  textureProjGradOffset(sampler, P, dPdx, dPdy, offset)   -------
 #define GENERIC_FUNCTION_SET_I_U(RET, FIRST, SECOND, THIRD, FIFTH)\
      RET textureProjGradOffset(     FIRST sampler, SECOND P, THIRD dPdx, THIRD dPdy, FIFTH offset);\
@@ -801,19 +808,14 @@ u ## RET textureProjGradOffset(u ## FIRST sampler, SECOND P, THIRD dPdx, THIRD d
 
 GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, vec2, float, int)
 GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, vec4, float, int)
-GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec3, vec2, ivec2)
-GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec4, vec2, ivec2)
-vec4  textureProjGradOffset( sampler2DRect sampler, vec3 P, vec2 dPdx, vec2 dPdy, ivec2 offset);
-ivec4 textureProjGradOffset(isampler2DRect sampler, vec3 P, vec2 dPdx, vec2 dPdy, ivec2 offset);
-uvec4 textureProjGradOffset(usampler2DRect sampler, vec3 P, vec2 dPdx, vec2 dPdy, ivec2 offset);
-vec4  textureProjGradOffset( sampler2DRect sampler, vec4 P, vec2 dPdx, vec2 dPdy, ivec2 offset);
-ivec4 textureProjGradOffset(isampler2DRect sampler, vec4 P, vec2 dPdx, vec2 dPdy, ivec2 offset);
-uvec4 textureProjGradOffset(usampler2DRect sampler, vec4 P, vec2 dPdx, vec2 dPdy, ivec2 offset);
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec3, vec2, vec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec4, vec2, vec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2DRect, vec3, vec2, ivec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2DRect, vec4, vec2, ivec2)
 float textureProjGradOffset(sampler2DRectShadow sampler, vec4 P, vec2 dPdx, vec2 dPdy, ivec2 offset);
-GENERIC_FUNCTION_SET_I_U(vec4, sampler3D, vec4, vec3, ivec3)
-
+GENERIC_FUNCTION_SET_I_U(vec4, sampler3D, vec4, vec3, vec3)
 float textureProjGradOffset (sampler1DShadow sampler, vec4 P, float dPdx, float dPdy, int offset);
-float textureProjGradOffset (sampler2DShadow sampler, vec4 P, vec2 dPdx, vec2 dPdy, ivec2 offset);
+float textureProjGradOffset (sampler2DShadow sampler, vec4 P, vec2 dPdx, vec2 dPdy, vec2 offset);
 
 #undef GENERIC_FUNCTION_SET_I_U
 
@@ -890,6 +892,7 @@ GENERIC_FUNCTION_SET(vec4)
 // -----------------------------------------------------------------------------------
 //                           8.9 Noise Functions
 // -----------------------------------------------------------------------------------
+#if defined(VERTEX_SHADER) || defined(FRAGMENT_SHADER)
 #define GENERIC_FUNCTION_SET(genType) \
 float noise1(genType x);\
 vec2 noise2(genType x);\
@@ -904,6 +907,7 @@ GENERIC_FUNCTION_SET(vec4)
 
 
 #undef GENERIC_FUNCTION_SET
+#endif // defined(VERTEX_SHADER) || defined(FRAGMENT_SHADER)
 
 
 //////////////////////////////////////////////////////////////////////////////////////

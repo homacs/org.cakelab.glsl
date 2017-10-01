@@ -9,6 +9,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef GL_core_profile
 
 #define __VERSION__ 150
 #define GL_core_profile 1
@@ -26,6 +27,7 @@
 //                           B U I L T - I N    V A R I A B L E S
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 // -----------------------------------------------------------------------------------
 //                           4.5.4 Available Precision Qualifiers
@@ -66,7 +68,9 @@ const int  gl_MaxGeometryVaryingComponents = 64;
 
 
 // -----------------------------------------------------------------------------------
-//                           7.1 Vertex and Geometry Shader Special Variables
+//                          7.1 Vertex and Geometry Shader Special Variables
+// 							7.1.1 Compatibility Profile Vertex and Geometry Shader Special Variables
+//                          7.6 Compatibility Profile Vertex and Fragment Interface
 // -----------------------------------------------------------------------------------
 
 #ifdef VERTEX_SHADER
@@ -127,7 +131,6 @@ out int gl_Layer;
 #ifdef GL_compatibility_profile
 // Section  7.1.1 Compatibility Profile Vertex and Geometry Shader Special Variables
 out vec4 gl_ClipVertex;
-out vec4 gl_ClipVertex;
 
 
 #endif // GL_compatibility_profile
@@ -137,6 +140,7 @@ out vec4 gl_ClipVertex;
 
 // -----------------------------------------------------------------------------------
 //                           7.2 Fragment Shader Special Variables
+//                           7.6 Compatibility Profile Vertex and Fragment Interface
 // -----------------------------------------------------------------------------------
 
 
@@ -484,6 +488,10 @@ mat4x2 transpose(mat2x4 m);
 mat3x4 transpose(mat4x3 m);
 mat4x3 transpose(mat3x4 m);
 
+float determinant(mat2 m);
+float determinant(mat3 m);
+float determinant(mat4 m);
+
 mat2 inverse(mat2 m);
 mat3 inverse(mat3 m);
 mat4 inverse(mat4 m);
@@ -532,9 +540,516 @@ GENERIC_FUNCTION_SET(bvec4)
 
 
 
+// -----------------------------------------------------------------------------------
+//                           8.7 Texture Lookup Functions
+// -----------------------------------------------------------------------------------
+//   ------  textureSize(sampler, lod)   -------
+int textureSize (sampler1D sampler, int lod);
+int textureSize (isampler1D sampler, int lod);
+int textureSize (usampler1D sampler, int lod);
+
+ivec2 textureSize (sampler2D sampler, int lod);
+ivec2 textureSize (isampler2D sampler, int lod);
+ivec2 textureSize (usampler2D sampler, int lod);
+
+ivec3 textureSize (sampler3D sampler, int lod);
+ivec3 textureSize (isampler3D sampler, int lod);
+ivec3 textureSize (usampler3D sampler, int lod);
+
+ivec2 textureSize (samplerCube sampler, int lod);
+ivec2 textureSize (isamplerCube sampler, int lod);
+ivec2 textureSize (usamplerCube sampler, int lod);
+
+int textureSize (sampler1DShadow sampler, int lod);
+
+ivec2 textureSize (sampler2DShadow sampler, int lod);
+
+ivec2 textureSize (samplerCubeShadow sampler, int lod);
+
+ivec2 textureSize (sampler2DRect sampler);
+ivec2 textureSize (isampler2DRect sampler);
+ivec2 textureSize (usampler2DRect sampler);
+
+ivec2 textureSize (sampler2DRectShadow sampler);
+
+ivec2 textureSize (sampler1DArray sampler, int lod);
+ivec2 textureSize (isampler1DArray sampler, int lod);
+ivec2 textureSize (usampler1DArray sampler, int lod);
+
+ivec3 textureSize (sampler2DArray sampler, int lod);
+ivec3 textureSize (isampler2DArray sampler, int lod);
+ivec3 textureSize (usampler2DArray sampler, int lod);
+
+ivec2 textureSize (sampler1DArrayShadow sampler, int lod);
+
+ivec3 textureSize (sampler2DArrayShadow sampler, int lod);
+
+int textureSize(samplerBuffer sampler);
+int textureSize(isamplerBuffer sampler);
+int textureSize(usamplerBuffer sampler);
+
+ivec2 textureSize (sampler2DMS sampler);
+ivec2 textureSize (isampler2DMS sampler);
+ivec2 textureSize (usampler2DMS sampler);
+
+ivec2 textureSize (sampler2DMSArray sampler);
+ivec2 textureSize (isampler2DMSArray sampler);
+ivec2 textureSize (usampler2DMSArray sampler);
 
 
 
+//   ------  texture(sampler, p [, bias])   -------
+#define GENERIC_FUNCTION_SET(RET, FIRST, SECOND)\
+RET texture(FIRST sampler, SECOND P);\
+RET texture(FIRST sampler, SECOND P, float bias);
+
+#define GENERIC_FUNCTION_SET_I_U(RET, FIRST, SECOND)\
+GENERIC_FUNCTION_SET(RET, FIRST, SECOND)\
+GENERIC_FUNCTION_SET(i ## RET, i ## FIRST, SECOND)\
+GENERIC_FUNCTION_SET(u ## RET, u ## FIRST, SECOND)
+
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, float)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler3D, vec3)
+GENERIC_FUNCTION_SET_I_U(vec4, samplerCube, vec3)
+
+GENERIC_FUNCTION_SET(float, sampler1DShadow, vec3)
+GENERIC_FUNCTION_SET(float, sampler2DShadow, vec3)
+GENERIC_FUNCTION_SET(float, samplerCubeShadow, vec4)
+
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1DArray, vec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2DArray, vec3)
+
+GENERIC_FUNCTION_SET(float, sampler1DArrayShadow, vec3)
+float texture(sampler2DArrayShadow sampler, vec4 P);
+
+vec4 texture(sampler2DRect sampler, vec2 P);
+ivec4 texture(isampler2DRect sampler, vec2 P);
+uvec4 texture(usampler2DRect sampler, vec2 P);
+float texture(sampler2DRectShadow sampler, vec3 P);
+
+
+
+#undef GENERIC_FUNCTION_SET
+
+
+//   ------  textureProj(sampler, p [, bias])   -------
+#define GENERIC_FUNCTION_SET(RET, FIRST, SECOND)\
+RET textureProj(FIRST sampler, SECOND P);\
+RET textureProj(FIRST sampler, SECOND P, float bias);
+
+#define GENERIC_FUNCTION_SET_I_U(RET, FIRST, SECOND)\
+GENERIC_FUNCTION_SET(RET, FIRST, SECOND)\
+GENERIC_FUNCTION_SET(i ## RET, i ## FIRST, SECOND)\
+GENERIC_FUNCTION_SET(u ## RET, u ## FIRST, SECOND)\
+
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, vec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, vec4)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec3)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec4)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler3D, vec4)
+
+GENERIC_FUNCTION_SET(float, sampler1DShadow, vec4)
+GENERIC_FUNCTION_SET(float, sampler2DShadow, vec4)
+
+vec4 textureProj(sampler2DRect sampler, vec3 P);
+ivec4 textureProj(isampler2DRect sampler, vec3 P);
+uvec4 textureProj(usampler2DRect sampler, vec3 P);
+vec4 textureProj(sampler2DRect sampler, vec4 P);
+ivec4 textureProj(isampler2DRect sampler, vec4 P);
+uvec4 textureProj(usampler2DRect sampler, vec4 P);
+float textureProj(sampler2DRectShadow sampler, vec4 P);
+
+#undef GENERIC_FUNCTION_SET_I_U
+#undef GENERIC_FUNCTION_SET
+
+
+//   ------  textureLod(sampler, p, lod)   -------
+#define GENERIC_FUNCTION_SET_I_U(RET, FIRST, SECOND)\
+RET textureLod(FIRST sampler, SECOND P, float lod);\
+i ## RET textureLod(i ## FIRST sampler, SECOND P, float lod);\
+u ## RET textureLod(u ## FIRST sampler, SECOND P, float lod);
+
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, float)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler3D, vec3)
+GENERIC_FUNCTION_SET_I_U(vec4, samplerCube, vec3)
+float textureLod(sampler1DShadow sampler, vec3 P, float lod);
+float textureLod(sampler2DShadow sampler, vec3 P, float lod);
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1DArray, vec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2DArray, vec3)
+float textureLod(sampler1DArrayShadow sampler, vec3 P, float lod);
+
+#undef GENERIC_FUNCTION_SET_I_U
+
+//   ------  textureOffset(sampler, p, offset [, bias])   -------
+#define GENERIC_FUNCTION_SET(RET, FIRST, SECOND, THIRD)\
+RET textureOffset(FIRST sampler, SECOND P, THIRD offset);\
+RET textureOffset(FIRST sampler, SECOND P, THIRD offset, float bias);
+
+#define GENERIC_FUNCTION_SET_I_U(RET, FIRST, SECOND, THIRD)\
+GENERIC_FUNCTION_SET(     RET,      FIRST, SECOND, THIRD)\
+GENERIC_FUNCTION_SET(i ## RET, i ## FIRST, SECOND, THIRD)\
+GENERIC_FUNCTION_SET(u ## RET, u ## FIRST, SECOND, THIRD)\
+
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, float, int)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec2, ivec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler3D, vec3, ivec3)
+
+vec4 textureOffset(sampler2DRect sampler, vec2 P, ivec2 offset);
+ivec4 textureOffset(isampler2DRect sampler, vec2 P, ivec2 offset);
+uvec4 textureOffset(usampler2DRect sampler, vec2 P, ivec2 offset);
+float textureOffset(sampler2DRectShadow sampler, vec3 P, ivec2 offset);
+
+GENERIC_FUNCTION_SET(float, sampler1DShadow, vec3, int)
+GENERIC_FUNCTION_SET(float, sampler2DShadow, vec3, ivec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1DArray, vec2, int)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2DArray, vec3, ivec2)
+GENERIC_FUNCTION_SET(float, sampler1DArrayShadow, vec3, int)
+
+#undef GENERIC_FUNCTION_SET_I_U
+#undef GENERIC_FUNCTION_SET
+
+
+
+//   ------  texelFetch(sampler, p, lod)   -------
+#define GENERIC_FUNCTION_SET_I_U(FIRST, SECOND)\
+vec4  texelFetch(     FIRST sampler, SECOND P, int lod);\
+ivec4 texelFetch(i ## FIRST sampler, SECOND P, int lod);\
+uvec4 texelFetch(u ## FIRST sampler, SECOND P, int lod);
+
+GENERIC_FUNCTION_SET_I_U(sampler1D, int)
+GENERIC_FUNCTION_SET_I_U(sampler2D, ivec2)
+GENERIC_FUNCTION_SET_I_U(sampler3D, ivec3)
+
+vec4 texelFetch(sampler2DRect sampler, ivec2 P);
+ivec4 texelFetch(isampler2DRect sampler, ivec2 P);
+uvec4 texelFetch(usampler2DRect sampler, ivec2 P);
+
+GENERIC_FUNCTION_SET_I_U(sampler1DArray, ivec2)
+GENERIC_FUNCTION_SET_I_U(sampler2DArray, ivec3)
+
+vec4 texelFetch(samplerBuffer sampler, int P);
+ivec4 texelFetch(isamplerBuffer sampler, int P);
+uvec4 texelFetch(usamplerBuffer sampler, int P);
+
+vec4 texelFetch(sampler2DMS sampler, ivec2 P, int sample);
+ivec4 texelFetch(isampler2DMS sampler, ivec2 P, int sample);
+uvec4 texelFetch(usampler2DMS sampler, ivec2 P, int sample);
+vec4 texelFetch(sampler2DMSArray sampler, ivec3 P, int sample);
+ivec4 texelFetch(isampler2DMSArray sampler, ivec3 P, int sample);
+uvec4 texelFetch(usampler2DMSArray sampler, ivec3 P, int sample);
+
+#undef GENERIC_FUNCTION_SET_I_U
+
+
+//   ------  texelFetchOffset(sampler, p, lod, offset)   -------
+#define GENERIC_FUNCTION_SET_I_U(FIRST, SECOND, FORTH)\
+vec4  texelFetch(     FIRST sampler, SECOND P, int lod, FORTH offset);\
+ivec4 texelFetch(i ## FIRST sampler, SECOND P, int lod, FORTH offset);\
+uvec4 texelFetch(u ## FIRST sampler, SECOND P, int lod, FORTH offset);
+
+GENERIC_FUNCTION_SET_I_U(sampler1D, int, int)
+GENERIC_FUNCTION_SET_I_U(sampler2D, ivec2, ivec2)
+GENERIC_FUNCTION_SET_I_U(sampler3D, ivec3, ivec3)
+
+vec4 texelFetchOffset(sampler2DRect sampler, ivec2 P, ivec2 offset);
+ivec4 texelFetchOffset(isampler2DRect sampler, ivec2 P, ivec2 offset);
+uvec4 texelFetchOffset(usampler2DRect sampler, ivec2 P, ivec2 offset);
+
+GENERIC_FUNCTION_SET_I_U(sampler1DArray, ivec2, int)
+GENERIC_FUNCTION_SET_I_U(sampler2DArray, ivec3, ivec2)
+
+
+#undef GENERIC_FUNCTION_SET_I_U
+
+
+
+//   ------  textureProjOffset(sampler, p, offset [, bias])   -------
+#define GENERIC_FUNCTION_SET(RET, FIRST, SECOND, THIRD)\
+RET textureProjOffset(FIRST sampler, SECOND P, THIRD offset);\
+RET textureProjOffset(FIRST sampler, SECOND P, THIRD offset, float bias);
+
+#define GENERIC_FUNCTION_SET_I_U(RET, FIRST, SECOND, THIRD)\
+GENERIC_FUNCTION_SET(     RET,      FIRST, SECOND, THIRD)\
+GENERIC_FUNCTION_SET(i ## RET, i ## FIRST, SECOND, THIRD)\
+GENERIC_FUNCTION_SET(u ## RET, u ## FIRST, SECOND, THIRD)
+
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, vec2, int)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, vec4, int)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec3, ivec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec4, ivec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler3D, vec4, ivec3)
+
+vec4 textureProjOffset (sampler2DRect sampler, vec3 P, ivec2 offset);
+ivec4 textureProjOffset (isampler2DRect sampler, vec3 P, ivec2 offset);
+uvec4 textureProjOffset (usampler2DRect sampler, vec3 P, ivec2 offset);
+
+vec4 textureProjOffset (sampler2DRect sampler, vec4 P, ivec2 offset);
+ivec4 textureProjOffset (isampler2DRect sampler, vec4 P, ivec2 offset);
+uvec4 textureProjOffset (usampler2DRect sampler, vec4 P, ivec2 offset);
+
+float textureProjOffset (sampler2DRectShadow sampler, vec4 P, ivec2 offset);
+
+GENERIC_FUNCTION_SET(float, sampler1DShadow, vec4, int)
+GENERIC_FUNCTION_SET(float, sampler2DShadow, vec4, ivec2)
+
+#undef GENERIC_FUNCTION_SET_I_U
+#undef GENERIC_FUNCTION_SET
+
+
+//   ------  textureLodOffset(sampler, p, lod, offset)   -------
+#define GENERIC_FUNCTION_SET_I_U(RET, FIRST, SECOND, FORTH)\
+     RET textureLodOffset(     FIRST sampler, SECOND P, float lod, FORTH offset);\
+i ## RET textureLodOffset(i ## FIRST sampler, SECOND P, float lod, FORTH offset);\
+u ## RET textureLodOffset(u ## FIRST sampler, SECOND P, float lod, FORTH offset);
+
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, float, int)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec2, ivec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler3D, vec3, ivec3)
+float textureLodOffset(sampler1DShadow sampler, vec3 P, float lod, int offset);
+float textureLodOffset(sampler2DShadow sampler, vec3 P, float lod, ivec2 offset);
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1DArray, vec2, int)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2DArray, vec3, ivec2)
+float textureLodOffset(sampler1DArrayShadow sampler, vec3 P, float lod, int offset);
+
+#undef GENERIC_FUNCTION_SET_I_U
+
+
+//   ------  textureProjLod(sampler, p, lod)   -------
+#define GENERIC_FUNCTION_SET_I_U(RET, FIRST, SECOND)\
+     RET textureProjLod(     FIRST sampler, SECOND P, float lod);\
+i ## RET textureProjLod(i ## FIRST sampler, SECOND P, float lod);\
+u ## RET textureProjLod(u ## FIRST sampler, SECOND P, float lod);
+
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, vec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, vec4)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec3)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec4)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler3D, vec4)
+float textureProjLod (sampler1DShadow sampler, vec4 P, float lod);
+float textureProjLod (sampler2DShadow sampler, vec4 P, float lod);
+
+#undef GENERIC_FUNCTION_SET_I_U
+
+//   ------  textureProjLodOffset(sampler, p, lod, offset)   -------
+#define GENERIC_FUNCTION_SET_I_U(RET, FIRST, SECOND, FORTH)\
+     RET textureProjLodOffset(     FIRST sampler, SECOND P, float lod, FORTH offset);\
+i ## RET textureProjLodOffset(i ## FIRST sampler, SECOND P, float lod, FORTH offset);\
+u ## RET textureProjLodOffset(u ## FIRST sampler, SECOND P, float lod, FORTH offset);
+
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, vec2, int)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, vec4, int)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec3, ivec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec4, ivec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler3D, vec4, ivec3)
+float textureProjLodOffset (sampler1DShadow sampler, vec4 P, float lod, int offset);
+float textureProjLodOffset (sampler2DShadow sampler, vec4 P, float lod, ivec2 offset);
+
+#undef GENERIC_FUNCTION_SET_I_U
+
+
+
+//   ------  textureGrad(sampler, P, dPdx, dPdy)   -------
+#define GENERIC_FUNCTION_SET_I_U(RET, FIRST, SECOND, THIRD)\
+     RET textureGrad(     FIRST sampler, SECOND P, THIRD dPdx, THIRD dPdy);\
+i ## RET textureGrad(i ## FIRST sampler, SECOND P, THIRD dPdx, THIRD dPdy);\
+u ## RET textureGrad(u ## FIRST sampler, SECOND P, THIRD dPdx, THIRD dPdy);
+
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, float, float)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec2, vec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler3D, vec3, vec3)
+GENERIC_FUNCTION_SET_I_U(vec4, samplerCube, vec3, vec3)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2DRect, vec2, vec2)
+
+float textureGrad (sampler2DRectShadow sampler, vec3 P, vec2 dPdx, vec2 dPdy);
+float textureGrad (sampler1DShadow sampler, vec3 P, float dPdx, float dPdy);
+float textureGrad (sampler2DShadow sampler, vec3 P, vec2 dPdx, vec2 dPdy);
+float textureGrad (samplerCubeShadow sampler, vec4 P, vec3 dPdx, vec3 dPdy);
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1DArray, vec2, float)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2DArray, vec3, vec2)
+float textureGrad (sampler1DArrayShadow sampler, vec3 P, float dPdx, float dPdy);
+float textureGrad (sampler2DArrayShadow sampler, vec4 P, vec2 dPdx, vec2 dPdy);
+
+#undef GENERIC_FUNCTION_SET_I_U
+
+
+//   ------  textureGradOffset(sampler, P, dPdx, dPdy, offset)   -------
+#define GENERIC_FUNCTION_SET_I_U(RET, FIRST, SECOND, THIRD, FIFTH)\
+     RET textureGradOffset(     FIRST sampler, SECOND P, THIRD dPdx, THIRD dPdy, FIFTH offset);\
+i ## RET textureGradOffset(i ## FIRST sampler, SECOND P, THIRD dPdx, THIRD dPdy, FIFTH offset);\
+u ## RET textureGradOffset(u ## FIRST sampler, SECOND P, THIRD dPdx, THIRD dPdy, FIFTH offset);
+
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, float, float, int)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec2, vec2, ivec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler3D, vec3, vec3, ivec3)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2DRect, vec2, vec2, ivec2)
+float textureGradOffset (sampler2DRectShadow sampler, vec3 P, vec2 dPdx, vec2 dPdy, ivec2 offset);
+float textureGradOffset (sampler1DShadow sampler, vec3 P, float dPdx, float dPdy, int offset);
+float textureGradOffset (sampler2DShadow sampler, vec3 P, vec2 dPdx, vec2 dPdy, ivec2 offset);
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1DArray, vec2, float, int)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2DArray, vec3, vec2, ivec2)
+float textureGrad (sampler1DArrayShadow sampler, vec3 P, float dPdx, float dPdy, int);
+float textureGrad (sampler2DArrayShadow sampler, vec4 P, vec2 dPdx, vec2 dPdy, ivec2);
+
+#undef GENERIC_FUNCTION_SET_I_U
+
+//   ------  textureProjGrad(sampler, P, dPdx, dPdy)   -------
+#define GENERIC_FUNCTION_SET_I_U(RET, FIRST, SECOND, THIRD)\
+     RET textureProjGrad(     FIRST sampler, SECOND P, THIRD dPdx, THIRD dPdy);\
+i ## RET textureProjGrad(i ## FIRST sampler, SECOND P, THIRD dPdx, THIRD dPdy);\
+u ## RET textureProjGrad(u ## FIRST sampler, SECOND P, THIRD dPdx, THIRD dPdy);
+
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, vec2, float)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, vec4, float)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec3, vec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec4, vec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler3D, vec4, vec3)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2DRect, vec3, vec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2DRect, vec4, vec2)
+float textureProjGrad (sampler2DRectShadow sampler, vec4 P, vec2 dPdx, vec2 dPdy);
+float textureProjGrad (sampler1DShadow sampler, vec4 P, float dPdx, float dPdy);
+float textureProjGrad (sampler2DShadow sampler, vec4 P, vec2 dPdx, vec2 dPdy);
+
+#undef GENERIC_FUNCTION_SET_I_U
+
+//   ------  textureProjGradOffset(sampler, P, dPdx, dPdy, offset)   -------
+#define GENERIC_FUNCTION_SET_I_U(RET, FIRST, SECOND, THIRD, FIFTH)\
+     RET textureProjGradOffset(     FIRST sampler, SECOND P, THIRD dPdx, THIRD dPdy, FIFTH offset);\
+i ## RET textureProjGradOffset(i ## FIRST sampler, SECOND P, THIRD dPdx, THIRD dPdy, FIFTH offset);\
+u ## RET textureProjGradOffset(u ## FIRST sampler, SECOND P, THIRD dPdx, THIRD dPdy, FIFTH offset);
+
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, vec2, float, int)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler1D, vec4, float, int)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec3, vec2, vec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2D, vec4, vec2, vec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2DRect, vec3, vec2, ivec2)
+GENERIC_FUNCTION_SET_I_U(vec4, sampler2DRect, vec4, vec2, ivec2)
+float textureProjGradOffset(sampler2DRectShadow sampler, vec4 P, vec2 dPdx, vec2 dPdy, ivec2 offset);
+GENERIC_FUNCTION_SET_I_U(vec4, sampler3D, vec4, vec3, vec3)
+float textureProjGradOffset (sampler1DShadow sampler, vec4 P, float dPdx, float dPdy, int offset);
+float textureProjGradOffset (sampler2DShadow sampler, vec4 P, vec2 dPdx, vec2 dPdy, vec2 offset);
+
+#undef GENERIC_FUNCTION_SET_I_U
+
+//
+// All deprecated texture lookup functions
+// 
+vec4 texture1D(sampler1D sampler, float coord);
+vec4 texture1D(sampler1D sampler, float coord, float bias);
+vec4 texture1DProj (sampler1D sampler, vec2 coord);
+vec4 texture1DProj (sampler1D sampler, vec2 coord, float bias);
+vec4 texture1DProj (sampler1D sampler, vec4 coord);
+vec4 texture1DProj (sampler1D sampler, vec4 coord, float bias);
+vec4 texture1DLod (sampler1D sampler, float coord, float lod);
+vec4 texture1DProjLod (sampler1D sampler, vec2 coord, float lod);
+vec4 texture1DProjLod (sampler1D sampler, vec4 coord, float lod);
+
+vec4 texture2D(sampler2D sampler, vec2 coord);
+vec4 texture2D(sampler2D sampler, vec2 coord, float bias);
+vec4 texture2DProj (sampler2D sampler, vec3 coord);
+vec4 texture2DProj (sampler2D sampler, vec3 coord, float bias);
+vec4 texture2DProj (sampler2D sampler, vec4 coord);
+vec4 texture2DProj (sampler2D sampler, vec4 coord, float bias);
+vec4 texture2DLod (sampler2D sampler, vec2 coord, float lod);
+vec4 texture2DProjLod (sampler2D sampler, vec3 coord, float lod);
+vec4 texture2DProjLod (sampler2D sampler, vec4 coord, float lod);
+
+vec4 texture3D(sampler3D sampler, vec3 coord);
+vec4 texture3D(sampler3D sampler, vec3 coord, float bias);
+vec4 texture3DProj (sampler3D sampler, vec4 coord);
+vec4 texture3DProj (sampler3D sampler, vec4 coord, float bias);
+vec4 texture3DLod (sampler3D sampler, vec3 coord, float lod);
+vec4 texture3DProjLod (sampler3D sampler, vec4 coord, float lod);
+
+vec4 textureCube(samplerCube sampler, vec3 coord);
+vec4 textureCube(samplerCube sampler, vec3 coord, float bias);
+vec4 textureCubeLod(samplerCube sampler, vec3 coord, float lod);
+
+vec4 shadow1D(sampler1DShadow sampler, vec3 coord);
+vec4 shadow1D(sampler1DShadow sampler, vec3 coord, float bias);
+vec4 shadow2D(sampler2DShadow sampler, vec3 coord);
+vec4 shadow2D(sampler2DShadow sampler, vec3 coord, float bias);
+vec4 shadow1DProj(sampler1DShadow sampler, vec4 coord);
+vec4 shadow1DProj(sampler1DShadow sampler, vec4 coord, float bias);
+vec4 shadow2DProj(sampler2DShadow sampler, vec4 coord);
+vec4 shadow2DProj(sampler2DShadow sampler, vec4 coord, float bias);
+vec4 shadow1DLod(sampler1DShadow sampler, vec3 coord, float lod);
+vec4 shadow2DLod(sampler2DShadow sampler, vec3 coord, float lod);
+vec4 shadow1DProjLod(sampler1DShadow sampler, vec4 coord, float lod);
+vec4 shadow2DProjLod(sampler2DShadow sampler, vec4 coord, float lod);
+
+
+
+
+
+
+// -----------------------------------------------------------------------------------
+//                           8.6 Fragment Processing Functions
+// -----------------------------------------------------------------------------------
+#ifdef FRAGMENT_SHADER
+
+#define GENERIC_FUNCTION_SET(genType) \
+genType dFdx (genType p);\
+genType dFdy (genType p);\
+genType fwidth (genType p);
+
+// genType is float, vec2, vec3, or vec4.
+GENERIC_FUNCTION_SET(float)
+GENERIC_FUNCTION_SET(vec2)
+GENERIC_FUNCTION_SET(vec3)
+GENERIC_FUNCTION_SET(vec4)
+
+#undef GENERIC_FUNCTION_SET
+
+#endif
+
+
+
+// -----------------------------------------------------------------------------------
+//                           8.9 Noise Functions
+// -----------------------------------------------------------------------------------
+
+#if defined(VERTEX_SHADER) || defined(GEOMETRY_SHADER) || defined(FRAGMENT_SHADER)
+#define GENERIC_FUNCTION_SET(genType) \
+float noise1(genType x);\
+vec2 noise2(genType x);\
+vec3 noise3(genType x);\
+vec4 noise4(genType x);
+
+// genType is float, vec2, vec3, or vec4.
+GENERIC_FUNCTION_SET(float)
+GENERIC_FUNCTION_SET(vec2)
+GENERIC_FUNCTION_SET(vec3)
+GENERIC_FUNCTION_SET(vec4)
+
+
+#undef GENERIC_FUNCTION_SET
+#endif // defined(VERTEX_SHADER) || defined(GEOMETRY_SHADER) || defined(FRAGMENT_SHADER)
+
+
+
+// -----------------------------------------------------------------------------------
+//                           8.10 Geometry Shader Functions
+// -----------------------------------------------------------------------------------
+
+#ifdef GEOMETRY_SHADER
+
+void EmitVertex();
+void EndPrimitive();
+
+#endif // GEOMETRY_SHADER
+
+
+
+
+
+#endif // GL_core_profile
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+//                           F I N I S H E D
+//////////////////////////////////////////////////////////////////////////////////////
 
 
 

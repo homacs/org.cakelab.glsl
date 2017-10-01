@@ -47,7 +47,7 @@ public class GLSL {
 		pp.enableInclude(true);
 		pp.enableLineDirectiveInsertion(false);
 		
-		List<PPGroupScope> ppAST = pp.process();
+		List<PPGroupScope> ppAST = pp.process(true);
 
 		WorkingSet workingSet = pp.getState().getWorkingSet();
 		

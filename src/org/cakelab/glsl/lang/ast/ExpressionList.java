@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.impl.ExpressionImpl;
+import org.cakelab.glsl.lang.ast.types.Type;
 
 public class ExpressionList extends ExpressionImpl {
 	ArrayList<Expression> list;

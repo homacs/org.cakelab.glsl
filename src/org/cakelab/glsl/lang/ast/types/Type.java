@@ -1,6 +1,14 @@
-package org.cakelab.glsl.lang.ast;
+package org.cakelab.glsl.lang.ast.types;
 
 import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.lang.ast.Constructor;
+import org.cakelab.glsl.lang.ast.ConstructorGroup;
+import org.cakelab.glsl.lang.ast.Function;
+import org.cakelab.glsl.lang.ast.IScope;
+import org.cakelab.glsl.lang.ast.ParameterDeclaration;
+import org.cakelab.glsl.lang.ast.Qualifier;
+import org.cakelab.glsl.lang.ast.Qualifiers;
+import org.cakelab.glsl.lang.ast.Value;
 import org.cakelab.glsl.lang.ast.impl.NodeImpl;
 
 /** 
@@ -22,49 +30,72 @@ import org.cakelab.glsl.lang.ast.impl.NodeImpl;
  *
  */
 public class Type extends NodeImpl implements Comparable<Type> {
+	private static boolean STATIC_INITIALISATION_PHASE = true;
 
-	public enum Assignability {
-		/** Types are equal and data of that type can be directly assigned to each other */
+	/** Verdict about the assignability of a value of a source type
+	 * to a storage location of a target type.
+	 * <p>
+	 * Assignability verdicts have a natural order:
+	 * </p>
+	 * <pre>
+	 * Direct > ImplicitCastable > ExplicitCastable > NotAssignable
+	 * </pre>
+	 * 
+	 * @author homac
+	 *
+	 */
+	public enum AssignabilityVerdict {
+		
+		/** Source and target type are identically. */
 		Direct,
-		/** Types are not equal but implicitly castable */
+		
+		/** Source type can be implicitly casted to target type */
 		ImplictCastable,
-		/** Types are not equal and require an explicit cast */
+		
+		/** Types are not equal and require an explicit cast (in glsl terms, a constructor call).
+		 * Means: There is a constructor, which supports instantiation of an equivalent value 
+		 * of the source type in the target type representation. */
 		ExplicitCastable,
-		/** Types are completely different in memory layout */
+		
+		/** Types are completely different in memory layout 
+		 * and there is no way to cast the source type to the target type. */
 		NotAssignable;
 
-		public boolean betterThan(Assignability that) {
+		public boolean betterThan(AssignabilityVerdict that) {
 			return this.ordinal() < that.ordinal();
 		}
 		
-		public boolean worseThan(Assignability that) {
+		public boolean worseThan(AssignabilityVerdict that) {
 			return this.ordinal() > that.ordinal();
 		}
 		
 	}
 
-	public static int KIND_UNDEFINED = 0;
-	public static int KIND_SCALAR = 1<<0;
-	public static int KIND_ARRAY  = 1<<1;
-	public static int KIND_STRUCT = 1<<2;
-	public static int KIND_MATRIX = KIND_ARRAY|KIND_STRUCT;
-	public static int KIND_VECTOR = KIND_MATRIX;
+	public static final int KIND_UNDEFINED = 0;
+	public static final int KIND_SCALAR = 1<<0;
+	public static final int KIND_ARRAY  = 1<<1;
+	public static final int KIND_STRUCT = 1<<2;
+	public static final int KIND_MATRIX = KIND_ARRAY|KIND_STRUCT;
+	public static final int KIND_VECTOR = KIND_MATRIX;
 	
 	/** Signature is the fully specified type name (e.g. 'int[]' or 'void' but not 'int[3]'). */
 	protected Qualifiers qualifiers = new Qualifiers();
-	final String signature;
+	private final String signature;
 
-	final int kind;
+	private final int kind;
+	protected ConstructorGroup constructors = new ConstructorGroup();
 	
 	
 	Type(String signature, int kind) {
 		this(Interval.NONE, signature, kind, null);
+		createStandardConstructors();
 	}
 	
 	public Type(Interval interval, String signature, int kind, Qualifiers qualifiers) {
 		super(interval);
 		this.signature = signature;
 		this.kind = kind;
+		createStandardConstructors();
 		if (qualifiers != null) {
 			// ignore null list
 			this.qualifiers = qualifiers;
@@ -74,13 +105,45 @@ public class Type extends NodeImpl implements Comparable<Type> {
 	
 	public Type(Type that) {
 		super(that);
-		this.signature = that.signature;
-		this.kind = that.kind;
+		this.signature = that.getSignature();
+		this.kind = that.getKind();
 		this.qualifiers = that.qualifiers.clone();
+		this.constructors = that.constructors.clone();
+	}
+
+	protected void createStandardConstructors() {
+		if (STATIC_INITIALISATION_PHASE) return;
+		
+		if (this.equals(_void)) return;
+		
+		// default constructor
+		addConstructor(new Constructor(Interval.NONE, this));
+		// copy constructor
+		addConstructor(new Constructor(Interval.NONE, this, new ParameterDeclaration(IScope.NONE, this, "value")));
+		switch (this.getKind()) {
+		case KIND_SCALAR:
+			addConstructorNotEqual(_bool);
+			addConstructorNotEqual(_char);
+			addConstructorNotEqual(_int);
+			addConstructorNotEqual(_uint);
+			addConstructorNotEqual(_float);
+			addConstructorNotEqual(_double);
+			break;
+		}
+	}
+
+	protected void addConstructorNotEqual(Type paramType) {
+		if (!this.equals(paramType)) {
+			addConstructor(new Constructor(Interval.NONE, this, new ParameterDeclaration(IScope.NONE, paramType, "value")));		
+		}
+	}
+
+	public void addConstructor(Constructor constructor) {
+		constructors.add(constructor);
 	}
 
 	public String getName() {
-		return signature;
+		return getSignature();
 	}
 	
 	public Value newInstance(Value[] arguments) {
@@ -107,7 +170,7 @@ public class Type extends NodeImpl implements Comparable<Type> {
 
 	
 	public String toString() {
-		String fqn = this.signature;
+		String fqn = this.getSignature();
 		if (!qualifiers.isEmpty()) {
 			fqn = qualifiers.toString() + " " + fqn;
 		}
@@ -117,7 +180,7 @@ public class Type extends NodeImpl implements Comparable<Type> {
 
 
 	public boolean hasKind(int kind) {
-		return 0 != (kind|this.kind);
+		return 0 != (kind|this.getKind());
 	}
 
 
@@ -141,7 +204,7 @@ public class Type extends NodeImpl implements Comparable<Type> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((signature == null) ? 0 : signature.hashCode());
+		result = prime * result + ((getSignature() == null) ? 0 : getSignature().hashCode());
 		return result;
 	}
 
@@ -153,10 +216,10 @@ public class Type extends NodeImpl implements Comparable<Type> {
 		if (obj == null)
 			return false;
 		Type other = (Type) obj;
-		if (signature == null) {
-			if (other.signature != null)
+		if (getSignature() == null) {
+			if (other.getSignature() != null)
 				return false;
-		} else if (!signature.equals(other.signature)) {
+		} else if (!getSignature().equals(other.getSignature())) {
 			return false;
 		}
 		return true;
@@ -169,7 +232,7 @@ public class Type extends NodeImpl implements Comparable<Type> {
 		if (this == that) return 0;
 		if (that == null) return +1;
 
-		int result = this.signature.compareTo(that.signature);
+		int result = this.getSignature().compareTo(that.getSignature());
 		if (result != 0) return result;
 		
 		return 0;
@@ -496,12 +559,19 @@ public class Type extends NodeImpl implements Comparable<Type> {
 
 	};
 
+	static {
+		STATIC_INITIALISATION_PHASE = false;
+		// initialise standard constructors
+		for (Type t : BUILTIN_TYPES) {
+			t.createStandardConstructors();
+		}
+	}
 
 	public static Type maxRank(Value v1, Value v2) {
-		Rank leftRank = Rank.of(v1.type);
-		Rank rightRank = Rank.of(v2.type);
+		Rank leftRank = Rank.of(v1.getType());
+		Rank rightRank = Rank.of(v2.getType());
 		
-		return leftRank.gt(rightRank) ? v1.type : v2.type;
+		return leftRank.gt(rightRank) ? v1.getType() : v2.getType();
 	}
 	
 	public enum Rank {
@@ -544,13 +614,13 @@ public class Type extends NodeImpl implements Comparable<Type> {
 	public static Value cast(Value value, Type targetType) {
 		// TODO type cast exception
 		Interval interval = value.getInterval();
-		if (value.value == null) return new Value(interval, targetType, null);
+		if (value.getNativeValue() == null) return new Value(interval, targetType, null);
 
 		
-		switch(Rank.of(value.type)) {
+		switch(Rank.of(value.getType())) {
 			case BOOL: 
 			{
-				Boolean v = (Boolean)value.value;
+				Boolean v = (Boolean)value.getNativeValue();
 				int intValue = v?1:0;
 				switch(Rank.of(targetType)) {
 				case BOOL:
@@ -570,7 +640,7 @@ public class Type extends NodeImpl implements Comparable<Type> {
 			}
 			case CHAR:
 			{
-				char v = ((Character)value.value).charValue();
+				char v = ((Character)value.getNativeValue()).charValue();
 				switch(Rank.of(targetType)) {
 				case BOOL:
 					return new Value(interval, targetType, Boolean.valueOf(v != 0));
@@ -590,7 +660,7 @@ public class Type extends NodeImpl implements Comparable<Type> {
 			}
 			case UINT:
 			{
-				Long v = (Long)value.value;
+				Long v = (Long)value.getNativeValue();
 				switch(Rank.of(targetType)) {
 				case BOOL:
 					return new Value(interval, targetType, Boolean.valueOf(v.longValue() != 0));
@@ -610,7 +680,7 @@ public class Type extends NodeImpl implements Comparable<Type> {
 			}
 			case INT:
 			{
-				Long v = (Long)value.value;
+				Long v = (Long)value.getNativeValue();
 				switch(Rank.of(targetType)) {
 				case BOOL:
 					return new Value(interval, targetType, Boolean.valueOf(v.longValue() != 0));
@@ -630,7 +700,7 @@ public class Type extends NodeImpl implements Comparable<Type> {
 			}
 			case FLOAT:
 			{
-				Float v = (Float)value.value;
+				Float v = (Float)value.getNativeValue();
 				switch(Rank.of(targetType)) {
 				case BOOL:
 					return new Value(interval, targetType, Boolean.valueOf(v != 0));
@@ -649,7 +719,7 @@ public class Type extends NodeImpl implements Comparable<Type> {
 			}
 			case DOUBLE:
 			{
-				Double v = (Double)value.value;
+				Double v = (Double)value.getNativeValue();
 				switch(Rank.of(targetType)) {
 				case BOOL:
 					return new Value(interval, targetType, Boolean.valueOf(v.longValue() != 0));
@@ -674,11 +744,12 @@ public class Type extends NodeImpl implements Comparable<Type> {
 		throw new Error("internal error: undefined type cast");
 	}
 
-	/** whether a variable of given type can be assigned to a variable of this type. */
-	public Assignability assignability(Type type) {
+	/** whether a variable of given type can be assigned to a variable of this type. 
+	 * The result is a verdict about the assignability (see {@link AssignabilityVerdict} */
+	public AssignabilityVerdict assignability(Type type) {
 		if (type != null) {
 			if (this == type || this.equals(type)) {
-				return Assignability.Direct;
+				return AssignabilityVerdict.Direct;
 			}
 			
 			switch(Rank.of(this)) {
@@ -689,12 +760,11 @@ public class Type extends NodeImpl implements Comparable<Type> {
 					case CHAR:
 					case INT:
 					case UINT:
-						return Assignability.ImplictCastable;
-					case DOUBLE:
 					case FLOAT:
-						return Assignability.ExplicitCastable;
+					case DOUBLE:
+						return AssignabilityVerdict.ExplicitCastable;
 					case NON_SCALAR:
-						return Assignability.NotAssignable;
+						return AssignabilityVerdict.NotAssignable;
 					}
 				}
 				case CHAR:
@@ -704,89 +774,109 @@ public class Type extends NodeImpl implements Comparable<Type> {
 					case CHAR:
 					case INT:
 					case UINT:
-						return Assignability.ImplictCastable;
+						return AssignabilityVerdict.ImplictCastable;
 					case DOUBLE:
 					case FLOAT:
-						return Assignability.ExplicitCastable;
+						return AssignabilityVerdict.ExplicitCastable;
 					case NON_SCALAR:
-						return Assignability.NotAssignable;
+						return AssignabilityVerdict.NotAssignable;
 					}
 				}
 				case UINT:
 				{
 					switch(Rank.of(type)) {
-					case BOOL:
-					case CHAR:
 					case INT:
 					case UINT:
+						return AssignabilityVerdict.ImplictCastable;
+					case BOOL:
+					case CHAR:
 					case DOUBLE:
 					case FLOAT:
-						return Assignability.ImplictCastable;
+						return AssignabilityVerdict.ExplicitCastable;
 					case NON_SCALAR:
-						return Assignability.NotAssignable;
+						return AssignabilityVerdict.NotAssignable;
 					}
 				}
 				case INT:
 				{
 					switch(Rank.of(type)) {
-					case BOOL:
 					case CHAR:
+					case INT:
+						return AssignabilityVerdict.ImplictCastable;
+					case BOOL:
 					case DOUBLE:
 					case FLOAT:
-					case INT:
 					case UINT:
-						return Assignability.ImplictCastable;
+						return AssignabilityVerdict.ExplicitCastable;
 					case NON_SCALAR:
-						return Assignability.NotAssignable;
+						return AssignabilityVerdict.NotAssignable;
 					}
 				}
 				case FLOAT:
 				{
 					switch(Rank.of(type)) {
-					case BOOL:
-					case CHAR:
-					case DOUBLE:
 					case FLOAT:
 					case INT:
 					case UINT:
-						return Assignability.ImplictCastable;
+						return AssignabilityVerdict.ImplictCastable;
+					case CHAR:
+					case BOOL:
+					case DOUBLE:
+						return AssignabilityVerdict.ExplicitCastable;
 					case NON_SCALAR:
-						return Assignability.NotAssignable;
+						return AssignabilityVerdict.NotAssignable;
 					}
 				}
 				case DOUBLE:
 				{
 					switch(Rank.of(type)) {
-					case BOOL:
 					case CHAR:
 					case DOUBLE:
 					case FLOAT:
 					case INT:
 					case UINT:
-						return Assignability.ImplictCastable;
+						return AssignabilityVerdict.ImplictCastable;
+					case BOOL:
+						return AssignabilityVerdict.ExplicitCastable;
 					case NON_SCALAR:
-						return Assignability.NotAssignable;
+						return AssignabilityVerdict.NotAssignable;
 					}
 				}
 				case NON_SCALAR:
 				{
-					// has to be handled by struct or array type implementation
-					return Assignability.NotAssignable;
+					if (type.hasConstructor(new Type[]{type})) {
+						return AssignabilityVerdict.ExplicitCastable;
+					} else {
+						// has to be handled by struct or array type implementation
+						return AssignabilityVerdict.NotAssignable;
+					}
 				}
 			}
 			throw new Error("internal error: undefined type cast");
 		
 		}
 		// given type is null, should not happen but conceptually it is not assignable
-		return Assignability.NotAssignable;
+		return AssignabilityVerdict.NotAssignable;
 	}
 
-	public Function getConstructor(Type[] argumentTypes) {
-		return null;
+	public boolean hasConstructor(Type[] argumentTypes) {
+		return getConstructor(argumentTypes) != null;
+	}
+	/** Supposed to be overridden by struct and array types! */
+	public Constructor getConstructor(Type[] argumentTypes) {
+		return (Constructor) constructors.getExactMatch(argumentTypes);
 	}
 
 	public Function getMethod(Type[] argumentTypes) {
 		return null;
+	}
+
+	public String getSignature() {
+		return signature;
+	}
+
+	public int getKind() {
+		return kind;
 	}
 
 
