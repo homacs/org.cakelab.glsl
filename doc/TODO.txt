@@ -11,12 +11,24 @@
 
 				
 				Tasks for tomorrow:   
-				0. Availability of builtin functions in respect to different shader types
+				- version 4.30 built-ins
+				
+				
+				Afterwards:				
+				
 				0. Always use #ifdef GL_core_profile ?
-				0. Interface blocks can be redeclared, narrowing the number of members (not extending)
-				   -> see v4.00 gl_PerVertex
+				0. Go through all change lists of all versions 
+				0. Availability of built-in functions in respect to different shader types
 				1. TODOS. aufschreiben
 					- Function Signature und Subroutine
 					- Identifikation von Funktionsaufrufen und Konstruktoraufrufen, wenn Typ und Function selber Name
 					- Beenden von Extensions Loading bzgl. Dependencies				  
 				2. Symboltabelle überarbeiten (siehe FIXME)
+				   a. Interface Blocks need redesign:
+					  - Interface blocks can be redeclared, narrowing the number of members
+					    -> see v4.00 gl_PerVertex
+					  - Interface blocks can be redeclared, extending the number of members (see compatibility profile)
+					    -> see v4.10 gl_PerVertex ("gl_PerVertex block can be redeclared in a shader to 
+					       explicitly include these additional fields.")
+				   b. Above probably also affects global variables
+				

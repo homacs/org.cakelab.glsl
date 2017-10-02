@@ -16,13 +16,19 @@
 
 
 
-
 // -----------------------------------------------------------------------------------
 //                           7.1.1 Compatibility Profile Built-In Language Variables
 //                           7.2 Compatibility Profile Vertex Shader Built-In Inputs
 // -----------------------------------------------------------------------------------
 
-// see ->  core/V440/preamble.glsl
+// most of it incorporated in:  core/V400/preamble.glsl
+
+#ifdef FRAGMENT_SHADER
+in float gl_FogFragCoord; 
+in vec4  gl_TexCoord[]; 
+in vec4  gl_Color; 
+in vec4  gl_SecondaryColor; 
+#endif // FRAGMENT_SHADER
 
 
 // -----------------------------------------------------------------------------------

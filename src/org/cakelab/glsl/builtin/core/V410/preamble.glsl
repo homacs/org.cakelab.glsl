@@ -18,7 +18,7 @@
 #define __VERSION__ 410
 
 
-// Note: all symbols of core V400 included, just added new variables
+// Note: all symbols of core V400 included, just added new constants and variables
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -34,7 +34,8 @@
 
 #ifdef GEOMETRY_SHADER
 out int gl_ViewportIndex;
-#endif
+
+#endif // GL_compatibility_profile
 
 
 // -----------------------------------------------------------------------------------
@@ -45,8 +46,6 @@ const int gl_MaxViewports = 16;
 const int gl_MaxVertexUniformVectors = 256;
 const int gl_MaxFragmentUniformVectors = 256;
 const int gl_MaxVaryingVectors = 15;
-
-
 
 
 #endif // GL_core_profile

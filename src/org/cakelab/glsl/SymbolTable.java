@@ -18,7 +18,14 @@ public class SymbolTable {
 	//        there can exist two variables with the same name but different (non-conflicting) directions
 	// FIXME: array variables can be redeclared in respect to their dimension but not their type signature
 	// FIXME: qualifiers of variables may be added through redeclaration
-	
+	// FIXME: Interface Blocks need redesign:
+	//	      - Interface blocks can be redeclared, narrowing the number of members
+	//	        -> see v4.00 gl_PerVertex
+	//	      - Interface blocks can be redeclared, extending the number of members (see compatibility profile)
+	//	        -> see v4.10 gl_PerVertex ("gl_PerVertex block can be redeclared in a shader to 
+	//	           explicitly include these additional fields.")
+	// FIXME: Interface block redesign probably also affects global variables
+
 	
 	
 	/** builtin scope contains all builtin symbols */
