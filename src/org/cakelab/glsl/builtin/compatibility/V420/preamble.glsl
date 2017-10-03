@@ -34,16 +34,38 @@
 const   int  gl_MaxVaryingFloats = 60;
 
 // -----------------------------------------------------------------------------------
-//                           7.1 Built-In Language Variables
 //                           7.1.1 Compatibility Profile Built-In Language Variables
-//                           7.2 Compatibility Profile Vertex Shader Built-In Inputs
 // -----------------------------------------------------------------------------------
+// most of it incorporated in core/v420/preamble.glsl
 
 #ifdef FRAGMENT_SHADER
 out vec4  gl_FragColor;                   // now removed from core
 out vec4  gl_FragData[gl_MaxDrawBuffers]; // now removed from core
 #endif
 
+
+
+// -----------------------------------------------------------------------------------
+//                           7.2 Compatibility Profile Vertex Shader Built-In Inputs
+// -----------------------------------------------------------------------------------
+
+#if defined(VERTEX_SHADER)
+
+in vec4  gl_Color;
+in vec4  gl_SecondaryColor;
+in vec3  gl_Normal;
+in vec4  gl_Vertex;
+in vec4  gl_MultiTexCoord0;
+in vec4  gl_MultiTexCoord1;
+in vec4  gl_MultiTexCoord2;
+in vec4  gl_MultiTexCoord3;
+in vec4  gl_MultiTexCoord4;
+in vec4  gl_MultiTexCoord5;
+in vec4  gl_MultiTexCoord6;
+in vec4  gl_MultiTexCoord7;
+in float gl_FogCoord;
+
+#endif // GL_compatibility_profile
 
 
 

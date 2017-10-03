@@ -1,54 +1,67 @@
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //                             
-//                                  OpenGL 4.1
+//                                  OpenGL 4.3
 //                            Open GL Shading Language 
-//                                    V 4.10
+//                                    V 4.30
 //                                  Core Profile
 //
 //                     Built-in Macros, Variables and Functions
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef GL_core_profile
-
-#include <core/V400/preamble.glsl>
-#undef __VERSION__
-
-
-#define __VERSION__ 410
-
-
-// Note: all symbols of core V400 included, just added new constants and variables
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //                           B U I L T - I N    V A R I A B L E S
-//                                     (changes only)
+//                                    (changes only)
 /////////////////////////////////////////////////////////////////////////////////////////////////
+
+// include all variables from previous version
+#include <core/V420/variables.glsl>
+
 
 
 // -----------------------------------------------------------------------------------
 //                           7.1 Built-In Language Variables
 // -----------------------------------------------------------------------------------
 
-#ifdef GEOMETRY_SHADER
-out int gl_ViewportIndex;
-
-#endif // GL_compatibility_profile
+#ifdef COMPUTE_SHADER
+// work group dimensions
+in    uvec3 gl_NumWorkGroups;
+const uvec3 gl_WorkGroupSize;
+// work group and invocation IDs
+in    uvec3 gl_WorkGroupID;
+in    uvec3 gl_LocalInvocationID;
+// derived variables
+in    uvec3 gl_GlobalInvocationID;
+in    uint  gl_LocalInvocationIndex;
+#elif defined(FRAGMENT_SHADER)
+in  int   gl_Layer;
+in  int   gl_ViewportIndex;
+#endif
 
 
 // -----------------------------------------------------------------------------------
 //                           7.3 Built-In Constants
 // -----------------------------------------------------------------------------------
+const ivec3 gl_MaxComputeWorkGroupCount = { 65535, 65535, 65535 };
+const ivec3 gl_MaxComputeWorkGroupSize = { 1024, 1024, 64 };
+const int gl_MaxComputeUniformComponents = 1024;
+const int gl_MaxComputeTextureImageUnits = 16;
+const int gl_MaxComputeImageUniforms = 8;
+const int gl_MaxComputeAtomicCounters = 8;
+const int gl_MaxComputeAtomicCounterBuffers = 1;
 
-const int gl_MaxViewports = 16;
-const int gl_MaxVertexUniformVectors = 256;
-const int gl_MaxFragmentUniformVectors = 256;
-const int gl_MaxVaryingVectors = 15;
 
 
-#endif // GL_core_profile
-//////////////////////////////////////////////////////////////////////////////////////
-//                           F I N I S H E D
-//////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+

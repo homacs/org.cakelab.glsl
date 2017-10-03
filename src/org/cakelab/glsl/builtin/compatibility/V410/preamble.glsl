@@ -42,6 +42,27 @@ in gl_PerFragment {
 #endif
 
 
+// -----------------------------------------------------------------------------------
+//                           7.2 Compatibility Profile Vertex Shader Built-In Inputs
+// -----------------------------------------------------------------------------------
+
+#if defined(VERTEX_SHADER)
+in vec4  gl_Color;
+in vec4  gl_SecondaryColor;
+in vec3  gl_Normal;
+in vec4  gl_Vertex;
+in vec4  gl_MultiTexCoord0;
+in vec4  gl_MultiTexCoord1;
+in vec4  gl_MultiTexCoord2;
+in vec4  gl_MultiTexCoord3;
+in vec4  gl_MultiTexCoord4;
+in vec4  gl_MultiTexCoord5;
+in vec4  gl_MultiTexCoord6;
+in vec4  gl_MultiTexCoord7;
+in float gl_FogCoord;
+#endif // GL_compatibility_profile
+
+
 
 // -----------------------------------------------------------------------------------
 //                           7.3.1 Compatibility Profile Built-In Constants

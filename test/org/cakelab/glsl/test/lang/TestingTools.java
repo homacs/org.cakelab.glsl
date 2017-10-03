@@ -31,7 +31,7 @@ import org.cakelab.glsl.lang.ASTBuilder;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.PPTokenStream;
 import org.cakelab.glsl.pp.Preprocessor;
-import org.cakelab.glsl.test.versioning.TestBuiltinBase;
+import org.cakelab.glsl.test.builtins.TestBuiltinBase;
 
 public class TestingTools {
 

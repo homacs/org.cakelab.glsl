@@ -1032,8 +1032,16 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 		Token ifTok = null;
 		if (IDENTIFIER("elif")) {
 			ifTok = token;
+			while(WHITESPACE());
+			Node expr = directive_condition();
+			if (expr == null) {
+				expr = expressionError(ifTok.getInterval(), "missing condition to elif directive");
+			}
+
 			PPGroupScope predecessor = state.getGroupScope();
-			if (predecessor == null || !(predecessor instanceof PPIfScope)) {
+			assert(predecessor != null) : "expected a global scope!";
+
+			if (predecessor == globalScope || !(predecessor instanceof PPIfScope)) {
 				try {
 					syntaxError(ifTok, "#elif must follow #if* or #elif group");
 				} catch (Recovery ignore) {
@@ -1041,11 +1049,8 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 				}
 			}
 			while(WHITESPACE());
-			Node expr = directive_condition();
-			if (expr == null) {
-				expr = expressionError(ifTok.getInterval(), "missing condition to elif directive");
-			}
-
+			mandatory_endl();
+			
 			popScope();
 			elifscope = new PPElifScope(state.getGroupScope(), (PPIfScope)predecessor);
 			try {
@@ -1059,8 +1064,6 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 				elifscope.setCondition(expr.getInterval(), false);
 			}
 			
-			while(WHITESPACE());
-			mandatory_endl();
 			pushScope(elifscope);
 		}
 		return elifscope != null;
@@ -1071,8 +1074,12 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 		Token elseTok = null;
 		if (IDENTIFIER("else")) {
 			elseTok = token;
+			while(WHITESPACE());
+			mandatory_endl();
+			
 			PPGroupScope predecessor = state.getGroupScope();
-			if (predecessor == null || !(predecessor instanceof PPIfScope)) {
+			assert(predecessor != null) : "expected a global scope!";
+			if (predecessor == globalScope || !(predecessor instanceof PPIfScope)) {
 				try {
 					syntaxError(elseTok.getStart(), "#else must follow #if* or #elif group");
 				} catch (Recovery e) {
@@ -1081,8 +1088,6 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 			}
 			popScope();
 			elsescope = new PPElseScope(state.getGroupScope(), (PPIfScope) predecessor);
-			while(WHITESPACE());
-			mandatory_endl();
 			pushScope(elsescope);
 		}
 		return elsescope != null;
@@ -1093,8 +1098,12 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 		if (IDENTIFIER("endif")) {
 			Token endifTok = token;
 			result = true;
-			PPGroupScope predecessor = state.getGroupScope();
-			if (predecessor == null) {
+			while(WHITESPACE());
+			mandatory_endl();
+			
+			PPGroupScope currentScope = state.getGroupScope();
+			assert(currentScope != null) : "expected a global scope!";
+			if (currentScope == globalScope) {
 				try {
 					syntaxError(endifTok, "#endif must follow #if*, #elif or #else group");
 				} catch (Recovery e) {
@@ -1102,8 +1111,6 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 				}
 			}
 			popScope();
-			while(WHITESPACE());
-			mandatory_endl();
 		}
 		return result;
 	}

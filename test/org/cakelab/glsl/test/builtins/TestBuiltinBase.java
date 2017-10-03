@@ -1,4 +1,4 @@
-package org.cakelab.glsl.test.versioning;
+package org.cakelab.glsl.test.builtins;
 
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.builtin.GLSLBuiltin;

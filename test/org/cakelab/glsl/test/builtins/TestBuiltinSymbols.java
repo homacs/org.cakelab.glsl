@@ -1,4 +1,4 @@
-package org.cakelab.glsl.test.versioning;
+package org.cakelab.glsl.test.builtins;
 
 import java.io.FileInputStream;
 
@@ -22,7 +22,7 @@ public class TestBuiltinSymbols extends TestBuiltinBase {
 	public static void testDump() {
 		GLSLBuiltin symbols;
 		
-		int version = 420;
+		int version = 430;
 		
 		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.VERTEX_SHADER);
 		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.TESS_CONTROL_SHADER);
