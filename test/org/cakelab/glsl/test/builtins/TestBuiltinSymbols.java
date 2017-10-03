@@ -22,13 +22,14 @@ public class TestBuiltinSymbols extends TestBuiltinBase {
 	public static void testDump() {
 		GLSLBuiltin symbols;
 		
-		int version = 430;
+		int version = 450;
 		
 		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.VERTEX_SHADER);
 		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.TESS_CONTROL_SHADER);
 		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.TESS_EVALUATION_SHADER);
 		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.GEOMETRY_SHADER);
 		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.FRAGMENT_SHADER);
+		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.COMPUTE_SHADER);
 		symbols.dump(System.out);
 	}
 

@@ -14,12 +14,12 @@
 
 // 
 // We include updated V420 core symbols,
-// add V410 compatiblity symbols,
-// and then add new compatiblity symbols.
+// add V410 compatibility symbols,
+// and then add new compatibility symbols.
 //
 
-#include <core/V420/preamble.glsl> // (defines VERSION and prevents V410 compatiblity to include V410 core)
-// note: next include will redefine GL_compatiblity_profile
+#include <core/V420/preamble.glsl> // (defines VERSION and prevents V410 compatibility to include V410 core)
+// note: next include will redefine GL_compatibility_profile
 #undef GL_compatibility_profile
 #include <compatibility/V410/preamble.glsl>
 

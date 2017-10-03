@@ -10,7 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#define GL_compatiblity_profile 1
+#define GL_compatibility_profile 1
 
 // include V430 core symbols and functions
 #include <core/V430/preamble.glsl>
@@ -65,6 +65,7 @@ const   int  gl_MaxLights = 8;
 // -----------------------------------------------------------------------------------
 //                           7.4.1 Compatibility Profile State
 // -----------------------------------------------------------------------------------
+#if !defined(COMPUTE_SHADER)
 //
 // compatibility profile only
 //
@@ -198,7 +199,7 @@ struct gl_FogParameters
 };
 uniform gl_FogParameters gl_Fog;
 
-
+#endif // !defined(COMPUTE_SHADER)
 
 
 

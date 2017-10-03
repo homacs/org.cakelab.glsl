@@ -10,7 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#define GL_compatiblity_profile 1
+#define GL_compatibility_profile 1
 
 // include V410 core symbols and functions
 #include <core/V410/preamble.glsl>

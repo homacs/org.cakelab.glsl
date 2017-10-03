@@ -11,7 +11,7 @@
 
 				
 				Tasks for tomorrow:   
-				- version 4.30 built-ins
+				- read Vulkan and SPIR-V specifications!
 				
 				
 				Afterwards:				
