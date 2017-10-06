@@ -17,7 +17,7 @@
 //
 // The following special macros are available only when parsing the preamble
 //
-#if !defined(VERTEX_SHADER) && !defined(FRAGMENT_SHADER) && !defined(GEOMETRY_SHADER) && !defined(GENERIC_SHADER)
+#if !defined(VERTEX_SHADER) && !defined(FRAGMENT_SHADER) && !defined(GEOMETRY_SHADER) && !defined(COMPUTE_SHADER) && !defined(GENERIC_SHADER)
 #error undefined shader type!
 #endif
 
@@ -180,7 +180,7 @@ struct gl_DepthRangeParameters
     float far;         // f
     float diff;        // f - n
 };
-
+uniform gl_DepthRangeParameters gl_DepthRange;
 
 
 
@@ -889,8 +889,8 @@ float textureGradOffset (sampler1DShadow sampler, vec3 P, float dPdx, float dPdy
 float textureGradOffset (sampler2DShadow sampler, vec3 P, vec2 dPdx, vec2 dPdy, ivec2 offset);
 GENERIC_FUNCTION_SET_I_U(vec4, sampler1DArray, vec2, float, int)
 GENERIC_FUNCTION_SET_I_U(vec4, sampler2DArray, vec3, vec2, ivec2)
-float textureGrad (sampler1DArrayShadow sampler, vec3 P, float dPdx, float dPdy, int);
-float textureGrad (sampler2DArrayShadow sampler, vec4 P, vec2 dPdx, vec2 dPdy, ivec2);
+float textureGradOffset (sampler1DArrayShadow sampler, vec3 P, float dPdx, float dPdy, int);
+float textureGradOffset (sampler2DArrayShadow sampler, vec4 P, vec2 dPdx, vec2 dPdy, ivec2);
 
 #undef GENERIC_FUNCTION_SET_I_U
 

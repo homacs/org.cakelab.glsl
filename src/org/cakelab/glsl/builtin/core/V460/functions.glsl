@@ -1166,8 +1166,15 @@ vec4 textureGatherOffsets(sampler2DRectShadow sampler,  vec2 P, float refZ, ivec
 uint atomicCounterIncrement (atomic_uint c);
 uint atomicCounterDecrement (atomic_uint c);
 uint atomicCounter (atomic_uint c);
-
-
+uint atomicCounterAdd (atomic_uint c, uint data);
+uint atomicCounterSubtract (atomic_uint c, uint data);
+uint atomicCounterMin (atomic_uint c, uint data);
+uint atomicCounterMax (atomic_uint c, uint data);
+uint atomicCounterAnd (atomic_uint c, uint data);
+uint atomicCounterOr (atomic_uint c, uint data);
+uint atomicCounterXor (atomic_uint c, uint data);
+uint atomicCounterExchange (atomic_uint c, uint data);
+uint atomicCounterCompSwap (atomic_uint c, uint compare, uint data);
 
 // -----------------------------------------------------------------------------------
 //                           8.11 Atomic Memory Functions
@@ -1201,7 +1208,7 @@ int atomicCompSwap (inout int mem, int compare, int data);
 // -----------------------------------------------------------------------------------
 //                           8.12 Image Functions
 // -----------------------------------------------------------------------------------
-
+//   ------  imageSize(image)
 #define GEN_imageSize(RETURN_TYPE, IMAGE_TYPE) \
 RETURN_TYPE imageSize(readonly writeonly      IMAGE_TYPE image); \
 RETURN_TYPE imageSize(readonly writeonly i ## IMAGE_TYPE image); \
@@ -1222,7 +1229,7 @@ GEN_imageSize(ivec3, image2DMSArray)
 
 #undef GEN_imageSize
 
-
+//   ------  imageSamples(image)
 #define GEN_imageSamples(SAMPLER_TYPE) \
 int imageSamples(readonly writeonly SAMPLER_TYPE image); \
 int imageSamples(readonly writeonly i ## SAMPLER_TYPE image); \
@@ -1235,6 +1242,7 @@ GEN_imageSamples(image2DMSArray)
 
 
 
+//   ------  imageLoad/Store(image[, data])
 #define GENERIC_FUNCTION_SET_U_I(...) \
 vec4 imageLoad (readonly __VA_ARGS__); \
 void imageStore (writeonly __VA_ARGS__, vec4 data); \
@@ -1262,6 +1270,7 @@ GENERIC_FUNCTION_SET_U_I(image2DMSArray image, ivec3 P, int _sample)
 #undef GENERIC_FUNCTION_SET
 
 
+
 //   ------  imageAtomicXxx(image, ...)
 #define GENERIC_FUNCTION_SET(...) \
 uint imageAtomicAdd (__VA_ARGS__,uint data); \
@@ -1282,13 +1291,10 @@ float imageAtomicExchange (__VA_ARGS__, float data); \
 uint imageAtomicCompSwap(__VA_ARGS__,uint compare,uint data); \
 int imageAtomicCompSwap(__VA_ARGS__,int compare,int data);
 
-//   ------  imageAtomicXxx(image, ...)
 #define GENERIC_FUNCTION_SET_U_I(...) \
 GENERIC_FUNCTION_SET(     __VA_ARGS__) \
 GENERIC_FUNCTION_SET(i ## __VA_ARGS__) \
 GENERIC_FUNCTION_SET(u ## __VA_ARGS__)
-
-
 
 GENERIC_FUNCTION_SET_U_I(image1D image, int P)
 GENERIC_FUNCTION_SET_U_I(image2D image, ivec2 P)
@@ -1301,8 +1307,6 @@ GENERIC_FUNCTION_SET_U_I(image2DArray image, ivec3 P)
 GENERIC_FUNCTION_SET_U_I(imageCubeArray image, ivec3 P)
 GENERIC_FUNCTION_SET_U_I(image2DMS image, ivec2 P, int _sample)
 GENERIC_FUNCTION_SET_U_I(image2DMSArray image, ivec3 P, int _sample)
-
-
 
 #undef GENERIC_FUNCTION_SET_U_I
 #undef GENERIC_FUNCTION_SET
@@ -1411,6 +1415,13 @@ void memoryBarrierShared();
 void memoryBarrierImage();
 void groupMemoryBarrier();
 
+
+// -----------------------------------------------------------------------------------
+//                           8.18 Shader Invocation Group Functions
+// -----------------------------------------------------------------------------------
+bool anyInvocation (bool value);
+bool allInvocations (bool value);
+bool anyInvocationsEqual (bool value);
 
 
 

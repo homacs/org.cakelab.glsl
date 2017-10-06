@@ -12,7 +12,8 @@
 				
 				Tasks for tomorrow:   
 				- read Vulkan and SPIR-V specifications!
-				
+				- SPIRV does not support compatibility profile
+				- SPIRV has no built-in uniform state
 				
 				Afterwards:				
 				

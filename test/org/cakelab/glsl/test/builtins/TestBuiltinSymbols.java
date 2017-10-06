@@ -13,23 +13,25 @@ public class TestBuiltinSymbols extends TestBuiltinBase {
 	
 	
 	public static void main(String[] args) {
-		testDump();
+		test();
+//		testDump();
 //		testExtensionProperties();
 //		testExtension(core(150), ShaderType.VERTEX_SHADER, "GL_ARB_compatibility");
+		
 		
 	}
 
 	public static void testDump() {
 		GLSLBuiltin symbols;
 		
-		int version = 450;
+		int version = 320;
 		
-		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.VERTEX_SHADER);
-		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.TESS_CONTROL_SHADER);
-		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.TESS_EVALUATION_SHADER);
-		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.GEOMETRY_SHADER);
-		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.FRAGMENT_SHADER);
-		symbols = GLSLBuiltin.get(compatibility(version), ShaderType.COMPUTE_SHADER);
+		symbols = GLSLBuiltin.get(es(version), ShaderType.VERTEX_SHADER);
+		symbols = GLSLBuiltin.get(es(version), ShaderType.TESS_CONTROL_SHADER);
+		symbols = GLSLBuiltin.get(es(version), ShaderType.TESS_EVALUATION_SHADER);
+		symbols = GLSLBuiltin.get(es(version), ShaderType.GEOMETRY_SHADER);
+		symbols = GLSLBuiltin.get(es(version), ShaderType.FRAGMENT_SHADER);
+		symbols = GLSLBuiltin.get(es(version), ShaderType.COMPUTE_SHADER);
 		symbols.dump(System.out);
 	}
 
@@ -93,9 +95,46 @@ public class TestBuiltinSymbols extends TestBuiltinBase {
 	}
 
 
-	private static void test(GLSLVersion es) {
-		for (ShaderType t : ShaderType.values()) {
-			GLSLBuiltin.get(es, t);
+	private static void test(GLSLVersion version) {
+		
+		System.out.print("\t" + version.toString() + " ... ");
+
+		boolean hasGeometry    = false;
+		boolean hasTesselation = false;
+		
+		switch (version.profile) {
+		case compatibility:
+		case core:
+			hasTesselation = version.number >= 400;
+			hasGeometry = version.number >= 150;
+			break;
+		case es:
+			hasTesselation = version.number >= 320;
+			hasGeometry = version.number >= 320;
+			break;
+		default:
+			break;
+		}		
+
+		System.out.print("generic ");
+		GLSLBuiltin.get(version, ShaderType.GENERIC_SHADER);
+		System.out.print("compute ");
+		GLSLBuiltin.get(version, ShaderType.COMPUTE_SHADER);
+		System.out.print("vertex ");
+		GLSLBuiltin.get(version, ShaderType.VERTEX_SHADER);
+		
+		if (hasTesselation) {
+			System.out.print("tess_ctrl ");
+			GLSLBuiltin.get(version, ShaderType.TESS_CONTROL_SHADER);
+			System.out.print("tess_eval ");
+			GLSLBuiltin.get(version, ShaderType.TESS_EVALUATION_SHADER);
 		}
+
+		if (hasGeometry) {
+			System.out.print("geometry ");
+			GLSLBuiltin.get(version, ShaderType.GEOMETRY_SHADER);
+		}
+		System.out.println("fragment");
+		GLSLBuiltin.get(version, ShaderType.FRAGMENT_SHADER);
 	}
 }

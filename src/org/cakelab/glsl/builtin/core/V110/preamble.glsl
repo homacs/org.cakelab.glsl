@@ -259,7 +259,7 @@ varying float gl_FogFragCoord;
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 // -----------------------------------------------------------------------------------
-//                           Angle and Trigonometry Functions
+//                           8.1 Angle and Trigonometry Functions
 // -----------------------------------------------------------------------------------
 #define GENERIC_FUNCTION_SET(genType) \
 genType radians(genType degrees);\
@@ -281,7 +281,7 @@ GENERIC_FUNCTION_SET(vec4)
 #undef GENERIC_FUNCTION_SET
 
 // -----------------------------------------------------------------------------------
-//                           Exponential Functions
+//                           8.2 Exponential Functions
 // -----------------------------------------------------------------------------------
 #define GENERIC_FUNCTION_SET(genType) \
 genType pow(genType x, genType y);\
@@ -301,7 +301,7 @@ GENERIC_FUNCTION_SET(vec4)
 
 
 // -----------------------------------------------------------------------------------
-//                           Common Functions
+//                           8.3 Common Functions
 // -----------------------------------------------------------------------------------
 #define GENERIC_FUNCTION_SET(genType) \
 genType abs(genType x);\
@@ -380,7 +380,7 @@ GENERIC_FUNCTION_SET(mat4)
 
 
 // -----------------------------------------------------------------------------------
-//                           Vector Relational Functions
+//                           8.5 Vector Relational Functions
 // -----------------------------------------------------------------------------------
 #define GENERIC_FUNCTION_SET(bvec, vec) \
 bvec lessThan(vec x, vec y);\
@@ -417,7 +417,7 @@ GENERIC_FUNCTION_SET(bvec4)
 
 
 // -----------------------------------------------------------------------------------
-//                           Texture Lookup Functions
+//                           8.6 Texture Lookup Functions
 // -----------------------------------------------------------------------------------
 vec4 texture1D(sampler1D sampler, float coord);
 vec4 texture1D(sampler1D sampler, float coord, float bias);

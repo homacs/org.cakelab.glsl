@@ -42,5 +42,13 @@ public class GLSLVersion extends NodeImpl {
 			return false;
 		return true;
 	}
+	@Override
+	public String toString() {
+		StringBuffer s = new StringBuffer("#version ");
+		s.append(number).append(' ').append(profile.name());
+		return s.toString();
+	}
+	
+	
 
 }

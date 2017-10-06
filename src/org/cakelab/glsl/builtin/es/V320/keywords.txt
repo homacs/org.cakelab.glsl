@@ -1,0 +1,48 @@
+const
+   uniform    buffer    shared
+    coherent    volatile    restrict    readonly    writeonly
+    atomic_uint
+    layout
+    centroid    flat    smooth    
+    patch   sample
+    precise
+    break   continue   do   for   while    switch    case    default 
+    if    else
+    in   out   
+inout
+    float   int   void   
+bool
+  true  false
+    invariant
+    discard   return
+    mat2  mat3  mat4
+    mat2x2   mat2x3   mat2x4
+    mat3x2   mat3x3   mat3x4
+    mat4x2   mat4x3   mat4x4
+    vec2   vec3  vec4    ivec2   ivec3   ivec4    bvec2   bvec3   bvec4
+    uint    uvec2    uvec3    uvec4
+    lowp    mediump    highp    precision
+    sampler2D   sampler3D   
+samplerCube
+    sampler2DShadow    samplerCubeShadow
+    sampler2DArray
+    sampler2DArrayShadow
+    
+        isampler2D   isampler3D   isamplerCube
+    isampler2DArray
+    usampler2D   usampler3D   usamplerCube
+    usampler2DArray
+sampler2DMS    isampler2DMS    usampler2DMS
+
+ samplerBuffer    isamplerBuffer    usamplerBuffer
+ imageBuffer    iimageBuffer    uimageBuffer
+ imageCubeArray    iimageCubeArray    uimageCubeArray
+ samplerCubeArray    isamplerCubeArray    usamplerCubeArray
+ samplerCubeArrayShadow
+ sampler2DMSArray    isampler2DMSArray    usampler2DMSArray
+ 
+ image2DArray    iimage2DArray    uimage2DArray
+    image2D    iimage2D    uimage2D
+    image3D    iimage3D    uimage3D
+    imageCube    iimageCube    uimageCube
+struct
