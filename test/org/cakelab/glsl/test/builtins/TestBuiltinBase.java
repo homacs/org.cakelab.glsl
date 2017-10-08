@@ -18,4 +18,9 @@ public class TestBuiltinBase {
 		return GLSLBuiltin.getTestBuiltins(tokens);
 	}
 
+	public static GLSLBuiltin getTestBuiltinSymbols(GLSLVersion version) {
+		GLSLTokenTable tokenTable = GLSLTokenTable.get(version);
+		return GLSLBuiltin.getTestBuiltins(tokenTable);
+	}
+
 }

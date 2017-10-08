@@ -1,12 +1,8 @@
 package org.cakelab.glsl.test.builtins;
 
-import java.io.FileInputStream;
-
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
 import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
-import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
-import org.cakelab.glsl.builtin.GLSLExtension;
 
 public class TestBuiltinSymbols extends TestBuiltinBase {
 	
@@ -15,8 +11,6 @@ public class TestBuiltinSymbols extends TestBuiltinBase {
 	public static void main(String[] args) {
 		test();
 //		testDump();
-//		testExtensionProperties();
-//		testExtension(core(150), ShaderType.VERTEX_SHADER, "GL_ARB_compatibility");
 		
 		
 	}
@@ -35,29 +29,7 @@ public class TestBuiltinSymbols extends TestBuiltinBase {
 		symbols.dump(System.out);
 	}
 
-	public static void testExtensionProperties() {
-		try {
-			String dir = "test/" + TestBuiltinSymbols.class.getPackage().getName().replace('.', '/');
-			FileInputStream props = new FileInputStream(dir + "/example.extension.properties.json");
-			new GLSLExtension.Properties(props);
-		} catch (Exception e) {
-			throw new Error(e);
-		}
-	}
-	
-	
-	public static void testExtension(GLSLVersion version, ShaderType shaderType, String ... extensions) {
-		GLSLBuiltin symbols = GLSLBuiltin.get(version, shaderType);
-		
-		WorkingSet workingSet = symbols.createWorkingSet();
-		for (String extension : extensions) {
-			workingSet.enableExtension(extension);
-		}
-		workingSet.dump(System.out);
-	}
-	
 	public static void test() {
-		
 		test(es(100));
 		test(es(300));
 		test(es(310));
@@ -114,7 +86,7 @@ public class TestBuiltinSymbols extends TestBuiltinBase {
 			break;
 		default:
 			break;
-		}		
+		}
 
 		System.out.print("generic ");
 		GLSLBuiltin.get(version, ShaderType.GENERIC_SHADER);

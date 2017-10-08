@@ -1,10 +1,6 @@
 {
 	"name" : "GL_ARB_compatibility",
+	"prefix" : "ARB",
 	"number" : 58,
-	"since" : 140,
-	"requirements" : {
-		"versions" : {
-			"core" : "[100,140]"
-		}
-	}
+	"dependencies" : "core:[110,140]"
 }

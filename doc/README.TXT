@@ -1173,16 +1173,11 @@ equivalent to the files for profiles:
 Properties file has the following content:
 
 {
-	"name" : "EXT_example",               // name of the extension
-	"number" : 58,                        // number of the extension
-	"since" : 140,
+	"names" : ["GL_EXT_example"],         // name strings of the extension (may have more than one)
+	"prefix" : "EXT",                     // extension's prefix      (classifies extensions)
+	"number" : 58,                        // number of the extension (in relation to prefix)
 	"requirements" : {
-		"versions" : {
-			"core" : "[110,140],430",     // core profile, 110 <= version <= 140 or version == 430 
-			"es" : "100"                  // es profile, version == 100
-		},
-		"dependencies" :                  
-		{"all":[                          // all top level dependencies must be met
+		"all":[                          // all top level dependencies must be met
 			"EXT_dep1",                   // 1st mandatory dependency
 			{"any":[                      // 2nd dependency is set of optional dependencies (one is required)
 				"EXT_dep2_opt1",          // 1st option of the 2nd dependency
@@ -1201,12 +1196,12 @@ Properties file has the following content:
 					]}
 				]}
 			]}
-		]},
-		"conflicts" : [                   // list of all conflicting extensions
-			"EXT_conflict1",
-			"EXT_conflict2"
 		]
 	}
+	"conflicts" : [                   // list of all conflicting extensions
+		"EXT_conflict1",
+		"EXT_conflict2"
+	]
 }
 
 

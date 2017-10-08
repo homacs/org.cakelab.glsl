@@ -21,7 +21,7 @@ import org.cakelab.glsl.lang.ast.types.Type;
  */
 public class BuiltinScope implements IScope {
 	IScope builtins;
-	GLSLExtensionSet extensions = new GLSLExtensionSet();
+	private GLSLExtensionSet extensions = new GLSLExtensionSet();
 	
 	/**
 	 * Creates a new builtin scope with the given builtin symbols and an empty set of extensions.
@@ -34,28 +34,28 @@ public class BuiltinScope implements IScope {
 
 	@Override
 	public boolean containsType(String name) {
-		return builtins.containsType(name) || extensions.containsType(name);
+		return builtins.containsType(name) || getExtensions().containsType(name);
 	}
 
 	@Override
 	public boolean containsInterface(Qualifier direction, String name) {
-		return builtins.containsInterface(direction, name) || extensions.containsInterface(direction, name);
+		return builtins.containsInterface(direction, name) || getExtensions().containsInterface(direction, name);
 	}
 
 	@Override
 	public boolean containsInterface(InterfaceBlock block) {
-		return builtins.containsInterface(block) || extensions.containsInterface(block);
+		return builtins.containsInterface(block) || getExtensions().containsInterface(block);
 	}
 
 
 	@Override
 	public boolean containsFunction(String name) {
-		return builtins.containsFunction(name) || extensions.containsFunction(name);
+		return builtins.containsFunction(name) || getExtensions().containsFunction(name);
 	}
 
 	@Override
 	public boolean containsVariable(String name) {
-		return builtins.containsVariable(name) || extensions.containsVariable(name);
+		return builtins.containsVariable(name) || getExtensions().containsVariable(name);
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class BuiltinScope implements IScope {
 		
 		if (builtins != null) t = builtins.getType(name);
 		if (t != null) return t;
-		else return extensions.getType(name);
+		else return getExtensions().getType(name);
 	}
 
 	@Override
@@ -72,14 +72,14 @@ public class BuiltinScope implements IScope {
 		InterfaceBlock t = builtins.getInterface(direction, name);
 		if (t != null) return t;
 		
-		return extensions.getInterface(direction, name);
+		return getExtensions().getInterface(direction, name);
 	}
 
 	@Override
 	public Collection<InterfaceBlock> getInterfaces() {
 		ArrayList<InterfaceBlock> alltypes = new ArrayList<InterfaceBlock>();
 		alltypes.addAll(builtins.getInterfaces());
-		alltypes.addAll(extensions.getInterfaces());
+		alltypes.addAll(getExtensions().getInterfaces());
 		
 		return alltypes;
 	}
@@ -90,21 +90,21 @@ public class BuiltinScope implements IScope {
 	public Function getFunction(String name, Type[] parameterTypes) {
 		Function f = builtins.getFunction(name, parameterTypes);
 		if (f != null) return f;
-		return extensions.getFunction(name, parameterTypes);
+		return getExtensions().getFunction(name, parameterTypes);
 	}
 
 	@Override
 	public Function getFunctionBestMatch(String name, Type[] parameterTypes) {
 		Function f = builtins.getFunctionBestMatch(name, parameterTypes);
 		if (f != null) return f;
-		return extensions.getFunctionBestMatch(name, parameterTypes);
+		return getExtensions().getFunctionBestMatch(name, parameterTypes);
 	}
 
 	@Override
 	public Variable getVariable(String identifier) {
 		Variable v = builtins.getVariable(identifier);
 		if (v != null) return v;
-		return extensions.getVariable(identifier);
+		return getExtensions().getVariable(identifier);
 	}
 
 	@Override
@@ -112,7 +112,7 @@ public class BuiltinScope implements IScope {
 		
 		ArrayList<IScope> allchildren = new ArrayList<IScope>();
 		allchildren.addAll(builtins.getChildren());
-		allchildren.addAll(extensions.getChildren());
+		allchildren.addAll(getExtensions().getChildren());
 
 		return allchildren;
 	}
@@ -121,7 +121,7 @@ public class BuiltinScope implements IScope {
 	public Collection<Type> getTypes() {
 		ArrayList<Type> alltypes = new ArrayList<Type>();
 		alltypes.addAll(builtins.getTypes());
-		alltypes.addAll(extensions.getTypes());
+		alltypes.addAll(getExtensions().getTypes());
 		
 		return alltypes;
 	}
@@ -130,7 +130,7 @@ public class BuiltinScope implements IScope {
 	public void dump(PrintStream out, String indent) {
 		out.print("builtins ");
 		builtins.dump(out, indent);
-		extensions.dump(out, indent);
+		getExtensions().dump(out, indent);
 	}
 
 
@@ -167,6 +167,14 @@ public class BuiltinScope implements IScope {
 	@Override
 	public void addInterface(InterfaceBlock block) {
 		throw new Error("not supported");
+	}
+
+	public GLSLExtensionSet getExtensions() {
+		return extensions;
+	}
+
+	public void setExtensions(GLSLExtensionSet extensions) {
+		this.extensions = extensions;
 	}
 
 

@@ -6,7 +6,17 @@ public class GLSLVersion extends NodeImpl {
 	public static enum Profile {
 		core,
 		es,
-		compatibility
+		compatibility;
+		
+		public static Profile get(String profileName) {
+			for (Profile p : values()) {
+				if (p.name().equals(profileName)) {
+					return p;
+				}
+			}
+			return null;
+			
+		}
 	}
 	
 
@@ -16,8 +26,15 @@ public class GLSLVersion extends NodeImpl {
 		this.profile = profile;
 	}
 	
+	
+	
+	
 	public int number;
 	public Profile profile = Profile.core;
+	
+	
+	
+	
 	
 	@Override
 	public int hashCode() {

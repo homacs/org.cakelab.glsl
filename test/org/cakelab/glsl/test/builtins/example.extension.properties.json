@@ -1,37 +1,31 @@
 
 {
-	"name" : "EXT_example",              
-	"number" : 58,                        
-	"since" : 140,
-	"requirements" : {
-		"versions" : {
-			"core" : "[110,140],430",     
-			"es" : "100"                  
-		},
-		"dependencies" :                  
-		{"all":[                          
-			"EXT_dep1",                   
-			{"any":[                      
-				"EXT_dep2_opt1",          
-				{"any":[                  
+	"name" : "EXT_example",
+	"prefix" : "EXT",
+	"number" : 58,
+	"dependencies" : {
+		"all":[
+			"core:[110,330]",
+			"EXT_dep1",
+			{"any":[
+				"EXT_dep2_opt1",
+				{"any":[
 					"EXT_dep2_opt2_opt1",
-					"EXT_dep2_opt2_opt2"          
+					"EXT_dep2_opt2_opt2" 
 				]},
-				{"all":[                  
+				{"all":[
+					"EXT_dep2_opt3_dep1",
+					"EXT_dep2_opt3_dep2",
 					{"any":[
-						"EXT_dep2_opt3_dep1",            
-						"EXT_dep2_opt3_dep2",
-						{"any":[          
-							"EXT_dep2_opt3_dep3_opt1",
-							"EXT_dep2_opt3_dep3_opt2"
-					    ]}
+						"EXT_dep2_opt3_dep3_opt1",
+						"EXT_dep2_opt3_dep3_opt2"
 					]}
 				]}
 			]}
-		]},
-		"conflicts" : [                   
-			"EXT_conflict1",
-			"EXT_conflict2"
 		]
-	}
+	},
+	"conflicts" : [                   
+		"EXT_conflict1",
+		"EXT_conflict2"
+	]
 }

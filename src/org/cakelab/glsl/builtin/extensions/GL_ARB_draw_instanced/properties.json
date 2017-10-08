@@ -1,0 +1,16 @@
+{
+	"name" : "GL_ARB_draw_instanced",
+	"number" : 58,
+	"prefix" : "ARB",
+	"dependencies" : {
+		"any" : [
+			"core:[140,]",
+			{"all" : [
+				"core:[110,130]",
+				"GL_EXT_gpu_shader4",
+				"GL_NV_vertex_program4"
+			]}
+			
+		]
+	}
+}

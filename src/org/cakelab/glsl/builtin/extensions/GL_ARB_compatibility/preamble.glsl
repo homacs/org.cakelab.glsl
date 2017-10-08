@@ -2,7 +2,7 @@
 //                             
 //                                Open GL Extensions 
 //                                    
-//                                 ARB_compatibility
+//                                 GL_ARB_compatibility
 //                                 since GLSL v 1.40
 //
 //                     Built-in Macros, Variables and Functions

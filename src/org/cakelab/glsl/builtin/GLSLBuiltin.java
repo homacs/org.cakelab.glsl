@@ -22,6 +22,8 @@ import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.SymbolTable;
+import org.cakelab.glsl.builtin.extensions.Properties;
+import org.cakelab.glsl.builtin.extensions.MockedExtension;
 import org.cakelab.glsl.lang.ASTBuilder;
 import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.Node;
@@ -271,15 +273,15 @@ public class GLSLBuiltin {
 
 		public void enableExtension(String identifier) {
 			GLSLExtension e = GLSLExtension.get(builtinScope, identifier, key.version, key.type);
-			builtinScope.extensions.enable(e);
+			builtinScope.getExtensions().enable(e);
 		}
 
 		public void disableExtension(String identifier) {
-			builtinScope.extensions.disable(identifier);
+			builtinScope.getExtensions().disable(identifier);
 		}
 
 		public GLSLExtensionSet getExtensions() {
-			return builtinScope.extensions;
+			return builtinScope.getExtensions();
 		}
 
 		public void dump(PrintStream out) {
@@ -416,11 +418,16 @@ public class GLSLBuiltin {
 	}
 
 	
-	public static GLSLExtension loadExtension(BuiltinScope builtinScope, GLSLExtension.Properties properties, GLSLVersion version, ShaderType shaderType) {
+	public static GLSLExtension loadExtension(BuiltinScope builtinScope, Properties properties, GLSLVersion version, ShaderType shaderType) {
+		properties.checkRequirements(version, builtinScope);
+		
 		// resource directory of the extension
 		Resource resource;
 		try {
 			resource = properties.getPreamble();
+			if (resource == null) {
+				return new MockedExtension(properties.name, version);
+			}
 		} catch (IOException e) {
 			throw new Error("internal error: can't parse preamble for extension '" + properties.name + "' . GLSLExtension parser should have avoided this case.", e);
 		}
