@@ -788,7 +788,7 @@ float texture(samplerCubeArrayShadow sampler, vec4 P, float compare);
 // Note: specification uses gsamplerCubeArrayShadow, but there are no integer variants of it.
 
 #undef GENERIC_FUNCTION_SET
-
+#undef GENERIC_FUNCTION_SET_I_U
 
 
 //   ------  textureProj(sampler, p [, bias])   -------

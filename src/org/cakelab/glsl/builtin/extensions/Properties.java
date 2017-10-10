@@ -7,7 +7,6 @@ import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.GLSLVersion.Profile;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.builtin.BuiltinScope;
-import org.cakelab.glsl.builtin.GLSLExtension;
 import org.cakelab.glsl.builtin.GLSLExtensionSet;
 import org.cakelab.json.JSONArray;
 import org.cakelab.json.JSONException;
@@ -93,9 +92,9 @@ public class Properties {
 		}
 	}
 	
-	public String name;
-	public String prefix;
-	public long number;
+	private String name;
+	private String[] alternatives;
+	private String loader;
 	
 	// transient prevents the decoder from trying to decode
 	private transient Dependency dependencies;
@@ -104,7 +103,13 @@ public class Properties {
 	protected Properties(String name) {
 		this.name = name;
 	}
-	
+
+	protected Properties(String name, String[] alternatives) {
+		this.name = name;
+		this.alternatives = alternatives;
+	}
+
+
 	
 	public Properties(InputStream inputStream) throws JSONCodecException, IOException, JSONException {
 		Parser parser = new Parser(inputStream);
@@ -118,7 +123,6 @@ public class Properties {
 		dependencies = decodeDependency(something);
 	}
 
-	
 	public boolean checkRequirements(GLSLVersion version, BuiltinScope builtinScope) throws IllegalArgumentException {
 		if (dependencies != null) {
 			if (!dependencies.check(version, builtinScope.getExtensions())) {
@@ -191,7 +195,44 @@ public class Properties {
 
 
 	public Resource getPreamble() throws IOException {
-		return GLSLExtension.getPreamble(name);
+		return GLSLExtensionLoader.getPreambleResource(name);
+	}
+
+
+	public boolean hasPreamble() {
+		try {
+			getPreamble();
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
 	}
 	
+
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public String[] getAlternativeNames() {
+		return alternatives;
+	}
+
+	public void setAlternativeNames(String[] alternativeNames) {
+		this.alternatives = alternativeNames;
+	}
+
+	public String getLoader() {
+		return loader;
+	}
+
+	public void setLoader(String loader) {
+		this.loader = loader;
+	}
+
 }

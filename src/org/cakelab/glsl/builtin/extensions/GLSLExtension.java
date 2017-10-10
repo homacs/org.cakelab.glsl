@@ -1,4 +1,4 @@
-package org.cakelab.glsl.builtin;
+package org.cakelab.glsl.builtin.extensions;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -7,16 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.cakelab.glsl.GLSLVersion;
-import org.cakelab.glsl.Resource;
-import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
-import org.cakelab.glsl.builtin.extensions.KnownExtensions;
-import org.cakelab.glsl.builtin.extensions.Properties;
-import org.cakelab.glsl.builtin.extensions.MockedExtension;
+import org.cakelab.glsl.ShaderType;
+import org.cakelab.glsl.builtin.BuiltinScope;
 import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
 import org.cakelab.glsl.pp.ast.Macro;
-import org.cakelab.json.JSONException;
-import org.cakelab.json.codec.JSONCodecException;
 
 public class GLSLExtension extends ScopeImpl {
 
@@ -69,13 +64,10 @@ public class GLSLExtension extends ScopeImpl {
 		}
 	}
 
-	private static final String PROPERTIES_FILE = "properties.json";
-	private static final String PREAMBLE_FILE = "preamble.glsl";
 	
-	
-	public static boolean isRegistered(String extension) {
+	public static boolean hasPropertiesFile(String extension) {
 		try {
-			getResource(extension, PROPERTIES_FILE);
+			GLSLExtensionLoader.getResource(extension, GLSLExtensionLoader.PROPERTIES_FILE);
 		} catch (IOException e) {
 			return false;
 		}
@@ -84,7 +76,8 @@ public class GLSLExtension extends ScopeImpl {
 	
 	public static boolean checkRequirements(String extension, GLSLVersion version, BuiltinScope builtinScope) {
 		try {
-			Properties properties = loadProperties(extension);
+			extension = getPrimaryName(extension);
+			Properties properties = GLSLExtensionLoader.loadProperties(extension);
 			return properties.checkRequirements(version, builtinScope);
 		} catch (IllegalArgumentException e) {
 			throw e;
@@ -93,28 +86,20 @@ public class GLSLExtension extends ScopeImpl {
 		}
 	}
 
-	static Properties loadProperties(String extension) throws JSONCodecException, IOException, JSONException {
-		Resource resource = getResource(extension, PROPERTIES_FILE);
-		Properties properties =  new Properties(resource.openInputStream());
+	/** 
+	 * An extension may be referred to by different names, but it is registered by its primary name only.
+	 * This method looks up the primary name of a known extension.
+	 * @param extension
+	 * @return
+	 */
+	static String getPrimaryName(String extension) {
+		String[] names = KnownExtensions.getNames(extension);
+		if (names != null) {
+			return names[0];
+		}
+		return null;
+	}
 
-		// make sure we have at least a valid name variable.
-		if (properties.name == null) {
-			properties.name = extension;
-		}
-		else if (!properties.name.equals(extension)) 
-		{
-			throw new Error("internal error: extension name '" + extension + "' does not match the name '" + properties.name + "' given in its properties file (" + PROPERTIES_FILE + ")");
-		}
-		return properties;
-	}
-	
-	private static Resource getResource(String extension, String resourceName) throws IOException {
-		String extensionDir = BuiltinResources.getExtensionDirectory(extension);
-		String propertiesFile = extensionDir + "/" + resourceName;
-		return	GLSLBuiltin.BUILTIN_RESOURCE_MANAGER.resolve(propertiesFile);
-	}
-	
-	
 	
 	// TODO: performance: think about a better way to cache extensions and builtin symbols
 	//       builtins and extensions cannot be removed from cache as long as symbols still in use 
@@ -123,32 +108,14 @@ public class GLSLExtension extends ScopeImpl {
 	static final Map<Key, GLSLExtension> CACHE = new HashMap<Key, GLSLExtension>(4);
 
 	public static GLSLExtension get(BuiltinScope builtins, String extension, GLSLVersion version, ShaderType type) {
+		extension = getPrimaryName(extension);
 		Key key = new Key(extension, version, type);
 		GLSLExtension e = CACHE.get(key);
 		if (e == null) {
-			e = loadExtension(builtins, extension, version, type);
+			e = GLSLExtensionLoader.loadExtension(builtins, extension, version, type);
 			CACHE.put(key, e);
 		}
 		return e;
-	}
-
-	
-	private static GLSLExtension loadExtension(BuiltinScope builtins, String extension, GLSLVersion version, ShaderType type) {
-		Properties properties;
-		try {
-			properties = loadProperties(extension);
-		} catch (JSONCodecException | IOException | JSONException e) {
-			if (KnownExtensions.containsAny(extension)) {
-				return new MockedExtension(extension, version);
-			}
-			throw new Error("internal error: cannot load properties of extension '" + extension + "'", e);
-		}
-		GLSLExtension ext = GLSLBuiltin.loadExtension(builtins, properties, version, type);
-		return ext;
-	}
-
-	static void put(GLSLExtension extension) {
-		CACHE.put(extension.key, extension);
 	}
 
 	
@@ -163,7 +130,7 @@ public class GLSLExtension extends ScopeImpl {
 	}
 
 	public GLSLExtension(Properties properties, GLSLVersion version, ShaderType type, HashMap<String, Macro> extensionMacros) {
-		this(new Key(properties.name, version, type), extensionMacros);
+		this(new Key(properties.getName(), version, type), extensionMacros);
 		this.properties = properties;
 	}
 
@@ -199,10 +166,6 @@ public class GLSLExtension extends ScopeImpl {
 		setParent(null);
 	}
 
-	public static Resource getPreamble(String name) throws IOException {
-		return getResource(name, PREAMBLE_FILE);
-	}
-	
-	
+
 	
 }

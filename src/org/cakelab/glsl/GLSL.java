@@ -3,7 +3,6 @@ package org.cakelab.glsl;
 import java.io.IOException;
 import java.util.List;
 
-import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.GLSLTokenTable;
 import org.cakelab.glsl.impl.FileSystemResourceManager;

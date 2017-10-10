@@ -1,8 +1,8 @@
 package org.cakelab.glsl.test.builtins;
 
 import org.cakelab.glsl.GLSLVersion;
+import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
-import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
 
 public class TestBuiltinSymbols extends TestBuiltinBase {
 	

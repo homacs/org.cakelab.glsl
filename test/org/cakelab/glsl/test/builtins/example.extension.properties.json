@@ -1,8 +1,7 @@
 
 {
 	"name" : "EXT_example",
-	"prefix" : "EXT",
-	"number" : 58,
+	"alternatives" : ["NV_EXT_example"],
 	"dependencies" : {
 		"all":[
 			"core:[110,330]",

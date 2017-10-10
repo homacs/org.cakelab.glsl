@@ -2,40 +2,18 @@ package org.cakelab.glsl.builtin;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.antlr.v4.runtime.Parser;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
-import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.atn.ATNConfigSet;
-import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
-import org.cakelab.glsl.GLSLErrorHandler;
-import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLVersion;
-import org.cakelab.glsl.Interval;
-import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
-import org.cakelab.glsl.ResourceManager;
+import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.SymbolTable;
-import org.cakelab.glsl.builtin.extensions.Properties;
-import org.cakelab.glsl.builtin.extensions.MockedExtension;
-import org.cakelab.glsl.lang.ASTBuilder;
+import org.cakelab.glsl.builtin.extensions.GLSLExtension;
 import org.cakelab.glsl.lang.ast.IScope;
-import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
-import org.cakelab.glsl.lang.lexer.PPTokenStream;
-import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
-import org.cakelab.glsl.pp.LocationMap;
-import org.cakelab.glsl.pp.MacroMap;
-import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.Macro;
-import org.cakelab.glsl.pp.error.SyntaxError;
 
 
 /**
@@ -66,23 +44,23 @@ import org.cakelab.glsl.pp.error.SyntaxError;
  * @author homac
  *
  */
-public class GLSLBuiltin {
+public class GLSLBuiltin  extends BuiltinLoaderHelper {
 	
 	private static class Key {
 
 		private GLSLVersion version;
-		private ShaderType type;
+		private ShaderType shaderType;
 
 		public Key(GLSLVersion version, ShaderType type) {
 			this.version = version;
-			this.type = type;
+			this.shaderType = type;
 		}
 
 		@Override
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + ((type == null) ? 0 : type.hashCode());
+			result = prime * result + ((shaderType == null) ? 0 : shaderType.hashCode());
 			result = prime * result + ((version == null) ? 0 : version.hashCode());
 			return result;
 		}
@@ -96,7 +74,7 @@ public class GLSLBuiltin {
 			if (getClass() != obj.getClass())
 				return false;
 			Key other = (Key) obj;
-			if (type != other.type)
+			if (shaderType != other.shaderType)
 				return false;
 			if (version == null) {
 				if (other.version != null)
@@ -108,126 +86,7 @@ public class GLSLBuiltin {
 
 	}
 
-	// TODO: this should be part of a Resource class named GLSLResource
-	public static enum ShaderType {
-		VERTEX_SHADER,
-		TESS_CONTROL_SHADER,
-		TESS_EVALUATION_SHADER,
-		GEOMETRY_SHADER,
-		FRAGMENT_SHADER,
-		COMPUTE_SHADER,
-		GENERIC_SHADER, 
-	}
 
-	/**
-	 * This error handler throws an internal error on any error or 
-	 * warning report.
-	 * <p>
-	 * This error handler is used only for internal purposes, such as
-	 * parsing of preamble files (with builtin declarations). Any error
-	 * in those files has to be considered as internal error (not user level error).
-	 * </p>
-	 * @author homac
-	 *
-	 */
-	private static class InternalErrorHandler implements GLSLErrorHandler {
-
-		private ResourceManager resources;
-
-		@Override
-		public void error(Node node, String message) throws SyntaxError {
-			throw new Error("internal error: " + toString(node.getStart(), message));
-		}
-
-		@Override
-		public void error(Location start, String message) throws SyntaxError {
-			throw new Error("internal error: " + toString(start, message));
-			
-		}
-
-		@Override
-		public void warning(Location location, String message) throws SyntaxError {
-			throw new Error("internal error: " + toString(location, message));
-			
-		}
-
-		@Override
-		public void warning(Interval interval, String message) throws SyntaxError {
-			throw new Error("internal error: " + toString(interval.getStart(), message));
-			
-		}
-
-		private String toString(Location start, String message) {
-			String errLoc = "unknown location: ";
-			if (start != null) {
-				Resource resource = resources.getResourceById(start.getSourceIdentifier());
-				String source;
-				if (resource != null) {
-					source = resource.getPath();
-				} else {
-					source = start.getSourceIdentifier();
-				}
-				errLoc = source + ":" + start.getLine() + ":" + start.getColumn() + ": ";
-			}
-
-			return errLoc + ": " + message;
-		}
-
-		
-		@Override
-		public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine,
-				String msg, RecognitionException e) {
-			PPOutputToken token = (PPOutputToken) offendingSymbol;
-			throw new Error("internal error: " + toString(token.getPPToken().getStart(), msg));
-		}
-
-		@Override
-		public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, boolean exact,
-				BitSet ambigAlts, ATNConfigSet configs) {
-			throw new Error("internal error: reported ambiguity");
-			
-		}
-
-		@Override
-		public void reportAttemptingFullContext(Parser recognizer, DFA dfa, int startIndex, int stopIndex,
-				BitSet conflictingAlts, ATNConfigSet configs) {
-			throw new Error("internal error: reported attempt of full context");
-		}
-
-		@Override
-		public void reportContextSensitivity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, int prediction,
-				ATNConfigSet configs) {
-			throw new Error("internal error: reported context sensitivity");
-		}
-
-		@Override
-		public void setResourceManager(ResourceManager resources) {
-			this.resources = resources;
-		}
-
-		@Override
-		public void setLocations(TokenStream tokens, LocationMap locations) {
-			// not required
-		}
-
-		@Override
-		public void error(ParseTree node, String message) {
-			throw new Error("internal error: " + toString(getLocation(node), message));
-		}
-
-		private Location getLocation(ParseTree node) {
-			if (node instanceof TerminalNode) {
-				PPOutputToken token = ((PPOutputToken)(((TerminalNode)node).getSymbol()));
-				return token.getPPToken().getStart();
-			} else if (node.getChildCount() > 0) {
-				return getLocation(node.getChild(0));
-			} else {
-				return null;
-			}
-		}
-		
-	}
-	
 	/**
 	 * A working set provides access to data which is valid throughout preprocessing and parse
 	 * of a specific glsl source file, namely:
@@ -256,7 +115,7 @@ public class GLSLBuiltin {
 		}
 
 		public ShaderType getShaderType() {
-			return key.type;
+			return key.shaderType;
 		}
 		
 		public GLSLVersion getGLSLVersion() {
@@ -272,7 +131,7 @@ public class GLSLBuiltin {
 		}
 
 		public void enableExtension(String identifier) {
-			GLSLExtension e = GLSLExtension.get(builtinScope, identifier, key.version, key.type);
+			GLSLExtension e = GLSLExtension.get(builtinScope, identifier, key.version, key.shaderType);
 			builtinScope.getExtensions().enable(e);
 		}
 
@@ -293,12 +152,6 @@ public class GLSLBuiltin {
 		
 	}
 	
-	
-	static final InternalErrorHandler INTERNAL_ERROR_HANDLER = new InternalErrorHandler();
-	static final BuiltinResourceManager BUILTIN_RESOURCE_MANAGER = new BuiltinResourceManager(BuiltinResources.getBaseDirectory());
-	static {
-		INTERNAL_ERROR_HANDLER.setResourceManager(BUILTIN_RESOURCE_MANAGER);
-	}
 	
 	/** cache for recently parsed preambles */
 	static final Map<Key, GLSLBuiltin> BUILTIN_SYMBOLS_CACHE = new HashMap<Key, GLSLBuiltin>(4);
@@ -341,7 +194,7 @@ public class GLSLBuiltin {
 	}
 	
 	public ShaderType getShaderType() {
-		return key.type;
+		return key.shaderType;
 	}
 
 	public WorkingSet createWorkingSet() {
@@ -382,7 +235,7 @@ public class GLSLBuiltin {
 	private static GLSLBuiltin loadBuiltins(Key key) {
 		Resource resource;
 		try {
-			resource = BUILTIN_RESOURCE_MANAGER.resolve(BuiltinResources.getResourceDirectory(key.version) + "/preamble.glsl");
+			resource = BUILTIN_RESOURCE_MANAGER.resolve(BuiltinLoaderHelper.getResourceDirectory(key.version) + "/preamble.glsl");
 		} catch (IOException e) {
 			throw new Error("internal error: cant parse preamble. GLSLVersion parser should have avoided this case.", e);
 		}
@@ -392,7 +245,7 @@ public class GLSLBuiltin {
 		
 		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(BUILTIN_RESOURCE_MANAGER);
 
-		HashMap<String, Macro> builtinMacros = preprocess(resource, key.version, key.type, buffer);
+		HashMap<String, Macro> builtinMacros = preprocess(resource, key.version, key.shaderType, buffer);
 		addCommonBuiltinMacros(builtinMacros);
 
 		GLSLTokenTable tokenTable = GLSLTokenTable.get(key.version);
@@ -418,72 +271,6 @@ public class GLSLBuiltin {
 	}
 
 	
-	public static GLSLExtension loadExtension(BuiltinScope builtinScope, Properties properties, GLSLVersion version, ShaderType shaderType) {
-		properties.checkRequirements(version, builtinScope);
-		
-		// resource directory of the extension
-		Resource resource;
-		try {
-			resource = properties.getPreamble();
-			if (resource == null) {
-				return new MockedExtension(properties.name, version);
-			}
-		} catch (IOException e) {
-			throw new Error("internal error: can't parse preamble for extension '" + properties.name + "' . GLSLExtension parser should have avoided this case.", e);
-		}
-		
-		
-		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(BUILTIN_RESOURCE_MANAGER);
-
-		HashMap<String, Macro> extensionMacros = preprocess(resource, version, shaderType, buffer);
-
-		GLSLTokenTable tokenTable = GLSLTokenTable.get(version);
-
-		GLSLExtension e = new GLSLExtension(properties, version, shaderType, extensionMacros);
-		GLSLExtensionSymbolTable symbolTable = new GLSLExtensionSymbolTable(e, builtinScope);
-
-		parse(buffer, tokenTable, symbolTable);
-
-		e.finishLoad();
-		
-		return e;
-	}
-
-	private static void parse(GLSL_ANTLR_PPOutputBuffer buffer, GLSLTokenTable tokenTable,
-			SymbolTable symbolTable) {
-		PPTokenStream tokens = new PPTokenStream(buffer, tokenTable, symbolTable, INTERNAL_ERROR_HANDLER);
-		INTERNAL_ERROR_HANDLER.setLocations(tokens, buffer.getLocations());
-		ASTBuilder astBuilder = new ASTBuilder(tokens, buffer.getLocations(), symbolTable, INTERNAL_ERROR_HANDLER);
-		
-		GLSLParser parser = new GLSLParser(tokens);
-		parser.removeErrorListeners();
-		parser.addErrorListener(INTERNAL_ERROR_HANDLER);
-		parser.addParseListener(astBuilder);
-		
-		parser.glsl();
-	}
-
-	private static HashMap<String, Macro> preprocess(Resource resource, GLSLVersion version, ShaderType shaderType,
-			GLSL_ANTLR_PPOutputBuffer buffer) {
-		Preprocessor pp = new Preprocessor(resource, shaderType, buffer);
-		
-		pp.addDefine(shaderType.name());
-		
-		pp.setResourceManager(BUILTIN_RESOURCE_MANAGER);
-		pp.setErrorHandler(INTERNAL_ERROR_HANDLER);
-		pp.enableInclude(true);
-		pp.enableLineDirectiveInsertion(false);
-		pp.setForceVersion(version);
-
-		pp.process(true);
-		
-		MacroMap macroMap = pp.getState().getMacros();
-		macroMap.remove(shaderType.name());
-		
-
-		return macroMap.getUserLevelMacros();
-	}
-
 
 	
 }

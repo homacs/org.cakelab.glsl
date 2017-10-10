@@ -80,10 +80,10 @@ public class GLSLTokenTable {
 			throw new Error("internal error: unknown profile '" + profile.name() + "'");
 		
 		}
-		InputStream in = BuiltinResources.getInputStream(version.number, profile, "keywords.txt");
+		InputStream in = BuiltinLoaderHelper.getInputStream(version.number, profile, "keywords.txt");
 		readKeywordList(in, false);
 		
-		in = BuiltinResources.getInputStream(version.number, profile, "reserved.txt");
+		in = BuiltinLoaderHelper.getInputStream(version.number, profile, "reserved.txt");
 		readKeywordList(in, true);
 
 		//

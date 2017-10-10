@@ -18,7 +18,10 @@
 function fetch () {
 	url="$1"
 	fout="$2"
-	wget $url -O - 2>/dev/null | grep "href" | awk '{gsub(".*\\.txt\">","") ; gsub("</a>", "") ; print ; }' > "$fout" || echo "error fetching extension names from $url"
+	wget $url -O - 2>/dev/null | grep "href" |                                      \
+		awk '/<li.*/{gsub(".*\\.txt\">","") ; gsub("</a>", "") ; printf "\n" $0 ; } \
+			 /<br.*/{gsub(".*\\.txt\">","") ; gsub("</a>", "") ; printf " " $0 ; }' \
+		> "$fout" || echo "error fetching extension names from $url"
 	count=`cat $fout | wc -l`
 	if [ $count -eq 0 ] ; then 
 		echo "error: list of extensions is empty"

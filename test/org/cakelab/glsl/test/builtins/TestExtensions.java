@@ -3,8 +3,8 @@ package org.cakelab.glsl.test.builtins;
 import java.io.FileInputStream;
 
 import org.cakelab.glsl.GLSLVersion;
+import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
-import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.GLSLExtensionSet;
 import org.cakelab.glsl.builtin.extensions.MockedExtension;
@@ -33,12 +33,26 @@ public class TestExtensions extends TestBuiltinBase {
 
 		assert (ws.getExtensions().containsExtension("GL_NV_vertex_program4"));
 		assert (ws.getExtensions().getMacro("GL_NV_vertex_program4") != null);
+
+		// using an alternative name
+		ws = testExtension(core(110), ShaderType.VERTEX_SHADER, "GL_KHR_blend_equation_advanced_coherent");
+		assert (ws.getExtensions().containsExtension("GL_KHR_blend_equation_advanced"));
+		assert (ws.getExtensions().containsExtension("GL_KHR_blend_equation_advanced_coherent"));
+
+	
 	}
 
 
 	private static void testExtensions() {
+		WorkingSet ws = testExtension(core(400), ShaderType.VERTEX_SHADER, "GL_ARB_sparse_texture", "GL_ARB_sparse_texture2");
+		
+		ws = testExtension(core(400), ShaderType.VERTEX_SHADER, "GL_ARB_gpu_shader_int64");
+		ws.dump(System.out);
+		
+		
 		testExtension(core(110), ShaderType.VERTEX_SHADER, "GL_EXT_gpu_shader4", "GL_NV_vertex_program4", "GL_ARB_draw_instanced");
 		testExtension(core(140), ShaderType.VERTEX_SHADER, "GL_ARB_draw_instanced");
+		
 		testExtension(core(140), ShaderType.VERTEX_SHADER, "GL_ARB_compatibility");
 	}
 
@@ -82,8 +96,9 @@ public class TestExtensions extends TestBuiltinBase {
 			FileInputStream props = new FileInputStream(dir + "/example.extension.properties.json");
 			Properties p = new Properties(props);
 			
-			assert p.name.equals("EXT_example");
-			assert p.prefix.equals("EXT");
+			assert p.getName().equals("EXT_example");
+			assert p.getAlternativeNames() != null && p.getAlternativeNames()[0].equals("NV_EXT_example");
+			
 			assertValid(p, core(110), "EXT_dep1", "EXT_dep2_opt1");
 			assertValid(p, core(110), "EXT_dep1", "EXT_dep2_opt2_opt1");
 			assertValid(p, core(110), "EXT_dep1", "EXT_dep2_opt2_opt2");
@@ -121,7 +136,7 @@ public class TestExtensions extends TestBuiltinBase {
 		WorkingSet ws = builtin.createWorkingSet();
 		GLSLExtensionSet extensions = ws.getExtensions();
 		for (String name : names) {
-			extensions.enable(new MockedExtension(name, ws.getGLSLVersion()));
+			extensions.enable(new MockedExtension(name, ShaderType.GENERIC_SHADER, ws.getGLSLVersion()));
 		}
 		return ws;
 	}

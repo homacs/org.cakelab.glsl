@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.cakelab.glsl.builtin.extensions.GLSLExtension;
 import org.cakelab.glsl.lang.ast.Function;
 import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.Qualifier;
@@ -224,6 +225,12 @@ public class GLSLExtensionSet implements IScope {
 		for (GLSLExtension e : extensions) {
 			if (e.getName().equals(extension)) {
 				return true;
+			} else if (e.getProperties().getAlternativeNames() != null) {
+				for (String name : e.getProperties().getAlternativeNames()) {
+					if (name.equals(extension)) {
+						return true;
+					}
+				}
 			}
 		}
 		return false;

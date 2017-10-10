@@ -1,6 +1,4 @@
 {
 	"name" : "GL_ARB_compatibility",
-	"prefix" : "ARB",
-	"number" : 58,
 	"dependencies" : "core:[110,140]"
 }

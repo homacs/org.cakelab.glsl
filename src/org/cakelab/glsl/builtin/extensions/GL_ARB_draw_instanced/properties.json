@@ -1,7 +1,5 @@
 {
 	"name" : "GL_ARB_draw_instanced",
-	"number" : 58,
-	"prefix" : "ARB",
 	"dependencies" : {
 		"any" : [
 			"core:[140,]",

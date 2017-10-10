@@ -1,6 +1,7 @@
-package org.cakelab.glsl.builtin;
+package org.cakelab.glsl.builtin.extensions;
 
 import org.cakelab.glsl.SymbolTable;
+import org.cakelab.glsl.builtin.BuiltinScope;
 
 public class GLSLExtensionSymbolTable extends SymbolTable {
 

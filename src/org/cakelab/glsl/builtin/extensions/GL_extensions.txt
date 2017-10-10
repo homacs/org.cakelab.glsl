@@ -1,3 +1,4 @@
+
 GL_EXT_abgr
 GL_EXT_blend_color
 GL_EXT_polygon_offset
@@ -19,8 +20,7 @@ GL_SGIS_detail_texture
 GL_SGIS_sharpen_texture
 GL_EXT_packed_pixels
 GL_SGIS_texture_lod
-GL_SGIS_multisample
-GLX_SGIS_multisample
+GL_SGIS_multisample GLX_SGIS_multisample
 GL_EXT_rescale_normal
 GLX_EXT_visual_info
 GL_EXT_vertex_array
@@ -88,12 +88,10 @@ GL_HP_texture_lighting
 GL_EXT_draw_range_elements
 GL_WIN_phong_shading
 GL_WIN_specular_fog
-GLX_SGIS_color_range
-GL_SGIS_color_range
+GLX_SGIS_color_range GL_SGIS_color_range
 GL_EXT_light_texture
 GL_SGIX_blend_alpha_minmax
-GL_EXT_scene_marker
-GLX_EXT_scene_marker
+GL_EXT_scene_marker GLX_EXT_scene_marker
 GL_SGIX_pixel_texture_bits
 GL_EXT_bgra
 GL_SGIX_async
@@ -110,8 +108,7 @@ GL_EXT_separate_specular_color
 GL_EXT_secondary_color
 GL_EXT_texture_env
 GL_EXT_texture_perturb_normal
-GL_EXT_multi_draw_arrays
-GL_SUN_multi_draw_arrays
+GL_EXT_multi_draw_arrays GL_SUN_multi_draw_arrays
 GL_EXT_fog_coord
 GL_REND_screen_coordinates
 GL_EXT_coordinate_frame
@@ -159,10 +156,8 @@ GL_IBM_vertex_array_lists
 GL_3DFX_texture_compression_FXT1
 GL_3DFX_multisample
 GL_3DFX_tbuffer
-WGL_EXT_multisample
-GL_EXT_multisample
-GL_SGIX_vertex_preclip
-GL_SGIX_vertex_preclip_hint
+WGL_EXT_multisample GL_EXT_multisample
+GL_SGIX_vertex_preclip GL_SGIX_vertex_preclip_hint
 GL_SGIX_convolution_accuracy
 GL_SGIX_resample
 GL_SGIS_point_line_texgen
@@ -231,8 +226,7 @@ GL_ATI_draw_buffers
 WGL_ATI_pixel_format_float
 GL_ATI_texture_env_combine3
 GL_ATI_texture_float
-GL_NV_float_buffer
-WGL_NV_float_buffer
+GL_NV_float_buffer WGL_NV_float_buffer
 GL_NV_fragment_program
 GL_NV_half_float
 GL_NV_pixel_data_range
@@ -279,9 +273,7 @@ GL_EXT_geometry_shader4
 GL_NV_vertex_program4
 GL_EXT_gpu_shader4
 GL_EXT_draw_instanced
-GL_EXT_packed_float
-GLX_EXT_fbconfig_packed_float
-WGL_EXT_pixel_format_packed_float
+GL_EXT_packed_float GLX_EXT_fbconfig_packed_float WGL_EXT_pixel_format_packed_float
 GL_EXT_texture_array
 GL_EXT_texture_buffer_object
 GL_EXT_texture_compression_latc
@@ -290,9 +282,7 @@ GL_EXT_texture_shared_exponent
 GL_NV_depth_buffer_float
 GL_NV_fragment_program4
 GL_NV_framebuffer_multisample_coverage
-GL_EXT_framebuffer_sRGB
-GLX_EXT_framebuffer_sRGB
-WGL_EXT_framebuffer_sRGB
+GL_EXT_framebuffer_sRGB GLX_EXT_framebuffer_sRGB WGL_EXT_framebuffer_sRGB
 GL_NV_geometry_shader4
 GL_NV_parameter_buffer_object
 GL_EXT_draw_buffers2
@@ -302,9 +292,7 @@ GL_EXT_texture_integer
 GLX_EXT_texture_from_pixmap
 GL_GREMEDY_frame_terminator
 GL_NV_conditional_render
-GL_NV_present_video
-GLX_NV_present_video
-WGL_NV_present_video
+GL_NV_present_video GLX_NV_present_video WGL_NV_present_video
 GLX_NV_video_out
 WGL_NV_video_output
 GLX_NV_swap_group
@@ -331,13 +319,9 @@ GL_APPLE_aux_depth_stencil
 GL_APPLE_object_purgeable
 GL_APPLE_row_bytes
 GL_APPLE_rgb_422
-GL_NV_video_capture
-GLX_NV_video_capture
-WGL_NV_video_capture
+GL_NV_video_capture GLX_NV_video_capture WGL_NV_video_capture
 GL_EXT_swap_control
-GL_NV_copy_image
-GLX_NV_copy_image
-WGL_NV_copy_image
+GL_NV_copy_image GLX_NV_copy_image WGL_NV_copy_image
 GL_EXT_separate_shader_objects
 GL_NV_parameter_buffer_object2
 GL_NV_shader_buffer_load
@@ -360,10 +344,8 @@ GL_AMD_debug_output
 GL_NV_vdpau_interop
 GL_AMD_transform_feedback3_lines_triangles
 GLX_AMD_gpu_association
-GLX_EXT_create_context_es2_profile
-GLX_EXT_create_context_es_profile
-WGL_EXT_create_context_es2_profile
-WGL_EXT_create_context_es_profile
+GLX_EXT_create_context_es2_profile GLX_EXT_create_context_es_profile
+WGL_EXT_create_context_es2_profile WGL_EXT_create_context_es_profile
 GL_AMD_depth_clamp_separate
 GL_EXT_texture_sRGB_decode
 GL_NV_texture_multisample
@@ -396,8 +378,7 @@ GL_INTEL_map_texture
 GL_NV_draw_texture
 GL_AMD_interleaved_elements
 GL_NV_bindless_multi_draw_indirect
-GL_NV_blend_equation_advanced
-GL_NV_blend_equation_advanced_coherent
+GL_NV_blend_equation_advanced GL_NV_blend_equation_advanced_coherent
 GL_NV_gpu_program5_mem_extended
 GL_AMD_shader_atomic_counter_ops
 WGL_NV_delay_before_swap
@@ -466,12 +447,9 @@ GL_SGIX_pixel_texture
 GL_NV_alpha_to_coverage_dither_control
 GL_NV_draw_vulkan_image
 GL_AMD_texture_gather_bias_lod
-GL_EXT_memory_object
-GL_EXT_semaphore
-GL_EXT_memory_object_fd
-GL_EXT_semaphore_fd
-GL_EXT_memory_object_win32
-GL_EXT_semaphore_win32
+GL_EXT_memory_object GL_EXT_semaphore
+GL_EXT_memory_object_fd GL_EXT_semaphore_fd
+GL_EXT_memory_object_win32 GL_EXT_semaphore_win32
 GL_EXT_win32_keyed_mutex
 GL_AMD_gpu_shader_int16
 GL_EXT_external_buffer

@@ -1,7 +1,7 @@
 package org.cakelab.glsl.builtin.extensions;
 
 import java.io.InputStream;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -13,9 +13,27 @@ import java.util.Scanner;
 public class KnownExtensions {
 	private static final String DIRECTORY = KnownExtensions.class.getPackage().getName().replace('.', '/');
 
-	private static final HashSet<String> ARB = new HashSet<String>();
-	private static final HashSet<String> GL = new HashSet<String>();
-	private static final HashSet<String> ES = new HashSet<String>();
+	private static final List ARB = new List();
+	private static final List GL = new List();
+	private static final List ES = new List();
+
+	@SuppressWarnings("serial")
+	private static class List extends HashMap<String, String[]> {
+
+		public boolean add(String[] names) {
+			for (String n : names) {
+				super.put(n, names);
+			}
+			return true;
+		}
+
+		public boolean contains(String name) {
+			return containsKey(name);
+		}
+		
+	}
+	
+	
 	
 	static {
 		readList("ARB_extensions.txt", ARB);
@@ -26,6 +44,19 @@ public class KnownExtensions {
 	/** Tests if name is the name string of any known extension */
 	public static boolean containsAny(String name) {
 		return ARB.contains(name) || GL.contains(name) || ES.contains(name);
+	}
+	
+	public static String[] getNames(String extension) {
+		String[] names = null;
+		if (null != (names = ARB.get(extension))) {
+			return names;
+		} else if (null != (names = GL.get(extension))) {
+			return names;
+		} else if (null != (names = ES.get(extension))) {
+			return names;
+		} else {
+			return null;
+		}
 	}
 	
 	/** Tests if name is an ARB OpenGL extension */
@@ -43,14 +74,15 @@ public class KnownExtensions {
 		return ES.contains(name);
 	}
 	
-	private static void readList(String name, HashSet<String> list) {
+	private static void readList(String name, List list) {
 		InputStream in = KnownExtensions.class.getClassLoader().getResourceAsStream(DIRECTORY + '/' + name);
 		if (in != null) {
 			Scanner s = new Scanner(in);
 			while (s.hasNextLine()) {
 				String ext = s.nextLine().trim();
 				if (ext.length() > 0) {
-					list.add(ext);
+					String[] names = ext.split(" ");
+					list.add(names);
 				}
 			}
 			s.close();
@@ -58,6 +90,6 @@ public class KnownExtensions {
 			System.err.println("could not read known extensions list '" + name + "'");
 		}
 	}
-	
+
 	
 }

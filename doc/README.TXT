@@ -1167,7 +1167,7 @@ Concept:
 
 Extensions will be declared by a set of files in a directory <extension-name>, 
 equivalent to the files for profiles:
-- <extension-name>/properties.json : set of requirements except availability.
+- <extension-name>/properties.json : mainly a set of requirements (dependencies on other extensions).
 - <extension-name>/preamble.glsl : all declared GLSL symbols.
 
 Properties file has the following content:
@@ -1176,8 +1176,9 @@ Properties file has the following content:
 	"names" : ["GL_EXT_example"],         // name strings of the extension (may have more than one)
 	"prefix" : "EXT",                     // extension's prefix      (classifies extensions)
 	"number" : 58,                        // number of the extension (in relation to prefix)
-	"requirements" : {
-		"all":[                          // all top level dependencies must be met
+	"dependencies" : {                    // optional
+		"all":[                           // all top level dependencies must be met
+			"core:[110,150]",             // requires core profile in version 110-150
 			"EXT_dep1",                   // 1st mandatory dependency
 			{"any":[                      // 2nd dependency is set of optional dependencies (one is required)
 				"EXT_dep2_opt1",          // 1st option of the 2nd dependency
@@ -1215,7 +1216,7 @@ Properties file has the following content:
 				  - possibly a set of additional keywords         (keywords.txt)
 				  - possibly a set of additional extension symbols (preamble.glsl)
 				- extensions can be dynamically loaded and unloaded (enable/disable)
-				- files of extensions will be stored in directory versioning/extensions/
+				- files of extensions will be stored in directory builtins/extensions/
 				  - no version required!
 				  - user can add a path to look for extensions
 

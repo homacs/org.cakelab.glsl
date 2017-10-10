@@ -13,10 +13,10 @@ import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
+import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
-import org.cakelab.glsl.builtin.GLSLBuiltin.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
-import org.cakelab.glsl.builtin.GLSLExtension;
+import org.cakelab.glsl.builtin.extensions.GLSLExtension;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Expression;
@@ -1186,7 +1186,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	public void process(PPExtensionDirective directive) throws SyntaxError {
 		WorkingSet workingSet = state.getWorkingSet();
 		try {
-			if (!GLSLExtension.isRegistered(directive.identifier)) {
+			if (!GLSLExtension.hasPropertiesFile(directive.identifier)) {
 				syntaxError(directive, "unknown extension '" + directive.identifier + "'");
 			}
 	
