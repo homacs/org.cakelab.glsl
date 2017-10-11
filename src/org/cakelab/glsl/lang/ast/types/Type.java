@@ -83,18 +83,26 @@ public class Type extends NodeImpl implements Comparable<Type> {
 	private final String signature;
 
 	private final int kind;
+	private final Rank rank;
 	protected ConstructorGroup constructors = new ConstructorGroup();
 	
 	
+	Type(String signature, int kind, Rank rank) {
+		this(Interval.NONE, signature, kind, rank, null);
+		createStandardConstructors();
+	}
+
 	Type(String signature, int kind) {
-		this(Interval.NONE, signature, kind, null);
+		this(Interval.NONE, signature, kind, Rank.NON_SCALAR, null);
+		assert(kind != KIND_SCALAR);
 		createStandardConstructors();
 	}
 	
-	public Type(Interval interval, String signature, int kind, Qualifiers qualifiers) {
+	public Type(Interval interval, String signature, int kind, Rank rank, Qualifiers qualifiers) {
 		super(interval);
 		this.signature = signature;
 		this.kind = kind;
+		this.rank = rank;
 		createStandardConstructors();
 		if (qualifiers != null) {
 			// ignore null list
@@ -109,6 +117,7 @@ public class Type extends NodeImpl implements Comparable<Type> {
 		this.kind = that.getKind();
 		this.qualifiers = that.qualifiers.clone();
 		this.constructors = that.constructors.clone();
+		this.rank = that.rank;
 	}
 
 	protected void createStandardConstructors() {
@@ -265,18 +274,18 @@ public class Type extends NodeImpl implements Comparable<Type> {
 	}
 
 	/** non-glsl type, for preprocessor only */
-	public static Type _char = new Type("char", KIND_SCALAR);
+	public static Type _char = new Type("char", KIND_SCALAR, Rank.CHAR);
 
 	
-	public static Type _void = new Type("void", KIND_SCALAR);
+	public static Type _void = new Type("void", KIND_SCALAR, Rank.NON_SCALAR);
 	
-	public static Type _atomic_uint = new Type("atomic_uint", KIND_SCALAR);
+	public static Type _atomic_uint = new Type("atomic_uint", KIND_SCALAR, Rank.UINT);
 	
-	public static Type _float = new Type("float", KIND_SCALAR);
-	public static Type _double = new Type("double", KIND_SCALAR);
-	public static Type _int = new Type("int", KIND_SCALAR);
-	public static Type _uint = new Type("uint", KIND_SCALAR);
-	public static Type _bool = new Type("bool", KIND_SCALAR);
+	public static Type _float = new Type("float", KIND_SCALAR, Rank.FLOAT);
+	public static Type _double = new Type("double", KIND_SCALAR, Rank.DOUBLE);
+	public static Type _int = new Type("int", KIND_SCALAR, Rank.INT);
+	public static Type _uint = new Type("uint", KIND_SCALAR, Rank.INT);
+	public static Type _bool = new Type("bool", KIND_SCALAR, Rank.BOOL);
 	
 	public static Type _vec2 = new Type("vec2", KIND_VECTOR);
 	public static Type _vec3 = new Type("vec3", KIND_VECTOR);
@@ -411,9 +420,6 @@ public class Type extends NodeImpl implements Comparable<Type> {
 	public static Type _image2DMSArray = new Type("image2DMSArray", KIND_ARRAY);
 	public static Type _iimage2DMSArray = new Type("iimage2DMSArray", KIND_ARRAY);
 	public static Type _uimage2DMSArray = new Type("uimage2DMSArray", KIND_ARRAY);
-	
-	public static Type _samplerExternalOES = new Type("samplerExternalOES", KIND_STRUCT);
-
 	
 	public static Type[] BUILTIN_TYPES = new Type[] {
 			_void,
@@ -560,8 +566,6 @@ public class Type extends NodeImpl implements Comparable<Type> {
 			_iimage2DMSArray,
 			_uimage2DMSArray,
 			
-			_samplerExternalOES,
-
 	};
 
 	static {
@@ -579,6 +583,7 @@ public class Type extends NodeImpl implements Comparable<Type> {
 		return leftRank.gt(rightRank) ? v1.getType() : v2.getType();
 	}
 	
+	// TODO: rank has to be replaced by a table which contains implicit cast rules
 	public enum Rank {
 		BOOL,
 		CHAR,
@@ -587,6 +592,7 @@ public class Type extends NodeImpl implements Comparable<Type> {
 		FLOAT,
 		DOUBLE,
 		NON_SCALAR;
+		
 		public static Rank of(Type type) {
 			if (type.equals(_char)) {
 				return CHAR;
@@ -619,8 +625,12 @@ public class Type extends NodeImpl implements Comparable<Type> {
 	public static Value cast(Value value, Type targetType) {
 		// TODO type cast exception
 		Interval interval = value.getInterval();
-		if (value.getNativeValue() == null) return new Value(interval, targetType, null);
-
+		if (value.getType().equals(targetType)) {
+			return value;
+		}
+		if (value.getNativeValue() == null) {
+			return new Value(interval, targetType, null);
+		}
 		
 		switch(Rank.of(value.getType())) {
 			case BOOL: 
@@ -886,6 +896,10 @@ public class Type extends NodeImpl implements Comparable<Type> {
 
 	public void addCastConstructor(Type paramType) {
 		this.addConstructor(createCastConstructor(this,paramType));
+	}
+
+	public void addImplicitCastRule(Type sourceType) {
+		// TODO: implement implicit cast rules for types
 	}
 
 

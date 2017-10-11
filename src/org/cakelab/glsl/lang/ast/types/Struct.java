@@ -14,7 +14,7 @@ import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
 
 public class Struct extends Type implements CompoundType {
 
-	
+	// TODO: MemberType does not work with compound types
 	public static class MemberType extends Type implements Member {
 		private CompoundType struct;
 
@@ -136,7 +136,7 @@ public class Struct extends Type implements CompoundType {
 	Body body;
 
 	public Struct(Interval interval, IScope parentScope, String name, Qualifiers qualifiers) {
-		super(interval, name, KIND_STRUCT, qualifiers);
+		super(interval, name, KIND_STRUCT, Rank.NON_SCALAR, qualifiers);
 		this.body = new Body(this, parentScope);
 	}
 	

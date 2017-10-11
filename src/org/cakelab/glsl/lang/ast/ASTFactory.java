@@ -18,6 +18,7 @@ import org.cakelab.glsl.lang.ast.types.Array;
 import org.cakelab.glsl.lang.ast.types.InterfaceBlock;
 import org.cakelab.glsl.lang.ast.types.Struct;
 import org.cakelab.glsl.lang.ast.types.Type;
+import org.cakelab.glsl.lang.ast.types.Type.Rank;
 import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
 
 // TODO [2] supposed to be an interface in parser package
@@ -439,7 +440,7 @@ public class ASTFactory {
 			// typedefs. But we do it anyway to maintain maximum language 
 			// adaptability.
 			Interval interval = createInterval(ctxTypeName);
-			type = new Type(interval, typeName, Type.KIND_SCALAR, null);
+			type = new Type(interval, typeName, Type.KIND_SCALAR, Rank.UINT, null);
 		} else {
 			type = symbols.getType(typeName);
 			if (type == null && !declaration) {
@@ -447,7 +448,7 @@ public class ASTFactory {
 				errorHandler.error(typeNameCtx, "undefined type '" + typeName + "'");
 				// add undefined type to recover from error
 				Interval interval = createInterval(ctxTypeName);
-				type = new Type(interval, typeName, Type.KIND_UNDEFINED, null);
+				type = new Type(interval, typeName, Type.KIND_UNDEFINED, Rank.NON_SCALAR, null);
 			}
 		}
 		return type;

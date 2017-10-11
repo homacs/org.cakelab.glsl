@@ -21,16 +21,42 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class Loader extends GLSLExtensionLoader {
-	static Type _int64_t = new Type(Interval.NONE, "int64_t", Type.KIND_SCALAR, null);
-	static Type _i64vec2 = new Type(Interval.NONE, "i64vec2", Type.KIND_VECTOR, null);
-	static Type _i64vec3 = new Type(Interval.NONE, "i64vec3", Type.KIND_VECTOR, null);
-	static Type _i64vec4 = new Type(Interval.NONE, "i64vec4", Type.KIND_VECTOR, null);
-	static Type _uint64_t = new Type(Interval.NONE, "uint64_t", Type.KIND_SCALAR, null);
-	static Type _u64vec2 = new Type(Interval.NONE, "u64vec2", Type.KIND_VECTOR, null);
-	static Type _u64vec3 = new Type(Interval.NONE, "u64vec3", Type.KIND_VECTOR, null);
-	static Type _u64vec4 = new Type(Interval.NONE, "u64vec4", Type.KIND_VECTOR, null);
+	static Type _int64_t = new Type(Interval.NONE, "int64_t", Type.KIND_SCALAR, Rank.INT, null);
+	static Type _i64vec2 = new Type(Interval.NONE, "i64vec2", Type.KIND_VECTOR, Rank.NON_SCALAR, null);
+	static Type _i64vec3 = new Type(Interval.NONE, "i64vec3", Type.KIND_VECTOR, Rank.NON_SCALAR, null);
+	static Type _i64vec4 = new Type(Interval.NONE, "i64vec4", Type.KIND_VECTOR, Rank.NON_SCALAR, null);
+	static Type _uint64_t = new Type(Interval.NONE, "uint64_t", Type.KIND_SCALAR, Rank.UINT, null);
+	static Type _u64vec2 = new Type(Interval.NONE, "u64vec2", Type.KIND_VECTOR, Rank.NON_SCALAR, null);
+	static Type _u64vec3 = new Type(Interval.NONE, "u64vec3", Type.KIND_VECTOR, Rank.NON_SCALAR, null);
+	static Type _u64vec4 = new Type(Interval.NONE, "u64vec4", Type.KIND_VECTOR, Rank.NON_SCALAR, null);
 
 	static {
+		// Note:
+		// we add cast constructors to standard builtin types 
+		// (int, bool, ...). Those will be always available from now on.
+		// This cannot cause issues, when this extension is disabled, 
+		// because, the added types (_int64_t) will not be available 
+		// as keywords anymore.
+		//
+		
+		addImplicitCastRules(     _int,    _int64_t, _uint64_t);
+		addImplicitCastRules(    _uint,    _uint64_t);
+		addImplicitCastRules( _int64_t,    _uint64_t, _double);
+		addImplicitCastRules(_uint64_t,    _double);
+		addImplicitCastRules(   _ivec2,    _i64vec2, _u64vec2);
+		addImplicitCastRules(   _ivec3,    _i64vec3, _u64vec3);
+		addImplicitCastRules(   _ivec4,    _i64vec4, _u64vec4);
+		addImplicitCastRules(   _uvec2,    _u64vec2);
+		addImplicitCastRules(   _uvec3,    _u64vec3);
+		addImplicitCastRules(   _uvec4,    _u64vec4);
+		addImplicitCastRules( _i64vec2,    _u64vec2);
+		addImplicitCastRules( _i64vec3,    _u64vec3);
+		addImplicitCastRules( _i64vec4,    _u64vec4);
+		addImplicitCastRules( _u64vec2,    _dvec2);
+		addImplicitCastRules( _u64vec3,    _dvec3);
+		addImplicitCastRules( _u64vec4,    _dvec4);
+		
+		
 		_int.addCastConstructor(_int64_t);
 		_int.addCastConstructor(_uint64_t);
 		_uint.addCastConstructor(_int64_t);
@@ -58,25 +84,25 @@ public class Loader extends GLSLExtensionLoader {
 	
 	
 	@Override
-	public GLSLExtension load(BuiltinScope builtinScope, Properties properties, GLSLVersion version, ShaderType shaderType,
+	public GLSLExtension load(BuiltinScope builtinScope, Properties properties, GLSLVersion glslVersion, ShaderType shaderLanguage,
 			BuiltinResourceManager builtinResourceManager) {
-		Resource preamble;
+		Resource preambleResource;
 		try {
-			preamble = properties.getPreamble();
+			preambleResource = properties.getPreamble();
 		} catch (IOException e1) {
 			throw new Error("internal error: failed to load preamble for extension " + properties.getName(), e1);
 		}
 		
 		
-		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(BUILTIN_RESOURCE_MANAGER);
+		GLSL_ANTLR_PPOutputBuffer preprocessedPreamble = new GLSL_ANTLR_PPOutputBuffer(BUILTIN_RESOURCE_MANAGER);
 
-		HashMap<String, Macro> extensionMacros = preprocess(preamble, version, shaderType, buffer);
+		HashMap<String, Macro> extensionMacros = preprocess(preambleResource, glslVersion, shaderLanguage, preprocessedPreamble);
 
-		GLSLTokenTable tokenTable = GLSLTokenTable.get(version);
+		GLSLTokenTable tokenTable = GLSLTokenTable.get(glslVersion);
 
-		GLSLExtension e = new GLSLExtension(properties, version, shaderType, extensionMacros);
+		GLSLExtension e = new GLSLExtension(properties, glslVersion, shaderLanguage, extensionMacros);
 		
-		// add new types
+		// add new built-in types to extension specific symbol table scope
 		e.addType(_int64_t);
 		e.addType(_i64vec2);
 		e.addType(_i64vec3);
@@ -86,11 +112,18 @@ public class Loader extends GLSLExtensionLoader {
 		e.addType(_u64vec3);
 		e.addType(_u64vec4);
 		
-		
+		// This is just a temporary symbol table 
+		// used during parse of the preamble.
 		GLSLExtensionSymbolTable symbolTable = new GLSLExtensionSymbolTable(e, builtinScope);
 
-		parse(buffer, tokenTable, symbolTable);
+		parse(preprocessedPreamble, tokenTable, symbolTable);
 		return e;
+	}
+
+	private static void addImplicitCastRules(Type sourceType, Type ... targetTypes) {
+		for (Type targetType : targetTypes) {
+			targetType.addImplicitCastRule(sourceType);
+		}
 	}
 
 
