@@ -11,14 +11,18 @@ import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.lang.ast.types.Struct;
 
-public class TestGLSL {
+public class TestFileSystem {
+	
+	
 	public static void main(String[] args) {
 		test();
 	}
+
 	
 	
 	public static void test() {
 		ResourceManager resources = new FileSystemResourceManager();
+		
 		GLSL glsl = new GLSL(resources);
 		Resource resource;
 		try {
@@ -37,6 +41,8 @@ public class TestGLSL {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
+	
+	
+	
 }

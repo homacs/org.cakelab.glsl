@@ -15,6 +15,7 @@ public abstract class ResourceManagerBase implements ResourceManager {
 	
 	
 	/** resets internal caches and unique id generator (counter) */
+	@Override
 	public void reset() {
 		ids.clear();
 		resources.clear();

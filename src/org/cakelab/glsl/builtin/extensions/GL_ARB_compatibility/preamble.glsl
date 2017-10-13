@@ -97,7 +97,7 @@ uniform float gl_NormalScale;
 uniform vec4  gl_ClipPlane[gl_MaxClipPlanes];
 
 struct gl_PointParameters
- {
+{
     float size;
     float sizeMin;
     float sizeMax;

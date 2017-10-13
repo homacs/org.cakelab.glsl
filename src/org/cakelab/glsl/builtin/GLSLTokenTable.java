@@ -154,7 +154,7 @@ public class GLSLTokenTable {
 		return builtinTypes.containsKey(text);
 	}
 	
-	public int mapBuiltintType(String ident) {
+	public int mapBuiltinType(String ident) {
 		return builtinTypes.get(ident);
 	}
 

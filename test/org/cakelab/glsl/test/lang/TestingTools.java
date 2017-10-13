@@ -108,7 +108,7 @@ public class TestingTools {
 			this.message = "" + origin.getLine() + ":" + origin.getColumn() + ": " + msg;
 		}
 	}
-	protected static final ParserErrorHandler error = new ParserErrorHandler();
+	public static final ParserErrorHandler TEST_ERROR_HANLDER = new ParserErrorHandler();
 	
 
 
@@ -138,8 +138,8 @@ public class TestingTools {
 			containsTypes = contains(ast, types);
 		}
 		
-		if (error.hasError()) {
-			errmsg = error.getMessage();
+		if (TEST_ERROR_HANLDER.hasError()) {
+			errmsg = TEST_ERROR_HANLDER.getMessage();
 		} else if (!containsTypes) {
 			errmsg = "expected context " + contextToString(types) + "' not found!";
 		} else if (contains(ast, ErrorNodeImpl.class)) {
@@ -163,9 +163,9 @@ public class TestingTools {
 		
 		if (!assertEOF()) {
 			errmsg = null;
-		} else if (containsType && !error.hasError()) {
+		} else if (containsType && !TEST_ERROR_HANLDER.hasError()) {
 			errmsg = "unexpected context found: " + contextToString(types);
-		} else if (error.hasError() || contains(ast, ErrorNodeImpl.class)) {
+		} else if (TEST_ERROR_HANLDER.hasError() || contains(ast, ErrorNodeImpl.class)) {
 			errmsg = null;
 		} else {
 			errmsg = "expected an error!";
@@ -279,7 +279,7 @@ public class TestingTools {
 	 * preprocessing and language parsing of preambles here. 
 	 * */
 	public static void setup(String sourceCode) {
-		error.reset();
+		TEST_ERROR_HANLDER.reset();
 
 		
 		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(resourceManager);
@@ -288,7 +288,7 @@ public class TestingTools {
 
 		pp.setForceVersion(new GLSLVersion(null, 450, GLSLVersion.Profile.core));
 		pp.setResourceManager(resourceManager);
-		pp.setErrorHandler(error);
+		pp.setErrorHandler(TEST_ERROR_HANLDER);
 		pp.enableInclude(true);
 		pp.enableLineDirectiveInsertion(false);
 		
@@ -299,14 +299,14 @@ public class TestingTools {
 		GLSLBuiltin builtin = TestBuiltinBase.getTestBuiltinSymbols(tokenTable);
 		WorkingSet workingSet = builtin.createWorkingSet();
 		SymbolTable symbolTable = new SymbolTable(workingSet.getBuiltinScope());
-		PPTokenStream tokens = new PPTokenStream(buffer, tokenTable, symbolTable, error);
+		PPTokenStream tokens = new PPTokenStream(buffer, tokenTable, symbolTable, TEST_ERROR_HANLDER);
 		parser = new GLSLParser(tokens);
 
-		error.setLocations(tokens, buffer.getLocations());
+		TEST_ERROR_HANLDER.setLocations(tokens, buffer.getLocations());
 
 		parser.removeErrorListeners();
-		parser.addErrorListener(error);
-		validator = new ASTBuilder(tokens, buffer.getLocations(), symbolTable, error);
+		parser.addErrorListener(TEST_ERROR_HANLDER);
+		validator = new ASTBuilder(tokens, buffer.getLocations(), symbolTable, TEST_ERROR_HANLDER);
 		parser.addParseListener(validator);
 	}
 

@@ -1,3 +1,9 @@
+
+
+    Extensions, which modify the OpenGL Shading Language
+
+
+
 + ./ARB/ARB_fragment_coord_conventions.txt
 + ./ARB/ARB_texture_gather.txt
 + ./ARB/ARB_ES3_1_compatibility.txt
@@ -6,7 +12,7 @@
 + ./ARB/ARB_arrays_of_arrays.txt
 + ./ARB/ARB_sparse_texture2.txt
 + ./ARB/ARB_robustness.txt
-./ARB/ARB_gpu_shader_int64.txt
++ ./ARB/ARB_gpu_shader_int64.txt
 ./ARB/ARB_gpu_shader_fp64.txt
 ./ARB/ARB_ES3_2_compatibility.txt
 ./ARB/ARB_sparse_texture_clamp.txt

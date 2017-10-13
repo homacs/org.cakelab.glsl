@@ -20,7 +20,6 @@ public class TestVariable extends TestingBase {
 			String text = type + " v;";
 			assertValid(text, GlslDeclarationContext.class, GlslBuiltinTypeContext.class);
 		}
-
 	}
 
 	private static void testScalarVariableList() {

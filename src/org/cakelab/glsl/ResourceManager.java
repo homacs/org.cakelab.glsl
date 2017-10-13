@@ -10,4 +10,5 @@ public interface ResourceManager {
 	
 	Resource getResourceById(String id);
 
+	public void reset();
 }
