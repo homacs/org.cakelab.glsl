@@ -16,11 +16,11 @@ public class MockedExtension extends GLSLExtension {
 	
 
 	public MockedExtension(String name, ShaderType shaderType, GLSLVersion version) {
-		super(new Properties(name), version, shaderType, createMacros(name));
+		super(new Properties(name), version, shaderType, createMacros(name), null);
 	}
 
 	public MockedExtension(String[] names, ShaderType shaderType, GLSLVersion version) {
-		super(new Properties(names[0], names), version, shaderType, createMacros(names));
+		super(new Properties(names[0], names), version, shaderType, createMacros(names), null);
 	}
 
 	private static HashMap<String, Macro> createMacros(String ... names) {

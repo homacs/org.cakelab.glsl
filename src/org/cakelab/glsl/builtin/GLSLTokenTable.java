@@ -2,19 +2,75 @@ package org.cakelab.glsl.builtin;
 
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.GLSLVersion.Profile;
 import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.lang.lexer.tokens.GLSLKeywords;
 import org.cakelab.glsl.lang.lexer.tokens.GLSLPunctuators;
+import org.cakelab.glsl.lang.lexer.tokens.ITokenTable;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.scanner.StreamScanner;
 import org.cakelab.glsl.util.ObjectCache;
 
 
 
-public class GLSLTokenTable {
+public class GLSLTokenTable implements ITokenTable {
+	
+	
+
+	public static class KeywordStreamIterator implements Iterator<String> {
+
+		private StreamScanner scanner;
+		private StringBuffer s;
+		private String word;
+
+		public KeywordStreamIterator(InputStream in) {
+			scanner = new StreamScanner("-- word list --", in);
+			s = new StringBuffer();
+			nextWord();
+		}
+
+		private void nextWord() {
+			word = null;
+			do {
+				// remove all whitespace
+				while (isWhite(scanner.LA1())) scanner.consume();
+
+				// read keyword
+				while(!isWhite(scanner.LA1()) && scanner.LA1() != IScanner.EOF) {
+					s.append((char)scanner.consume());
+				}
+				if (s.length() > 0) {
+					word = s.toString();
+					s.delete(0, s.length());
+					break;
+				}
+			} while(scanner.LA1() != IScanner.EOF);
+		}
+		
+		private static boolean isWhite(int la1) {
+			return la1 == '\n' || la1 == '\r' || la1 == '\t' || la1 == ' ';
+		}
+
+
+		@Override
+		public boolean hasNext() {
+			return word != null;
+		}
+
+		@Override
+		public String next() {
+			String result = word;
+			nextWord();
+			return result;
+		}
+
+	}
+
+	
+	
 	public static final boolean DEBUG = true;
 	/**
 	 * In case no #version directive was given, GLSL always assumes v1.10 core.
@@ -39,7 +95,7 @@ public class GLSLTokenTable {
 
 	public static final GLSLPunctuators COMMON_PUNCTUATORS = new GLSLPunctuators();
 	
-	public static GLSLTokenTable get(GLSLVersion version) {
+	static GLSLTokenTable get(GLSLVersion version) {
 		GLSLTokenTable table = cache.get(version);
 		if (table == null) {
 			// cache miss -> create new
@@ -97,52 +153,36 @@ public class GLSLTokenTable {
 	}
 	
 
-	private void readKeywordList(InputStream in, boolean reservedKeywords) {
-		StreamScanner scanner = new StreamScanner("-- keyword list --", in);
-		StringBuffer s = new StringBuffer();
-		do {
-			// remove all whitespace
-			while (isWhite(scanner.LA1())) scanner.consume();
-
-			// read keyword
-			while(!isWhite(scanner.LA1()) && scanner.LA1() != IScanner.EOF) {
-				s.append((char)scanner.consume());
-			}
-			if (s.length() > 0) {
-				String keyword = s.toString();
-				s.delete(0, s.length());
+	protected void readKeywordList(InputStream in, boolean reservedKeywords) {
+		
+		KeywordStreamIterator iterator = new KeywordStreamIterator(in);
+		
+		while(iterator.hasNext()) {
+			String keyword = iterator.next();
 				
-				if (GLSLKeywords.contains(keyword)) {
-					int type = GLSLKeywords.getTokenType(keyword);
-					if (reservedKeywords) {
-						// reserved keywords:
-						// TODO: maybe accept unknown reserved keywords as well
-						reserved.put(keyword, type);
-						
-						// do cross checking
-						assert (!builtinTypes.containsKey(keyword)) && (!keywords.containsKey(keyword));
-					} else if (Type.isBuiltinType(keyword)) {
-						builtinTypes.put(keyword, type);
-					} else {
-						keywords.put(keyword, type);
-					}
+			if (GLSLKeywords.contains(keyword)) {
+				int type = GLSLKeywords.getTokenType(keyword);
+				if (reservedKeywords) {
+					// reserved keywords:
+					// TODO: maybe accept unknown reserved keywords as well
+					reserved.put(keyword, type);
+					
+					// do cross checking
+					assert (!builtinTypes.containsKey(keyword)) && (!keywords.containsKey(keyword));
 				} else {
-					throw new Error("internal error: unrecognized keyword '" + keyword + "' for glsl version '" + version + "'");
+					keywords.put(keyword, type);
+					if (Type.isBuiltinType(keyword)) builtinTypes.put(keyword, type);
 				}
+			} else {
+				throw new Error("internal error: unrecognized keyword '" + keyword + "' for glsl version '" + version + "'");
 			}
-		} while(scanner.LA1() != IScanner.EOF);
-	}
-
-
-	private static boolean isWhite(int la1) {
-		return la1 == '\n' || la1 == '\r' || la1 == '\t' || la1 == ' ';
+		}
 	}
 
 	
 	
 	
-	
-	public Integer getPunctuator(String text) {
+	public Integer mapPunctuator(String text) {
 		return punctuators.get(text);
 	}
 	
@@ -153,11 +193,6 @@ public class GLSLTokenTable {
 	public boolean isBuiltinType(String text) {
 		return builtinTypes.containsKey(text);
 	}
-	
-	public int mapBuiltinType(String ident) {
-		return builtinTypes.get(ident);
-	}
-
 	
 	public boolean isReservedKeyword(String text) {
 		return reserved.containsKey(text);
@@ -182,6 +217,12 @@ public class GLSLTokenTable {
 
 	public GLSLVersion getVersion() {
 		return version;
+	}
+
+
+	/** for testing purposes only (who would've thought!*/
+	public static GLSLTokenTable getTestTokenTable(GLSLVersion version) {
+		return get(version);
 	}
 
 

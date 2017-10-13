@@ -1,6 +1,5 @@
 package org.cakelab.glsl.builtin.extensions;
 
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,6 +8,7 @@ import java.util.Map;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.builtin.BuiltinScope;
+import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
 import org.cakelab.glsl.pp.ast.Macro;
@@ -64,16 +64,6 @@ public class GLSLExtension extends ScopeImpl {
 		}
 	}
 
-	
-	public static boolean hasPropertiesFile(String extension) {
-		try {
-			GLSLExtensionLoader.getResource(extension, GLSLExtensionLoader.PROPERTIES_FILE);
-		} catch (IOException e) {
-			return false;
-		}
-		return true;
-	}
-	
 	public static boolean checkRequirements(String extension, GLSLVersion version, BuiltinScope builtinScope) {
 		try {
 			extension = getPrimaryName(extension);
@@ -107,21 +97,25 @@ public class GLSLExtension extends ScopeImpl {
 	// maybe with weak references?
 	static final Map<Key, GLSLExtension> CACHE = new HashMap<Key, GLSLExtension>(4);
 
-	public static GLSLExtension get(BuiltinScope builtins, String extension, GLSLVersion version, ShaderType type) {
+	
+	
+	public static GLSLExtension get(WorkingSet ws, String extension) {
 		extension = getPrimaryName(extension);
-		Key key = new Key(extension, version, type);
+		Key key = new Key(extension, ws.getGLSLVersion(), ws.getShaderType());
 		GLSLExtension e = CACHE.get(key);
 		if (e == null) {
-			e = GLSLExtensionLoader.loadExtension(builtins, extension, version, type);
+			e = GLSLExtensionLoader.loadExtension(ws, extension);
 			CACHE.put(key, e);
 		}
 		return e;
 	}
 
 	
+	
 	private final Key key;
 	private Properties properties;
 	private HashMap<String, Macro> macros;
+	private KeywordTable tokenTable;
 	
 	private GLSLExtension(Key key, HashMap<String, Macro> macros) {
 		super(null);
@@ -129,9 +123,10 @@ public class GLSLExtension extends ScopeImpl {
 		this.macros = macros;
 	}
 
-	public GLSLExtension(Properties properties, GLSLVersion version, ShaderType type, HashMap<String, Macro> extensionMacros) {
+	public GLSLExtension(Properties properties, GLSLVersion version, ShaderType type, HashMap<String, Macro> extensionMacros, KeywordTable addedKeywords) {
 		this(new Key(properties.getName(), version, type), extensionMacros);
 		this.properties = properties;
+		this.tokenTable = addedKeywords;
 	}
 
 	public String getName() {
@@ -164,6 +159,14 @@ public class GLSLExtension extends ScopeImpl {
 
 	public void finishLoad() {
 		setParent(null);
+	}
+
+	public KeywordTable getKeywordTable() {
+		return tokenTable;
+	}
+
+	public void setKeywordTable(KeywordTable addedKeywords) {
+		this.tokenTable = addedKeywords;
 	}
 
 

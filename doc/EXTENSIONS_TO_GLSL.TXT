@@ -15,7 +15,7 @@
 + ./ARB/ARB_gpu_shader_int64.txt
 + ./ARB/ARB_gpu_shader_fp64.txt
 + ./ARB/ARB_ES3_2_compatibility.txt
-./ARB/ARB_sparse_texture_clamp.txt
++ ./ARB/ARB_sparse_texture_clamp.txt
 ./ARB/ARB_gpu_shader5.txt
 ./ARB/ARB_shader_texture_image_samples.txt
 ./ARB/ARB_post_depth_coverage.txt

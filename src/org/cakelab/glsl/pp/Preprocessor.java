@@ -17,6 +17,7 @@ import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.extensions.GLSLExtension;
+import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoader;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Expression;
@@ -1186,7 +1187,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	public void process(PPExtensionDirective directive) throws SyntaxError {
 		WorkingSet workingSet = state.getWorkingSet();
 		try {
-			if (!GLSLExtension.hasPropertiesFile(directive.identifier)) {
+			if (!GLSLExtensionLoader.canLoadExtenion(directive.identifier)) {
 				syntaxError(directive, "unknown extension '" + directive.identifier + "'");
 			}
 	

@@ -10,40 +10,40 @@ public class TestGLSLTokenTable extends TestBuiltinBase {
 	
 	public static void test() {
 		
-		GLSLTokenTable.get(es(100));
-		GLSLTokenTable.get(es(300));
-		GLSLTokenTable.get(es(310));
+		GLSLTokenTable.getTestTokenTable(es(100));
+		GLSLTokenTable.getTestTokenTable(es(300));
+		GLSLTokenTable.getTestTokenTable(es(310));
 		
-		GLSLTokenTable.get(core(110));
-		GLSLTokenTable.get(core(120));
-		GLSLTokenTable.get(core(130));
-		GLSLTokenTable.get(core(140));
-		GLSLTokenTable.get(core(150));
+		GLSLTokenTable.getTestTokenTable(core(110));
+		GLSLTokenTable.getTestTokenTable(core(120));
+		GLSLTokenTable.getTestTokenTable(core(130));
+		GLSLTokenTable.getTestTokenTable(core(140));
+		GLSLTokenTable.getTestTokenTable(core(150));
 		
-		GLSLTokenTable.get(core(330));
+		GLSLTokenTable.getTestTokenTable(core(330));
 		
-		GLSLTokenTable.get(core(400));
-		GLSLTokenTable.get(core(410));
-		GLSLTokenTable.get(core(420));
-		GLSLTokenTable.get(core(430));
-		GLSLTokenTable.get(core(440));
-		GLSLTokenTable.get(core(450));
-		GLSLTokenTable.get(core(460));
+		GLSLTokenTable.getTestTokenTable(core(400));
+		GLSLTokenTable.getTestTokenTable(core(410));
+		GLSLTokenTable.getTestTokenTable(core(420));
+		GLSLTokenTable.getTestTokenTable(core(430));
+		GLSLTokenTable.getTestTokenTable(core(440));
+		GLSLTokenTable.getTestTokenTable(core(450));
+		GLSLTokenTable.getTestTokenTable(core(460));
 
 
 		// profile only considered from 150 or above.
 		// Thus, compatibility exists for those versions only.
-		GLSLTokenTable.get(compatibility(150));
+		GLSLTokenTable.getTestTokenTable(compatibility(150));
 		
-		GLSLTokenTable.get(compatibility(330));
+		GLSLTokenTable.getTestTokenTable(compatibility(330));
 		
-		GLSLTokenTable.get(compatibility(400));
-		GLSLTokenTable.get(compatibility(410));
-		GLSLTokenTable.get(compatibility(420));
-		GLSLTokenTable.get(compatibility(430));
-		GLSLTokenTable.get(compatibility(440));
-		GLSLTokenTable.get(compatibility(450));
-		GLSLTokenTable.get(compatibility(460));
+		GLSLTokenTable.getTestTokenTable(compatibility(400));
+		GLSLTokenTable.getTestTokenTable(compatibility(410));
+		GLSLTokenTable.getTestTokenTable(compatibility(420));
+		GLSLTokenTable.getTestTokenTable(compatibility(430));
+		GLSLTokenTable.getTestTokenTable(compatibility(440));
+		GLSLTokenTable.getTestTokenTable(compatibility(450));
+		GLSLTokenTable.getTestTokenTable(compatibility(460));
 	}
 
 }

@@ -14,13 +14,9 @@ public class TestBuiltinBase {
 	protected static GLSLVersion es(int number) {
 		return new GLSLVersion(null, number, GLSLVersion.Profile.es);
 	}
-	public static GLSLBuiltin getTestBuiltinSymbols(GLSLTokenTable tokens) {
-		return GLSLBuiltin.getTestBuiltins(tokens);
-	}
 
 	public static GLSLBuiltin getTestBuiltinSymbols(GLSLVersion version) {
-		GLSLTokenTable tokenTable = GLSLTokenTable.get(version);
-		return GLSLBuiltin.getTestBuiltins(tokenTable);
+		return GLSLBuiltin.getTestBuiltins(version);
 	}
 
 }

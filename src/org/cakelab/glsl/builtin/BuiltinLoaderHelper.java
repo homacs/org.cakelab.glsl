@@ -21,16 +21,20 @@ import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.SymbolTable;
+import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoader;
 import org.cakelab.glsl.lang.ASTBuilder;
 import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.PPTokenStream;
+import org.cakelab.glsl.lang.lexer.tokens.ITokenTable;
 import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
 import org.cakelab.glsl.pp.LocationMap;
 import org.cakelab.glsl.pp.MacroMap;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.error.SyntaxError;
+
+
 
 public class BuiltinLoaderHelper {
 	
@@ -214,8 +218,16 @@ public class BuiltinLoaderHelper {
 	}
 
 
-	protected static void parse(GLSL_ANTLR_PPOutputBuffer buffer, GLSLTokenTable tokenTable,
+	/**
+	 * Not intended to be used by customised extension loaders. Please use {@link GLSLExtensionLoader#parse} instead
+	 * @param buffer
+	 * @param tokenTable
+	 * @param symbolTable
+	 */
+	protected static void parse(GLSL_ANTLR_PPOutputBuffer buffer, ITokenTable tokenTable,
 			SymbolTable symbolTable) {
+		
+		
 		PPTokenStream tokens = new PPTokenStream(buffer, tokenTable, symbolTable, INTERNAL_ERROR_HANDLER);
 		INTERNAL_ERROR_HANDLER.setLocations(tokens, buffer.getLocations());
 		ASTBuilder astBuilder = new ASTBuilder(tokens, buffer.getLocations(), symbolTable, INTERNAL_ERROR_HANDLER);

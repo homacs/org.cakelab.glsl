@@ -49,10 +49,10 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		ws = testExtension(core(400), ShaderType.VERTEX_SHADER, "GL_ARB_gpu_shader_int64");
 		
 		ws = testExtension(core(150), ShaderType.VERTEX_SHADER, "GL_ARB_gpu_shader_fp64");
+		ws.dump(System.out);
 
 		// GL_ARB_sparse_texture_clamp
 		ws = testExtension(core(400), ShaderType.VERTEX_SHADER, "GL_ARB_sparse_texture", "GL_ARB_sparse_texture2", "GL_ARB_sparse_texture_clamp");
-		ws.dump(System.out);
 		
 		
 		testExtension(core(110), ShaderType.VERTEX_SHADER, "GL_EXT_gpu_shader4", "GL_NV_vertex_program4", "GL_ARB_draw_instanced");

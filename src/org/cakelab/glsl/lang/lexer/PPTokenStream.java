@@ -12,7 +12,8 @@ import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.SymbolTable;
-import org.cakelab.glsl.builtin.GLSLTokenTable;
+import org.cakelab.glsl.lang.lexer.tokens.ExtendedTokenTable;
+import org.cakelab.glsl.lang.lexer.tokens.ITokenTable;
 import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
 import org.cakelab.glsl.pp.error.TokenFormatException;
 import org.cakelab.glsl.pp.tokens.TEof;
@@ -56,11 +57,11 @@ public class PPTokenStream implements TokenStream {
 	private int p;
 	private EOFToken eofToken;
 	private boolean fetchedEOF;
-	private GLSLTokenTable tokenTable;
+	private ITokenTable tokenTable;
 	private GLSLErrorHandler errorHandler;
 	private SymbolTable symbolTable;
 
-	public PPTokenStream(GLSL_ANTLR_PPOutputBuffer output, GLSLTokenTable tokenTable, SymbolTable symbolTable, GLSLErrorHandler errorHandler) {
+	public PPTokenStream(GLSL_ANTLR_PPOutputBuffer output, ITokenTable tokenTable, SymbolTable symbolTable, GLSLErrorHandler errorHandler) {
 		this.symbolTable = symbolTable;
 		this.p = 0;
 		this.errorHandler = errorHandler;
@@ -119,15 +120,10 @@ public class PPTokenStream implements TokenStream {
 			String ident = identifierToken.getText();
 			if (tokenTable.isLanguageKeyword(ident)) {
 				identifierToken.setKeyword(true);
+				if (symbolTable.containsType(ident)) {
+					identifierToken.setReferencedNode(symbolTable.getType(ident));
+				}
 				return tokenTable.mapLanguageKeyword(ident);
-			} else if (tokenTable.isBuiltinType(ident)) {
-				identifierToken.setKeyword(true);
-				identifierToken.setReferencedNode(symbolTable.getType(ident));
-				return tokenTable.mapBuiltinType(ident);
-			} else if (symbolTable.containsType(ident)) {
-				identifierToken.setKeyword(true);
-				identifierToken.setReferencedNode(symbolTable.getType(ident));
-				return GLSLParser.IDENTIFIER;
 			} else {
 				if (tokenTable.isReservedKeyword(ident) && errorHandler != null) {
 					errorHandler.error(t, "use of reserved keyword '" + ident + "'");
@@ -135,7 +131,7 @@ public class PPTokenStream implements TokenStream {
 				return GLSLParser.IDENTIFIER;
 			}
 		} else if (t instanceof TPunctuator && tokenTable.isPunctuator(t.getText())) {
-			return tokenTable.getPunctuator(t.getText());
+			return tokenTable.mapPunctuator(t.getText());
 		} else if (t instanceof TNumber) {
 			TNumber number = (TNumber)t;
 			validate(number);

@@ -6,12 +6,15 @@ import java.util.HashMap;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
+import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.builtin.BuiltinLoaderHelper;
 import org.cakelab.glsl.builtin.BuiltinResourceManager;
 import org.cakelab.glsl.builtin.BuiltinScope;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
-import org.cakelab.glsl.builtin.GLSLTokenTable;
+import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
+import org.cakelab.glsl.builtin.GLSLExtensionSet;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
+import org.cakelab.glsl.lang.lexer.tokens.ExtendedTokenTable;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.json.JSONException;
 import org.cakelab.json.codec.JSONCodecException;
@@ -19,10 +22,11 @@ import org.cakelab.json.codec.JSONCodecException;
 public abstract class GLSLExtensionLoader extends BuiltinLoaderHelper {
 	static final String PROPERTIES_FILE = "properties.json";
 	static final String PREAMBLE_FILE = "preamble.glsl";
+	private static final String KEYWORDS_FILE = "keywords.txt";
+	private static final GLSLExtension FAKE_EXTENSION = new MockedExtension("__TEMPORARY_EXTENSION__YOU__SHOULD_NOT_SEE_THIS__", null, null);
 	
 
-	public abstract GLSLExtension load(BuiltinScope builtinScope, Properties properties, GLSLVersion version, ShaderType shaderType,
-			BuiltinResourceManager builtinResourceManager);
+	public abstract GLSLExtension load(WorkingSet ws, Properties properties, BuiltinResourceManager builtinResourceManager) throws IOException;
 	
 	
 
@@ -56,23 +60,26 @@ public abstract class GLSLExtensionLoader extends BuiltinLoaderHelper {
 		return properties;
 	}
 	
-	static GLSLExtension loadExtension(BuiltinScope builtins, String extension, GLSLVersion version, ShaderType shaderType) {
+	static GLSLExtension loadExtension(WorkingSet ws, String extension) {
 		Properties properties;
 		assert extension.equals(GLSLExtension.getPrimaryName(extension));
 
 		GLSLExtension ext;
+		GLSLVersion version = ws.getGLSLVersion();
+		BuiltinScope builtins = ws.getBuiltinScope();
+		ShaderType shaderType = ws.getShaderType();
 		
-		if (GLSLExtension.hasPropertiesFile(extension)) {
+		if (hasPropertiesFile(extension)) {
 			try {
 				properties = loadProperties(extension);
 				properties.checkRequirements(version, builtins);
 				
 				if (properties.getLoader() != null) {
 					GLSLExtensionLoader loader = getLoaderInstance(properties);
-					ext = loader.load(builtins, properties, version, shaderType, BUILTIN_RESOURCE_MANAGER);
+					ext = loader.load(ws, properties, BUILTIN_RESOURCE_MANAGER);
 
 				} else {
-					ext = loadInternally(builtins, properties, version, shaderType);
+					ext = loadInternally(ws, properties);
 				}
 				
 				ext.finishLoad();
@@ -92,9 +99,11 @@ public abstract class GLSLExtensionLoader extends BuiltinLoaderHelper {
 		return ext;
 	}
 
-	public static GLSLExtension loadInternally(BuiltinScope builtinScope, Properties properties, GLSLVersion version, ShaderType shaderType) throws IOException {
+	public static GLSLExtension loadInternally(WorkingSet ws, Properties properties) throws IOException {
+		BuiltinScope builtinScope = ws.getBuiltinScope();
+		GLSLVersion version = ws.getGLSLVersion();
+		ShaderType shaderType = ws.getShaderType();
 		
-		// resource directory of the extension
 		GLSLExtension e = null;
 		
 		if (properties.hasPreamble()) {
@@ -106,9 +115,9 @@ public abstract class GLSLExtensionLoader extends BuiltinLoaderHelper {
 	
 			HashMap<String, Macro> extensionMacros = preprocess(resource, version, shaderType, buffer);
 	
-			GLSLTokenTable tokenTable = GLSLTokenTable.get(version);
-	
-			e = new GLSLExtension(properties, version, shaderType, extensionMacros);
+			ExtendedTokenTable tokenTable = ws.getTokenTable();
+			KeywordTable extendedKeywords = loadKeywordTable(properties.getName());
+			e = new GLSLExtension(properties, version, shaderType, extensionMacros, extendedKeywords);
 			GLSLExtensionSymbolTable symbolTable = new GLSLExtensionSymbolTable(e, builtinScope);
 	
 			parse(buffer, tokenTable, symbolTable);
@@ -126,19 +135,71 @@ public abstract class GLSLExtensionLoader extends BuiltinLoaderHelper {
 		return e;
 	}
 
+	
+	protected static void parse(GLSLExtension e, WorkingSet ws, GLSL_ANTLR_PPOutputBuffer preprocessedPreamble,
+			SymbolTable symbolTable) {
+		GLSLExtensionSet extensionSet = ws.getExtensions();
+		FAKE_EXTENSION.setKeywordTable(e.getKeywordTable());
+		extensionSet.enable(FAKE_EXTENSION);
+		try {
+			parse(preprocessedPreamble, ws.getTokenTable(), symbolTable);
+		} finally {
+			extensionSet.disable(FAKE_EXTENSION);
+			FAKE_EXTENSION.setKeywordTable(null);
+		}
+	}
+
+
+	
+	
+	protected static KeywordTable loadKeywordTable(String extension) throws IOException {
+		if (!hasKeywordsFile(extension)) return null;
+		
+		Resource tokenFile = getResource(extension, KEYWORDS_FILE);
+		KeywordTable tokenTable = new KeywordTable(tokenFile.openInputStream());
+		
+		return tokenTable;
+	}
+	
+	
 	static Resource getPreambleResource(String name) throws IOException {
 		return getResource(name, PREAMBLE_FILE);
 	}
-
-	static Resource getPropertiesResource(String name) throws IOException {
-		return getResource(name, PROPERTIES_FILE);
+	
+	public static boolean hasPropertiesFile(String extension) {
+		return existsExtensionResource(extension, PROPERTIES_FILE);
+	}
+	
+	static Resource getPropertiesResource(String extension) throws IOException {
+		return getResource(extension, PROPERTIES_FILE);
 	}
 
+	
+	public static boolean hasKeywordsFile(String extension) {
+		return existsExtensionResource(extension, KEYWORDS_FILE);
+	}
+	
+	
+	
+	static boolean existsExtensionResource(String extension, String resourceName) {
+		try {
+			getResource(extension, resourceName);
+		} catch (IOException e) {
+			return false;
+		}
+		return true;
+	}
 	
 	static Resource getResource(String extension, String resourceName) throws IOException {
 		String extensionDir = BuiltinLoaderHelper.getExtensionDirectory(extension);
 		String propertiesFile = extensionDir + "/" + resourceName;
 		return	GLSLBuiltin.BUILTIN_RESOURCE_MANAGER.resolve(propertiesFile);
+	}
+
+
+
+	public static boolean canLoadExtenion(String extension) {
+		return KnownExtensions.containsAny(extension) || hasPropertiesFile(extension);
 	}
 	
 

@@ -13,6 +13,7 @@ import org.cakelab.glsl.builtin.extensions.GLSLExtension;
 import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
+import org.cakelab.glsl.lang.lexer.tokens.ExtendedTokenTable;
 import org.cakelab.glsl.pp.ast.Macro;
 
 
@@ -106,14 +107,20 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 		private Key key;
 		private BuiltinScope builtinScope;
 		private HashMap<String, Macro> builtinMacros;
+		private ExtendedTokenTable tokenTable;
 		
-		private WorkingSet(Key key, BuiltinScope builtinScope, HashMap<String, Macro> builtinMacros) {
+		private WorkingSet(Key key, BuiltinScope builtinScope, ExtendedTokenTable tokenTable, HashMap<String, Macro> builtinMacros) {
 			super();
 			this.key = key;
 			this.builtinScope = builtinScope;
+			this.tokenTable = tokenTable;
 			this.builtinMacros = builtinMacros;
 		}
 
+		public ExtendedTokenTable getTokenTable() {
+			return tokenTable;
+		}
+		
 		public ShaderType getShaderType() {
 			return key.shaderType;
 		}
@@ -131,7 +138,7 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 		}
 
 		public void enableExtension(String identifier) {
-			GLSLExtension e = GLSLExtension.get(builtinScope, identifier, key.version, key.shaderType);
+			GLSLExtension e = GLSLExtension.get(this, identifier);
 			builtinScope.getExtensions().enable(e);
 		}
 
@@ -198,7 +205,10 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 	}
 
 	public WorkingSet createWorkingSet() {
-		return new WorkingSet(key, new BuiltinScope(builtinScopeSymbols), macros);
+		BuiltinScope builtinSymbols = new BuiltinScope(builtinScopeSymbols);
+		GLSLTokenTable builtinTokens = GLSLTokenTable.get(key.version);
+		ExtendedTokenTable tokenTable = new ExtendedTokenTable(builtinTokens, builtinSymbols.getExtensions());
+		return new WorkingSet(key, builtinSymbols, tokenTable, macros);
 	}
 	
 	public void dump(PrintStream out) {
@@ -224,7 +234,8 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 	 * It circumvents parsing of the builtin preambles, 
 	 * and registers builtin types only.
 	 */
-	public static GLSLBuiltin getTestBuiltins(GLSLTokenTable tokens) {
+	public static GLSLBuiltin getTestBuiltins(GLSLVersion version) {
+		GLSLTokenTable tokens = GLSLTokenTable.get(version);
 		Key key = new Key(tokens.getVersion(), ShaderType.GENERIC_SHADER);
 		SymbolTable builtinSymbols = createMinimumBuiltinSymbols(tokens);
 		GLSLBuiltin builtin = new GLSLBuiltin(key, getDefaultBuiltinMacros(), tokens);
@@ -251,7 +262,7 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 		GLSLTokenTable tokenTable = GLSLTokenTable.get(key.version);
 		GLSLBuiltin builtin = new GLSLBuiltin(key, builtinMacros, tokenTable);
 		SymbolTable builtinSymbols = createMinimumBuiltinSymbols(tokenTable);
-				
+
 		parse(buffer, tokenTable, builtinSymbols);
 
 		builtin.builtinScopeSymbols = builtinSymbols.getTopLevelScope();

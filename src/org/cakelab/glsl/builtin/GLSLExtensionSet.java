@@ -12,9 +12,10 @@ import org.cakelab.glsl.lang.ast.Qualifier;
 import org.cakelab.glsl.lang.ast.Variable;
 import org.cakelab.glsl.lang.ast.types.InterfaceBlock;
 import org.cakelab.glsl.lang.ast.types.Type;
+import org.cakelab.glsl.lang.lexer.tokens.ITokenTable;
 import org.cakelab.glsl.pp.ast.Macro;
 
-public class GLSLExtensionSet implements IScope {
+public class GLSLExtensionSet implements IScope, ITokenTable {
 	public GLSLExtensionSet() {
 	}
 
@@ -26,6 +27,11 @@ public class GLSLExtensionSet implements IScope {
 		assert (!extensionsLookup.containsKey(extension.getName()));
 		extensions.add(extension);
 		extensionsLookup.put(extension.getName(), extension);
+	}
+
+	public void disable(GLSLExtension extension) {
+		extensions.remove(extension);
+		extensionsLookup.remove(extension.getName());
 	}
 
 	public void disable(String extension) {
@@ -234,6 +240,84 @@ public class GLSLExtensionSet implements IScope {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public Integer mapPunctuator(String text) {
+		Integer result = null;
+		for (GLSLExtension e : extensions) {
+			ITokenTable tokenTable = e.getKeywordTable();
+			if (tokenTable != null) {
+				result = tokenTable.mapPunctuator(text);
+				if (result != null) break;
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public boolean isPunctuator(String text) {
+		boolean result = false;
+		for (GLSLExtension e : extensions) {
+			ITokenTable tokenTable = e.getKeywordTable();
+			if (tokenTable != null) {
+				result = tokenTable.isPunctuator(text);
+				if (result) break;
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public boolean isLanguageKeyword(String text) {
+		boolean result = false;
+		for (GLSLExtension e : extensions) {
+			ITokenTable tokenTable = e.getKeywordTable();
+			if (tokenTable != null) {
+				result = tokenTable.isLanguageKeyword(text);
+				if (result) break;
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public boolean isReservedKeyword(String text) {
+		boolean result = false;
+		for (GLSLExtension e : extensions) {
+			ITokenTable tokenTable = e.getKeywordTable();
+			if (tokenTable != null) {
+				result = tokenTable.isReservedKeyword(text);
+				if (result) break;
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public boolean isBuiltinType(String text) {
+		boolean result = false;
+		for (GLSLExtension e : extensions) {
+			ITokenTable tokenTable = e.getKeywordTable();
+			if (tokenTable != null) {
+				result = tokenTable.isBuiltinType(text);
+				if (result) break;
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public Integer mapLanguageKeyword(String text) {
+		Integer result = null;
+		for (GLSLExtension e : extensions) {
+			ITokenTable tokenTable = e.getKeywordTable();
+			if (tokenTable != null) {
+				result = tokenTable.mapLanguageKeyword(text);
+				if (result != null) break;
+			}
+		}
+		return result;
 	}
 
 	
