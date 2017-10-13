@@ -11,7 +11,7 @@ import org.cakelab.glsl.builtin.extensions.MockedExtension;
 import org.cakelab.glsl.builtin.extensions.Properties;
 import org.cakelab.glsl.builtin.extensions.VersionDependency;
 
-public class TestExtensions extends TestBuiltinBase {
+public class TestExtensionLoading extends TestBuiltinBase {
 
 	public static void main(String[] args) {
 		boolean on = false;
@@ -49,6 +49,9 @@ public class TestExtensions extends TestBuiltinBase {
 		ws = testExtension(core(400), ShaderType.VERTEX_SHADER, "GL_ARB_gpu_shader_int64");
 		
 		ws = testExtension(core(150), ShaderType.VERTEX_SHADER, "GL_ARB_gpu_shader_fp64");
+
+		// GL_ARB_sparse_texture_clamp
+		ws = testExtension(core(400), ShaderType.VERTEX_SHADER, "GL_ARB_sparse_texture", "GL_ARB_sparse_texture2", "GL_ARB_sparse_texture_clamp");
 		ws.dump(System.out);
 		
 		

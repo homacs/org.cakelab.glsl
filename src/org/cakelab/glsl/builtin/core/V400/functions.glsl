@@ -73,6 +73,18 @@ GENERIC_FUNCTION_SET(vec4)
 #undef GENERIC_FUNCTION_SET
 
 
+#define GENERIC_FUNCTION_SET(genType) \
+genType sqrt(genType x);\
+genType inversesqrt(genType x);
+
+GENERIC_FUNCTION_SET(double)
+GENERIC_FUNCTION_SET(dvec2)
+GENERIC_FUNCTION_SET(dvec3)
+GENERIC_FUNCTION_SET(dvec4)
+
+#undef GENERIC_FUNCTION_SET
+
+
 
 
 // -----------------------------------------------------------------------------------
@@ -421,6 +433,8 @@ genType refract(genType I, genType N, float eta);
 
 // non generic functions
 vec3 cross (vec3 x, vec3 y);
+dvec3 cross(dvec3 x, dvec3 y);
+
 
 GENERIC_FUNCTION_SET(float, float)
 GENERIC_FUNCTION_SET(float, vec2)

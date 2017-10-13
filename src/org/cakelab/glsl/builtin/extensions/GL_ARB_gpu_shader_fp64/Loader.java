@@ -41,6 +41,7 @@ public class Loader extends GLSLExtensionLoader {
 		GLSLExtension e = new GLSLExtension(properties, glslVersion, shaderLanguage, extensionMacros);
 		assert (!glslVersion.profile.equals(GLSLVersion.Profile.es));
 		if (glslVersion.number < 400) {
+			// add built-in types
 			addTypes(e);
 		}
 		

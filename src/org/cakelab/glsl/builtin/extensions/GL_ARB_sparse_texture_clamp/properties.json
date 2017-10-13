@@ -1,0 +1,9 @@
+{
+	"name" : "GL_ARB_sparse_texture_clamp",
+	"dependencies" : {
+		"all" : [
+			"core:[400,]",
+			"GL_ARB_sparse_texture2"
+		]
+	}
+}
