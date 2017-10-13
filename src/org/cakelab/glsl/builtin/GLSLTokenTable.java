@@ -3,9 +3,9 @@ package org.cakelab.glsl.builtin;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.GLSLVersion.Profile;
+import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.lang.lexer.tokens.GLSLKeywords;
 import org.cakelab.glsl.lang.lexer.tokens.GLSLPunctuators;
 import org.cakelab.glsl.pp.scanner.IScanner;
@@ -121,7 +121,7 @@ public class GLSLTokenTable {
 						
 						// do cross checking
 						assert (!builtinTypes.containsKey(keyword)) && (!keywords.containsKey(keyword));
-					} else if (type == GLSLParser.BUILTIN_TYPE) {
+					} else if (Type.isBuiltinType(keyword)) {
 						builtinTypes.put(keyword, type);
 					} else {
 						keywords.put(keyword, type);

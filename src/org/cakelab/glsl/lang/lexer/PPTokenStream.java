@@ -125,12 +125,9 @@ public class PPTokenStream implements TokenStream {
 				identifierToken.setReferencedNode(symbolTable.getType(ident));
 				return tokenTable.mapBuiltinType(ident);
 			} else if (symbolTable.containsType(ident)) {
-				if (ident.equals("gl_PointParameters")) {
-					System.out.println("DEBUG");
-				}
 				identifierToken.setKeyword(true);
 				identifierToken.setReferencedNode(symbolTable.getType(ident));
-				return GLSLParser.BUILTIN_TYPE;
+				return GLSLParser.IDENTIFIER;
 			} else {
 				if (tokenTable.isReservedKeyword(ident) && errorHandler != null) {
 					errorHandler.error(t, "use of reserved keyword '" + ident + "'");

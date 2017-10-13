@@ -401,12 +401,6 @@ public interface GLSLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGlslTypeSpecifierNonarray(GLSLParser.GlslTypeSpecifierNonarrayContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GLSLParser#glslBuiltinType}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGlslBuiltinType(GLSLParser.GlslBuiltinTypeContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link GLSLParser#glslStructSpecifier}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

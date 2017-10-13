@@ -214,17 +214,6 @@ public class ASTFactory {
 			return null;
 		}
 		
-		GlslBuiltinTypeContext builtinType = primary.glslBuiltinType();
-		if (builtinType != null) {
-			String name = builtinType.getText();
-			Type type = symbols.getType(name);
-			if (type != null) {
-				return new BuiltinTypeReference(createInterval(builtinType), type);
-			} else {
-				throw new Error("internal error: builtin type '" + name + "' not found in symbol table");
-			}
-		}
-		
 		GlslStructSpecifierContext struct = primary.glslStructSpecifier();
 		if (struct != null)	{
 			Struct structDef = create(struct);
@@ -391,8 +380,8 @@ public class ASTFactory {
 		if (context == null) return null;
 		GlslTypeSpecifierNonarrayContext basic = context.glslTypeSpecifierNonarray();
 		Type type;
-		if (basic.glslBuiltinType() != null) {
-			type = getType(basic.glslBuiltinType());
+		if (basic.VOID() != null) {
+			type = Type._void;
 		} else if (basic.glslTypeName() != null) {
 			type = getType(basic.glslTypeName(), declaration);
 		} else if (basic.glslStructSpecifier() != null) {
@@ -410,24 +399,6 @@ public class ASTFactory {
 		}
 		
 		
-		return type;
-	}
-
-	public Type getType(GlslBuiltinTypeContext glslBuiltinType) {
-		String typeName;
-		if (glslBuiltinType.BUILTIN_TYPE() != null) {
-			typeName = glslBuiltinType.BUILTIN_TYPE().getText();
-		} else if (glslBuiltinType.VOID() != null) {
-			typeName = glslBuiltinType.VOID().getText();
-		} else {
-			throw new Error("internal error: unhandled case in built-in type context: '" + glslBuiltinType.getText() + "'");
-		}
-		Type type = symbols.getType(typeName);
-		if (type == null) {
-			System.out.println("DEBUG");
-			throw new Error("internal error: built-in type '" + typeName + "' not registered");
-		}
-	
 		return type;
 	}
 

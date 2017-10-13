@@ -1,7 +1,6 @@
 package org.cakelab.glsl.test.lang.syntax;
 
 import org.cakelab.glsl.GLSLParser.GlslArrayDimensionContext;
-import org.cakelab.glsl.GLSLParser.GlslBuiltinTypeContext;
 import org.cakelab.glsl.GLSLParser.GlslCallArgumentsContext;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.ast.IScope;
@@ -94,8 +93,8 @@ public class TestExpression extends TestingBase {
 	}
 
 	private static void testPostfixExpression() {
-		assertValid(p("float[](8.0f)").glslPostfixExpression(), GlslBuiltinTypeContext.class, GlslArrayDimensionContext.class);
-		assertValid(p("float[](8.0f)").glslAssignmentExpression(), GlslBuiltinTypeContext.class, GlslArrayDimensionContext.class);
+		assertValid(p("float[](8.0f)").glslPostfixExpression(), GlslArrayDimensionContext.class);
+		assertValid(p("float[](8.0f)").glslAssignmentExpression(), GlslArrayDimensionContext.class);
 		assertValid("int light(bool exists, int times); int lightvar = light(true, 1);");
 		
 		setupMultiTest();

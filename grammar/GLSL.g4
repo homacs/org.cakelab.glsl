@@ -117,7 +117,7 @@ tokens {
 	//
 	// Identifiers
 	//
-	IDENTIFIER, BUILTIN_TYPE, VOID,
+	IDENTIFIER, VOID,
 
 	//
 	// Constant values
@@ -202,7 +202,6 @@ glslDeclaration
     | glslTypeQualifier glslVariableIdentifier (COMMA glslVariableIdentifier)+
     | glslTypeQualifier glslTypeName glslVariableDeclarations
     | glslTypeQualifier glslTypeName glslArrayDimension+ glslVariableDeclarations?
-    | glslTypeQualifier glslBuiltinType glslArrayDimension* glslVariableDeclarations?
     | glslTypeQualifier glslStructSpecifier glslArrayDimension* glslVariableDeclarations?
     
     | glslTypeSpecifier glslVariableDeclarations?
@@ -447,7 +446,6 @@ glslDoubleConstant
 
 glslPrimaryExpression
     : glslIdentifier // semantic analyses has to decide whether its type, function or variable
-    | glslBuiltinType
     | glslStructSpecifier
     | glslFloatConstant
     | glslDoubleConstant
@@ -639,16 +637,10 @@ glslArrayDimension
 	;
 
 glslTypeSpecifierNonarray
-    : glslBuiltinType 
-    | glslStructSpecifier 
+    : glslStructSpecifier 
     | glslTypeName 
+    | VOID
     ;
-
-glslBuiltinType
-    : VOID 
-    | BUILTIN_TYPE
-    ;
-
 
 /** 
  * Declares a struct.

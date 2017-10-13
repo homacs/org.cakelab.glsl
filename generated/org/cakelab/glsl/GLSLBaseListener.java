@@ -796,18 +796,6 @@ public class GLSLBaseListener implements GLSLListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlslBuiltinType(GLSLParser.GlslBuiltinTypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGlslBuiltinType(GLSLParser.GlslBuiltinTypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterGlslStructSpecifier(GLSLParser.GlslStructSpecifierContext ctx) { }
 	/**
 	 * {@inheritDoc}

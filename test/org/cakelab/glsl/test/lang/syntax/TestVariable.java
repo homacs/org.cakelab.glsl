@@ -1,6 +1,5 @@
 package org.cakelab.glsl.test.lang.syntax;
 
-import org.cakelab.glsl.GLSLParser.GlslBuiltinTypeContext;
 import org.cakelab.glsl.GLSLParser.GlslDeclarationContext;
 import org.cakelab.glsl.test.lang.TestingBase;
 
@@ -18,33 +17,33 @@ public class TestVariable extends TestingBase {
 	private static void testScalarVariable() {
 		for (String type : BUILTIN_TYPES) {
 			String text = type + " v;";
-			assertValid(text, GlslDeclarationContext.class, GlslBuiltinTypeContext.class);
+			assertValid(text, GlslDeclarationContext.class);
 		}
 	}
 
 	private static void testScalarVariableList() {
 		for (String type : BUILTIN_TYPES) {
 			String text = type + " u,v;";
-			assertValid(text, GlslDeclarationContext.class, GlslBuiltinTypeContext.class);
+			assertValid(text, GlslDeclarationContext.class);
 		}
 	}
 
 	private static void testScalarVariableArrayList() {
 		for (String type : BUILTIN_TYPES) {
 			String text = type + " u[3],v;";
-			assertValid(text, GlslDeclarationContext.class, GlslBuiltinTypeContext.class);
+			assertValid(text, GlslDeclarationContext.class);
 		}
 	}
 
 	private static void testScalarVariableInitialiserList() {
 		for (String type : BUILTIN_TYPES) {
 			String text = type + " u = 2, v = 3;";
-			assertValid(text, GlslDeclarationContext.class, GlslBuiltinTypeContext.class);
+			assertValid(text, GlslDeclarationContext.class);
 		}
 		
 		for (String type : BUILTIN_TYPES) {
 			String text = type + " u = {1,2}, v = 3;";
-			assertValid(text, GlslDeclarationContext.class, GlslBuiltinTypeContext.class);
+			assertValid(text, GlslDeclarationContext.class);
 		}
 		
 	}
@@ -59,7 +58,7 @@ public class TestVariable extends TestingBase {
 		for (String qualifier : TYPE_QUALIFIER_EXAMPLES) {
 			for (String type : BUILTIN_TYPES) {
 				String text = qualifier + " " + type + " u[3],v;";
-				assertValid(text, GlslDeclarationContext.class, GlslBuiltinTypeContext.class);
+				assertValid(text, GlslDeclarationContext.class);
 			}
 		}
 		
@@ -67,7 +66,7 @@ public class TestVariable extends TestingBase {
 		for (String qualifier2 : TYPE_QUALIFIER_EXAMPLES) {
 			for (String type : BUILTIN_TYPES) {
 				String text = qualifier1 + " " + qualifier2 + " " + type + " u[3],v;";
-				assertValid(text, GlslDeclarationContext.class, GlslBuiltinTypeContext.class);
+				assertValid(text, GlslDeclarationContext.class);
 			}
 		}
 		

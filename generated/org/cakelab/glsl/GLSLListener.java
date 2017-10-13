@@ -658,16 +658,6 @@ public interface GLSLListener extends ParseTreeListener {
 	 */
 	void exitGlslTypeSpecifierNonarray(GLSLParser.GlslTypeSpecifierNonarrayContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLParser#glslBuiltinType}.
-	 * @param ctx the parse tree
-	 */
-	void enterGlslBuiltinType(GLSLParser.GlslBuiltinTypeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GLSLParser#glslBuiltinType}.
-	 * @param ctx the parse tree
-	 */
-	void exitGlslBuiltinType(GLSLParser.GlslBuiltinTypeContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link GLSLParser#glslStructSpecifier}.
 	 * @param ctx the parse tree
 	 */

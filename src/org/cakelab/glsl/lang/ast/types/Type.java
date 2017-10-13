@@ -1,5 +1,7 @@
 package org.cakelab.glsl.lang.ast.types;
 
+import java.util.HashMap;
+
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.ast.Constructor;
 import org.cakelab.glsl.lang.ast.ConstructorGroup;
@@ -568,11 +570,14 @@ public class Type extends NodeImpl implements Comparable<Type> {
 			
 	};
 
+	private static HashMap<String, Type> BUILTIN_LOOKUP = new HashMap<String, Type>(BUILTIN_TYPES.length*2);
+
 	static {
 		STATIC_INITIALISATION_PHASE = false;
 		// initialise standard constructors
 		for (Type t : BUILTIN_TYPES) {
 			t.createStandardConstructors();
+			BUILTIN_LOOKUP.put(t.getName(), t);
 		}
 	}
 
@@ -900,6 +905,10 @@ public class Type extends NodeImpl implements Comparable<Type> {
 
 	public void addImplicitCastRule(Type sourceType) {
 		// TODO: implement implicit cast rules for types
+	}
+
+	public static boolean isBuiltinType(String keyword) {
+		return Type.BUILTIN_LOOKUP.containsKey(keyword);
 	}
 
 

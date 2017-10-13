@@ -171,23 +171,6 @@ public class ASTBuilder extends GLSLBaseListener {
 					}
 					
 				}
-			} else if (ctx.glslBuiltinType() != null) {
-				// glslTypeQualifier glslBuiltinType glslArrayDimension* glslVariableDeclarations?
-				List<GlslArrayDimensionContext> dimensions = getNonEmptyListOrNull(ctx.glslArrayDimension());
-				Type type;
-				type = factory.getType(ctx.glslBuiltinType());
-				if (dimensions != null) {
-					type = factory.createArrayType(type, dimensions);
-				}
-				
-				GlslVariableDeclarationsContext varDeclsCtx = ctx.glslVariableDeclarations();
-				if (varDeclsCtx != null) {
-					// array variable declarations with qualifiers
-					addVariables(varDeclsCtx, type, qualifiers);
-				} else {
-					// add qualifier to an existing type
-					type.addQualifiers(qualifiers);
-				}
 			} else if (ctx.glslStructSpecifier() != null) {
 				// glslTypeQualifier glslStructSpecifier glslArrayDimension* glslVariableDeclarations?
 				Type type = factory.create(ctx.glslStructSpecifier());
