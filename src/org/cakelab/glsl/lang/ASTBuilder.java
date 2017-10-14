@@ -5,7 +5,6 @@ import java.util.List;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
 import org.cakelab.glsl.GLSLBaseListener;
 import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.Interval;
@@ -15,7 +14,6 @@ import org.cakelab.glsl.lang.ast.*;
 import org.cakelab.glsl.lang.ast.Function.Body;
 import org.cakelab.glsl.lang.ast.types.CompoundType;
 import org.cakelab.glsl.lang.ast.types.InterfaceBlock;
-import org.cakelab.glsl.lang.ast.types.Struct;
 import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.pp.LocationMap;
 
@@ -40,18 +38,6 @@ public class ASTBuilder extends GLSLBaseListener {
 		factory = new ASTFactory(symbolTable, errorHandler);
 	}
 
-	@Override
-	public void exitGlslStructSpecifier(GlslStructSpecifierContext context) {
-		// STRUCT IDENTIFIER? structBody
-		TerminalNode ident = context.IDENTIFIER();
-		String name = ident.getText();
-		if (symbolTable.getScope().containsType(name)) errorHandler.error(ident, "type '" + name + "' already exists in this scope.");
-		
-		Struct struct = factory.create(context);
-		addDeclaredType(name, struct);
-	}
-	
-	
 	@Override
 	public void enterGlslFunctionDefinition(GlslFunctionDefinitionContext ctx) {
 		functionDefinitionContext = true;
@@ -125,7 +111,11 @@ public class ASTBuilder extends GLSLBaseListener {
 					// -> Qualifier Type
 					// add qualifier to type
 					Type type = symbolTable.getType(id);
-					type.addQualifiers(qualifiers);
+					
+					// create a derived type in our scope and add new qualifiers 
+					type = Type._qualified(type, qualifiers);
+					// override type
+					symbolTable.addType(type);
 				}
 				else if (symbolTable.containsVariable(id)) 
 				{
@@ -148,9 +138,11 @@ public class ASTBuilder extends GLSLBaseListener {
 					}
 				}
 			} else if (ctx.glslTypeName() != null) {
+				// variable declaration(s)
+				
+				
 				List<GlslArrayDimensionContext> dimensions = getNonEmptyListOrNull(ctx.glslArrayDimension());
 				Type type = factory.getType(ctx.glslTypeName(), false);
-				addTypeIfMissing(type);
 				if (dimensions == null) {
 					// glslTypeQualifier glslTypeName glslVariableDeclarations
 					GlslVariableDeclarationsContext varDeclsCtx = ctx.glslVariableDeclarations();
@@ -174,7 +166,7 @@ public class ASTBuilder extends GLSLBaseListener {
 			} else if (ctx.glslStructSpecifier() != null) {
 				// glslTypeQualifier glslStructSpecifier glslArrayDimension* glslVariableDeclarations?
 				Type type = factory.create(ctx.glslStructSpecifier());
-				addTypeIfMissing(type);
+				addType(type);
 				
 				List<GlslArrayDimensionContext> dimensions = getNonEmptyListOrNull(ctx.glslArrayDimension());
 				if (dimensions != null) {
@@ -201,7 +193,7 @@ public class ASTBuilder extends GLSLBaseListener {
 			
 			GlslTypePrecisionDeclarationContext precision = ctx.glslTypePrecisionDeclaration();
 			Type type = factory.getType(precision.glslTypeSpecifier(), false);
-			addTypeIfMissing(type);
+			addType(type);
 			String pSomething = getText(precision.glslPrecisionQualifier());
 			Qualifier q = Qualifier._precision(pSomething);
 			type.addQualifier(q);
@@ -210,7 +202,7 @@ public class ASTBuilder extends GLSLBaseListener {
 			boolean typeDeclaration = ctx.glslVariableDeclarations() == null;
 			Type type = factory.getType(ctx.glslTypeSpecifier(), true);
 			if (typeDeclaration) {
-				addTypeIfMissing(type);
+				addType(type);
 			} else {
 				addTypeIfMissing(type);
 				addVariables(ctx.glslVariableDeclarations(), type, null);
@@ -253,7 +245,6 @@ public class ASTBuilder extends GLSLBaseListener {
 	}
 
 
-
 	private boolean containsError(ParseTree ctx) {
 		if (ctx == null) {
 			throw new Error("internal error: unexpected null value in parse tree validation");
@@ -269,8 +260,24 @@ public class ASTBuilder extends GLSLBaseListener {
 		return false;
 	}
 
+	
 
 	private void addTypeIfMissing(Type type) {
+		if (type instanceof InterfaceBlock) {
+			if (!symbolTable.containsConflictingInterface((InterfaceBlock) type)) {
+				symbolTable.addInterface((InterfaceBlock) type);
+			}
+		} else {
+			if (!symbolTable.containsType(type.getName())) {
+				symbolTable.addType(type);
+			}
+		}
+	}
+
+
+
+	private void addType(Type type) {
+		
 		if (type instanceof InterfaceBlock) {
 			InterfaceBlock block = (InterfaceBlock)type;
 			if (symbolTable.containsConflictingInterface(block)) {
@@ -279,7 +286,8 @@ public class ASTBuilder extends GLSLBaseListener {
 				symbolTable.addInterface(block);
 			}
 		} else {
-			if (!symbolTable.containsType(type.getName())) {
+			Type entry = symbolTable.getType(type.getName());
+			if (entry != null && entry.getScope() == symbolTable.getScope()) {
 				errorHandler.error(type.getStart(), "type " + type.getName() + " already exists");
 			} else {
 				symbolTable.addType(type);
@@ -287,6 +295,8 @@ public class ASTBuilder extends GLSLBaseListener {
 		}
 	}
 
+	
+	
 
 
 	private void addVariables(GlslVariableDeclarationsContext varDeclsCtx, Type type, Qualifiers qualifiers) {

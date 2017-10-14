@@ -3,7 +3,6 @@ package org.cakelab.glsl;
 import java.io.IOException;
 import java.util.List;
 
-import org.cakelab.glsl.builtin.GLSLTokenTable;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.impl.GLSLErrorHandlerImpl;
@@ -12,7 +11,6 @@ import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.PPTokenStream;
 import org.cakelab.glsl.lang.lexer.tokens.ExtendedTokenTable;
-import org.cakelab.glsl.lang.lexer.tokens.ITokenTable;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.PPGroupScope;
 

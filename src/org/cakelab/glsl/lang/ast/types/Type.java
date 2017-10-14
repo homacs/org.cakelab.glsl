@@ -87,6 +87,7 @@ public class Type extends NodeImpl implements Comparable<Type> {
 	private final int kind;
 	private final Rank rank;
 	protected ConstructorGroup constructors = new ConstructorGroup();
+	private IScope scope;
 	
 	
 	Type(String signature, int kind, Rank rank) {
@@ -911,5 +912,12 @@ public class Type extends NodeImpl implements Comparable<Type> {
 		return Type.BUILTIN_LOOKUP.containsKey(keyword);
 	}
 
+	public IScope getScope() {
+		return scope;
+	}
+
+	public void setScope(IScope scope) {
+		this.scope = scope;
+	}
 
 }

@@ -32,42 +32,42 @@ public class ExtensionParser extends Parser {
 			while(WHITESPACE());
 			TIdentifier extensionName = null;
 			try {
-			if (!IDENTIFIER()) {
-				syntaxError(start, "missing extension name");
-			} else {
-				extensionName = (TIdentifier)token;
-				while(WHITESPACE());
-				mandatory(TPunctuator.class, ":");
-				while(WHITESPACE());
-				
-				PPExtensionDirective.Behaviour behaviour = null;
-				Location end = null;
-				if (IDENTIFIER()) {
-					TIdentifier ident = (TIdentifier) token;
-					end = ident.getEnd();
-					if (ident.getText().equals("require")) {
-						behaviour = PPExtensionDirective.Behaviour.REQUIRE;
-					} else if (ident.getText().equals("enable")) {
-						behaviour = PPExtensionDirective.Behaviour.ENABLE;
-					} else if (ident.getText().equals("warn")) {
-						behaviour = PPExtensionDirective.Behaviour.WARN;
-					} else if (ident.getText().equals("disable")) {
-						behaviour = PPExtensionDirective.Behaviour.DISABLE;
-					} else {
-						syntaxError(ident.getStart(), "extension behaviour has to be one of [require, enable, warn, disable])");
-					}
+				if (!IDENTIFIER()) {
+					syntaxError(start, "missing extension name");
 				} else {
-					syntaxError(getLexer().lookahead(1).getStart(), "missing extension behaviour (one of [require, enable, warn, disable])");
+					extensionName = (TIdentifier)token;
+					while(WHITESPACE());
+					mandatory(TPunctuator.class, ":");
+					while(WHITESPACE());
+					
+					PPExtensionDirective.Behaviour behaviour = null;
+					Location end = null;
+					if (IDENTIFIER()) {
+						TIdentifier ident = (TIdentifier) token;
+						end = ident.getEnd();
+						if (ident.getText().equals("require")) {
+							behaviour = PPExtensionDirective.Behaviour.REQUIRE;
+						} else if (ident.getText().equals("enable")) {
+							behaviour = PPExtensionDirective.Behaviour.ENABLE;
+						} else if (ident.getText().equals("warn")) {
+							behaviour = PPExtensionDirective.Behaviour.WARN;
+						} else if (ident.getText().equals("disable")) {
+							behaviour = PPExtensionDirective.Behaviour.DISABLE;
+						} else {
+							syntaxError(ident.getStart(), "extension behaviour has to be one of [require, enable, warn, disable])");
+						}
+					} else {
+						syntaxError(getLexer().lookahead(1).getStart(), "missing extension behaviour (one of [require, enable, warn, disable])");
+					}
+					while(WHITESPACE());
+					mandatory_endl();
+					
+					if (extensionName != null && behaviour != null) {
+						this.directive = new PPExtensionDirective(new Interval(start, end), extensionName.getText(), behaviour);
+						state.addExtensionDirective(directive);
+					}
+					
 				}
-				while(WHITESPACE());
-				mandatory_endl();
-				
-				if (extensionName != null && behaviour != null) {
-					this.directive = new PPExtensionDirective(new Interval(start, end), extensionName.getText(), behaviour);
-					state.addExtensionDirective(directive);
-				}
-				
-			}
 			} catch (Recovery escape) {
 				recoverError();
 			}

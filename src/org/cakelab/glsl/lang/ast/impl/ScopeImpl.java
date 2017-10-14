@@ -3,7 +3,6 @@ package org.cakelab.glsl.lang.ast.impl;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class ScopeImpl implements IScope {
 
 	protected IScope parent;
 	protected ArrayList<IScope> children = new ArrayList<IScope>();
-	
+	// TODO: functions, variables, types need reference to scope
 	protected HashMap<String, FunctionGroup> functions = new HashMap<String, FunctionGroup>();
 	protected HashMap<String, Variable> variables = new HashMap<String, Variable>();
 	protected HashMap<String, Type> types = new HashMap<String, Type>();
@@ -107,22 +106,11 @@ public class ScopeImpl implements IScope {
 		functionGroup.add(func);
 	}
 
-	public void addFunctionDefinition(Function function) {
-		List<Function> group = getFunctionGroup(function.getName());
-		int i = Collections.binarySearch(group, function);
-		if (i >= 0) {
-			// exists in this scope -> ignore error here, just override
-			group.set(i, function);
-		} else {
-			i = (-(i) - 1);
-			group.add(i, function);
-		}
-		
-	}
 	
 	@Override
 	public void addVariable(Variable var) {
 		variables.put(var.getName(), var);
+		var.setScope(this);
 	}
 
 	@Override
@@ -131,6 +119,7 @@ public class ScopeImpl implements IScope {
 			throw new Error("internal error: interface blocks have to be registered through addInterface()");
 		}
 		types.put(type.getName(), type);
+		type.setScope(this);
 	}
 
 	@Override

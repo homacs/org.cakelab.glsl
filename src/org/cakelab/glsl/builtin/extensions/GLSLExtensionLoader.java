@@ -23,7 +23,7 @@ public abstract class GLSLExtensionLoader extends BuiltinLoaderHelper {
 	static final String PROPERTIES_FILE = "properties.json";
 	static final String PREAMBLE_FILE = "preamble.glsl";
 	private static final String KEYWORDS_FILE = "keywords.txt";
-	private static final GLSLExtension FAKE_EXTENSION = new MockedExtension("__TEMPORARY_EXTENSION__YOU__SHOULD_NOT_SEE_THIS__", null, null);
+	private static final GLSLExtension TEMPORARY_EXTENSION = new MockedExtension("__TEMPORARY_EXTENSION__YOU__SHOULD_NOT_SEE_THIS__", null, null);
 	
 
 	public abstract GLSLExtension load(WorkingSet ws, Properties properties, BuiltinResourceManager builtinResourceManager) throws IOException;
@@ -99,6 +99,26 @@ public abstract class GLSLExtensionLoader extends BuiltinLoaderHelper {
 		return ext;
 	}
 
+	
+	/** 
+	 * This method loads the keywords.txt file. The keywords.txt file can 
+	 * only contain keywords, known to the GLSLParser. Known to the parser are
+	 * all keywords and builtin types, which are available to any of the GLSL 
+	 * versions.
+	 * 
+	 * @param extension
+	 * @return
+	 * @throws IOException
+	 */
+	protected static KeywordTable loadKeywordTable(String extension) throws IOException {
+		if (!hasKeywordsFile(extension)) return null;
+		
+		Resource tokenFile = getResource(extension, KEYWORDS_FILE);
+		KeywordTable tokenTable = new KeywordTable(tokenFile.openInputStream());
+		
+		return tokenTable;
+	}
+	
 	public static GLSLExtension loadInternally(WorkingSet ws, Properties properties) throws IOException {
 		BuiltinScope builtinScope = ws.getBuiltinScope();
 		GLSLVersion version = ws.getGLSLVersion();
@@ -138,29 +158,33 @@ public abstract class GLSLExtensionLoader extends BuiltinLoaderHelper {
 	
 	protected static void parse(GLSLExtension e, WorkingSet ws, GLSL_ANTLR_PPOutputBuffer preprocessedPreamble,
 			SymbolTable symbolTable) {
-		GLSLExtensionSet extensionSet = ws.getExtensions();
-		FAKE_EXTENSION.setKeywordTable(e.getKeywordTable());
-		extensionSet.enable(FAKE_EXTENSION);
-		try {
+		//
+		// In case the extension adds own keywords, 
+		// we add them here temporary, to be able 
+		// to parse its preamble. We cannot enable
+		// the extension, until its preamble is parsed.
+		//
+		// Keywords will be available later on, only if 
+		// the extension is actually enabled.
+		//
+		
+		KeywordTable addedKeywords = e.getKeywordTable();
+		if (addedKeywords != null) {
+			GLSLExtensionSet extensionSet = ws.getExtensions();
+			TEMPORARY_EXTENSION.setKeywordTable(e.getKeywordTable());
+			extensionSet.enable(TEMPORARY_EXTENSION);
+			try {
+				parse(preprocessedPreamble, ws.getTokenTable(), symbolTable);
+			} finally {
+				extensionSet.disable(TEMPORARY_EXTENSION);
+				TEMPORARY_EXTENSION.setKeywordTable(null);
+			}
+		} else {
 			parse(preprocessedPreamble, ws.getTokenTable(), symbolTable);
-		} finally {
-			extensionSet.disable(FAKE_EXTENSION);
-			FAKE_EXTENSION.setKeywordTable(null);
 		}
 	}
 
 
-	
-	
-	protected static KeywordTable loadKeywordTable(String extension) throws IOException {
-		if (!hasKeywordsFile(extension)) return null;
-		
-		Resource tokenFile = getResource(extension, KEYWORDS_FILE);
-		KeywordTable tokenTable = new KeywordTable(tokenFile.openInputStream());
-		
-		return tokenTable;
-	}
-	
 	
 	static Resource getPreambleResource(String name) throws IOException {
 		return getResource(name, PREAMBLE_FILE);

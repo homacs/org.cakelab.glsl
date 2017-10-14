@@ -227,5 +227,7 @@ public class Function extends NodeImpl implements Comparable<Function> {
 		return argumentTypes == null || argumentTypes.length == 0 || (argumentTypes.length == 1 && argumentTypes[0].type == Type._void);
 	}
 
+
+
 	
 }

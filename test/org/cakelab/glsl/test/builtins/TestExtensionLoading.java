@@ -49,6 +49,8 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		ws = testExtension(core(400), ShaderType.VERTEX_SHADER, "GL_ARB_gpu_shader_int64");
 		
 		ws = testExtension(core(150), ShaderType.VERTEX_SHADER, "GL_ARB_gpu_shader_fp64");
+		
+		ws = testExtension(core(150), ShaderType.GEOMETRY_SHADER, "GL_ARB_gpu_shader5");
 		ws.dump(System.out);
 
 		// GL_ARB_sparse_texture_clamp

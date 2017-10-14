@@ -1185,6 +1185,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 
 	@Override
 	public void process(PPExtensionDirective directive) throws SyntaxError {
+		// TODO: extensions: implement require, warn.
 		WorkingSet workingSet = state.getWorkingSet();
 		try {
 			if (!GLSLExtensionLoader.canLoadExtenion(directive.identifier)) {
@@ -1196,14 +1197,13 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 				workingSet.disableExtension(directive.identifier);
 				break;
 			case ENABLE:
+			case REQUIRE:
 				try {
 					GLSLExtension.checkRequirements(directive.identifier, state.getGlslVersion(), state.getWorkingSet().getBuiltinScope());
 					workingSet.enableExtension(directive.identifier);
 				} catch (IllegalArgumentException e) {
 					syntaxError(directive, e.getMessage());
 				}
-				break;
-			case REQUIRE:
 				break;
 			case WARN:
 				break;
