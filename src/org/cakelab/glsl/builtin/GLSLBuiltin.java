@@ -14,6 +14,8 @@ import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.tokens.ExtendedTokenTable;
+import org.cakelab.glsl.pp.MacroMap;
+import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.Macro;
 
 
@@ -269,6 +271,25 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 		
 		return builtin;
 	}
+	
+	
+
+	private static HashMap<String, Macro> preprocess(Resource resource, GLSLVersion version, ShaderType shaderType,
+		GLSL_ANTLR_PPOutputBuffer buffer) {
+		
+		Preprocessor pp = setupPreprocessing(resource, shaderType, buffer);
+		
+		pp.setForceVersion(version);
+		
+		pp.process(true);
+		
+		MacroMap macroMap = pp.getState().getMacros();
+		macroMap.undefine(shaderType.name());
+
+		return macroMap.getUserLevelMacros();
+	}
+
+
 	
 	private static SymbolTable createMinimumBuiltinSymbols(GLSLTokenTable tokenTable) {
 		SymbolTable builtinSymbols = new SymbolTable(null);

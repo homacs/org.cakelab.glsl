@@ -966,7 +966,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 				String macro = token.getText();
 				while(WHITESPACE());
 				if (mandatory_endl()) {
-					state.getMacros().remove(macro);
+					state.getMacros().undefine(macro);
 					return result;
 				} else {
 					syntaxError(start, "unexpected tokens at end of undef directive");
@@ -1104,14 +1104,14 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 			
 			PPGroupScope currentScope = state.getGroupScope();
 			assert(currentScope != null) : "expected a global scope!";
-			if (currentScope == globalScope) {
-				try {
-					syntaxError(endifTok, "#endif must follow #if*, #elif or #else group");
-				} catch (Recovery e) {
-					// already recovered
+			try {
+				if (currentScope == globalScope) {
+						syntaxError(endifTok, "#endif must follow #if*, #elif or #else group");
 				}
+				popScope();
+			} catch (Recovery e) {
+				// already recovered
 			}
-			popScope();
 		}
 		return result;
 	}
@@ -1146,6 +1146,9 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	private Node identifier() {
 		if (IDENTIFIER()) {
 			String id = token.getText();
+			if (id.equals("__VERSION__")) {
+				System.out.println("DEBUG");
+			}
 			Macro macro = state.getMacros().get(id);
 			if (macro == null) {
 				return token;
@@ -1161,7 +1164,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 		state.setErrorHandler(errorHandler);
 	}
 
-	/** This method is for testing purposes only! 
+	/** This method is for internal purposes only! 
 	 * <p>
 	 * The default version
 	 * in a glsl file without a <code>#version</code> directive is
@@ -1179,7 +1182,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 		if (!state.isForcedVersion()) {
 			GLSLBuiltin symbols = GLSLBuiltin.get(version, state.getShaderType());
 			WorkingSet workingSet = symbols.createWorkingSet();
-			state.setBuiltinWorkingSet(workingSet);
+			state.setWorkingSet(workingSet);
 		}
 	}
 

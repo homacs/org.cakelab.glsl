@@ -15,6 +15,8 @@ import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.GLSLExtensionSet;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.tokens.ExtendedTokenTable;
+import org.cakelab.glsl.pp.MacroMap;
+import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.json.JSONException;
 import org.cakelab.json.codec.JSONCodecException;
@@ -133,7 +135,7 @@ public abstract class GLSLExtensionLoader extends BuiltinLoaderHelper {
 		
 			GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(BUILTIN_RESOURCE_MANAGER);
 	
-			HashMap<String, Macro> extensionMacros = preprocess(resource, version, shaderType, buffer);
+			HashMap<String, Macro> extensionMacros = preprocess(ws, resource, buffer);
 	
 			ExtendedTokenTable tokenTable = ws.getTokenTable();
 			KeywordTable extendedKeywords = loadKeywordTable(properties.getName());
@@ -156,6 +158,21 @@ public abstract class GLSLExtensionLoader extends BuiltinLoaderHelper {
 	}
 
 	
+	protected static HashMap<String, Macro> preprocess(WorkingSet ws, Resource resource,
+			GLSL_ANTLR_PPOutputBuffer buffer) {
+		Preprocessor pp = setupPreprocessing(resource, ws.getShaderType(), buffer);
+		pp.getState().setWorkingSet(ws);
+		pp.getState().setForcedVersion(true);
+		pp.process(true);
+		
+		MacroMap macroMap = pp.getState().getMacros();
+		macroMap.undefine(ws.getShaderType().name());
+
+		return macroMap.getUserLevelMacros();
+	}
+
+
+
 	protected static void parse(GLSLExtension e, WorkingSet ws, GLSL_ANTLR_PPOutputBuffer preprocessedPreamble,
 			SymbolTable symbolTable) {
 		//

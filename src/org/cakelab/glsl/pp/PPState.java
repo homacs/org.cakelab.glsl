@@ -205,9 +205,9 @@ public class PPState {
 		return shaderType;
 	}
 
-	public void setBuiltinWorkingSet(WorkingSet workingSet) {
+	public void setWorkingSet(WorkingSet workingSet) {
 		this.workingSet = workingSet;
-		this.macros.setBuiltinWorkingSet(workingSet);
+		this.macros.setWorkingSet(workingSet);
 	}
 
 	public WorkingSet getWorkingSet() {

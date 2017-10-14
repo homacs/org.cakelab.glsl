@@ -1,0 +1,4 @@
+{
+	"name" : "GL_ARB_shader_texture_image_samples",
+	"dependencies" : "core:[150,]"
+}

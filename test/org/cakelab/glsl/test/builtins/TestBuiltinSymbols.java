@@ -9,8 +9,8 @@ public class TestBuiltinSymbols extends TestBuiltinBase {
 	
 	
 	public static void main(String[] args) {
-		test();
-//		testDump();
+//		test();
+		testDump();
 		
 		
 	}
@@ -18,14 +18,16 @@ public class TestBuiltinSymbols extends TestBuiltinBase {
 	public static void testDump() {
 		GLSLBuiltin symbols;
 		
-		int version = 320;
+		GLSLVersion version = core(420);
 		
-		symbols = GLSLBuiltin.get(es(version), ShaderType.VERTEX_SHADER);
-		symbols = GLSLBuiltin.get(es(version), ShaderType.TESS_CONTROL_SHADER);
-		symbols = GLSLBuiltin.get(es(version), ShaderType.TESS_EVALUATION_SHADER);
-		symbols = GLSLBuiltin.get(es(version), ShaderType.GEOMETRY_SHADER);
-		symbols = GLSLBuiltin.get(es(version), ShaderType.FRAGMENT_SHADER);
-		symbols = GLSLBuiltin.get(es(version), ShaderType.COMPUTE_SHADER);
+		
+		
+		symbols = GLSLBuiltin.get(version, ShaderType.VERTEX_SHADER);
+		symbols = GLSLBuiltin.get(version, ShaderType.TESS_CONTROL_SHADER);
+		symbols = GLSLBuiltin.get(version, ShaderType.TESS_EVALUATION_SHADER);
+		symbols = GLSLBuiltin.get(version, ShaderType.GEOMETRY_SHADER);
+		symbols = GLSLBuiltin.get(version, ShaderType.FRAGMENT_SHADER);
+		symbols = GLSLBuiltin.get(version, ShaderType.COMPUTE_SHADER);
 		symbols.dump(System.out);
 	}
 

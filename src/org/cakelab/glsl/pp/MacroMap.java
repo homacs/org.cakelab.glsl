@@ -3,6 +3,7 @@ package org.cakelab.glsl.pp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.GLSLExtensionSet;
@@ -14,6 +15,7 @@ public class MacroMap {
 	GLSLExtensionSet extensions;
 	HashMap<String, Macro> builtin = new HashMap<String, Macro>();
 	HashMap<String, Macro> macros = new HashMap<String, Macro>();
+	HashSet<String> undefined = new HashSet<String>();
 
 	
 	public MacroMap(HashMap<String, Macro> defaultBuiltinMacros) {
@@ -22,10 +24,16 @@ public class MacroMap {
 
 	public void put(String name, Macro macro) {
 		macros.put(name, macro);
+		undefined.remove(name);
 	}
 
 	public Macro get(String name) {
-		Macro macro;
+		if (undefined.contains(name)) return null;
+		
+		Macro macro = macros.get(name);
+		if (macro != null) return macro;
+		
+		
 		if (extensions != null) {
 			macro = extensions.getMacro(name);
 			if (macro != null) return macro;
@@ -36,7 +44,7 @@ public class MacroMap {
 			if (macro != null) return macro;
 		}
 		
-		return macros.get(name);
+		return null;
 	}
 
 	public boolean contains(String name) {
@@ -44,14 +52,17 @@ public class MacroMap {
 		return m != null;
 	}
 
-
-	
-	
-	public void remove(String name) {
+	public void undefine(String name) {
+		if (builtin.containsKey(name)|| (extensions != null && extensions.getMacro(name) != null)) {
+			undefined.add(name);
+		}
 		macros.remove(name);
 	}
 
-	public void setBuiltinWorkingSet(WorkingSet workingSet) {
+
+	
+	
+	public void setWorkingSet(WorkingSet workingSet) {
 		builtin = workingSet.getBuiltinMacros();
 		extensions = workingSet.getExtensions();
 	}

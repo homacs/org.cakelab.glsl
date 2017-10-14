@@ -98,7 +98,7 @@ public class Loader extends GLSLExtensionLoader {
 		
 		GLSL_ANTLR_PPOutputBuffer preprocessedPreamble = new GLSL_ANTLR_PPOutputBuffer(BUILTIN_RESOURCE_MANAGER);
 
-		HashMap<String, Macro> extensionMacros = preprocess(preambleResource, glslVersion, shaderLanguage, preprocessedPreamble);
+		HashMap<String, Macro> extensionMacros = preprocess(ws, preambleResource, preprocessedPreamble);
 
 		KeywordTable addedKeywords = loadKeywordTable(properties.getName());
 		GLSLExtension e = new GLSLExtension(properties, glslVersion, shaderLanguage, extensionMacros, addedKeywords);

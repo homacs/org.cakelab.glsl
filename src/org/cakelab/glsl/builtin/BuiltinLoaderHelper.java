@@ -2,7 +2,6 @@ package org.cakelab.glsl.builtin;
 
 import java.io.InputStream;
 import java.util.BitSet;
-import java.util.HashMap;
 
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
@@ -29,9 +28,7 @@ import org.cakelab.glsl.lang.lexer.PPTokenStream;
 import org.cakelab.glsl.lang.lexer.tokens.ITokenTable;
 import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
 import org.cakelab.glsl.pp.LocationMap;
-import org.cakelab.glsl.pp.MacroMap;
 import org.cakelab.glsl.pp.Preprocessor;
-import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.error.SyntaxError;
 
 
@@ -196,7 +193,7 @@ public class BuiltinLoaderHelper {
 
 
 
-	protected static HashMap<String, Macro> preprocess(Resource resource, GLSLVersion version, ShaderType shaderType,
+	protected static Preprocessor setupPreprocessing(Resource resource, ShaderType shaderType,
 			GLSL_ANTLR_PPOutputBuffer buffer) {
 		Preprocessor pp = new Preprocessor(resource, shaderType, buffer);
 		
@@ -206,17 +203,8 @@ public class BuiltinLoaderHelper {
 		pp.setErrorHandler(INTERNAL_ERROR_HANDLER);
 		pp.enableInclude(true);
 		pp.enableLineDirectiveInsertion(false);
-		pp.setForceVersion(version);
-
-		pp.process(true);
-		
-		MacroMap macroMap = pp.getState().getMacros();
-		macroMap.remove(shaderType.name());
-		
-
-		return macroMap.getUserLevelMacros();
+		return pp;
 	}
-
 
 	/**
 	 * Not intended to be used by customised extension loaders. Please use {@link GLSLExtensionLoader#parse} instead

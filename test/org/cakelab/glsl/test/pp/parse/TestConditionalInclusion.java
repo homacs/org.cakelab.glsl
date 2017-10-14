@@ -21,6 +21,26 @@ public class TestConditionalInclusion extends TestingPPBase {
 				+ "#endif\n",
 				"success\n");
 
+		assertValid("#define A\n"
+				+ "#ifdef A\n"
+				+ "success\n"
+				+ "#endif\n",
+				"success\n");
+
+		assertValid("#define A\n"
+				+ "#undef A\n"
+				+ "#define A\n"
+				+ "#ifdef A\n"
+				+ "success\n"
+				+ "#endif\n",
+				"success\n");
+
+		assertValid("#define B\n"
+				+ "#ifndef A\n"
+				+ "success\n"
+				+ "#endif\n",
+				"success\n");
+
 		assertValid("#if A\n"
 				+ "wrong\n"
 				+ "#endif\n",
