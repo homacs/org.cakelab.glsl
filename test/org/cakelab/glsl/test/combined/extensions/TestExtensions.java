@@ -17,10 +17,23 @@ public class TestExtensions extends TestingGLSLBase {
 		testGL_ARB_tessellation_shader();
 		testGL_ARB_derivative_control();
 		testGL_ARB_shader_atomic_counter_ops();
+		testGL_ARB_shader_image_size();
 	}
 
 	
 	
+
+	private static void testGL_ARB_shader_image_size() {
+		assertValid("#version 420 compatibility\n"
+				+ "#extension GL_ARB_shader_image_size : enable\n"
+				+ "in image1D image;\n"
+				+ "void main () {\n"
+				+ "     int size = imageSize(image);\n"
+				+ "}\n"
+				,
+				ShaderType.GENERIC_SHADER);
+	}
+
 
 	private static void testGL_ARB_shader_atomic_counter_ops() {
 		assertValid("#version 420 compatibility\n"

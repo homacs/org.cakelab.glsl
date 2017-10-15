@@ -58,6 +58,8 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		ws = testExtension(compatibility(420), ShaderType.FRAGMENT_SHADER, "GL_ARB_derivative_control");
 
 		ws = testExtension(compatibility(420), ShaderType.GENERIC_SHADER, "GL_ARB_shader_atomic_counter_ops");
+
+		ws = testExtension(compatibility(420), ShaderType.GENERIC_SHADER, "GL_ARB_shader_image_size");
 		ws.dump(System.out);
 
 		// GL_ARB_sparse_texture_clamp
@@ -91,8 +93,6 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		dependency = VersionDependency.parse(" 100 , [ 110 , 120 ] ");
 		assertValid(dependency, 100, 110, 115, 120);
 		assertInvalid(dependency, 99, 101, 109, 121);
-
-		
 		
 		assertInvalidVersionString(null);
 		assertInvalidVersionString("");
