@@ -117,7 +117,7 @@ public class Loader extends GLSLExtensionLoader {
 		// used during parse of the preamble.
 		GLSLExtensionSymbolTable symbolTable = new GLSLExtensionSymbolTable(e, ws.getBuiltinScope());
 
-		parse(e, ws, preprocessedPreamble, symbolTable);
+		parseExtensionPreamble(e, ws, preprocessedPreamble, symbolTable);
 		return e;
 	}
 

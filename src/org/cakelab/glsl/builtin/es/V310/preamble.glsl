@@ -17,16 +17,6 @@
 #define GL_core_profile 1
 
 
-//
-// The following special macros are available only when parsing the preamble
-//
-#if !defined(VERTEX_SHADER)          \
- && !defined(FRAGMENT_SHADER)        \
- && !defined(COMPUTE_SHADER)         \
- && !defined(GENERIC_SHADER)
-// and this error message is just a reminder when developing preambles
-#error undefined or unsupported shader type!
-#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //

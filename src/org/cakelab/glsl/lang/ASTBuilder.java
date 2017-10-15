@@ -211,12 +211,21 @@ public class ASTBuilder extends GLSLBaseListener {
 			// glslInterfaceBlockStructure (glslVariableIdentifier glslArrayDimension*)?
 			InterfaceBlock block = factory.create(ctx.glslInterfaceBlockStructure());
 			if (variableIdentifierCtxs != null) {
+				Type varType = block;
 				addTypeIfMissing(block);
-				for (GlslVariableIdentifierContext varIdCtx : variableIdentifierCtxs) {
+				// there is actually just one variable per interface allowed
+				if (variableIdentifierCtxs.size() > 0) {
+					GlslVariableIdentifierContext varIdCtx = variableIdentifierCtxs.get(0);
 					
-					String id = getText(varIdCtx);
+					String id = varIdCtx.IDENTIFIER().getText();
+					
+					List<GlslArrayDimensionContext> arrayDims = ctx.glslArrayDimension();
+					if (arrayDims != null && arrayDims.size() > 0) {
+						varType = factory.createArrayType(block, arrayDims);
+					}
+					
 					// create qualified variable
-					Variable var = new Variable(symbolTable.getScope(), block, id);
+					Variable var = new Variable(symbolTable.getScope(), varType, id);
 					
 					symbolTable.addVariable(var);
 				}

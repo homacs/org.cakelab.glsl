@@ -82,7 +82,7 @@ public class GLSLExtension extends ScopeImpl {
 	 * @param extension
 	 * @return
 	 */
-	static String getPrimaryName(String extension) {
+	public static String getPrimaryName(String extension) {
 		String[] names = KnownExtensions.getNames(extension);
 		if (names != null) {
 			return names[0];

@@ -33,7 +33,7 @@ public class Loader extends GLSLExtensionLoader {
 	public GLSLExtension load(WorkingSet ws, Properties properties,
 			BuiltinResourceManager builtinResourceManager) throws IOException {
 
-		return loadInternally(ws, properties);
+		return loadRegularly(ws, properties);
 	}
 
 	private static void addImplicitCastRules(Type sourceType, Type ... targetTypes) {

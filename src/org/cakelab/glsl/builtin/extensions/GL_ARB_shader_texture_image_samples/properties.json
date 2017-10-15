@@ -1,4 +1,9 @@
 {
 	"name" : "GL_ARB_shader_texture_image_samples",
-	"dependencies" : "core:[150,]"
+	"dependencies" : {
+		"any" : [
+			"core:[150,]",
+			"GL_ARB_texture_multisample"
+		]
+	}
 }

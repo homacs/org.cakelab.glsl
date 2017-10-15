@@ -47,17 +47,16 @@ public class Properties {
 		public boolean check(GLSLVersion version, GLSLExtensionSet extensions) {
 			switch (profile) {
 			case compatibility:
-				if (version.profile != Profile.core || version.profile != Profile.compatibility) return false;
+				if (version.profile != Profile.compatibility) return false;
 				break;
 			case core:
-				if (version.profile != Profile.core) return false;
+				if (version.profile != Profile.core && version.profile != Profile.compatibility) return false;
 				break;
 			case es:
 				if (version.profile != Profile.es) return false;
 				break;
 			default:
-				break;
-			
+				assert(false) : "unhandled new profile";
 			}
 			return versionDependency.check(version.number);
 		}
@@ -108,8 +107,6 @@ public class Properties {
 		this.name = name;
 		this.alternatives = alternatives;
 	}
-
-
 	
 	public Properties(InputStream inputStream) throws JSONCodecException, IOException, JSONException {
 		Parser parser = new Parser(inputStream);

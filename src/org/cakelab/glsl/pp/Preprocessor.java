@@ -1146,9 +1146,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	private Node identifier() {
 		if (IDENTIFIER()) {
 			String id = token.getText();
-			if (id.equals("__VERSION__")) {
-				System.out.println("DEBUG");
-			}
+
 			Macro macro = state.getMacros().get(id);
 			if (macro == null) {
 				return token;

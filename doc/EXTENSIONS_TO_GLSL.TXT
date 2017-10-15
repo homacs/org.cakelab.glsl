@@ -17,10 +17,10 @@
 + ./ARB/ARB_ES3_2_compatibility.txt
 + ./ARB/ARB_sparse_texture_clamp.txt
 + ./ARB/ARB_gpu_shader5.txt
-./ARB/ARB_shader_texture_image_samples.txt
-./ARB/ARB_post_depth_coverage.txt
-./ARB/ARB_separate_shader_objects.txt
-./ARB/ARB_tessellation_shader.txt
++ ./ARB/ARB_shader_texture_image_samples.txt
++ ./ARB/ARB_post_depth_coverage.txt
++ ./ARB/ARB_separate_shader_objects.txt
++ ./ARB/ARB_tessellation_shader.txt
 ./ARB/ARB_texture_stencil8.txt
 ./ARB/ARB_derivative_control.txt
 ./ARB/ARB_shader_atomic_counter_ops.txt

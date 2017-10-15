@@ -207,12 +207,12 @@ public class BuiltinLoaderHelper {
 	}
 
 	/**
-	 * Not intended to be used by customised extension loaders. Please use {@link GLSLExtensionLoader#parse} instead
+	 * Not intended to be used by customised extension loaders. Please use {@link GLSLExtensionLoader#parseExtensionPreamble} instead
 	 * @param buffer
 	 * @param tokenTable
 	 * @param symbolTable
 	 */
-	protected static void parse(GLSL_ANTLR_PPOutputBuffer buffer, ITokenTable tokenTable,
+	protected static void parsePreamble(GLSL_ANTLR_PPOutputBuffer buffer, ITokenTable tokenTable,
 			SymbolTable symbolTable) {
 		
 		

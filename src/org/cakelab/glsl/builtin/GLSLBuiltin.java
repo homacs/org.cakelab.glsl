@@ -265,7 +265,7 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 		GLSLBuiltin builtin = new GLSLBuiltin(key, builtinMacros, tokenTable);
 		SymbolTable builtinSymbols = createMinimumBuiltinSymbols(tokenTable);
 
-		parse(buffer, tokenTable, builtinSymbols);
+		parsePreamble(buffer, tokenTable, builtinSymbols);
 
 		builtin.builtinScopeSymbols = builtinSymbols.getTopLevelScope();
 		

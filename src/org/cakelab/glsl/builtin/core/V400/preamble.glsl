@@ -14,20 +14,6 @@
 #define __VERSION__ 400
 #define GL_core_profile 1
 
-//
-// The following special macros are available only when parsing the preamble
-//
-#if !defined(VERTEX_SHADER)          \
- && !defined(TESS_CONTROL_SHADER)    \
- && !defined(TESS_EVALUATION_SHADER) \
- && !defined(FRAGMENT_SHADER)        \
- && !defined(GEOMETRY_SHADER)        \
- && !defined(COMPUTE_SHADER)         \
- && !defined(GENERIC_SHADER)
-// and this error message is just a reminder when developing preambles
-#error undefined or unsupported shader type!
-#endif
-
 
 
 #include <core/V400/variables.glsl>

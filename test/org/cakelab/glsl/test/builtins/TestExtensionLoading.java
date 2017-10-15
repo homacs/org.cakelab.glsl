@@ -53,6 +53,8 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		ws = testExtension(core(150), ShaderType.GEOMETRY_SHADER, "GL_ARB_gpu_shader5");
 
 		ws = testExtension(core(410), ShaderType.GEOMETRY_SHADER, "GL_ARB_shader_texture_image_samples");
+
+		ws = testExtension(compatibility(150), ShaderType.TESS_CONTROL_SHADER, "GL_ARB_tessellation_shader");
 		ws.dump(System.out);
 
 		// GL_ARB_sparse_texture_clamp
@@ -160,9 +162,6 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		}
 		return workingSet;
 	}
-	
-	
-	
 	
 	private static void assertInvalidVersionString(String string) {
 		try {

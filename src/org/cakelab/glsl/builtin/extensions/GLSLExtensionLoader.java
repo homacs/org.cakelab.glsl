@@ -11,10 +11,9 @@ import org.cakelab.glsl.builtin.BuiltinLoaderHelper;
 import org.cakelab.glsl.builtin.BuiltinResourceManager;
 import org.cakelab.glsl.builtin.BuiltinScope;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
-import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.GLSLExtensionSet;
+import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
-import org.cakelab.glsl.lang.lexer.tokens.ExtendedTokenTable;
 import org.cakelab.glsl.pp.MacroMap;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.Macro;
@@ -22,10 +21,11 @@ import org.cakelab.json.JSONException;
 import org.cakelab.json.codec.JSONCodecException;
 
 public abstract class GLSLExtensionLoader extends BuiltinLoaderHelper {
+	
 	static final String PROPERTIES_FILE = "properties.json";
 	static final String PREAMBLE_FILE = "preamble.glsl";
 	private static final String KEYWORDS_FILE = "keywords.txt";
-	private static final GLSLExtension TEMPORARY_EXTENSION = new MockedExtension("__TEMPORARY_EXTENSION__YOU__SHOULD_NOT_SEE_THIS__", null, null);
+	private static final GLSLExtension TEMPORARY_EXTENSION = new MockedExtension("__TEMPORARY_EXTENSION__USED_WHEN_EXTENSION_INTRODUCES_NEW_KEYWORDS__", null, null);
 	
 
 	public abstract GLSLExtension load(WorkingSet ws, Properties properties, BuiltinResourceManager builtinResourceManager) throws IOException;
@@ -46,7 +46,7 @@ public abstract class GLSLExtensionLoader extends BuiltinLoaderHelper {
 	
 	
 
-	static Properties loadProperties(String extension) throws JSONCodecException, IOException, JSONException {
+	public static Properties loadProperties(String extension) throws JSONCodecException, IOException, JSONException {
 		
 		Resource resource = getPropertiesResource(extension);
 		Properties properties =  new Properties(resource.openInputStream());
@@ -62,18 +62,18 @@ public abstract class GLSLExtensionLoader extends BuiltinLoaderHelper {
 		return properties;
 	}
 	
-	static GLSLExtension loadExtension(WorkingSet ws, String extension) {
+	public static GLSLExtension loadExtension(WorkingSet ws, String primaryExtensionName) {
+		assert primaryExtensionName.equals(GLSLExtension.getPrimaryName(primaryExtensionName));
 		Properties properties;
-		assert extension.equals(GLSLExtension.getPrimaryName(extension));
 
 		GLSLExtension ext;
 		GLSLVersion version = ws.getGLSLVersion();
 		BuiltinScope builtins = ws.getBuiltinScope();
 		ShaderType shaderType = ws.getShaderType();
 		
-		if (hasPropertiesFile(extension)) {
+		if (hasPropertiesFile(primaryExtensionName)) {
 			try {
-				properties = loadProperties(extension);
+				properties = loadProperties(primaryExtensionName);
 				properties.checkRequirements(version, builtins);
 				
 				if (properties.getLoader() != null) {
@@ -81,19 +81,19 @@ public abstract class GLSLExtensionLoader extends BuiltinLoaderHelper {
 					ext = loader.load(ws, properties, BUILTIN_RESOURCE_MANAGER);
 
 				} else {
-					ext = loadInternally(ws, properties);
+					ext = loadRegularly(ws, properties);
 				}
 				
 				ext.finishLoad();
 				
 			} catch (JSONCodecException | IOException | JSONException e) {
-				throw new Error("internal error: failed to load extension '" + extension + "'", e);
+				throw new Error("internal error: failed to load extension '" + primaryExtensionName + "'", e);
 			}
 			
 		} else {
-			String[] names = KnownExtensions.getNames(extension);
+			String[] names = KnownExtensions.getNames(primaryExtensionName);
 			if (names == null) {
-				ext = new MockedExtension(extension, shaderType, version);
+				ext = new MockedExtension(primaryExtensionName, shaderType, version);
 			} else {
 				ext = new MockedExtension(names, shaderType, version);
 			}
@@ -121,7 +121,22 @@ public abstract class GLSLExtensionLoader extends BuiltinLoaderHelper {
 		return tokenTable;
 	}
 	
-	public static GLSLExtension loadInternally(WorkingSet ws, Properties properties) throws IOException {
+	/**
+	 * Loads the extension identified with the given properties in standard way,
+	 * based on the given working set.
+	 * 
+	 * Processes:
+	 * <ul>
+	 * <li>keywords.txt</li>
+	 * <li>preamble.glsl</li>
+	 * </ul>
+	 * 
+	 * @param ws working set with builtins and other extensions
+	 * @param properties properties the extension to be loaded
+	 * @return extension instance
+	 * @throws IOException
+	 */
+	public static GLSLExtension loadRegularly(WorkingSet ws, Properties properties) throws IOException {
 		BuiltinScope builtinScope = ws.getBuiltinScope();
 		GLSLVersion version = ws.getGLSLVersion();
 		ShaderType shaderType = ws.getShaderType();
@@ -137,12 +152,10 @@ public abstract class GLSLExtensionLoader extends BuiltinLoaderHelper {
 	
 			HashMap<String, Macro> extensionMacros = preprocess(ws, resource, buffer);
 	
-			ExtendedTokenTable tokenTable = ws.getTokenTable();
 			KeywordTable extendedKeywords = loadKeywordTable(properties.getName());
 			e = new GLSLExtension(properties, version, shaderType, extensionMacros, extendedKeywords);
 			GLSLExtensionSymbolTable symbolTable = new GLSLExtensionSymbolTable(e, builtinScope);
-	
-			parse(buffer, tokenTable, symbolTable);
+			parseExtensionPreamble(e, ws, buffer, symbolTable);
 		} else {
 			String[] names = KnownExtensions.getNames(properties.getName());
 			if (names == null) {
@@ -173,7 +186,7 @@ public abstract class GLSLExtensionLoader extends BuiltinLoaderHelper {
 
 
 
-	protected static void parse(GLSLExtension e, WorkingSet ws, GLSL_ANTLR_PPOutputBuffer preprocessedPreamble,
+	protected static void parseExtensionPreamble(GLSLExtension e, WorkingSet ws, GLSL_ANTLR_PPOutputBuffer preprocessedPreamble,
 			SymbolTable symbolTable) {
 		//
 		// In case the extension adds own keywords, 
@@ -191,19 +204,19 @@ public abstract class GLSLExtensionLoader extends BuiltinLoaderHelper {
 			TEMPORARY_EXTENSION.setKeywordTable(e.getKeywordTable());
 			extensionSet.enable(TEMPORARY_EXTENSION);
 			try {
-				parse(preprocessedPreamble, ws.getTokenTable(), symbolTable);
+				parsePreamble(preprocessedPreamble, ws.getTokenTable(), symbolTable);
 			} finally {
 				extensionSet.disable(TEMPORARY_EXTENSION);
 				TEMPORARY_EXTENSION.setKeywordTable(null);
 			}
 		} else {
-			parse(preprocessedPreamble, ws.getTokenTable(), symbolTable);
+			parsePreamble(preprocessedPreamble, ws.getTokenTable(), symbolTable);
 		}
 	}
 
 
 	
-	static Resource getPreambleResource(String name) throws IOException {
+	public static Resource getPreambleResource(String name) throws IOException {
 		return getResource(name, PREAMBLE_FILE);
 	}
 	

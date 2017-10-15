@@ -58,7 +58,11 @@ public class Array extends Type implements CompoundType {
 	}
 
 	public String toString() {
-		return this.getSignature();
+		StringBuffer str = new StringBuffer();
+		if (super.hasQualifiers()) {
+			str.append(qualifiers.toString()).append(' ');
+		}
+		return str.append(this.getSignature()).toString();
 	}
 	
 	public Array clone() {

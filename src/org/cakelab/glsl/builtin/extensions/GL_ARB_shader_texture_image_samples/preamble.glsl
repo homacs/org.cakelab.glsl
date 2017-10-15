@@ -17,8 +17,8 @@
 #endif
 
 
+// all functions of this extentions are available in version [450,]
 #if __VERSION__ < 450
-
 
 // -----------------------------------------------------------------------------------
 //                           8.9.1 Texture Query Functions

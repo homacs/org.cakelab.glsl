@@ -42,7 +42,7 @@ public class Variable extends Value implements LValue {
 	}
 
 	public String toString() {
-		return type.toString() + " " + name;
+		return type.toString() + (name != null ? " " + name : "");
 	}
 
 	public String getName() {
