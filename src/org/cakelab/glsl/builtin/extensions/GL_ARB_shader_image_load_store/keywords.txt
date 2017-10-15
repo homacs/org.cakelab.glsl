@@ -1,0 +1,17 @@
+    coherent
+    volatile
+    restrict
+    readonly
+    writeonly
+
+    image1D             iimage1D                uimage1D
+    image2D             iimage2D                uimage2D
+    image3D             iimage3D                uimage3D
+    image2DRect         iimage2DRect            uimage2DRect
+    imageCube           iimageCube              uimageCube
+    imageBuffer         iimageBuffer            uimageBuffer
+    image1DArray        iimage1DArray           uimage1DArray
+    image2DArray        iimage2DArray           uimage2DArray
+    imageCubeArray      iimageCubeArray         uimageCubeArray
+    image2DMS           iimage2DMS              uimage2DMS
+    image2DMSArray      iimage2DMSArray         uimage2DMSArray

@@ -47,7 +47,7 @@ public class KeywordTable implements ITokenTable {
 
 	@Override
 	public boolean isBuiltinType(String text) {
-		return false;
+		return isLanguageKeyword(text);
 	}
 
 	@Override

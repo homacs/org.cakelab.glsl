@@ -6,6 +6,7 @@ public interface ITokenTable {
 	public boolean isPunctuator(String text);
 	public boolean isLanguageKeyword(String text);
 	public boolean isReservedKeyword(String text);
+	// TODO: remove builtin type differentiation from token table
 	public boolean isBuiltinType(String text);
 	
 	public Integer mapLanguageKeyword(String text);

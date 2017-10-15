@@ -60,6 +60,8 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		ws = testExtension(compatibility(420), ShaderType.GENERIC_SHADER, "GL_ARB_shader_atomic_counter_ops");
 
 		ws = testExtension(compatibility(420), ShaderType.GENERIC_SHADER, "GL_ARB_shader_image_size");
+
+		ws = testExtension(core(130), ShaderType.GENERIC_SHADER, "GL_ARB_shader_image_load_store");
 		ws.dump(System.out);
 
 		// GL_ARB_sparse_texture_clamp

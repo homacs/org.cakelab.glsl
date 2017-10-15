@@ -1,4 +1,9 @@
 {
 	"name" : "GL_ARB_shader_image_size",
-	"dependencies" : "core:[420,]"
+	"dependencies" : {
+		"any" : [
+			"core:[420,]",
+			"GL_ARB_shader_image_load_store"
+		]
+	}
 }
