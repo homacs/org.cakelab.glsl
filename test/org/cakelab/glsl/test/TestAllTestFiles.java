@@ -7,6 +7,7 @@ import org.cakelab.glsl.test.lang.TestingTools;
 public class TestAllTestFiles extends TestingTools {
 
 	public static void main(String[] args) {
+		Test.checkAssertionsOn();
 		File folder = new File("test_files");
 		
 		for (File f : folder.listFiles()) {

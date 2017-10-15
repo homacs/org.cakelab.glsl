@@ -3,13 +3,14 @@ package org.cakelab.glsl.test.builtins;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
+import org.cakelab.glsl.test.Test;
 
 public class TestBuiltinSymbols extends TestBuiltinBase {
 	
 	
 	
 	public static void main(String[] args) {
-//		test();
+		Test.checkAssertionsOn();
 		testDump();
 		
 		

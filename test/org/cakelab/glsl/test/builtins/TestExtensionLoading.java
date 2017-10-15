@@ -10,22 +10,21 @@ import org.cakelab.glsl.builtin.GLSLExtensionSet;
 import org.cakelab.glsl.builtin.extensions.MockedExtension;
 import org.cakelab.glsl.builtin.extensions.Properties;
 import org.cakelab.glsl.builtin.extensions.VersionDependency;
+import org.cakelab.glsl.test.Test;
 
 public class TestExtensionLoading extends TestBuiltinBase {
 
 	public static void main(String[] args) {
-		boolean on = false;
-		assert on = true;
-		if (!on) throw new AssertionError("requires assertions to be on");
+		Test.checkAssertionsOn();
 		test();
 	}
 	
 	
 	public static void test() {
-		testMockedExtensions();
 		testVersionDependency();
 		testExtensionProperties();
-		testExtensions();
+		testMockedExtensions();
+		testLoading();
 	}
 	
 	private static void testMockedExtensions() {
@@ -43,7 +42,7 @@ public class TestExtensionLoading extends TestBuiltinBase {
 	}
 
 
-	private static void testExtensions() {
+	private static void testLoading() {
 		WorkingSet ws = testExtension(core(400), ShaderType.VERTEX_SHADER, "GL_ARB_sparse_texture", "GL_ARB_sparse_texture2");
 		
 		ws = testExtension(core(400), ShaderType.VERTEX_SHADER, "GL_ARB_gpu_shader_int64");
@@ -55,6 +54,8 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		ws = testExtension(core(410), ShaderType.GEOMETRY_SHADER, "GL_ARB_shader_texture_image_samples");
 
 		ws = testExtension(compatibility(150), ShaderType.TESS_CONTROL_SHADER, "GL_ARB_tessellation_shader");
+
+		ws = testExtension(compatibility(420), ShaderType.FRAGMENT_SHADER, "GL_ARB_derivative_control");
 		ws.dump(System.out);
 
 		// GL_ARB_sparse_texture_clamp
@@ -111,6 +112,7 @@ public class TestExtensionLoading extends TestBuiltinBase {
 			assert p.getAlternativeNames() != null && p.getAlternativeNames()[0].equals("NV_EXT_example");
 			
 			assertValid(p, core(110), "EXT_dep1", "EXT_dep2_opt1");
+			assertValid(p, compatibility(110), "EXT_dep1", "EXT_dep2_opt1");
 			assertValid(p, core(110), "EXT_dep1", "EXT_dep2_opt2_opt1");
 			assertValid(p, core(110), "EXT_dep1", "EXT_dep2_opt2_opt2");
 			assertValid(p, core(110), "EXT_dep1", "EXT_dep2_opt3_dep1", "EXT_dep2_opt3_dep2", "EXT_dep2_opt3_dep3_opt1");

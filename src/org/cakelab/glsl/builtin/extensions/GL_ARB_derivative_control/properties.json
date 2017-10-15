@@ -1,0 +1,4 @@
+{
+	"name" : "GL_ARB_derivative_control",
+	"dependencies" : "core:[400,]"
+}

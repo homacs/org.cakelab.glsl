@@ -8,11 +8,15 @@ import org.cakelab.glsl.test.pp.parse.TestPPParsing;
 import org.cakelab.glsl.test.pp.syntax.TestPPSyntax;
 
 public class Test {
-	public static void main(String[] args) {
+	
+	public static void checkAssertionsOn() {
 		boolean on = false;
 		assert on = true;
 		if (!on) throw new AssertionError("requires assertions to be on");
-		
+	}
+	
+	public static void main(String[] args) {
+		checkAssertionsOn();
 		
 		
 		System.out.println(new Date() + " testing preprocessor syntax checking.");

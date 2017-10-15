@@ -10,11 +10,13 @@ import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.lang.ast.types.Struct;
+import org.cakelab.glsl.test.Test;
 
 public class TestFileSystem {
 	
 	
 	public static void main(String[] args) {
+		Test.checkAssertionsOn();
 		test();
 	}
 

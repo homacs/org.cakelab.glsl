@@ -1,10 +1,12 @@
 package org.cakelab.glsl.test.pp.parse;
 
+import org.cakelab.glsl.test.Test;
 import org.cakelab.glsl.test.pp.TestingPPBase;
 
 public class TestConditionalInclusion extends TestingPPBase {
 	
 	public static void main(String[] args) {
+		Test.checkAssertionsOn();
 		test();
 	}
 

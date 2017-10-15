@@ -1,10 +1,12 @@
 package org.cakelab.glsl.test.combined.extensions;
 
 import org.cakelab.glsl.ShaderType;
+import org.cakelab.glsl.test.Test;
 import org.cakelab.glsl.test.combined.TestingGLSLBase;
 
 public class TestExtensions extends TestingGLSLBase {
 	public static void main(String[] args) {
+		Test.checkAssertionsOn();
 		test();
 	}
 	
@@ -13,10 +15,22 @@ public class TestExtensions extends TestingGLSLBase {
 		testGL_ARB_gpu_shader_fp64();
 		testGL_ARB_shader_texture_image_samples();
 		testGL_ARB_tessellation_shader();
+		testGL_ARB_derivative_control();
 	}
 
 	
 	
+
+	private static void testGL_ARB_derivative_control() {
+		assertValid("#version 400 compatibility\n"
+				+ "#extension GL_ARB_derivative_control : enable\n"
+				+ "void main () {\n"
+				+ "     float fine = dFdxFine(1.0f);\n"
+				+ "}\n"
+				,
+				ShaderType.FRAGMENT_SHADER);
+	}
+
 
 	private static void testGL_ARB_tessellation_shader() {
 		assertValid("#version 150 compatibility\n"

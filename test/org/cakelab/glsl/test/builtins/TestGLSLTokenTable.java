@@ -1,9 +1,11 @@
 package org.cakelab.glsl.test.builtins;
 
 import org.cakelab.glsl.builtin.GLSLTokenTable;
+import org.cakelab.glsl.test.Test;
 
 public class TestGLSLTokenTable extends TestBuiltinBase {
 	public static void main(String[] args) {
+		Test.checkAssertionsOn();
 		test();
 	}
 	
