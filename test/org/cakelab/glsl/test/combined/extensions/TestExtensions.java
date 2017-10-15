@@ -16,10 +16,23 @@ public class TestExtensions extends TestingGLSLBase {
 		testGL_ARB_shader_texture_image_samples();
 		testGL_ARB_tessellation_shader();
 		testGL_ARB_derivative_control();
+		testGL_ARB_shader_atomic_counter_ops();
 	}
 
 	
 	
+
+	private static void testGL_ARB_shader_atomic_counter_ops() {
+		assertValid("#version 420 compatibility\n"
+				+ "#extension GL_ARB_shader_atomic_counter_ops : enable\n"
+				+ "atomic_uint counter;\n"
+				+ "void main () {\n"
+				+ "     uint result = atomicCounterSubtractARB(counter, 1u);\n"
+				+ "}\n"
+				,
+				ShaderType.FRAGMENT_SHADER);
+	}
+
 
 	private static void testGL_ARB_derivative_control() {
 		assertValid("#version 400 compatibility\n"

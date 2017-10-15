@@ -56,6 +56,8 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		ws = testExtension(compatibility(150), ShaderType.TESS_CONTROL_SHADER, "GL_ARB_tessellation_shader");
 
 		ws = testExtension(compatibility(420), ShaderType.FRAGMENT_SHADER, "GL_ARB_derivative_control");
+
+		ws = testExtension(compatibility(420), ShaderType.GENERIC_SHADER, "GL_ARB_shader_atomic_counter_ops");
 		ws.dump(System.out);
 
 		// GL_ARB_sparse_texture_clamp

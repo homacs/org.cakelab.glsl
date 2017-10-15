@@ -23,7 +23,7 @@
 + ./ARB/ARB_tessellation_shader.txt
 + ./ARB/ARB_texture_stencil8.txt
 + ./ARB/ARB_derivative_control.txt
-./ARB/ARB_shader_atomic_counter_ops.txt
++ ./ARB/ARB_shader_atomic_counter_ops.txt
 ./ARB/ARB_shader_image_size.txt
 ./ARB/ARB_shader_image_load_store.txt
 ./ARB/ARB_sample_shading.txt
