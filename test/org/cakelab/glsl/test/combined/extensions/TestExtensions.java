@@ -1,10 +1,19 @@
 package org.cakelab.glsl.test.combined.extensions;
 
+import java.io.IOException;
+
+import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
+import org.cakelab.glsl.impl.JarResourceManager;
 import org.cakelab.glsl.test.Test;
 import org.cakelab.glsl.test.combined.TestingGLSLBase;
 
 public class TestExtensions extends TestingGLSLBase {
+	static {
+		// register a resource manager to resolve paths relative to this package
+		RESOURCES.register(new JarResourceManager(TestExtensions.class.getPackage()));
+	}
+	
 	public static void main(String[] args) {
 		Test.checkAssertionsOn();
 		test();
@@ -18,10 +27,26 @@ public class TestExtensions extends TestingGLSLBase {
 		testGL_ARB_derivative_control();
 		testGL_ARB_shader_atomic_counter_ops();
 		testGL_ARB_shader_image_size();
+		testGL_ARB_shader_image_load_store();
 	}
 
 	
 	
+
+	private static void testGL_ARB_shader_image_load_store() {
+		assertValid(resource("GL_ARB_sample_shading/test_01.frag.glsl"),
+				ShaderType.GENERIC_SHADER);
+	}
+
+
+	private static Resource resource(String relpath) {
+		try {
+			return TestingGLSLBase.RESOURCES.resolve(relpath);
+		} catch (IOException e) {
+			throw new AssertionError(e);
+		}
+	}
+
 
 	private static void testGL_ARB_shader_image_size() {
 		assertValid("#version 420 compatibility\n"

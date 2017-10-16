@@ -7,15 +7,16 @@ import java.io.InputStream;
 import org.cakelab.glsl.Resource;
 
 public class JarResourceManager extends ResourceManagerBase {
-	private static final ClassLoader loader = JarResourceManager.class.getClassLoader();
 
+	private static final ClassLoader loader = JarResourceManager.class.getClassLoader();
+	private String basePath;
 
 	public class ResourceInJar extends Resource {
 	
 		public ResourceInJar(String path, String identifier) {
 			super(path, identifier);
 		}
-
+	
 		@Override
 		public InputStream openInputStream() {
 			try {
@@ -24,10 +25,22 @@ public class JarResourceManager extends ResourceManagerBase {
 				throw new Error("internal error: Resource Manager has to check availability of resources before accepting the registration!");
 			}
 		}
-	
 	}
 
 	
+	public JarResourceManager() {
+		super();
+	}
+
+	public JarResourceManager(ResourceIdProvider idProvider) {
+		super(idProvider);
+	}
+
+	/** will interpret all add the given base path to all paths to be resolved. */
+	public JarResourceManager(Package basePath) {
+		this.basePath = basePath.getName().replace('.', '/');
+	}
+
 	private InputStream open(String relpath) throws IOException {
 		String url = toUrl(relpath);
 		String absolutePath = toJarPath(url);
@@ -39,10 +52,9 @@ public class JarResourceManager extends ResourceManagerBase {
 	protected Resource load(String relpath) throws IOException {
 		InputStream test = open(relpath);
 		test.close();
-		String id = getNextId();
+		String id = idProvider.getNextId();
 		return new ResourceInJar(relpath, id);
 	}
-
 
 	protected String toJarPath(String url) {
 		return url;
@@ -50,9 +62,8 @@ public class JarResourceManager extends ResourceManagerBase {
 
 
 	protected String toUrl(String relpath) throws IOException {
-		return relpath;
+		if (basePath != null) return basePath + '/' + relpath;
+		else return relpath;
 	}
-	
-	
 
 }

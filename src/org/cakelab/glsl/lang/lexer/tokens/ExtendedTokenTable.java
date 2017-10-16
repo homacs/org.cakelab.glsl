@@ -30,9 +30,6 @@ public class ExtendedTokenTable implements ITokenTable {
 
 	@Override
 	public boolean isLanguageKeyword(String text) {
-		if (text.equals("image1D")) {
-			System.out.println("DEBUG");
-		}
 		return main.isLanguageKeyword(text) || extensions.isLanguageKeyword(text);
 	}
 

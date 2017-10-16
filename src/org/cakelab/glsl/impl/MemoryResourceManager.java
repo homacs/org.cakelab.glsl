@@ -4,7 +4,17 @@ import java.io.IOException;
 
 import org.cakelab.glsl.Resource;
 
-public class SimpleResourceManager extends ResourceManagerBase {
+public class MemoryResourceManager extends ResourceManagerBase {
+
+	
+	
+	public MemoryResourceManager() {
+		super();
+	}
+
+	public MemoryResourceManager(ResourceIdProvider idProvider) {
+		super(idProvider);
+	}
 
 	@Override
 	protected Resource load(String relpath) throws IOException {

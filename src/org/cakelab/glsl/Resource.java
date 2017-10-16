@@ -21,6 +21,7 @@ public abstract class Resource {
 	public String getPath() {
 		return path;
 	}
+	
 
 	public String getSourceIdentifier() {
 		return identifier;

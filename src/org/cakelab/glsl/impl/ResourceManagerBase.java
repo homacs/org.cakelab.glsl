@@ -1,6 +1,5 @@
 package org.cakelab.glsl.impl;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -9,28 +8,37 @@ import org.cakelab.glsl.ResourceManager;
 
 public abstract class ResourceManagerBase implements ResourceManager {
 
-	protected HashMap<String,Resource> resources = new HashMap<String, Resource>();
-	protected HashMap<String,Resource> ids = new HashMap<String, Resource>();
-	protected int count;
+	protected HashMap<String,Resource> resourceMap = new HashMap<String, Resource>();
+	protected HashMap<String,Resource> idMap = new HashMap<String, Resource>();
+	protected ResourceIdProvider idProvider;
+	
+	public ResourceManagerBase() {
+		idProvider = new SimpleIdProvider();
+	}
+	public ResourceManagerBase(ResourceIdProvider idProvider) {
+		this.idProvider = idProvider;
+	}
+	
+	
 	
 	
 	/** resets internal caches and unique id generator (counter) */
 	@Override
 	public void reset() {
-		ids.clear();
-		resources.clear();
-		count = 0;
+		idMap.clear();
+		resourceMap.clear();
+		idProvider.reset();
 	}
 	
 	
 	@Override
 	public Resource resolve(String relpath) throws IOException {
 		String uniquePath = toUrl(relpath);
-		Resource r = resources.get(uniquePath);
+		Resource r = resourceMap.get(uniquePath);
 		if (r == null) {
 			r = load(relpath);
-			resources.put(uniquePath, r);
-			ids.put(r.getSourceIdentifier(), r);
+			resourceMap.put(uniquePath, r);
+			idMap.put(r.getSourceIdentifier(), r);
 		}
 		return r;
 	}
@@ -52,33 +60,33 @@ public abstract class ResourceManagerBase implements ResourceManager {
 	 */
 	protected abstract String toUrl(String path) throws IOException;
 
-
-	public void add(File file) throws IOException {
-		add(new ResourceFile(file.getPath(), getNextId()));
-	}
 	
 	@Override
 	public void add(Resource resource) throws IOException {
 		String uniquePath = toUrl(resource.getPath());
 		String id = resource.getSourceIdentifier();
-		Resource occupied = ids.get(id);
+		Resource occupied = idMap.get(id);
 		if (occupied != null) {
 			String oPath = toUrl(occupied.getPath());
 			if (!oPath.equals(uniquePath)) throw new IOException("id " + id + " already occupied by " + occupied.getPath());
 		}
 
-		resources.put(uniquePath, resource);
-		ids.put(resource.getSourceIdentifier(), resource);
+		resourceMap.put(uniquePath, resource);
+		idMap.put(resource.getSourceIdentifier(), resource);
 	}
 
 
 	@Override
 	public Resource getResourceById(String id) {
-		return ids.get(id);
+		return idMap.get(id);
 	}
-
-	protected String getNextId() {
-		return Integer.toString(count++);
+	@Override
+	public ResourceIdProvider getIdProvider() {
+		return idProvider;
+	}
+	@Override
+	public void setIdProvider(ResourceIdProvider idProvider) {
+		this.idProvider = idProvider;
 	}
 
 

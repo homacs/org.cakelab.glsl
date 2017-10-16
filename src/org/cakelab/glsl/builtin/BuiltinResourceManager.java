@@ -18,18 +18,38 @@ import org.cakelab.glsl.impl.JarResourceManager;
  */
 public class BuiltinResourceManager extends JarResourceManager implements ResourceManager {
 
+	public static class ReverseCountingIdProvider implements ResourceIdProvider {
+
+		private static final int INITIAL_ID = -1;
+		private int nextId;
+
+		public ReverseCountingIdProvider() {
+			reset();
+		}
+		
+		@Override
+		public String getNextId() {
+			return Integer.toString(nextId--);
+		}
+
+		@Override
+		public void reset() {
+			nextId = INITIAL_ID;
+		}
+
+		@Override
+		public boolean isUsed() {
+			return nextId != INITIAL_ID;
+		}
+
+	}
+
 	private static final String BUILTIN_URL_PROTOCOL = "builtin://";
 	private String baseDir;
 
 	public BuiltinResourceManager(String baseDir) {
+		super(new ReverseCountingIdProvider());
 		this.baseDir = baseDir;
-		super.count = -1;
-	}
-
-	@Override
-	protected String getNextId() {
-		// we mess with the super dooper super counter!!!!!
-		return Integer.toString(super.count--);
 	}
 
 	@Override

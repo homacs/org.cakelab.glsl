@@ -1,0 +1,4 @@
+{
+	"name" : "GL_ARB_sample_shading",
+	"dependencies" : "core:[130,]"
+}
