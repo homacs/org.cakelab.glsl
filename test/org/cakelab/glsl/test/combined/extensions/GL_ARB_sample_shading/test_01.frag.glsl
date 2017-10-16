@@ -3,11 +3,11 @@
 
 #version 150
 
-#extension GL_ARB_shader_image_load_store : enable
+#extension GL_ARB_sample_shading : enable
 
-layout(r32i) uniform coherent iimage1D tex;
 
 void main() {
-	ivec2 P = ivec2(1,2);
-	imageAtomicAdd(tex, 2, 1);
+	if (gl_SampleID == 1) {
+		gl_SampleMask[0] = 0;
+	}
 }

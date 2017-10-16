@@ -28,14 +28,21 @@ public class TestExtensions extends TestingGLSLBase {
 		testGL_ARB_shader_atomic_counter_ops();
 		testGL_ARB_shader_image_size();
 		testGL_ARB_shader_image_load_store();
+		testGL_ARB_sample_shading();
 	}
 
 	
 	
 
-	private static void testGL_ARB_shader_image_load_store() {
+	private static void testGL_ARB_sample_shading() {
 		assertValid(resource("GL_ARB_sample_shading/test_01.frag.glsl"),
-				ShaderType.GENERIC_SHADER);
+				ShaderType.FRAGMENT_SHADER);
+	}
+
+
+	private static void testGL_ARB_shader_image_load_store() {
+		assertValid(resource("GL_ARB_shader_image_load_store/test_01.frag.glsl"),
+				ShaderType.FRAGMENT_SHADER);
 	}
 
 
