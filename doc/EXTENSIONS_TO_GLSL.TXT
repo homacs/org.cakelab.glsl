@@ -25,7 +25,7 @@
 + ./ARB/ARB_derivative_control.txt
 + ./ARB/ARB_shader_atomic_counter_ops.txt
 + ./ARB/ARB_shader_image_size.txt
-./ARB/ARB_shader_image_load_store.txt
++ ./ARB/ARB_shader_image_load_store.txt
 ./ARB/ARB_sample_shading.txt
 ./ARB/ARB_explicit_attrib_location.txt
 ./ARB/ARB_shader_objects.txt

@@ -12,7 +12,11 @@
 
 #define GL_ARB_shader_image_load_store 1
 
+// all has been added to 420
 #if __VERSION__ < 420
+
+
+
 
 const int gl_MaxImageUnits = 8;
 const int gl_MaxCombinedImageUnitsAndFragmentOutputs = 8;
