@@ -3,6 +3,12 @@ package org.cakelab.glsl.pp.tokens;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.pp.error.TokenFormatException;
 
+/**
+ * A token representing a C string with escape sequences.
+ * 
+ * @author homac
+ *
+ */
 public class TStringLiteral extends TCharSequence {
 
 	public TStringLiteral(Interval interval, String text) {

@@ -2,15 +2,18 @@ package org.cakelab.glsl.pp.tokens;
 
 import org.cakelab.glsl.pp.ast.NodeList;
 
+/**
+ * 
+ * @author homac
+ *
+ */
 @SuppressWarnings("serial")
 public class TokenList extends NodeList<Token> {
 	private static final Filter<Token> Filter_WHITESPACE = new Filter<Token>() {
-
 		@Override
 		public boolean pass(Token obj) {
 			return !(obj instanceof TWhitespace);
 		}
-		
 	};
 
 	public TokenList(int size) {

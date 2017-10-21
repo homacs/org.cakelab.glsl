@@ -3,6 +3,14 @@ package org.cakelab.glsl.pp.tokens;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.pp.error.TokenFormatException;
 
+/**
+ * Base class for tokens, which represent character sequences 
+ * possibly containing escape sequences, such as 
+ * strings, character constants.
+ * 
+ * @author homac
+ *
+ */
 public class TCharSequence extends Token {
 
 	public TCharSequence(Interval interval, String text) {

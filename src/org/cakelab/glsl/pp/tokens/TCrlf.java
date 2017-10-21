@@ -2,6 +2,7 @@ package org.cakelab.glsl.pp.tokens;
 
 import org.cakelab.glsl.Interval;
 
+/** Token representing a regular non-escaped CRLF sequence such as "\r\n" */
 public class TCrlf extends TWhitespace {
 	public static String[] TEXT_OPTIONS = new String[] {"\r\n", "\n"};
 	

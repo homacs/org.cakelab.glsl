@@ -2,6 +2,14 @@ package org.cakelab.glsl.pp.tokens;
 
 import org.cakelab.glsl.Interval;
 
+/**
+ * Escaped CRLF:
+ * <br/>
+ * \\CRLF
+ * 
+ * @author homac
+ *
+ */
 public class TLineContinuation extends TWhitespace {
 
 	public static final String[] TEXT_OPTIONS = new String[] { "\\\r\n", "\\\n"};

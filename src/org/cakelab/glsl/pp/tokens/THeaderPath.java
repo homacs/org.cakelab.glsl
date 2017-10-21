@@ -2,6 +2,11 @@ package org.cakelab.glsl.pp.tokens;
 
 import org.cakelab.glsl.Interval;
 
+/**
+ * '<' char-sequence '>'
+ * @author homac
+ *
+ */
 public class THeaderPath extends Token {
 
 	public THeaderPath(Interval interval, String text) {

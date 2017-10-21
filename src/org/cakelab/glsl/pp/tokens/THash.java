@@ -2,6 +2,11 @@ package org.cakelab.glsl.pp.tokens;
 
 import org.cakelab.glsl.Interval;
 
+/**
+ * Token representing '#'
+ * @author homac
+ *
+ */
 public class THash extends TPunctuator {
 
 	public THash(Interval interval, String text) {

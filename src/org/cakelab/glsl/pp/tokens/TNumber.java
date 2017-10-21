@@ -2,9 +2,11 @@ package org.cakelab.glsl.pp.tokens;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.ast.ConstantValue;
-import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.pp.error.TokenFormatException;
 
+/** Base class for number tokens of any format, 
+ * such constant integer or floating point numbers 
+ * */
 public class TNumber extends Token {
 	
 	private ConstantValue<? extends Number> decoded = null;
@@ -73,7 +75,7 @@ public class TNumber extends Token {
 	}
 	
 
-	public Expression decode() throws TokenFormatException {
+	public ConstantValue<? extends Number> decode() throws TokenFormatException {
 		if (decoded != null) return decoded;
 		final int DEC = 0;
 		final int HEX = 1;
