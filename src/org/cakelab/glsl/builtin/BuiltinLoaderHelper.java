@@ -27,7 +27,6 @@ import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.PPTokenStream;
 import org.cakelab.glsl.lang.lexer.tokens.ITokenTable;
 import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
-import org.cakelab.glsl.pp.LocationMap;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.error.SyntaxError;
 
@@ -122,7 +121,7 @@ public class BuiltinLoaderHelper {
 		}
 
 		@Override
-		public void setLocations(TokenStream tokens, LocationMap locations) {
+		public void setLocations(TokenStream tokens) {
 			// not required
 		}
 
@@ -217,8 +216,8 @@ public class BuiltinLoaderHelper {
 		
 		
 		PPTokenStream tokens = new PPTokenStream(buffer, tokenTable, symbolTable, INTERNAL_ERROR_HANDLER);
-		INTERNAL_ERROR_HANDLER.setLocations(tokens, buffer.getLocations());
-		ASTBuilder astBuilder = new ASTBuilder(tokens, buffer.getLocations(), symbolTable, INTERNAL_ERROR_HANDLER);
+		INTERNAL_ERROR_HANDLER.setLocations(tokens);
+		ASTBuilder astBuilder = new ASTBuilder(symbolTable, INTERNAL_ERROR_HANDLER);
 		
 		GLSLParser parser = new GLSLParser(tokens);
 		parser.removeErrorListeners();

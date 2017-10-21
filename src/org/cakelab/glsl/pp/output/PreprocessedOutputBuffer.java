@@ -2,9 +2,6 @@ package org.cakelab.glsl.pp.output;
 
 import java.io.ByteArrayOutputStream;
 
-import org.cakelab.glsl.pp.LocationMap;
-import org.cakelab.glsl.pp.tokens.Token;
-
 /**
  * A preprocessor output buffer is used as intermediate between preprocessor
  * and language parser.
@@ -23,7 +20,6 @@ import org.cakelab.glsl.pp.tokens.Token;
 public class PreprocessedOutputBuffer extends PreprocessedOutputStream {
 
 	private ByteArrayOutputStream out;
-	private LocationMap locations = new LocationMap();
 	
 	public PreprocessedOutputBuffer() {
 		this(new ByteArrayOutputStream());
@@ -42,14 +38,4 @@ public class PreprocessedOutputBuffer extends PreprocessedOutputStream {
 		return out.toByteArray();
 	}
 
-	public LocationMap getLocations() {
-		return locations;
-	}
-
-	@Override
-	public void print(Token t) {
-		locations.report(t, getPosition() + t.length());
-		super.print(t);
-	}
-	
 }

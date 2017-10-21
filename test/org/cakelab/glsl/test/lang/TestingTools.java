@@ -300,11 +300,11 @@ public class TestingTools {
 		PPTokenStream tokens = new PPTokenStream(buffer, workingSet.getTokenTable(), symbolTable, TEST_ERROR_HANLDER);
 		parser = new GLSLParser(tokens);
 
-		TEST_ERROR_HANLDER.setLocations(tokens, buffer.getLocations());
+		TEST_ERROR_HANLDER.setLocations(tokens);
 
 		parser.removeErrorListeners();
 		parser.addErrorListener(TEST_ERROR_HANLDER);
-		validator = new ASTBuilder(tokens, buffer.getLocations(), symbolTable, TEST_ERROR_HANLDER);
+		validator = new ASTBuilder(symbolTable, TEST_ERROR_HANLDER);
 		parser.addParseListener(validator);
 	}
 

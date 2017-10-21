@@ -2,39 +2,49 @@ package org.cakelab.glsl.lang;
 
 import java.util.List;
 
-import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cakelab.glsl.GLSLBaseListener;
 import org.cakelab.glsl.GLSLErrorHandler;
+import org.cakelab.glsl.GLSLParser.GlslArrayDimensionContext;
+import org.cakelab.glsl.GLSLParser.GlslCompoundStatementContext;
+import org.cakelab.glsl.GLSLParser.GlslDeclarationContext;
+import org.cakelab.glsl.GLSLParser.GlslFunctionDefinitionContext;
+import org.cakelab.glsl.GLSLParser.GlslFunctionPrototypeContext;
+import org.cakelab.glsl.GLSLParser.GlslTypePrecisionDeclarationContext;
+import org.cakelab.glsl.GLSLParser.GlslTypeQualifierContext;
+import org.cakelab.glsl.GLSLParser.GlslVariableDeclarationsContext;
+import org.cakelab.glsl.GLSLParser.GlslVariableDeclaratorContext;
+import org.cakelab.glsl.GLSLParser.GlslVariableIdentifierContext;
 import org.cakelab.glsl.Interval;
-import org.cakelab.glsl.GLSLParser.*;
 import org.cakelab.glsl.SymbolTable;
-import org.cakelab.glsl.lang.ast.*;
+import org.cakelab.glsl.lang.ast.ASTFactory;
+import org.cakelab.glsl.lang.ast.CompoundStatement;
+import org.cakelab.glsl.lang.ast.Constructor;
+import org.cakelab.glsl.lang.ast.Function;
 import org.cakelab.glsl.lang.ast.Function.Body;
+import org.cakelab.glsl.lang.ast.IScope;
+import org.cakelab.glsl.lang.ast.Qualifier;
+import org.cakelab.glsl.lang.ast.Qualifiers;
+import org.cakelab.glsl.lang.ast.Variable;
 import org.cakelab.glsl.lang.ast.types.CompoundType;
 import org.cakelab.glsl.lang.ast.types.InterfaceBlock;
 import org.cakelab.glsl.lang.ast.types.Type;
-import org.cakelab.glsl.pp.LocationMap;
 
 public class ASTBuilder extends GLSLBaseListener {
 	// FIXME: allow redeclaration of array dimensions of variables (see gl_TexCoord in 1.50)
 	
 	
 	private ASTFactory factory;
-	private LocationMap locations;
-	private TokenStream tokens;
 	private GLSLErrorHandler errorHandler;
 	private SymbolTable symbolTable;
 	private boolean functionDefinitionContext;
 	private Function functionDefinition;
 	
 	
-	public ASTBuilder(TokenStream tokens, LocationMap locations, SymbolTable symbolTable, GLSLErrorHandler errorHandler) {
-		this.locations = locations;
+	public ASTBuilder(SymbolTable symbolTable, GLSLErrorHandler errorHandler) {
 		this.symbolTable = symbolTable;
 		this.errorHandler = errorHandler;
-		this.tokens = tokens;
 		factory = new ASTFactory(symbolTable, errorHandler);
 	}
 

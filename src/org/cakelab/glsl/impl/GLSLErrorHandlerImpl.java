@@ -15,13 +15,11 @@ import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
-import org.cakelab.glsl.pp.LocationMap;
 import org.cakelab.glsl.pp.StandardErrorHandler;
 
 public class GLSLErrorHandlerImpl extends StandardErrorHandler implements GLSLErrorHandler {
 	
 	private boolean DEBUG = false;
-	private LocationMap locations;
 	private TokenStream tokens;
 	
 	
@@ -44,8 +42,7 @@ public class GLSLErrorHandlerImpl extends StandardErrorHandler implements GLSLEr
 		this.resources = resources;
 	}
 
-	public void setLocations(TokenStream tokens, LocationMap locations) {
-		this.locations = locations;
+	public void setLocations(TokenStream tokens) {
 		this.tokens = tokens;
 	}
 
@@ -75,9 +72,7 @@ public class GLSLErrorHandlerImpl extends StandardErrorHandler implements GLSLEr
 	public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, boolean exact,
 			BitSet ambigAlts, ATNConfigSet configs) {
 		if (DEBUG) {
-			Location start = locations.getLocation(startIndex);
-			Location end = locations.getLocation(stopIndex);
-			Interval interval = new Interval(start, end);
+			Interval interval = interval(startIndex, stopIndex);
 			warning(interval, "reported ambiguity on: '" + getText(startIndex, stopIndex) + "'");
 		}
 		// ignored
@@ -87,9 +82,7 @@ public class GLSLErrorHandlerImpl extends StandardErrorHandler implements GLSLEr
 	public void reportAttemptingFullContext(Parser recognizer, DFA dfa, int startIndex, int stopIndex,
 			BitSet conflictingAlts, ATNConfigSet configs) {
 		if (DEBUG) {
-			Location start = locations.getLocation(startIndex);
-			Location end = locations.getLocation(stopIndex);
-			Interval interval = new Interval(start, end);
+			Interval interval = interval(startIndex, stopIndex);
 			warning(interval, "reported full context search on: '" + getText(startIndex, stopIndex) + "'");
 		}
 	}
@@ -98,9 +91,7 @@ public class GLSLErrorHandlerImpl extends StandardErrorHandler implements GLSLEr
 	public void reportContextSensitivity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, int prediction,
 			ATNConfigSet configs) {
 		if (DEBUG) {
-			Location start = locations.getLocation(startIndex);
-			Location end = locations.getLocation(stopIndex);
-			Interval interval = new Interval(start, end);
+			Interval interval = interval(startIndex, stopIndex);
 			warning(interval, "reported context sensitivity on: '" + getText(startIndex, stopIndex) + "'");
 		}
 	}
@@ -113,10 +104,17 @@ public class GLSLErrorHandlerImpl extends StandardErrorHandler implements GLSLEr
 		return tokens.getText(interval);
 	}
 
-	private Interval interval(ParseTree node) {
-		PPOutputToken first = getFirstToken(node);
-		PPOutputToken last = getLastToken(node);
+	
+	private Interval interval(int startIndex, int stopIndex) {
+		return interval((PPOutputToken) tokens.get(startIndex), (PPOutputToken) tokens.get(stopIndex));
+	}
+
+	private Interval interval(PPOutputToken first, PPOutputToken last) {
 		return new Interval(first.getPPToken().getStart(), last.getPPToken().getEnd());
+	}
+	
+	private Interval interval(ParseTree node) {
+		return interval(getFirstToken(node), getLastToken(node));
 	}
 
 	private PPOutputToken getLastToken(ParseTree node) {
@@ -141,7 +139,6 @@ public class GLSLErrorHandlerImpl extends StandardErrorHandler implements GLSLEr
 			return null;
 		}
 	}
-
 
 
 }

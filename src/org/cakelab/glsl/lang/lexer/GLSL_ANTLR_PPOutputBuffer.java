@@ -8,7 +8,6 @@ import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
-import org.cakelab.glsl.pp.LocationMap;
 import org.cakelab.glsl.pp.PPHelper;
 import org.cakelab.glsl.pp.PPOutputSink;
 import org.cakelab.glsl.pp.PPState;
@@ -32,7 +31,6 @@ public class GLSL_ANTLR_PPOutputBuffer extends PPHelper implements PPOutputSink 
 	ArrayList<PPOutputToken> tokens = new ArrayList<PPOutputToken>();
 	private ResourceManager resources;
 	private HashMap<String,PPTokenSource> cachedTokenSources = new HashMap<String,PPTokenSource>();
-	private LocationMap locations = new LocationMap();
 	
 	public GLSL_ANTLR_PPOutputBuffer(ResourceManager resources) {
 		this.resources = resources;
@@ -44,9 +42,6 @@ public class GLSL_ANTLR_PPOutputBuffer extends PPHelper implements PPOutputSink 
 		return tokens;
 	}
 
-	public LocationMap getLocations() {
-		return locations;
-	}
 
 	@Override
 	public void print(TokenList tokens) {
@@ -62,7 +57,6 @@ public class GLSL_ANTLR_PPOutputBuffer extends PPHelper implements PPOutputSink 
 		PPOutputToken oToken = convert(index, start, t);
 		tokens.add(oToken);
 		pos += t.length();
-		locations.report(t, pos);
 	}
 	
 	private PPOutputToken convert(int index, int start, Token t) {

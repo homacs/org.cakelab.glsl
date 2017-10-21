@@ -55,8 +55,8 @@ public class GLSL {
 		SymbolTable symbolTable = new SymbolTable(workingSet.getBuiltinScope());
 		
 		PPTokenStream tokens = new PPTokenStream(buffer, tokenTable, symbolTable, errorHandler);
-		errorHandler.setLocations(tokens, buffer.getLocations());
-		ASTBuilder astBuilder = new ASTBuilder(tokens, buffer.getLocations(), symbolTable, errorHandler);
+		errorHandler.setLocations(tokens);
+		ASTBuilder astBuilder = new ASTBuilder(symbolTable, errorHandler);
 		
 		GLSLParser parser = new GLSLParser(tokens);
 		parser.removeErrorListeners();
