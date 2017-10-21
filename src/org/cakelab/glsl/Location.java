@@ -26,9 +26,7 @@ import org.cakelab.glsl.pp.MacroExpandedLocation;
  * preprocessing directives. In this case, 
  * the location is virtually overridden. Getter methods
  * will always return the location of the cursor according 
- * to the last #line directive. The actual location in
- * the set of input streams is only needed by the 
- * lexer itself and therefore hidden inside.
+ * to the last #line directive. 
  * 
  * @see Location
  * @see MacroExpandedLocation
@@ -40,13 +38,13 @@ public class Location {
 
 	public static final int POS_START = -1; // indicates: no input read so far
 	public static final int FIRST_POSITION = 0;
-	public static final int FIRST_COLUMN = 0; // yes, columns start at 0 and lines at 1
+	public static final int FIRST_COLUMN = 0; // beyond the start of line to the left. Atom at LA1() will have column = 1
 	public static final int FIRST_LINE = 1;
-	/** position in bytes from start */
+	/** position in bytes from FIRST_POSITION */
 	private int pos;
 	/** line number */
 	private int line;
-	/** column */
+	/** column number */
 	private int column;
 	/** identifier (for GLSL this is the source string number) */
 	private String identifier;
