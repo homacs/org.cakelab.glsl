@@ -53,6 +53,11 @@ import org.cakelab.glsl.pp.tokens.TStringLiteral;
 import org.cakelab.glsl.pp.tokens.Token;
 import org.cakelab.glsl.pp.tokens.TokenList;
 
+/**
+ * Expression parser is used to parse conditions in directives such as #if and similar.
+ * @author homac
+ *
+ */
 public class ExpressionParser extends Parser {
 	
 	private FilteringLexer myLexer;
