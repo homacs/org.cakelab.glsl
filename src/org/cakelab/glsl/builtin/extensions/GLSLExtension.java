@@ -67,8 +67,12 @@ public class GLSLExtension extends ScopeImpl {
 	public static boolean checkRequirements(String extension, GLSLVersion version, BuiltinScope builtinScope) {
 		try {
 			extension = getPrimaryName(extension);
-			Properties properties = GLSLExtensionLoader.loadProperties(extension);
-			return properties.checkRequirements(version, builtinScope);
+			if (GLSLExtensionLoading.hasPropertiesFile(extension)) {
+				Properties properties = GLSLExtensionLoading.loadProperties(extension);
+				return properties.checkRequirements(version, builtinScope);
+			} else {
+				return true;
+			}
 		} catch (IllegalArgumentException e) {
 			throw e;
 		} catch (Exception e) {
@@ -104,7 +108,7 @@ public class GLSLExtension extends ScopeImpl {
 		Key key = new Key(extension, ws.getGLSLVersion(), ws.getShaderType());
 		GLSLExtension e = CACHE.get(key);
 		if (e == null) {
-			e = GLSLExtensionLoader.loadExtension(ws, extension);
+			e = GLSLExtensionLoading.loadExtension(ws, extension);
 			CACHE.put(key, e);
 		}
 		return e;

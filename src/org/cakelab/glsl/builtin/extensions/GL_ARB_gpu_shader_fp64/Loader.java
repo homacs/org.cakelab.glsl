@@ -6,7 +6,6 @@ import java.util.HashMap;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
-import org.cakelab.glsl.builtin.BuiltinResourceManager;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.extensions.GLSLExtension;
 import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoader;
@@ -20,9 +19,9 @@ import org.cakelab.glsl.pp.ast.Macro;
 public class Loader extends GLSLExtensionLoader {
 
 	
-	
+
 	@Override
-	public GLSLExtension load(WorkingSet ws, Properties properties, BuiltinResourceManager builtinResourceManager) throws IOException {
+	public GLSLExtension load(WorkingSet ws, Properties properties) throws IOException {
 		Resource preambleResource;
 		try {
 			preambleResource = properties.getPreamble();
@@ -33,7 +32,7 @@ public class Loader extends GLSLExtensionLoader {
 		GLSLVersion glslVersion = ws.getGLSLVersion();
 		ShaderType shaderLanguage = ws.getShaderType();
 		
-		GLSL_ANTLR_PPOutputBuffer preprocessedPreamble = new GLSL_ANTLR_PPOutputBuffer(BUILTIN_RESOURCE_MANAGER);
+		GLSL_ANTLR_PPOutputBuffer preprocessedPreamble = createPPOutputBuffer();
 
 		HashMap<String, Macro> extensionMacros = preprocess(ws, preambleResource, preprocessedPreamble);
 

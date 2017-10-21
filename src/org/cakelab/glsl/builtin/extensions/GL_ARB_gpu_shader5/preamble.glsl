@@ -173,9 +173,6 @@ GEN_mulExtended_U_I(u, uvec4)
 #if __VERSION__ < 400
 //   ------  textureGather(sampler, P ...)
 
-// Note: Types samplerCubeArray(Shadow) do not exist until version 4.00
-//       and they have not been introduced with this extension or other extensions.
-//       But, in v400, those functions exist, so we don't need to add them.
 #define GEN__textureGather(SAMPLER_TYPE, P_TYPE)                  \
      vec4 textureGather(     SAMPLER_TYPE sampler, P_TYPE P);           \
 i ## vec4 textureGather(i ## SAMPLER_TYPE sampler, P_TYPE P);           \
@@ -187,12 +184,16 @@ u ## vec4 textureGather(u ## SAMPLER_TYPE sampler, P_TYPE P, int comp);
 GEN__textureGather(sampler2D,                      vec2)
 GEN__textureGather(sampler2DArray,                 vec3)
 GEN__textureGather(samplerCube,                    vec3)
-// GEN__textureGather(samplerCubeArray,               vec4)
+#ifdef __HAVE_CUBE_ARRAY
+GEN__textureGather(samplerCubeArray,               vec4)
+#endif
 GEN__textureGather(sampler2DRect,                  vec3)
 vec4 textureGather(sampler2DShadow sampler,        vec2 P, float refZ);
 vec4 textureGather(sampler2DArrayShadow sampler,   vec3 P, float refZ);
 vec4 textureGather(samplerCubeShadow sampler,      vec3 P, float refZ);
-// vec4 textureGather(samplerCubeArrayShadow sampler, vec4 P, float refZ);
+#ifdef __HAVE_CUBE_ARRAY
+vec4 textureGather(samplerCubeArrayShadow sampler, vec4 P, float refZ);
+#endif
 vec4 textureGather(sampler2DRectShadow sampler,    vec2 P, float refZ);
 
 #undef GEN__textureGather

@@ -36,10 +36,13 @@ GEN_sparseTextureClampARB(sampler2DShadow, vec3, float)
 GEN_sparseTextureClampARB(samplerCubeShadow, vec4, float)
 
 GEN_sparseTextureClampARB_U_I(sampler2DArray, vec3)
+#ifdef __HAVE_CUBE_ARRAY
 GEN_sparseTextureClampARB_U_I(samplerCubeArray, vec4)
-                            
+#endif    
 int sparseTextureClampARB(sampler2DArrayShadow sampler, vec4 P ,                             float lodClamp, out float texel);
+#ifdef __HAVE_CUBE_ARRAY
 int sparseTextureClampARB(samplerCubeArrayShadow sampler, vec4 P ,                             float compare, float lodClamp ,                             out float texel);
+#endif
 
 #undef GEN_sparseTextureClampARB_U_I
 #undef GEN_sparseTextureClampARB
@@ -65,11 +68,14 @@ GEN_textureClampARB(float, sampler2DShadow, vec3)
 GEN_textureClampARB(float, samplerCubeShadow, vec4)
 GEN_textureClampARB_U_I(sampler1DArray, vec2)
 GEN_textureClampARB_U_I(sampler2DArray, vec3)
+#ifdef __HAVE_CUBE_ARRAY
 GEN_textureClampARB_U_I(samplerCubeArray, vec4)
+#endif
 GEN_textureClampARB(float, sampler1DArrayShadow, vec3)
 GEN_textureClampARB(float, sampler2DArrayShadow, vec4)
+#ifdef __HAVE_CUBE_ARRAY
 GEN_textureClampARB(float, samplerCubeArrayShadow, vec4)
-
+#endif
 
 #undef GEN_textureClampARB_U_I
 #undef GEN_textureClampARB
@@ -136,7 +142,9 @@ int sparseTextureGradClampARB(sampler2DShadow sampler, vec3 P, vec2 dPdx, vec2 d
 int sparseTextureGradClampARB(samplerCubeShadow sampler, vec4 P, vec3 dPdx, vec3 dPdy, float lodClamp, out float texel);
 GEN_sparseTextureGradClampARB_U_I(sampler2DArray, vec3, vec2)
 int sparseTextureGradClampARB(sampler2DArrayShadow sampler, vec4 P, vec2 dPdx, vec2 dPdy, float lodClamp, out float texel);
+#ifdef __HAVE_CUBE_ARRAY
 GEN_sparseTextureGradClampARB_U_I(samplerCubeArray, vec4, vec3)
+#endif
 
 #undef GEN_sparseTextureGradClampARB_U_I
 
@@ -159,8 +167,9 @@ GEN_textureGradClampARB_U_I(sampler1DArray, vec2, float)
 GEN_textureGradClampARB_U_I(sampler2DArray, vec3, vec2)
 float textureGradClampARB(sampler1DArrayShadow sampler, vec3 P, float dPdx, float dPdy, float lodClamp);
 float textureGradClampARB(sampler2DArrayShadow sampler, vec4 P, vec2 dPdx, vec2 dPdy, float lodClamp);
+#ifdef __HAVE_CUBE_ARRAY
 GEN_textureGradClampARB_U_I(samplerCubeArray, vec4, vec3)
-
+#endif
 
 #undef GEN_textureGradClampARB_U_I
 

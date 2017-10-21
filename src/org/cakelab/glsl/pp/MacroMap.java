@@ -22,7 +22,7 @@ public class MacroMap {
 		this.builtin = defaultBuiltinMacros;
 	}
 
-	public void put(String name, Macro macro) {
+	public void define(String name, Macro macro) {
 		macros.put(name, macro);
 		undefined.remove(name);
 	}
@@ -52,7 +52,7 @@ public class MacroMap {
 		return m != null;
 	}
 
-	public void undefine(String name) {
+	public void undef(String name) {
 		if (builtin.containsKey(name)|| (extensions != null && extensions.getMacro(name) != null)) {
 			undefined.add(name);
 		}

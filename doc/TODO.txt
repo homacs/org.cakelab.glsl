@@ -9,22 +9,22 @@
 
 
 
+				Issues:
+				- Defines for supported profiles and extensions always have to be available
+				  -> Affects profile and extension loading
+
+
+
 				
-				Tasks for tomorrow:   
-				- read Vulkan and SPIR-V specifications!
-				- SPIRV does not support compatibility profile
-				- SPIRV has no built-in uniform state
+								
 				
-				Afterwards:				
-				
-				0. Always use #ifdef GL_core_profile ?
 				0. Go through all change lists of all versions 
 				0. Availability of built-in functions in respect to different shader types
 				1. TODOS. aufschreiben
-					- Function Signature und Subroutine
+					- Function signature and subroutines
 					- Identifikation von Funktionsaufrufen und Konstruktoraufrufen, wenn Typ und Function selber Name
 					- Beenden von Extensions Loading bzgl. Dependencies				  
-				2. Symboltabelle überarbeiten (siehe FIXME)
+				2. Symbol Table redesign (siehe FIXME)
 				   a. Interface Blocks need redesign:
 					  - Interface blocks can be redeclared, narrowing the number of members
 					    -> see v4.00 gl_PerVertex

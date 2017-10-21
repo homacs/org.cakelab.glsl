@@ -27,11 +27,10 @@
 + ./ARB/ARB_shader_image_size.txt
 + ./ARB/ARB_shader_image_load_store.txt
 + ./ARB/ARB_sample_shading.txt
-./ARB/ARB_explicit_attrib_location.txt
-./ARB/ARB_shader_objects.txt
-./ARB/ARB_robust_buffer_access_behavior.txt
-./ARB/ARB_sample_locations.txt
-./ARB/ARB_texture_query_levels.txt
++ ./ARB/ARB_explicit_attrib_location.txt
++ ./ARB/ARB_shader_objects.txt
++ ./ARB/ARB_robust_buffer_access_behavior.txt
++ ./ARB/ARB_texture_query_levels.txt
 ./ARB/ARB_draw_instanced.txt
 ./ARB/ARB_shader_clock.txt
 ./ARB/ARB_shader_stencil_export.txt

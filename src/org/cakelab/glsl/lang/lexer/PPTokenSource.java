@@ -11,6 +11,16 @@ import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
 import org.cakelab.glsl.pp.tokens.TUnknownToken;
 
+/**
+ * This class was introduced only to provide a TokenFactory in case
+ * of a missing token error. 
+ * 
+ * This class implements both: TokenSource and TokenFactory.
+ * 
+ * 
+ * @author homac
+ *
+ */
 public class PPTokenSource implements TokenSource, TokenFactory<PPOutputToken> {
 
 	private String name;
@@ -66,8 +76,11 @@ public class PPTokenSource implements TokenSource, TokenFactory<PPOutputToken> {
 	public PPOutputToken create(Pair<TokenSource, CharStream> source, int type, String text, int channel, int start,
 			int stop, int line, int charPositionInLine) {
 		//
-		// this is used only if a missing token error occurs.
-		// 
+		// This is used only if a missing token error occurs.
+		// The parser inserts a new token for
+		// a missing token only, to document an error and thus, the token 
+		// can be a generic token with the given 'type' code.
+		//
 		PPTokenSource ppTokenSource = (PPTokenSource)source.a;
 		PPOutputToken lt = (PPOutputToken) ppTokenStream.LT(1);
 		start = lt.getStartIndex();

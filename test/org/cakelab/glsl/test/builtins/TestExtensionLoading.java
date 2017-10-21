@@ -43,7 +43,7 @@ public class TestExtensionLoading extends TestBuiltinBase {
 
 
 	private static void testLoading() {
-		WorkingSet ws = testExtension(core(400), ShaderType.VERTEX_SHADER, "GL_ARB_sparse_texture", "GL_ARB_sparse_texture2");
+		WorkingSet ws = testExtension(core(150), ShaderType.VERTEX_SHADER, "GL_ARB_sparse_texture", "GL_ARB_sparse_texture2");
 		
 		ws = testExtension(core(400), ShaderType.VERTEX_SHADER, "GL_ARB_gpu_shader_int64");
 		
@@ -64,6 +64,10 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		ws = testExtension(core(130), ShaderType.GENERIC_SHADER, "GL_ARB_shader_image_load_store");
 
 		ws = testExtension(core(130), ShaderType.FRAGMENT_SHADER, "GL_ARB_sample_shading");
+
+		ws = testExtension(core(400), ShaderType.FRAGMENT_SHADER, "GL_ARB_texture_query_levels");
+		
+		ws = testExtension(core(150), ShaderType.FRAGMENT_SHADER, "GL_ARB_texture_gather");
 		ws.dump(System.out);
 
 		// GL_ARB_sparse_texture_clamp

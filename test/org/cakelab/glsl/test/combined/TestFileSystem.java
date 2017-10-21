@@ -23,6 +23,12 @@ public class TestFileSystem {
 	
 	
 	public static void test() {
+		testFileSystemParse();
+		
+	}
+	
+	public static void testFileSystemParse() {
+
 		ResourceManager resources = new FileSystemResourceManager();
 		
 		GLSL glsl = new GLSL(resources);

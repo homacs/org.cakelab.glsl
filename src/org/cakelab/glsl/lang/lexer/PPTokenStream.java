@@ -52,17 +52,28 @@ public class PPTokenStream implements TokenStream {
 
 	}
 
+	/** list of tokens received from preprocessor */
 	private ArrayList<PPOutputToken> tokens;
-	private int p;
+	/** position of next token in stream */
+	private int pos;
+	/** token representing the end of the stream */
 	private EOFToken eofToken;
+	/** indicating whether the EOF token was read */
 	private boolean fetchedEOF;
 	private ITokenTable tokenTable;
 	private GLSLErrorHandler errorHandler;
 	private SymbolTable symbolTable;
 
+	/**
+	 * 
+	 * @param output Preprocessor output.
+	 * @param tokenTable Mappings of token strings to token type codes used by the ANTLR parser
+	 * @param symbolTable Access to all currently known symbols
+	 * @param errorHandler
+	 */
 	public PPTokenStream(GLSL_ANTLR_PPOutputBuffer output, ITokenTable tokenTable, SymbolTable symbolTable, GLSLErrorHandler errorHandler) {
 		this.symbolTable = symbolTable;
-		this.p = 0;
+		this.pos = 0;
 		this.errorHandler = errorHandler;
 		this.tokens = filter(output.getTokens());
 		this.tokenTable = tokenTable;
@@ -109,6 +120,11 @@ public class PPTokenStream implements TokenStream {
 	}
 
 
+	/**
+	 * Maps a given token to its type code used by ANTLR parser.
+	 * @param t token to be mapped
+	 * @return ANTLR token type code
+	 */
 	private int getTokenType(org.cakelab.glsl.pp.tokens.Token t) {
 		
 		if (t instanceof TWhitespace) {
@@ -151,6 +167,7 @@ public class PPTokenStream implements TokenStream {
 		}
 	}
 	
+	/** validates the given number by decoding its text representation */
 	private void validate(TNumber number) {
 		if (errorHandler == null) return;
 		try {
@@ -164,15 +181,15 @@ public class PPTokenStream implements TokenStream {
 	@Override
 	public void consume() {
 		boolean skipEofCheck;
-		if (p >= 0) {
+		if (pos >= 0) {
 			if (fetchedEOF) {
 				// the last token in tokens is EOF. skip check if p indexes any
 				// fetched token except the last.
-				skipEofCheck = p < tokens.size() - 1;
+				skipEofCheck = pos < tokens.size() - 1;
 			}
 			else {
 				// no EOF token in tokens. skip check if p indexes a fetched token.
-				skipEofCheck = p < tokens.size();
+				skipEofCheck = pos < tokens.size();
 			}
 		}
 		else {
@@ -184,7 +201,7 @@ public class PPTokenStream implements TokenStream {
 			throw new IllegalStateException("cannot consume EOF");
 		}
 
-		p++;
+		pos++;
 	}
 
 	@Override
@@ -197,11 +214,11 @@ public class PPTokenStream implements TokenStream {
         if ( k==0 ) return null;
         if ( k < 0 ) {
         	int j = -k;
-            if ( (p-j)<0 ) return null;
-            else return token(p-j);
+            if ( (pos-j)<0 ) return null;
+            else return token(pos-j);
         }
 
-		int i = p + k - 1;
+		int i = pos + k - 1;
 
         if (i >= tokens.size()) { 
         	// return EOF token
@@ -233,24 +250,12 @@ public class PPTokenStream implements TokenStream {
 
 	@Override
 	public int index() {
-		return p;
+		return pos;
 	}
 
 	@Override
 	public void seek(int index) {
-		// TODO: not sure, if we have to reset token information in TokenStream.seek
-		/*
-		for (int i = index; i <= this.p; i++) {
-			PPOutputToken t = tokens.get(i);
-			org.cakelab.glsl.pp.tokens.Token ppt = t.getPPToken();
-			if (ppt instanceof TIdentifier) {
-				// reset token types to revert probably misinterpreted type
-				t.setType(PPOutputToken.INVALID_TYPE);
-				((TIdentifier) ppt).setReferencedNode(null);
-			}
-		}
-		*/
-		this.p = index;
+		this.pos = index;
 	}
 
 	@Override
@@ -278,7 +283,7 @@ public class PPTokenStream implements TokenStream {
 		//
 		// Tokens are actually from different streams when supporting 
 		// #include.
-		// This method is used by the parser to retreive the TokenFactory
+		// This method is used by the parser to retrieve the TokenFactory
 		// and generate a new token for a missing token.
 		//
 		// Since the missing token would be at the place of the next token,

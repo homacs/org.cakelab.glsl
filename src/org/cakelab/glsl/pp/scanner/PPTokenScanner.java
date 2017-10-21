@@ -5,6 +5,16 @@ import java.util.List;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.tokens.Token;
 
+/**
+ * This is a wrapper for already scanned tokens. It is used when
+ * a parser in the preprocessor has to rescan a sequence of <b>macro expanded</b>
+ * tokens of regular text.
+ * 
+ * 
+ * 
+ * @author homac
+ *
+ */
 public class PPTokenScanner extends IScanner {
 
 	private List<Token> tokens;

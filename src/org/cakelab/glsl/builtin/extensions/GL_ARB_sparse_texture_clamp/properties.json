@@ -1,8 +1,9 @@
 {
 	"name" : "GL_ARB_sparse_texture_clamp",
+	"loader" : "Loader",
 	"dependencies" : {
 		"all" : [
-			"core:[400,]",
+			"core:[130,]",
 			"GL_ARB_sparse_texture2"
 		]
 	}

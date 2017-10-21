@@ -1,15 +1,24 @@
 package org.cakelab.glsl.builtin.extensions.GL_ARB_gpu_shader5;
 
-import static org.cakelab.glsl.lang.ast.types.Type.*;
+import static org.cakelab.glsl.lang.ast.types.Type._float;
+import static org.cakelab.glsl.lang.ast.types.Type._int;
+import static org.cakelab.glsl.lang.ast.types.Type._ivec2;
+import static org.cakelab.glsl.lang.ast.types.Type._ivec3;
+import static org.cakelab.glsl.lang.ast.types.Type._ivec4;
+import static org.cakelab.glsl.lang.ast.types.Type._uint;
+import static org.cakelab.glsl.lang.ast.types.Type._uvec2;
+import static org.cakelab.glsl.lang.ast.types.Type._uvec3;
+import static org.cakelab.glsl.lang.ast.types.Type._uvec4;
+import static org.cakelab.glsl.lang.ast.types.Type._vec2;
+import static org.cakelab.glsl.lang.ast.types.Type._vec3;
+import static org.cakelab.glsl.lang.ast.types.Type._vec4;
 
-import java.io.IOException;
-
-import org.cakelab.glsl.builtin.BuiltinResourceManager;
+import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
-import org.cakelab.glsl.builtin.extensions.GLSLExtension;
 import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoader;
-import org.cakelab.glsl.builtin.extensions.Properties;
 import org.cakelab.glsl.lang.ast.types.Type;
+import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
+import org.cakelab.glsl.pp.Preprocessor;
 
 public class Loader extends GLSLExtensionLoader {
 
@@ -27,14 +36,25 @@ public class Loader extends GLSLExtensionLoader {
 
 	}
 	
-	
-	
-	@Override
-	public GLSLExtension load(WorkingSet ws, Properties properties,
-			BuiltinResourceManager builtinResourceManager) throws IOException {
+	public static String requiredType = "samplerCubeArray";
+	public static String CUBE_ARRAY_AVAILABLE = "__HAVE_CUBE_ARRAY";
 
-		return loadRegularly(ws, properties);
+
+	@Override
+	protected void finishedPreprocessing(WorkingSet ws, Preprocessor pp) {
+		super.finishedPreprocessing(ws, pp);
+		pp.removeDefine(CUBE_ARRAY_AVAILABLE);
 	}
+
+	@Override
+	protected Preprocessor setupPreprocessor(WorkingSet ws, Resource resource, GLSL_ANTLR_PPOutputBuffer buffer) {
+		Preprocessor pp = super.setupPreprocessor(ws, resource, buffer);
+		if (ws.haveBuiltinType(requiredType)) {
+			pp.addDefine(CUBE_ARRAY_AVAILABLE);
+		}
+		return pp;
+	}
+
 
 	private static void addImplicitCastRules(Type sourceType, Type ... targetTypes) {
 		for (Type targetType : targetTypes) {

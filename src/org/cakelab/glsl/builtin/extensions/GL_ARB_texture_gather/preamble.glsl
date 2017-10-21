@@ -23,7 +23,10 @@ u ## vec4 textureGather(u ## SAMPLER_TYPE sampler, P_TYPE P);
 GEN__textureGather(sampler2D,                      vec2)
 GEN__textureGather(sampler2DArray,                 vec3)
 GEN__textureGather(samplerCube,                    vec3)
+
+#ifdef __HAVE_CUBE_ARRAY
 GEN__textureGather(samplerCubeArray,               vec4)
+#endif
 
 #undef GEN__textureGather
 

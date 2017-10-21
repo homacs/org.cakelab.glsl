@@ -20,7 +20,7 @@ import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.SymbolTable;
-import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoader;
+import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoading;
 import org.cakelab.glsl.lang.ASTBuilder;
 import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
@@ -193,7 +193,7 @@ public class BuiltinLoaderHelper {
 
 
 
-	protected static Preprocessor setupPreprocessing(Resource resource, ShaderType shaderType,
+	public static Preprocessor setupPreprocessing(Resource resource, ShaderType shaderType,
 			GLSL_ANTLR_PPOutputBuffer buffer) {
 		Preprocessor pp = new Preprocessor(resource, shaderType, buffer);
 		
@@ -207,12 +207,12 @@ public class BuiltinLoaderHelper {
 	}
 
 	/**
-	 * Not intended to be used by customised extension loaders. Please use {@link GLSLExtensionLoader#parseExtensionPreamble} instead
+	 * Not intended to be used by customised extension loaders. Please use {@link GLSLExtensionLoading#parseExtensionPreamble} instead
 	 * @param buffer
 	 * @param tokenTable
 	 * @param symbolTable
 	 */
-	protected static void parsePreamble(GLSL_ANTLR_PPOutputBuffer buffer, ITokenTable tokenTable,
+	public static void parsePreamble(GLSL_ANTLR_PPOutputBuffer buffer, ITokenTable tokenTable,
 			SymbolTable symbolTable) {
 		
 		

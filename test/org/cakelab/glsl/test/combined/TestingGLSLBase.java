@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.cakelab.glsl.GLSL;
 import org.cakelab.glsl.Resource;
-import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.impl.DelegatingResourceManager;
 import org.cakelab.glsl.impl.FileSystemResourceManager;

@@ -32,14 +32,17 @@ GEN_sparseTextureARB(sampler2DShadow, vec3, float)
 GEN_sparseTextureARB(samplerCubeShadow, vec4, float)
 
 GEN_sparseTextureARB_I_U(sampler2DArray, vec3, vec4)
+#ifdef __HAVE_CUBE_ARRAY
 GEN_sparseTextureARB_I_U(samplerCubeArray, vec4, vec4)
-
+#endif
 int sparseTextureARB(sampler2DArrayShadow sampler, vec4 P, out float texel);
 int sparseTextureARB(sampler2DRect sampler, vec2 P, out vec4 texel);
 int sparseTextureARB(isampler2DRect sampler, vec2 P, out ivec4 texel);
 int sparseTextureARB(usampler2DRect sampler, vec2 P, out uvec4 texel);
 int sparseTextureARB(sampler2DRectShadow sampler, vec3 P, out float texel);
+#ifdef __HAVE_CUBE_ARRAY
 int sparseTextureARB(samplerCubeArrayShadow sampler, vec4 P, float compare, out float texel);
+#endif
 
 #undef GEN_sparseTextureARB
 #undef GEN_sparseTextureARB_I_U
@@ -55,7 +58,9 @@ GEN_sparseTextureLodARB_I_U(sampler3D, vec3)
 GEN_sparseTextureLodARB_I_U(samplerCube, vec3)
 int sparseTextureLodARB(sampler2DShadow sampler, vec3 P, float lod, out float texel);
 GEN_sparseTextureLodARB_I_U(sampler2DArray, vec3)
+#ifdef __HAVE_CUBE_ARRAY
 GEN_sparseTextureLodARB_I_U(samplerCubeArray, vec4)
+#endif
 
 #undef GEN_sparseTextureLodARB_I_U
 
@@ -155,7 +160,9 @@ GEN_sparseTextureGradARB(sampler2DArray, vec3, vec2)
 int sparseTextureGradARB(sampler2DArrayShadow sampler, vec4 P,
                                vec2 dPdx, vec2 dPdy,
                                out float texel);
+#ifdef __HAVE_CUBE_ARRAY
 GEN_sparseTextureGradARB(samplerCubeArray, vec4, vec3)
+#endif
 
 #undef GEN_sparseTextureGradARB
 
@@ -194,7 +201,9 @@ int sparseTextureGatherARB(u ## SAMPLER_TYPE sampler, P_TYPE P, out uvec4 texel,
 GEN_sparseTextureGatherARB_comp(sampler2D,vec2)
 GEN_sparseTextureGatherARB_comp(sampler2DArray,vec3)
 GEN_sparseTextureGatherARB_comp(samplerCube,vec3)
+#ifdef __HAVE_CUBE_ARRAY
 GEN_sparseTextureGatherARB_comp(samplerCubeArray,vec4)
+#endif
 GEN_sparseTextureGatherARB_comp(sampler2DRect,vec2)
 
 int sparseTextureGatherARB(sampler2DShadow sampler, vec2 P,
@@ -203,8 +212,11 @@ int sparseTextureGatherARB(sampler2DArrayShadow sampler, vec3 P,
                                  float refZ, out vec4 texel);
 int sparseTextureGatherARB(samplerCubeShadow sampler, vec3 P,
                                  float refZ, out vec4 texel);
+                                 
+#ifdef __HAVE_CUBE_ARRAY
 int sparseTextureGatherARB(samplerCubeArrayShadow sampler, vec4 P,
                                  float refZ, out vec4 texel);
+#endif
 int sparseTextureGatherARB(sampler2DRectShadow sampler, vec2 P,
                                  float refZ, out vec4 texel);
 

@@ -17,7 +17,7 @@ import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.extensions.GLSLExtension;
-import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoader;
+import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoading;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Expression;
@@ -231,9 +231,15 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	}
 	
 	public void addDefine(Macro macro) {
-		state.getMacros().put(macro.getName(), macro);
+		state.getMacros().define(macro.getName(), macro);
 	}
 	
+	
+	public void removeDefine(String name) {
+		state.getMacros().undef(name);
+	}
+
+
 	
 	private void setScopeVisibility() {
 		// TODO [3] scope visibility (skipping text lines), suspending output generation and location mapping is kind of redundant
@@ -597,7 +603,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 					syntaxWarning(start, "\"" + macroName + "\" redefined");
 				}
 	
-				state.getMacros().put(macroName, macroDefinition);
+				state.getMacros().define(macroName, macroDefinition);
 				state.setCurrentMacroDefinition(macroDefinition);
 				
 				mandatory_endl();
@@ -966,7 +972,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 				String macro = token.getText();
 				while(WHITESPACE());
 				if (mandatory_endl()) {
-					state.getMacros().undefine(macro);
+					state.getMacros().undef(macro);
 					return result;
 				} else {
 					syntaxError(start, "unexpected tokens at end of undef directive");
@@ -1189,7 +1195,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 		// TODO: extensions: implement require, warn.
 		WorkingSet workingSet = state.getWorkingSet();
 		try {
-			if (!GLSLExtensionLoader.canLoadExtenion(directive.identifier)) {
+			if (!GLSLExtensionLoading.canLoadExtenion(directive.identifier)) {
 				syntaxError(directive, "unknown extension '" + directive.identifier + "'");
 			}
 	

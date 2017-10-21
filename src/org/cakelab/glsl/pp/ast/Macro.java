@@ -25,6 +25,7 @@ public class Macro extends NodeImpl {
 		this(name, null, interval);
 	}
 	
+
 	/**
 	 * Macros having the same signature and expansion list may be redefined.
 	 * This method compares two macros in this regard.

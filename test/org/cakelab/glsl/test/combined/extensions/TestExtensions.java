@@ -29,10 +29,15 @@ public class TestExtensions extends TestingGLSLBase {
 		testGL_ARB_shader_image_size();
 		testGL_ARB_shader_image_load_store();
 		testGL_ARB_sample_shading();
+		testGL_ARB_texture_query_levels();
+	}
+	
+
+	private static void testGL_ARB_texture_query_levels() {
+		assertValid(resource("GL_ARB_texture_query_levels/test_01.frag.glsl"),
+				ShaderType.GENERIC_SHADER);
 	}
 
-	
-	
 
 	private static void testGL_ARB_sample_shading() {
 		assertValid(resource("GL_ARB_sample_shading/test_01.frag.glsl"),

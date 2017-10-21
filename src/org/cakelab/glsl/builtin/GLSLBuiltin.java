@@ -158,6 +158,10 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 				out.println("macro: " + m.getName());
 			}
 		}
+
+		public boolean haveBuiltinType(String type) {
+			return builtinScope.containsType(type) || this.getExtensions().containsType(type);
+		}
 		
 	}
 	
@@ -284,7 +288,7 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 		pp.process(true);
 		
 		MacroMap macroMap = pp.getState().getMacros();
-		macroMap.undefine(shaderType.name());
+		macroMap.undef(shaderType.name());
 
 		return macroMap.getUserLevelMacros();
 	}

@@ -94,7 +94,7 @@ very basic. For example a number is just a sequence
 of digits, eventually containing a dot. This is not 
 enough to distinguish e.g. between hexadecimal 
 constants and identifiers. Given a hexadecimal constant 
-such as 0xCAFFEE, a basic lexer woudl emit a number token '0' followed
+such as 0xCAFFEE, a basic lexer would emit a number token '0' followed
 by an identifier token 'xCAFFEE'. If there was a defined macro
 with the same name, this would turn into a macro invocation, 
 which is wrong. Thus, the preprocessor already requires 
@@ -202,8 +202,6 @@ macro expansion:
 4. Expansion of preprocessing tokens for the expression
    of a conditional inclusion.
    
-
-
 
 Execution of Macro Invocations:
 

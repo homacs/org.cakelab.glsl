@@ -192,7 +192,7 @@ public class Properties {
 
 
 	public Resource getPreamble() throws IOException {
-		return GLSLExtensionLoader.getPreambleResource(name);
+		return GLSLExtensionLoading.getPreambleResource(name);
 	}
 
 

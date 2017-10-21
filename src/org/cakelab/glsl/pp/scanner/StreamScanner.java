@@ -8,7 +8,12 @@ import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.pp.error.SyntaxError;
 
-
+/***
+ * IScanner implementation for input streams.
+ * 
+ * @author homac
+ *
+ */
 public class StreamScanner extends IScanner {
 
 	public static class InputStreamBuffer {
@@ -61,9 +66,6 @@ public class StreamScanner extends IScanner {
 		}
 
 		private void readBOM(InputStream in) throws IOException {
-			// TODO [6] BOM should not be read in input stream buffer
-			//       especially in temporary lexers.
-			
 			int bytes; // first two bytes as one integer
 			byte hi,lo; // the two bytes separated
 			int c = in.read();
