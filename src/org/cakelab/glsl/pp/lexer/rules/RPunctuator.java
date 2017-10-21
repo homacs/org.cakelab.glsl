@@ -5,8 +5,17 @@ import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.tokens.TPunctuator;
 import org.cakelab.glsl.pp.tokens.Token;
 
-public class RPunctuator extends LexerRuleSequenceSelect {
-
+/**
+ * Rule to scan for punctuator tokens.
+ * @author homac
+ *
+ */
+public class RPunctuator extends LexerRuleEquals {
+	//
+	// Performance note: Matching input against all strings is 
+	//                   as fast as using a large switch case statement.
+	// 
+	
 	final static String[] punctuators = {
 			"[",
 			"]",
@@ -25,14 +34,14 @@ public class RPunctuator extends LexerRuleSequenceSelect {
 			"%>", "%:%:", "%:", "%=","%",
 			"<<=", "<<","<:","<=","<%","<",
 			">>=", ">>",">=", ">",
-			"==",
+			"==", "=",
 			"^=", "^^", "^",
 			"|=","||", "|",
 			"?",
 			":>",":",
 			";",
 			",",
-			"=",
+			
 			/* # ## see RHash and RHashHash */ 
 	};
 	
@@ -40,8 +49,7 @@ public class RPunctuator extends LexerRuleSequenceSelect {
 	public RPunctuator(PPState state) {
 		super(state, punctuators);
 	}
-
-
+	
 	@Override
 	protected Token createToken(Interval interval, String text) {
 		return new TPunctuator(interval, text);

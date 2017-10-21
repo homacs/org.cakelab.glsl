@@ -27,6 +27,10 @@ public class StreamScanner extends IScanner {
 		/** length of the current line, not the buffer */
 		protected int length;
 
+		/** 
+		 * Whether {@link #dismiss(int)} was called.
+		 * 
+		 */
 		protected boolean dismissed = false;
 		
 		
@@ -165,11 +169,11 @@ public class StreamScanner extends IScanner {
 	public int lookahead(int i) {
 		if (eof()) return EOF;
 		int pos = location.getPosition()+i;
-		if (pos > buffer.size()) throw new Error("lookahead exceeds end of file");
+		assert (pos <= buffer.size()) : "lookahead exceeds end of file";
 		return buffer.get(pos);
 	}
 
-	/** if line end reached, then read next line */
+	/** update location by +n */
 	private void consumed(int n) {
 		if (n == 0 || eof()) return;
 		for (int i = 0; i < n; i++) next(location);
@@ -206,10 +210,13 @@ public class StreamScanner extends IScanner {
 		location = new Location(id, location.getPosition(), line, Location.FIRST_COLUMN);
 	}
 
-	public boolean atColumnStart() {
+	public boolean atLineStart() {
 		return location.getColumn() == Location.FIRST_COLUMN;
 	}
 
+	/** 
+	 * Update location to location of next atom in-place 
+	 * instead of creating a new Location instance. */
 	public void next(Location location) {
 		int i = location.getPosition()+1;
 		int c = buffer.get(i);
@@ -224,12 +231,22 @@ public class StreamScanner extends IScanner {
 		}
 	}
 
+	/** 
+	 * Create a new Location instance pointing to the next 
+	 * atom in this stream from the given location.
+	 * @param location
+	 * @return new instance pointing to next atom from given location
+	 */
 	public Location nextLocation(Location location) {
 		location = location.clone();
 		next(location);
 		return location;
 	}
 
+	/** 
+	 * Create a new Location instance pointing to the next atom in this stream.
+	 * @return
+	 */
 	public Location nextLocation() {
 		return nextLocation((Location) location);
 	}

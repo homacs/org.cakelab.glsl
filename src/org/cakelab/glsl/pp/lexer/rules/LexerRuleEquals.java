@@ -4,6 +4,13 @@ import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.lexer.LexerRule;
 import org.cakelab.glsl.pp.tokens.Token;
 
+/**
+ * Abstract base class for lexer rules, having a set of
+ * optional strings to be matched.
+ * 
+ * @author homac
+ *
+ */
 public abstract class LexerRuleEquals extends LexerRule {
 	private String[] options;
 	

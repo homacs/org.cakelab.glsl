@@ -147,7 +147,6 @@ public class PPLexer extends PPHelper implements ILexer {
 		return rules;
 	}
 
-
 	public IScanner getScanner() {
 		return in;
 	}

@@ -5,7 +5,7 @@ import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.tokens.TWhitespace;
 import org.cakelab.glsl.pp.tokens.Token;
 
-public class RBlankAndTab extends LexerRuleSequenceSelect {
+public class RBlankAndTab extends LexerRuleEquals {
 	char[] set = new char[]{'\t', ' '};
 	
 	public RBlankAndTab(PPState state) {
