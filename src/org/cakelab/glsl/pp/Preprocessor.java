@@ -213,8 +213,6 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 		
 		ByteArrayInputStream in = new ByteArrayInputStream(define.getBytes());
 		StreamScanner scanner = new StreamScanner("-- predefined --", in);
-		IScanner.EofFuture eof = new IScanner.EofFuture();
-		scanner.addOnEofHandler(eof);
 		
 		
 		ILexer previousLexer = getLexer();
@@ -222,8 +220,8 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 			state.setLexer(new PPLexer(scanner, state));
 			
 			define();
-			// TODO: eof handler still necessary on this level?
-			assert eof.occurred() && getLexer().eof();
+
+			assert getLexer().eof();
 			// TODO: maybe check for errors in predefinitions before proceeding
 		} finally {
 			state.setLexer(previousLexer);

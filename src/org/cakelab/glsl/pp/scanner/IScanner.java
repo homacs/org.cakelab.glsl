@@ -1,39 +1,11 @@
 package org.cakelab.glsl.pp.scanner;
 
-import java.util.ArrayList;
-
 import org.cakelab.glsl.Location;
 
 public abstract class IScanner {
 
-	/**
-	 * EofFuture is an EofHandler (see {@link IScanner#addOnEofHandler(Runnable)})
-	 * which just stores, whether it was called or not. Method {@link #occurred()}
-	 * indicates just that.
-	 * @author homac
-	 * @see IScanner#addOnEofHandler(Runnable)
-	 * @see #occurred()
-	 *
-	 */
-	public static class EofFuture implements Runnable {
-		boolean occurred = false;
-		
-		@Override
-		public void run() {
-			occurred = true;
-		}
-		
-		/**
-		 * @return whether this handlers {@link #run()} method was called or not.
-		 */
-		public boolean occurred() {
-			return occurred;
-		}
-	}
 	
 	public static final int EOF = -1;
-	protected ArrayList<Runnable> eofHandlers = new ArrayList<Runnable>();
-
 
 	public abstract int current();
 	
@@ -75,24 +47,6 @@ public abstract class IScanner {
 	 * Scanner has to act, like it was read to EOF.
 	 */
 	public abstract void dismiss();
-
-	/**
-	 * On EOF Handlers allow clients to be notified, when
-	 * the content of a scanner has been fully read (including EOF).
-	 * The scanner will call the {@link Runnable#run()} method
-	 * on each registered eof handler when EOF was consumed.
-	 * @param runnable
-	 * @see EofFuture
-	 */
-	public void addOnEofHandler(Runnable runnable) {
-		eofHandlers.add(runnable);
-	}
-
-	protected void runEofHandlers() {
-		for (Runnable handler : eofHandlers) {
-			handler.run();
-		}
-	}
 
 
 	/**

@@ -100,7 +100,6 @@ public class PPTokenScanner extends IScanner {
 		}
 		
 		remaining -= n;
-		if (remaining == 0) super.runEofHandlers();
 	}
 
 	private int atom(int token, int offset) {

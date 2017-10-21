@@ -173,7 +173,6 @@ public class StreamScanner extends IScanner {
 	private void consumed(int n) {
 		if (n == 0 || eof()) return;
 		for (int i = 0; i < n; i++) next(location);
-		if (eof()) runEofHandlers();
 	}
 
 	/** consume n tokens and return the consumed string. */
@@ -193,7 +192,6 @@ public class StreamScanner extends IScanner {
 
 	public void dismiss() {
 		buffer.dismiss(location.getPosition());
-		runEofHandlers();
 	}
 
 	public Location location() {
