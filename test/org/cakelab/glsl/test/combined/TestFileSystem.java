@@ -31,7 +31,7 @@ public class TestFileSystem {
 
 		ResourceManager resources = new FileSystemResourceManager();
 		
-		GLSL glsl = new GLSL(resources);
+		GLSL glsl = new GLSL(GLSL.getDefaultCompilerFeatures(), resources);
 		Resource resource;
 		try {
 			resource = resources.resolve("test_files/100.frag");

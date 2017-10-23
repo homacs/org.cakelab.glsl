@@ -1,6 +1,7 @@
 package org.cakelab.glsl.builtin.extensions;
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -18,7 +19,7 @@ public class KnownExtensions {
 	private static final List ES = new List();
 
 	@SuppressWarnings("serial")
-	private static class List extends HashMap<String, String[]> {
+	public static class List extends HashMap<String, String[]> {
 
 		public boolean add(String[] names) {
 			for (String n : names) {
@@ -30,7 +31,7 @@ public class KnownExtensions {
 		public boolean contains(String name) {
 			return containsKey(name);
 		}
-		
+
 	}
 	
 	
@@ -91,5 +92,13 @@ public class KnownExtensions {
 		}
 	}
 
-	
+	public static Collection<String[]> getAllArb() {
+		return ARB.values();
+	}
+	public static Collection<String[]> getAllGL() {
+		return GL.values();
+	}
+	public static Collection<String[]> getAllEs() {
+		return ES.values();
+	}
 }

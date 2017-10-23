@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cakelab.glsl.GLSLCompilerFeatures;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.GLSLVersion.Profile;
 import org.cakelab.glsl.Interval;
@@ -109,12 +110,12 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	 * @param in
 	 * @param out
 	 */
-	public Preprocessor(Resource[] resources, ShaderType shaderType, OutputStream out) {
-		this(resources, shaderType, new PreprocessedOutputStream(out));
+	public Preprocessor(GLSLCompilerFeatures features, Resource[] resources, ShaderType shaderType, OutputStream out) {
+		this(features, resources, shaderType, new PreprocessedOutputStream(out));
 	}
 
-	public Preprocessor(Resource[] resource, ShaderType shaderType, PPOutputSink out) {
-		super(true, new PPState(resource, shaderType));
+	public Preprocessor(GLSLCompilerFeatures features, Resource[] resource, ShaderType shaderType, PPOutputSink out) {
+		super(true, new PPState(features, resource, shaderType));
 		state.addListener(this);
 		state.setInputResource(resource);
 		if (resource.length == 1) originalSourceLexer = new PPLexer(new StreamScanner(resource[0]), state);
@@ -1185,7 +1186,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	public void reportModifiedVersion(GLSLVersion version) {
 		if (!state.isForcedVersion()) {
 			GLSLBuiltin symbols = GLSLBuiltin.get(version, state.getShaderType());
-			WorkingSet workingSet = symbols.createWorkingSet();
+			WorkingSet workingSet = symbols.createWorkingSet(state.getCompilerFeatures());
 			state.setWorkingSet(workingSet);
 		}
 	}

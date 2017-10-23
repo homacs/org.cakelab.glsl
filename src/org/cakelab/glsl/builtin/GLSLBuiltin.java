@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.cakelab.glsl.GLSLCompilerFeatures;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
@@ -97,8 +98,9 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 	 * <li>GLSL version ({@link GLSLVersion})</li>
 	 * <li>selected profile ({@link GLSLVersion#Profile})</li>
 	 * <li>type of the shader to be processed ({@link ShaderType})</li>
-	 * <li>set of builtin symbols ({@link BuiltinScope})</li>
 	 * <li>set of builtin macros (<b><code>HashMap&lt;String, Macro&gt;</code></b>)</li>
+	 * <li>set of feature macros (<b><code>HashMap&lt;String, Macro&gt;</code></b>)</li>
+	 * <li>set of builtin symbols ({@link BuiltinScope})</li>
 	 * <li>enabled extensions ({@link GLSLExtensionSet}, via {@link BuiltinScope#extensions})</li>
 	 * </ul>
 	 * A working set is created by {@link GLSLBuiltin#createWorkingSet()}.
@@ -110,10 +112,12 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 		private BuiltinScope builtinScope;
 		private HashMap<String, Macro> builtinMacros;
 		private ExtendedTokenTable tokenTable;
+		private GLSLCompilerFeatures features;
 		
-		private WorkingSet(Key key, BuiltinScope builtinScope, ExtendedTokenTable tokenTable, HashMap<String, Macro> builtinMacros) {
+		private WorkingSet(Key key, GLSLCompilerFeatures features, BuiltinScope builtinScope, ExtendedTokenTable tokenTable, HashMap<String, Macro> builtinMacros) {
 			super();
 			this.key = key;
+			this.features = features;
 			this.builtinScope = builtinScope;
 			this.tokenTable = tokenTable;
 			this.builtinMacros = builtinMacros;
@@ -154,8 +158,11 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 
 		public void dump(PrintStream out) {
 			builtinScope.dump(out, "");
+			for (Macro m : features.getFeatureMacros().values()) {
+				out.println("feature: " + m.toString());
+			}
 			for (Macro m : builtinMacros.values()) {
-				out.println("macro: " + m.getName());
+				out.println("macro: " + m.toString());
 			}
 		}
 
@@ -166,7 +173,7 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 	}
 	
 	
-	/** cache for recently parsed preambles */
+	/** cache for parsed preambles */
 	static final Map<Key, GLSLBuiltin> BUILTIN_SYMBOLS_CACHE = new HashMap<Key, GLSLBuiltin>(4);
 	
 	
@@ -201,7 +208,7 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 		builtinMacros.put(__FILE__.getName(), __FILE__);
 
 	}
-	
+
 	public GLSLVersion getVersion() {
 		return key.version;
 	}
@@ -210,11 +217,11 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 		return key.shaderType;
 	}
 
-	public WorkingSet createWorkingSet() {
+	public WorkingSet createWorkingSet(GLSLCompilerFeatures features) {
 		BuiltinScope builtinSymbols = new BuiltinScope(builtinScopeSymbols);
 		GLSLTokenTable builtinTokens = GLSLTokenTable.get(key.version);
 		ExtendedTokenTable tokenTable = new ExtendedTokenTable(builtinTokens, builtinSymbols.getExtensions());
-		return new WorkingSet(key, builtinSymbols, tokenTable, macros);
+		return new WorkingSet(key, features, builtinSymbols, tokenTable, macros);
 	}
 	
 	public void dump(PrintStream out) {
@@ -277,7 +284,6 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 	}
 	
 	
-
 	private static HashMap<String, Macro> preprocess(Resource resource, GLSLVersion version, ShaderType shaderType,
 		GLSL_ANTLR_PPOutputBuffer buffer) {
 		

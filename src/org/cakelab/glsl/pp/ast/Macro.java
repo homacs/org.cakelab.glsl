@@ -7,6 +7,7 @@ import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.lang.ast.impl.NodeImpl;
 import org.cakelab.glsl.pp.MacroExpandedLocation;
+import org.cakelab.glsl.pp.error.ExpressionError;
 import org.cakelab.glsl.pp.tokens.Token;
 import org.cakelab.glsl.pp.tokens.TokenList;
 
@@ -24,6 +25,8 @@ public class Macro extends NodeImpl {
 	public Macro(String name, Interval interval) {
 		this(name, null, interval);
 	}
+	
+	
 	
 
 	/**
@@ -89,10 +92,18 @@ public class Macro extends NodeImpl {
 		this.replacement_list = replacement_list;
 		
 		if (replacement_list != null && replacement_list.size() > 0) {
+			assert (validate(replacement_list));
 			super.interval.setEnd(replacement_list.get(replacement_list.size()-1).getEnd());
 		}
 	}
 	
+
+	private boolean validate(NodeList<Node> replacement_list) {
+		for (Node r : replacement_list) {
+			assert (r instanceof Token) || (r instanceof PPExpression) || (r instanceof ExpressionError): "only tokens or instances of PPExpression ('#' and '##') allowed";
+		}
+		return true;
+	}
 
 	public MacroParameter getParameter(String identifier) {
 		if (params == null) return null;
@@ -183,6 +194,30 @@ public class Macro extends NodeImpl {
 
 	public int numParameters() {
 		return params.size();
+	}
+
+	@Override
+	public String toString() {
+		StringBuffer str = new StringBuffer(name);
+		if (isFunctionMacro()) {
+			str.append('(');
+			for (int i = 0; i < params.size(); i++) {
+				MacroParameter p = params.get(i);
+				str.append(p.getName());
+				if (i < params.size()-1) str.append(", ");
+			}
+			str.append(')');
+		}
+		if (replacement_list != null && replacement_list.size() > 0) {
+			str.append(' ');
+			for (Node r : replacement_list) {
+				if (r instanceof Token || r instanceof PPExpression)	str.append(r.toString());
+				else {
+					str.append("§" + r.getClass().getSimpleName() + "§");
+				}
+			}
+		}
+		return str.toString();
 	}
 
 

@@ -1,9 +1,11 @@
 package org.cakelab.glsl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
+import org.cakelab.glsl.builtin.extensions.KnownExtensions;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.impl.GLSLErrorHandlerImpl;
 import org.cakelab.glsl.lang.ASTBuilder;
@@ -16,39 +18,69 @@ import org.cakelab.glsl.pp.ast.PPGroupScope;
 
 public class GLSL {
 	
+	private static GLSLCompilerFeatures DEFAULT_COMPILER_FEATURES;
 	private ResourceManager resourceManager;
 	private GLSLErrorHandler errorHandler;
+	private GLSLCompilerFeatures features;
+	
+	
+	static {
+		ArrayList<String[]> extensionNames = new ArrayList<String[]>();
+		extensionNames.addAll(KnownExtensions.getAllArb());
+		extensionNames.addAll(KnownExtensions.getAllGL());
+		extensionNames.addAll(KnownExtensions.getAllEs());
+		DEFAULT_COMPILER_FEATURES = new GLSLCompilerFeatures(GLSLVersion.Profile.values(), extensionNames);
+
+	}
+	
 
 	public GLSL() {
-		this(new GLSLErrorHandlerImpl());
+		this(getDefaultCompilerFeatures(), new GLSLErrorHandlerImpl());
 	}
 	
-	public GLSL(GLSLErrorHandler errorHandler) {
-		this(errorHandler, new FileSystemResourceManager());
+	/**
+	 * Creates a compiler feature set which supports all extensions and profiles
+	 * known to this implementation.
+	 * 
+	 * @return
+	 */
+	public static GLSLCompilerFeatures getDefaultCompilerFeatures() {
+		return DEFAULT_COMPILER_FEATURES;
+	}
+
+	public GLSL(GLSLCompilerFeatures features, GLSLErrorHandler errorHandler) {
+		this(features, errorHandler, new FileSystemResourceManager());
 	}
 	
-	public GLSL(ResourceManager resources) {
-		this(new GLSLErrorHandlerImpl(), resources);
+	public GLSL(GLSLCompilerFeatures features, ResourceManager resources) {
+		this(features, new GLSLErrorHandlerImpl(), resources);
 	}
 	
-	public GLSL(GLSLErrorHandler errorHandler, ResourceManager resources) {
+	public GLSL(GLSLCompilerFeatures features, GLSLErrorHandler errorHandler, ResourceManager resources) {
+		this.features = features;
 		this.errorHandler = errorHandler;
 		this.resourceManager = resources;
 		this.errorHandler.setResourceManager(resources);
 	}
 
+	public void setCompilerFeatures(GLSLCompilerFeatures features) {
+		this.features = features;
+	}
+	
 	public CombinedAST parse(Resource resource, ShaderType shaderType) throws IOException {
 		return parse(new Resource[]{resource}, shaderType);
 	}
 	
 	public CombinedAST parse(Resource[] resource, ShaderType shaderType) throws IOException {
 		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(resourceManager);
-		Preprocessor pp = new Preprocessor(resource, shaderType, buffer);
+		Preprocessor pp = new Preprocessor(features, resource, shaderType, buffer);
 		
 		pp.setResourceManager(resourceManager);
 		pp.setErrorHandler(errorHandler);
 		pp.enableInclude(true);
 		pp.enableLineDirectiveInsertion(false);
+		
+		
 		
 		List<PPGroupScope> ppAST = pp.process(true);
 

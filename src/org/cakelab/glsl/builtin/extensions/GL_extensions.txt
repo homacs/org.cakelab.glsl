@@ -1,4 +1,3 @@
-
 GL_EXT_abgr
 GL_EXT_blend_color
 GL_EXT_polygon_offset

@@ -14,6 +14,7 @@ import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNodeImpl;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
+import org.cakelab.glsl.GLSL;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Location;
@@ -283,7 +284,7 @@ public class TestingTools {
 		
 		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(resourceManager);
 		Resource resource = new ResourceString("0", "-- testing --", sourceCode);
-		Preprocessor pp = new Preprocessor(new Resource[]{resource}, ShaderType.GENERIC_SHADER, buffer);
+		Preprocessor pp = new Preprocessor(GLSL.getDefaultCompilerFeatures(), new Resource[]{resource}, ShaderType.GENERIC_SHADER, buffer);
 
 		pp.setForceVersion(new GLSLVersion(null, 450, GLSLVersion.Profile.core));
 		pp.setResourceManager(resourceManager);
@@ -295,7 +296,7 @@ public class TestingTools {
 
 		GLSLVersion version = buffer.getVersion();
 		GLSLBuiltin builtin = TestBuiltinBase.getTestBuiltinSymbols(version);
-		WorkingSet workingSet = builtin.createWorkingSet();
+		WorkingSet workingSet = builtin.createWorkingSet(GLSL.getDefaultCompilerFeatures());
 		SymbolTable symbolTable = new SymbolTable(workingSet.getBuiltinScope());
 		PPTokenStream tokens = new PPTokenStream(buffer, workingSet.getTokenTable(), symbolTable, TEST_ERROR_HANLDER);
 		parser = new GLSLParser(tokens);

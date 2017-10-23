@@ -29,6 +29,9 @@ public abstract class Token extends NodeImpl {
 		return text.length();
 	}
 	
+	public String toString() {
+		return text;
+	}
 	
 	public abstract Token clone();
 

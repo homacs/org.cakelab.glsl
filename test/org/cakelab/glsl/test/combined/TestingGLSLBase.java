@@ -16,7 +16,7 @@ public class TestingGLSLBase {
 	
 	protected static final ParserErrorHandler ERROR_HANDLER = TestingTools.TEST_ERROR_HANLDER;
 	protected static final DelegatingResourceManager RESOURCES = new DelegatingResourceManager(new JarResourceManager(), new FileSystemResourceManager());
-	protected static final GLSL _GLSL = new GLSL(ERROR_HANDLER, RESOURCES);
+	protected static final GLSL _GLSL = new GLSL(GLSL.getDefaultCompilerFeatures(), ERROR_HANDLER, RESOURCES);
 	protected static final String TEST_RESOURCE_PATH = "test.glsl";
 	
 	
@@ -26,6 +26,15 @@ public class TestingGLSLBase {
 		p(text, shaderType);
 		if (ERROR_HANDLER.hasError()) {
 			TestingTools.error(ERROR_HANDLER.message);
+		}
+	}
+	
+	public static void assertInvalid(String text, ShaderType shaderType, String expectedErrMsg) {
+		p(text, shaderType);
+		if (!ERROR_HANDLER.hasError()) {
+			TestingTools.error("expected an error");
+		} else if (!ERROR_HANDLER.getMessage().endsWith(expectedErrMsg)) {
+			TestingTools.error("got error: '" + ERROR_HANDLER.getMessage() + "'\t\ninstead of '" + expectedErrMsg + "'");
 		}
 	}
 	

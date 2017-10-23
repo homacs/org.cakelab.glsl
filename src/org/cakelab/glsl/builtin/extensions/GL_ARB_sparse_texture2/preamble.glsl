@@ -10,9 +10,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#define GL_ARB_sparse_texture2 1
-
-
 //   ------  sparseTextureARB(sampler, p [, bias])   -------
 #define GEN_sparseTextureARB(FIRST, SECOND, THIRD)\
 int sparseTextureARB(FIRST sampler, SECOND P, out THIRD texel);\

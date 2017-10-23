@@ -126,7 +126,6 @@ public class TestExtensions extends TestingGLSLBase {
 				+ "#extension GL_ARB_gpu_shader_fp64 : enable\n"
 				+ "double d;\n",
 				ShaderType.GENERIC_SHADER);
-
 	}
 	
 	

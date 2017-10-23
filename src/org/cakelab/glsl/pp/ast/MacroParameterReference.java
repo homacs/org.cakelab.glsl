@@ -54,6 +54,8 @@ public class MacroParameterReference extends PPExpression {
 		return this.param.same(that.param);
 	}
 	
-	
+	public String toString() {
+		return param.getName();
+	}
 	
 }

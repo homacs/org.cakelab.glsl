@@ -11,6 +11,7 @@ import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.cakelab.glsl.GLSLCompilerFeatures;
 import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLVersion;
@@ -148,6 +149,22 @@ public class BuiltinLoaderHelper {
 
 	static final InternalErrorHandler INTERNAL_ERROR_HANDLER;
 	public static final BuiltinResourceManager BUILTIN_RESOURCE_MANAGER;
+	/** 
+	 * <p>
+	 * The EMPTY_FEATURESET is always used during parsing of preambles.
+	 * </p>
+	 * <p>
+	 * Generally, preambles have to be independent of the current feature set of 
+	 * the compiler. Thus, feature macros are not available (and not needed) when 
+	 * loading preambles. A preamble of a profile or extension will be loaded only, 
+	 * if the feature is supported. Preambles can, however, safely "redefine" a feature
+	 * macro e.g. to signal, that a preamble was recently parsed. Those redefined macros
+	 * will be available to subsequently parsed preambles but not to the user level code. 
+	 * On user level, those "redefined macros" will be hidden by the feature macros with 
+	 * the same name.
+	 * </p>
+	 */
+	private static final GLSLCompilerFeatures EMPTY_FEATURESET = new GLSLCompilerFeatures(GLSLVersion.Profile.values());
 
 	
 	static {
@@ -194,7 +211,7 @@ public class BuiltinLoaderHelper {
 
 	public static Preprocessor setupPreprocessing(Resource resource, ShaderType shaderType,
 			GLSL_ANTLR_PPOutputBuffer buffer) {
-		Preprocessor pp = new Preprocessor(new Resource[]{resource}, shaderType, buffer);
+		Preprocessor pp = new Preprocessor(EMPTY_FEATURESET, new Resource[]{resource}, shaderType, buffer);
 		
 		pp.addDefine(shaderType.name());
 		

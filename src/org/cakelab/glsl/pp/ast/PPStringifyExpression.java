@@ -62,4 +62,7 @@ public class PPStringifyExpression extends PPExpression {
 		return operand;
 	}
 
+	public String toString() {
+		return "#";
+	}
 }

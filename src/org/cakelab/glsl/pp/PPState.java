@@ -2,6 +2,7 @@ package org.cakelab.glsl.pp;
 
 import java.util.ArrayList;
 
+import org.cakelab.glsl.GLSLCompilerFeatures;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
@@ -69,16 +70,22 @@ public class PPState {
 	
 	private MacroMap macros = new MacroMap(GLSLBuiltin.getDefaultBuiltinMacros());
 	private WorkingSet workingSet;
+	private GLSLCompilerFeatures features;
 	
 	
-
-	
-	public PPState(Resource[] inputs, ShaderType shaderType) {
+	public PPState(GLSLCompilerFeatures features, Resource[] inputs, ShaderType shaderType) {
+		this.features = features;
 		this.inputs = inputs;
 		this.shaderType = shaderType;
 		listeners = new ListenerSet();
+		this.macros.setFeatureMacros(features.getFeatureMacros());
 	}
 
+	public GLSLCompilerFeatures getCompilerFeatures() {
+		return features;
+	}
+	
+	
 	public void addListener(Listener listener) {
 		listeners.add(listener);
 	}
@@ -113,10 +120,6 @@ public class PPState {
 
 	public MacroMap getMacros() {
 		return macros;
-	}
-
-	public void setMacros(MacroMap macros) {
-		this.macros = macros;
 	}
 
 	public PPGroupScope getGroupScope() {

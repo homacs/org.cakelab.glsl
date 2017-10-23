@@ -16,6 +16,7 @@ public class MacroMap {
 	HashMap<String, Macro> builtin = new HashMap<String, Macro>();
 	HashMap<String, Macro> macros = new HashMap<String, Macro>();
 	HashSet<String> undefined = new HashSet<String>();
+	private HashMap<String, Macro> features;
 
 	
 	public MacroMap(HashMap<String, Macro> defaultBuiltinMacros) {
@@ -39,6 +40,11 @@ public class MacroMap {
 			if (macro != null) return macro;
 		}
 		
+		if (features != null) {
+			macro = features.get(name);
+			if (macro != null) return macro;
+		}
+		
 		if (builtin != null) {
 			macro = builtin.get(name);
 			if (macro != null) return macro;
@@ -53,10 +59,15 @@ public class MacroMap {
 	}
 
 	public void undef(String name) {
-		if (builtin.containsKey(name)|| (extensions != null && extensions.getMacro(name) != null)) {
+		if (macros.containsKey(name)) {
+			macros.remove(name);
+		} else if ((extensions != null && extensions.getMacro(name) != null)) {
+			undefined.add(name);
+		} else if (features != null && features.containsKey(name)) {
+			undefined.add(name);
+		} else if (builtin != null && builtin.containsKey(name)) {
 			undefined.add(name);
 		}
-		macros.remove(name);
 	}
 
 
@@ -82,10 +93,17 @@ public class MacroMap {
 		if (builtin != null) {
 			all.addAll(builtin.values());
 		}
+		if (features != null) {
+			all.addAll(features.values());
+		}
 		all.addAll(extensions.getMacros());
 		all.addAll(macros.values());
 		
 		return all;
+	}
+
+	public void setFeatureMacros(HashMap<String, Macro> features) {
+		this.features = features;
 	}
 
 

@@ -2,6 +2,7 @@ package org.cakelab.glsl.test.builtins;
 
 import java.io.FileInputStream;
 
+import org.cakelab.glsl.GLSL;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
@@ -31,7 +32,7 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		WorkingSet ws = testExtension(core(110), ShaderType.VERTEX_SHADER, "GL_NV_vertex_program4");
 
 		assert (ws.getExtensions().containsExtension("GL_NV_vertex_program4"));
-		assert (ws.getExtensions().getMacro("GL_NV_vertex_program4") != null);
+		assert (ws.getExtensions().getMacro("GL_NV_vertex_program4") == null);
 
 		// using an alternative name
 		ws = testExtension(core(110), ShaderType.VERTEX_SHADER, "GL_KHR_blend_equation_advanced_coherent");
@@ -156,7 +157,7 @@ public class TestExtensionLoading extends TestBuiltinBase {
 
 	private static WorkingSet createFakeWorkingSet(GLSLVersion version, String ... names) {
 		GLSLBuiltin builtin = getTestBuiltinSymbols(version);
-		WorkingSet ws = builtin.createWorkingSet();
+		WorkingSet ws = builtin.createWorkingSet(GLSL.getDefaultCompilerFeatures());
 		GLSLExtensionSet extensions = ws.getExtensions();
 		for (String name : names) {
 			extensions.enable(new MockedExtension(name, ShaderType.GENERIC_SHADER, ws.getGLSLVersion()));
@@ -168,7 +169,7 @@ public class TestExtensionLoading extends TestBuiltinBase {
 	public static WorkingSet testExtension(GLSLVersion version, ShaderType shaderType, String ... extensions) {
 		GLSLBuiltin builtin = GLSLBuiltin.get(version, shaderType);
 		
-		WorkingSet workingSet = builtin.createWorkingSet();
+		WorkingSet workingSet = builtin.createWorkingSet(GLSL.getDefaultCompilerFeatures());
 		for (String extension : extensions) {
 			workingSet.enableExtension(extension);
 		}

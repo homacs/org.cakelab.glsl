@@ -1,4 +1,3 @@
-
 GL_OES_blend_equation_separate
 GL_OES_blend_func_separate
 GL_OES_blend_subtract

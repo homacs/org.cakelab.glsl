@@ -2,6 +2,7 @@ package org.cakelab.glsl.test.pp;
 
 import java.io.OutputStream;
 
+import org.cakelab.glsl.GLSL;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.impl.ResourceString;
@@ -17,7 +18,7 @@ public class TestingExprBase extends TestingBase {
 	public Parser p(String source) {
 		try {
 			Resource resource = new ResourceString("0", "-- testing --", source);
-			PPState state = new PPState(new Resource[]{resource}, ShaderType.GENERIC_SHADER);
+			PPState state = new PPState(GLSL.getDefaultCompilerFeatures(), new Resource[]{resource}, ShaderType.GENERIC_SHADER);
 			state.setErrorHandler(errorHandler);
 			
 			IScanner scanner = new StreamScanner(resource);

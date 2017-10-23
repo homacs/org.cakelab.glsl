@@ -64,5 +64,8 @@ public class PPConcatExpression extends PPExpression {
 		}
 	}
 
+	public String toString() {
+		return "##";
+	}
 
 }

@@ -1,4 +1,3 @@
-
 GL_ARB_multitexture
 GLX_ARB_get_proc_address
 GL_ARB_transpose_matrix

@@ -17,6 +17,20 @@ public class GLSLVersion extends NodeImpl {
 			return null;
 			
 		}
+
+		public String getMacroName() {
+			switch(this) {
+			case compatibility:
+				return "GL_compatibility_profile";
+			case core:
+				return "GL_core_profile";
+			case es:
+				return "GL_es_profile";
+			default:
+				assert false : "unhandled case in Profile.getMacroName()";
+			}
+			return null;
+		}
 	}
 	
 
