@@ -24,9 +24,9 @@ public class TestingPPBase extends TestingBase {
 				} else {
 					outStream = new ByteArrayOutputStream();
 				}
-				parser = new Preprocessor(resource, ShaderType.GENERIC_SHADER, new PreprocessedOutputBuffer(outStream));
+				parser = new Preprocessor(new Resource[]{resource}, ShaderType.GENERIC_SHADER, new PreprocessedOutputBuffer(outStream));
 			} else {
-				parser = new Preprocessor(resource, ShaderType.GENERIC_SHADER, output(out));
+				parser = new Preprocessor(new Resource[]{resource}, ShaderType.GENERIC_SHADER, output(out));
 			}
 			parser.setErrorHandler(errorHandler);
 		} catch (Throwable e) {

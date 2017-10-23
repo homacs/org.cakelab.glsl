@@ -36,8 +36,12 @@ public class GLSL {
 		this.resourceManager = resources;
 		this.errorHandler.setResourceManager(resources);
 	}
-	
+
 	public CombinedAST parse(Resource resource, ShaderType shaderType) throws IOException {
+		return parse(new Resource[]{resource}, shaderType);
+	}
+	
+	public CombinedAST parse(Resource[] resource, ShaderType shaderType) throws IOException {
 		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(resourceManager);
 		Preprocessor pp = new Preprocessor(resource, shaderType, buffer);
 		

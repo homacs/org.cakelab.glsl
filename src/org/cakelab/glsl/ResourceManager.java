@@ -22,4 +22,5 @@ public interface ResourceManager {
 
 	void setIdProvider(ResourceIdProvider idProvider);
 	ResourceIdProvider getIdProvider();
+
 }

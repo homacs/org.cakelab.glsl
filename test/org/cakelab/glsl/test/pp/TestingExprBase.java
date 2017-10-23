@@ -17,7 +17,7 @@ public class TestingExprBase extends TestingBase {
 	public Parser p(String source) {
 		try {
 			Resource resource = new ResourceString("0", "-- testing --", source);
-			PPState state = new PPState(resource, ShaderType.GENERIC_SHADER);
+			PPState state = new PPState(new Resource[]{resource}, ShaderType.GENERIC_SHADER);
 			state.setErrorHandler(errorHandler);
 			
 			IScanner scanner = new StreamScanner(resource);

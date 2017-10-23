@@ -81,7 +81,7 @@ public class PPTokenStream implements TokenStream {
 		//
 		// add EOF token
 		//
-		PPTokenSource inputSource = output.getInputSource();
+		PPTokenSource inputSource = output.getLastTokenSource();
 		if (this.tokens.size() > 0) {
 			PPOutputToken last = this.tokens.get(this.tokens.size()-1);
 			Location end = last.getPPToken().getEnd();
@@ -90,8 +90,8 @@ public class PPTokenStream implements TokenStream {
 			TEof teof = new TEof(interval);
 			this.eofToken = new EOFToken(this.tokens.size(), inputSource, last.getStopIndex()+1, teof);
 		} else {
-			Resource resource = output.getState().getInputResource();
-			Location end = new Location(resource.getSourceIdentifier());
+			Resource[] resources = output.getState().getInputResources();
+			Location end = new Location(resources[resources.length-1].getSourceIdentifier());
 			org.cakelab.glsl.Interval interval = new org.cakelab.glsl.Interval(end, end);
 			TEof teof = new TEof(interval);
 			this.eofToken = new EOFToken(this.tokens.size(), inputSource, 0, teof);

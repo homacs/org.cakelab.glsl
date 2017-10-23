@@ -194,7 +194,7 @@ public class BuiltinLoaderHelper {
 
 	public static Preprocessor setupPreprocessing(Resource resource, ShaderType shaderType,
 			GLSL_ANTLR_PPOutputBuffer buffer) {
-		Preprocessor pp = new Preprocessor(resource, shaderType, buffer);
+		Preprocessor pp = new Preprocessor(new Resource[]{resource}, shaderType, buffer);
 		
 		pp.addDefine(shaderType.name());
 		

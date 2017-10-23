@@ -283,7 +283,7 @@ public class TestingTools {
 		
 		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(resourceManager);
 		Resource resource = new ResourceString("0", "-- testing --", sourceCode);
-		Preprocessor pp = new Preprocessor(resource, ShaderType.GENERIC_SHADER, buffer);
+		Preprocessor pp = new Preprocessor(new Resource[]{resource}, ShaderType.GENERIC_SHADER, buffer);
 
 		pp.setForceVersion(new GLSLVersion(null, 450, GLSLVersion.Profile.core));
 		pp.setResourceManager(resourceManager);

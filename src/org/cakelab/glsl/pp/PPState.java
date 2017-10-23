@@ -47,7 +47,7 @@ public class PPState {
 	 * It will refer to DEV_NULL when an error occurred (i.e. invalid output). */
 	private PPOutputSink output;
 
-	private Resource input;
+	private Resource[] inputs;
 
 	private ILexer lexer;
 	
@@ -73,7 +73,8 @@ public class PPState {
 	
 
 	
-	public PPState(Resource input, ShaderType shaderType) {
+	public PPState(Resource[] inputs, ShaderType shaderType) {
+		this.inputs = inputs;
 		this.shaderType = shaderType;
 		listeners = new ListenerSet();
 	}
@@ -185,12 +186,12 @@ public class PPState {
 		this.includeEnabled = enable;
 	}
 
-	public Resource getInputResource() {
-		return this.input;
+	public Resource[] getInputResources() {
+		return this.inputs;
 	}
 
-	public void setInputResource(Resource resource) {
-		this.input = resource;
+	public void setInputResource(Resource[] resources) {
+		this.inputs = resources;
 	}
 
 	public void setForcedVersion(boolean forced) {

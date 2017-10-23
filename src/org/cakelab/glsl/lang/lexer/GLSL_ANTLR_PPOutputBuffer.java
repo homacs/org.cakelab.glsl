@@ -89,8 +89,10 @@ public class GLSL_ANTLR_PPOutputBuffer extends PPHelper implements PPOutputSink 
 
 
 
-	public PPTokenSource getInputSource() {
-		return getTokenSource(state.getInputResource().getSourceIdentifier());
+	public PPTokenSource getLastTokenSource() {
+		Resource[] sourceStrings = state.getInputResources();
+		Resource last = sourceStrings[sourceStrings.length-1];
+		return getTokenSource(last.getSourceIdentifier());
 	}
 
 

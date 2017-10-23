@@ -55,6 +55,7 @@ import org.cakelab.glsl.pp.parser.PragmaParserSet;
 import org.cakelab.glsl.pp.parser.VersionParser;
 import org.cakelab.glsl.pp.parser.pragmas.GlslPragmasParser;
 import org.cakelab.glsl.pp.scanner.IScanner;
+import org.cakelab.glsl.pp.scanner.SourceStringArrayScanner;
 import org.cakelab.glsl.pp.scanner.StreamScanner;
 import org.cakelab.glsl.pp.tokens.TCharacterConstant;
 import org.cakelab.glsl.pp.tokens.TCrlf;
@@ -69,7 +70,6 @@ import org.cakelab.glsl.pp.tokens.Token;
 import org.cakelab.glsl.pp.tokens.TokenList;
 
 public class Preprocessor extends Parser implements MacroInterpreter, PPState.Listener {
-	// TODO support concatenation of multiple shaders source files.
 	
 	/** this is where only valid preprocessed output goes. */
 	private PPOutputSink outputStream;
@@ -109,15 +109,16 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	 * @param in
 	 * @param out
 	 */
-	public Preprocessor(Resource resource, ShaderType shaderType, OutputStream out) {
-		this(resource, shaderType, new PreprocessedOutputStream(out));
+	public Preprocessor(Resource[] resources, ShaderType shaderType, OutputStream out) {
+		this(resources, shaderType, new PreprocessedOutputStream(out));
 	}
 
-	public Preprocessor(Resource resource, ShaderType shaderType, PPOutputSink out) {
+	public Preprocessor(Resource[] resource, ShaderType shaderType, PPOutputSink out) {
 		super(true, new PPState(resource, shaderType));
 		state.addListener(this);
 		state.setInputResource(resource);
-		originalSourceLexer = new PPLexer(new StreamScanner(resource), state);
+		if (resource.length == 1) originalSourceLexer = new PPLexer(new StreamScanner(resource[0]), state);
+		else originalSourceLexer = new PPLexer(new SourceStringArrayScanner(resource), state);
 		
 		state.setLexer(originalSourceLexer);
 		state.setResourceManager(new FileSystemResourceManager());
@@ -152,7 +153,8 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	public void setResourceManager(ResourceManager resourceManager) {
 		state.setResourceManager(resourceManager);
 		try {
-			resourceManager.add(state.getInputResource());
+			Resource[] inputs = state.getInputResources();
+			for (Resource input : inputs) resourceManager.add(input);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
