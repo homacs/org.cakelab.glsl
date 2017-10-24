@@ -1046,6 +1046,11 @@ will eventually be forwarded to output, but not parsed or interpreted.
 GLSL Versioning
 ===============
 
+
+Max supported version can be queried via 
+
+   glGetStringi(GL_SHADING_LANGUAGE_VERSION)
+
 Each GLSL version has a set of unique properties:
 
 - keywords
@@ -1072,9 +1077,9 @@ SymbolTable is used by the preprocessor to identify builtin macros
 and by the language parser to identify builtin types, functions and
 variables.
 
-Maintenance should be kept simple to allow fast adaption to new versions 
-or other languages such as SPIR-V. It is common practice to use the 
-capabilities of a compiler to declare all builtin symbols using the
+Maintenance should be kept simple to allow simple adaption to new versions. 
+It is common practice to use the capabilities of a compiler to declare 
+all builtin symbols using the
 language itself. Thus, the builtin table will be initialised with glsl
 source code, which contains all declaration statements and #define
 directives of that version, which will be called 'preamble'. The 
@@ -1146,8 +1151,8 @@ directive
 is invalid.
 
 The hardware provides a list of _all_ extensions supported by it. 
-	 glGetIntegerv(GL_NUM_EXTENSIONS)
-	 glGetStringi(GL_EXTENSIONS)
+	 int num = glGetIntegerv(GL_NUM_EXTENSIONS)
+	 glGetStringi(GL_EXTENSIONS, index)
 
 
 Before loading an extension, the following requirements have to be checked:

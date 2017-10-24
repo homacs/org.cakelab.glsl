@@ -1,0 +1,4 @@
+{
+	"name" : "GL_ARB_shader_stencil_export",
+	"dependencies" : "core:[110,]"
+}
