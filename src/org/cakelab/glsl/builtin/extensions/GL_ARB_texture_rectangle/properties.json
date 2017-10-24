@@ -1,0 +1,5 @@
+{
+	"name" : "GL_ARB_texture_rectangle",
+	"loader" : "Loader",
+	"dependencies" : "core:[110,]"
+}

@@ -34,10 +34,10 @@
 + ./ARB/ARB_draw_instanced.txt
 + ./ARB/ARB_shader_clock.txt
 + ./ARB/ARB_shader_stencil_export.txt
-./ARB/ARB_vertex_shader.txt
-./ARB/ARB_texture_compression_rgtc.txt
-./ARB/ARB_transform_feedback2.txt
-./ARB/ARB_texture_rectangle.txt
++ ./ARB/ARB_vertex_shader.txt
++ ./ARB/ARB_texture_compression_rgtc.txt
++ ./ARB/ARB_transform_feedback2.txt
++ ./ARB/ARB_texture_rectangle.txt
 ./ARB/ARB_shader_ballot.txt
 ./ARB/ARB_fragment_layer_viewport.txt
 ./ARB/ARB_uniform_buffer_object.txt
