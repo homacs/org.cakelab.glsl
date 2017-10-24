@@ -1,0 +1,9 @@
+{
+	"name" : "GL_ARB_shader_ballot",
+	"dependencies" : {
+		"all" : [
+			"core:[130,]",
+			"GL_ARB_gpu_shader_int64"
+		]
+	}
+}
