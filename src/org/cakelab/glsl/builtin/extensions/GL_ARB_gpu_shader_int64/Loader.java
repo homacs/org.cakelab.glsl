@@ -22,18 +22,22 @@ import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
+import org.cakelab.glsl.builtin.BuiltinLoaderHelper;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.extensions.GLSLExtension;
 import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoader;
-import org.cakelab.glsl.builtin.extensions.GLSLExtensionSymbolTable;
 import org.cakelab.glsl.builtin.extensions.KeywordTable;
 import org.cakelab.glsl.builtin.extensions.Properties;
 import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.lang.ast.types.Type.Rank;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
+import org.cakelab.glsl.lang.lexer.tokens.GLSLKeywords;
+import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.Macro;
+import org.cakelab.glsl.pp.tokens.TNumber;
 
 public class Loader extends GLSLExtensionLoader {
+	private static final Macro HAVE_DOUBLE = BuiltinLoaderHelper.createMacro("HAVE_DOUBLE", new TNumber("1"));
 	static Type _int64_t = new Type(Interval.NONE, "int64_t", Type.KIND_SCALAR, Rank.INT, null);
 	static Type _i64vec2 = new Type(Interval.NONE, "i64vec2", Type.KIND_VECTOR, Rank.NON_SCALAR, null);
 	static Type _i64vec3 = new Type(Interval.NONE, "i64vec3", Type.KIND_VECTOR, Rank.NON_SCALAR, null);
@@ -94,25 +98,37 @@ public class Loader extends GLSLExtensionLoader {
 		_uint64_t.addCastConstructor(_int64_t);
 	}
 	
-	
-	
+
+
+
 	@Override
-	public GLSLExtension load(WorkingSet ws, Properties properties) throws IOException {
-		Resource preambleResource;
-		try {
-			preambleResource = properties.getPreamble();
-		} catch (IOException e1) {
-			throw new Error("internal error: failed to load preamble for extension " + properties.getName(), e1);
-		}
-		GLSLVersion glslVersion = ws.getGLSLVersion();
-		ShaderType shaderLanguage = ws.getShaderType();
-		
-		GLSL_ANTLR_PPOutputBuffer preprocessedPreamble = createPPOutputBuffer();
+	protected Preprocessor setupPreprocessor(WorkingSet ws, Resource resource, GLSL_ANTLR_PPOutputBuffer buffer) {
+		Preprocessor pp = super.setupPreprocessor(ws, resource, buffer);
+		if (ws.haveBuiltinType("double")) pp.addDefine(HAVE_DOUBLE);
+		return pp;
+	}
 
-		HashMap<String, Macro> extensionMacros = preprocess(ws, preambleResource, preprocessedPreamble);
 
-		KeywordTable addedKeywords = loadKeywordTable(properties.getName());
-		GLSLExtension e = new GLSLExtension(properties, glslVersion, shaderLanguage, extensionMacros, addedKeywords);
+
+	@Override
+	protected void finishedPreprocessing(WorkingSet ws, Preprocessor pp) {
+		pp.removeDefine(HAVE_DOUBLE.getName());
+		super.finishedPreprocessing(ws, pp);
+	}
+
+
+	@Override
+	protected KeywordTable loadKeywordTable(String extension) throws IOException {
+		// add the new keywords to hide reserved keywords
+		return KeywordTable.create(GLSLKeywords.BUILTIN_TYPE_TOKEN, "int64_t", "i64vec2", "i64vec3", "i64vec4", "uint64_t", "u64vec2", "u64vec2", "u64vec3", "u64vec4");
+	}
+
+
+
+	@Override
+	protected GLSLExtension createExtension(Properties properties, GLSLVersion version, ShaderType shaderType,
+			HashMap<String, Macro> extensionMacros, KeywordTable extendedKeywords) {
+		GLSLExtension e = super.createExtension(properties, version, shaderType, extensionMacros, extendedKeywords);
 		
 		// add new built-in types to extension specific symbol table scope
 		e.addType(_int64_t);
@@ -124,23 +140,16 @@ public class Loader extends GLSLExtensionLoader {
 		e.addType(_u64vec3);
 		e.addType(_u64vec4);
 		
-		// This is just a temporary symbol table 
-		// used during parse of the preamble.
-		GLSLExtensionSymbolTable symbolTable = new GLSLExtensionSymbolTable(e, ws.getBuiltinScope());
-
-		parseExtensionPreamble(e, ws, preprocessedPreamble, symbolTable);
 		return e;
 	}
 
+
+	
 	private static void addImplicitCastRules(Type sourceType, Type ... targetTypes) {
 		for (Type targetType : targetTypes) {
 			targetType.addImplicitCastRule(sourceType);
 		}
 	}
-
-
-	
-	
 	
 	
 }

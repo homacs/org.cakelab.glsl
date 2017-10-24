@@ -1,5 +1,5 @@
 {
-	"name" : "GL_ARB_gpu_shader_int64",
+	"name" : "GL_ARB_shader_clock",
 	"loader" : "Loader",
 	"dependencies" : "core:[110,]"
 }

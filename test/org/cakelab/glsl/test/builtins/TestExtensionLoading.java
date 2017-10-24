@@ -69,6 +69,8 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		ws = testExtension(core(400), ShaderType.FRAGMENT_SHADER, "GL_ARB_texture_query_levels");
 		
 		ws = testExtension(core(150), ShaderType.FRAGMENT_SHADER, "GL_ARB_texture_gather");
+
+		ws = testExtension(core(150), ShaderType.GENERIC_SHADER, "GL_ARB_gpu_shader_int64", "GL_ARB_shader_clock");
 		ws.dump(System.out);
 
 		// GL_ARB_sparse_texture_clamp

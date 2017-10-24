@@ -197,6 +197,19 @@ public class PPState {
 		this.inputs = resources;
 	}
 
+	/**
+	 * This method is required by internal functionalities.
+	 * <p>
+	 * This method basically prevents the preprocessor from
+	 * loading builtin symbols on demand (i.e. when the first 
+	 * non-blank line was found). This is needed, when we parse
+	 * preambles for profiles or extensions.
+	 * </p>
+	 * <p>
+	 * It requires, that a GLSL version has been set for the working set, earlier.
+	 * </p>
+	 * @param forced
+	 */
 	public void setForcedVersion(boolean forced) {
 		this.forcedVersion = true;
 	}

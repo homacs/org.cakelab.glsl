@@ -5,11 +5,9 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.cakelab.glsl.GLSLVersion.Profile;
-import org.cakelab.glsl.lang.ast.Node;
+import org.cakelab.glsl.builtin.BuiltinLoaderHelper;
 import org.cakelab.glsl.pp.ast.Macro;
-import org.cakelab.glsl.pp.ast.NodeList;
 import org.cakelab.glsl.pp.tokens.TNumber;
-import org.cakelab.glsl.pp.tokens.Token;
 
 /**
  * An instance of this class is used to define which features 
@@ -62,7 +60,7 @@ public class GLSLCompilerFeatures {
 	
 	private static void addSupportedProfileMacros(HashMap<String, Macro> macros, Profile[] profiles) {
 		for (Profile p : profiles) {
-			Macro m = createMacro(p.getMacroName(), ONE);
+			Macro m = BuiltinLoaderHelper.createMacro(p.getMacroName(), ONE);
 			macros.put(p.name(), m);
 		}
 	}
@@ -70,18 +68,11 @@ public class GLSLCompilerFeatures {
 	private static void addSupportedExtensionMacros(HashMap<String, Macro> macros, Collection<String[]> extensionNames) {
 		for (String[] alternativeNames : extensionNames) {
 			for (String name : alternativeNames) {
-				Macro m = createMacro(name, ONE);
+				Macro m = BuiltinLoaderHelper.createMacro(name, ONE);
 				macros.put(name, m);
 			}
 		}
 	}
 
-	private static Macro createMacro(String name, Token v) {
-		Macro macro = new Macro(name, Interval.NONE);
-		NodeList<Node> nodes = new NodeList<Node>();
-		nodes.add(v);
-		macro.setReplacementList(nodes);
-		return macro;
-	}
 
 }

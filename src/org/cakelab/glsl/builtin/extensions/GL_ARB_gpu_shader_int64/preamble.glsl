@@ -39,6 +39,7 @@ GEN_COMMON_FUNCTIONS(u64vec4, uint64_t, bool)
 
 #undef GEN_COMMON_FUNCTIONS
 
+#if HAVE_DOUBLE
 int64_t doubleBitsToInt64(double value);
 i64vec2 doubleBitsToInt64(dvec2 value);
 i64vec3 doubleBitsToInt64(dvec3 value);
@@ -58,6 +59,7 @@ double uint64BitsToDouble(uint64_t value);
 dvec2  uint64BitsToDouble(u64vec2 value);
 dvec3  uint64BitsToDouble(u64vec3 value);
 dvec4  uint64BitsToDouble(u64vec4 value);
+#endif // HAVE_DOUBLE
 
 
 // -----------------------------------------------------------------------------------

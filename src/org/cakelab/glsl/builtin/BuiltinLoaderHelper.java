@@ -29,7 +29,10 @@ import org.cakelab.glsl.lang.lexer.PPTokenStream;
 import org.cakelab.glsl.lang.lexer.tokens.ITokenTable;
 import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
 import org.cakelab.glsl.pp.Preprocessor;
+import org.cakelab.glsl.pp.ast.Macro;
+import org.cakelab.glsl.pp.ast.NodeList;
 import org.cakelab.glsl.pp.error.SyntaxError;
+import org.cakelab.glsl.pp.tokens.Token;
 
 
 
@@ -242,6 +245,14 @@ public class BuiltinLoaderHelper {
 		parser.addParseListener(astBuilder);
 		
 		parser.glsl();
+	}
+
+	public static Macro createMacro(String name, Token v) {
+		Macro macro = new Macro(name, Interval.NONE);
+		NodeList<Node> nodes = new NodeList<Node>();
+		nodes.add(v);
+		macro.setReplacementList(nodes);
+		return macro;
 	}
 
 

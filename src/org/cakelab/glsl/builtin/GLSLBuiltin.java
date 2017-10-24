@@ -99,7 +99,7 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 	 * <li>selected profile ({@link GLSLVersion#Profile})</li>
 	 * <li>type of the shader to be processed ({@link ShaderType})</li>
 	 * <li>set of builtin macros (<b><code>HashMap&lt;String, Macro&gt;</code></b>)</li>
-	 * <li>set of feature macros (<b><code>HashMap&lt;String, Macro&gt;</code></b>)</li>
+	 * <li>set of feature macros (see {@link GLSLCompilerFeatures#getFeatureMacros()})</li>
 	 * <li>set of builtin symbols ({@link BuiltinScope})</li>
 	 * <li>enabled extensions ({@link GLSLExtensionSet}, via {@link BuiltinScope#extensions})</li>
 	 * </ul>

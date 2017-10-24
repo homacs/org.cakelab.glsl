@@ -31,7 +31,7 @@
 + ./ARB/ARB_shader_objects.txt
 + ./ARB/ARB_robust_buffer_access_behavior.txt
 + ./ARB/ARB_texture_query_levels.txt
-./ARB/ARB_draw_instanced.txt
++ ./ARB/ARB_draw_instanced.txt
 ./ARB/ARB_shader_clock.txt
 ./ARB/ARB_shader_stencil_export.txt
 ./ARB/ARB_vertex_shader.txt
