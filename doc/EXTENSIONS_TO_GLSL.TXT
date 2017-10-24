@@ -39,7 +39,7 @@
 + ./ARB/ARB_transform_feedback2.txt
 + ./ARB/ARB_texture_rectangle.txt
 + ./ARB/ARB_shader_ballot.txt
-./ARB/ARB_fragment_layer_viewport.txt
++ ./ARB/ARB_fragment_layer_viewport.txt
 ./ARB/ARB_uniform_buffer_object.txt
 ./ARB/ARB_invalidate_subdata.txt
 ./ARB/ARB_ES3_compatibility.txt

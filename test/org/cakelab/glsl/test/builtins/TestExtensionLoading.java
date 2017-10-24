@@ -77,6 +77,8 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		ws = testExtension(core(110), ShaderType.FRAGMENT_SHADER, "GL_ARB_texture_rectangle");
 		
 		ws = testExtension(core(130), ShaderType.FRAGMENT_SHADER, "GL_ARB_gpu_shader_int64", "GL_ARB_shader_ballot");
+
+		ws = testExtension(core(130), ShaderType.FRAGMENT_SHADER, "GL_ARB_fragment_layer_viewport");
 		ws.dump(System.out);
 
 		// GL_ARB_sparse_texture_clamp
