@@ -16,6 +16,7 @@ import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.tokens.ExtendedTokenTable;
 import org.cakelab.glsl.pp.MacroMap;
+import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.Macro;
 
@@ -143,15 +144,43 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 			return builtinMacros;
 		}
 
-		public void enableExtension(String identifier) {
-			GLSLExtension e = GLSLExtension.get(this, identifier);
-			builtinScope.getExtensions().enable(e);
+		public void enableExtension(PPState ppstate, String identifier) {
+			GLSLExtensionSet extensions = builtinScope.getExtensions();
+			GLSLExtension e = extensions.getExtension(identifier);
+			if (e == null) {
+				e = GLSLExtension.get(this, identifier);
+				extensions.addExtension(e);
+			}
+			e.enable(ppstate);
 		}
 
-		public void disableExtension(String identifier) {
-			builtinScope.getExtensions().disable(identifier);
+		/**
+		 * Note: In terms of syntax checking, disabling extensions is basically ignored (see system specification).
+		 * @param ppstate
+		 * @param identifier
+		 */
+		public void disableExtension(PPState ppstate, String identifier) {
+			GLSLExtensionSet extensions = builtinScope.getExtensions();
+			GLSLExtension e = extensions.getExtension(identifier);
+			if (e != null) {
+				e.disable(ppstate);
+			} else {
+				// has never been enabled
+			}
 		}
 
+		/**
+		 * Note: In terms of syntax checking, disabling extensions is basically ignored (see system specification).
+		 * @param state
+		 */
+		public void disableExtensionsAll(PPState state) {
+			GLSLExtensionSet extensions = builtinScope.getExtensions();
+			for (GLSLExtension e : extensions) {
+				e.disable(state);
+			}
+		}
+
+		
 		public GLSLExtensionSet getExtensions() {
 			return builtinScope.getExtensions();
 		}
@@ -169,6 +198,7 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 		public boolean haveBuiltinType(String type) {
 			return builtinScope.containsType(type) || this.getExtensions().containsType(type);
 		}
+
 		
 	}
 	

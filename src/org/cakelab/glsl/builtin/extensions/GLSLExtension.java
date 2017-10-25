@@ -11,6 +11,7 @@ import org.cakelab.glsl.builtin.BuiltinScope;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
+import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.ast.Macro;
 
 public class GLSLExtension extends ScopeImpl {
@@ -141,6 +142,13 @@ public class GLSLExtension extends ScopeImpl {
 		return properties;
 	}
 	
+	
+	public void enable(PPState ws) {
+	}
+	
+	public void disable(PPState ws) {
+	}
+	
 	public Macro getMacro(String name) {
 		return macros.get(name);
 	}
@@ -174,5 +182,6 @@ public class GLSLExtension extends ScopeImpl {
 	}
 
 
+	
 	
 }

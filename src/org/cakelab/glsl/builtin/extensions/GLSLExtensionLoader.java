@@ -258,11 +258,11 @@ public class GLSLExtensionLoader {
 		if (addedKeywords != null) {
 			GLSLExtensionSet extensionSet = ws.getExtensions();
 			TEMPORARY_EXTENSION.setKeywordTable(e.getKeywordTable());
-			extensionSet.enable(TEMPORARY_EXTENSION);
+			extensionSet.addExtension(TEMPORARY_EXTENSION);
 			try {
 				GLSLExtensionLoading.parsePreamble(preprocessedPreamble, ws.getTokenTable(), symbolTable);
 			} finally {
-				extensionSet.disable(TEMPORARY_EXTENSION);
+				extensionSet.removeExtension(TEMPORARY_EXTENSION);
 				TEMPORARY_EXTENSION.setKeywordTable(null);
 			}
 		} else {

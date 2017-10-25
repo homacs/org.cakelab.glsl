@@ -3,6 +3,7 @@ package org.cakelab.glsl.test.builtins;
 import java.io.FileInputStream;
 
 import org.cakelab.glsl.GLSL;
+import org.cakelab.glsl.GLSLCompilerFeatures;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
@@ -11,6 +12,7 @@ import org.cakelab.glsl.builtin.GLSLExtensionSet;
 import org.cakelab.glsl.builtin.extensions.MockedExtension;
 import org.cakelab.glsl.builtin.extensions.Properties;
 import org.cakelab.glsl.builtin.extensions.VersionDependency;
+import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.test.Test;
 
 public class TestExtensionLoading extends TestBuiltinBase {
@@ -170,7 +172,7 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		WorkingSet ws = builtin.createWorkingSet(GLSL.getDefaultCompilerFeatures());
 		GLSLExtensionSet extensions = ws.getExtensions();
 		for (String name : names) {
-			extensions.enable(new MockedExtension(name, ShaderType.GENERIC_SHADER, ws.getGLSLVersion()));
+			extensions.addExtension(new MockedExtension(name, ShaderType.GENERIC_SHADER, ws.getGLSLVersion()));
 		}
 		return ws;
 	}
@@ -178,10 +180,11 @@ public class TestExtensionLoading extends TestBuiltinBase {
 
 	public static WorkingSet testExtension(GLSLVersion version, ShaderType shaderType, String ... extensions) {
 		GLSLBuiltin builtin = GLSLBuiltin.get(version, shaderType);
-		
-		WorkingSet workingSet = builtin.createWorkingSet(GLSL.getDefaultCompilerFeatures());
+		GLSLCompilerFeatures features = GLSL.getDefaultCompilerFeatures();
+		PPState state = new PPState(features, null, shaderType);
+		WorkingSet workingSet = builtin.createWorkingSet(features);
 		for (String extension : extensions) {
-			workingSet.enableExtension(extension);
+			workingSet.enableExtension(state, extension);
 		}
 		return workingSet;
 	}

@@ -1,0 +1,5 @@
+{
+	"name" : "GL_ARB_shader_atomic_counters",
+	"loader" : "Loader",
+	"dependencies" : "core:[130,]"
+}

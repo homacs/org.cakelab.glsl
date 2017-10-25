@@ -1,9 +1,3 @@
-
-
-    Extensions, which modify the OpenGL Shading Language
-
-
-
 + ./ARB/ARB_fragment_coord_conventions.txt
 + ./ARB/ARB_texture_gather.txt
 + ./ARB/ARB_ES3_1_compatibility.txt
@@ -40,17 +34,18 @@
 + ./ARB/ARB_texture_rectangle.txt
 + ./ARB/ARB_shader_ballot.txt
 + ./ARB/ARB_fragment_layer_viewport.txt
-./ARB/ARB_uniform_buffer_object.txt
-./ARB/ARB_invalidate_subdata.txt
-./ARB/ARB_ES3_compatibility.txt
-./ARB/ARB_bindless_texture.txt
-./ARB/ARB_shader_group_vote.txt
-./ARB/ARB_shader_draw_parameters.txt
-./ARB/ARB_shading_language_420pack.txt
-./ARB/ARB_shader_atomic_counters.txt
-./ARB/ARB_get_program_binary.txt
-./ARB/ARB_shader_precision.txt
-./ARB/ARB_shading_language_include.txt
+
++ ./ARB/ARB_uniform_buffer_object.txt
++ ./ARB/ARB_invalidate_subdata.txt
++ ./ARB/ARB_ES3_compatibility.txt
++ ./ARB/ARB_bindless_texture.txt
++ ./ARB/ARB_shader_group_vote.txt
++ ./ARB/ARB_shader_draw_parameters.txt
++ ./ARB/ARB_shading_language_420pack.txt
++ ./ARB/ARB_shader_atomic_counters.txt
++ ./ARB/ARB_get_program_binary.txt
++ ./ARB/ARB_shader_precision.txt
++ ./ARB/ARB_shading_language_include.txt
 ./ARB/ARB_shader_viewport_layer_array.txt
 ./ARB/ARB_texture_cube_map_array.txt
 ./ARB/ARB_fragment_shader.txt

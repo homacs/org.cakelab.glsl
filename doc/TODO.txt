@@ -8,15 +8,14 @@
 
 
 
-
-				Issues:
-				- Defines for supported profiles and extensions always have to be available
-				  -> Affects profile and extension loading
-
-
-
+				ISSUE: Global compiler state at several places
+				1. GLSL
+				2. Preprocessor
+				3. PPState
+				4. GLSLBuiltin.WorkingSet
 				
-								
+				ISSUE: Extensions need access to global compiler state
+			
 				
 				0. Go through all change lists of all versions 
 				0. Availability of built-in functions in respect to different shader types

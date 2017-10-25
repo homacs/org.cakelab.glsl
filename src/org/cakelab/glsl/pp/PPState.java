@@ -55,7 +55,7 @@ public class PPState {
 	private PPGroupScope groupScope;
 
 	private GLSLVersion glslVersion;
-	private ArrayList<PPExtensionDirective> extensions = new ArrayList<PPExtensionDirective>();
+	private ArrayList<PPExtensionDirective> extensionDirectives = new ArrayList<PPExtensionDirective>();
 	
 	
 	/* ************** config *************** */
@@ -164,13 +164,13 @@ public class PPState {
 	}
 
 	public void addExtensionDirective(PPExtensionDirective directive) {
-		extensions.add(directive);
+		extensionDirectives.add(directive);
 		listeners.process(directive);
 	}
 
 
 	public ArrayList<PPExtensionDirective> getDirectivesExtensions() {
-		return extensions;
+		return extensionDirectives;
 	}
 
 	public ILexer getLexer() {

@@ -23,6 +23,7 @@ import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.Node;
+import org.cakelab.glsl.pp.PPExtensionDirective.Behaviour;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.ast.MacroCallExpression;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
@@ -1193,31 +1194,40 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 
 	@Override
 	public void process(PPExtensionDirective directive) throws SyntaxError {
-		// TODO: extensions: implement require, warn.
 		WorkingSet workingSet = state.getWorkingSet();
 		try {
-			if (!GLSLExtensionLoading.canLoadExtenion(directive.identifier)) {
-				syntaxError(directive, "unknown extension '" + directive.identifier + "'");
-			}
-	
+
+			
+			
 			switch(directive.behaviour) {
 			case DISABLE:
-				workingSet.disableExtension(directive.identifier);
-				break;
-			case ENABLE:
-			case REQUIRE:
-				try {
-					GLSLExtension.checkRequirements(directive.identifier, state.getGlslVersion(), state.getWorkingSet().getBuiltinScope());
-					workingSet.enableExtension(directive.identifier);
-				} catch (IllegalArgumentException e) {
-					syntaxError(directive, e.getMessage());
+				if (directive.identifier.equals("all")) {
+					workingSet.disableExtensionsAll(state);
 				}
+				workingSet.disableExtension(state, directive.identifier);
 				break;
+			case REQUIRE:
 			case WARN:
+			case ENABLE:
+				if (!GLSLExtensionLoading.canLoadExtenion(directive.identifier)) {
+					String message = "unknown extension '" + directive.identifier + "'";
+					if (directive.behaviour == Behaviour.REQUIRE) syntaxError(directive, message);
+					else syntaxWarning(directive.getStart(), message);
+				} else {
+					try {
+						GLSLExtension.checkRequirements(directive.identifier, state.getGlslVersion(), state.getWorkingSet().getBuiltinScope());
+						workingSet.enableExtension(state, directive.identifier);
+						if (directive.behaviour == Behaviour.WARN) {
+							syntaxWarning(directive.getStart(), "extension '" + directive.identifier + "' has been enabled");
+						}
+					} catch (IllegalArgumentException e) {
+						if (directive.behaviour == Behaviour.REQUIRE) syntaxError(directive, e.getMessage());
+						else syntaxWarning(directive.getStart(), e.getMessage());
+					}
+				}
 				break;
 			default:
 				break;
-			
 			}
 		} catch (Recovery e) {
 			// nothing to do here

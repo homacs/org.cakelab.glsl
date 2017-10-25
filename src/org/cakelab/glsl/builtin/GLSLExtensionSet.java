@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.cakelab.glsl.builtin.extensions.GLSLExtension;
 import org.cakelab.glsl.lang.ast.Function;
@@ -15,7 +16,7 @@ import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.lang.lexer.tokens.ITokenTable;
 import org.cakelab.glsl.pp.ast.Macro;
 
-public class GLSLExtensionSet implements IScope, ITokenTable {
+public class GLSLExtensionSet implements IScope, ITokenTable, Iterable<GLSLExtension> {
 	public GLSLExtensionSet() {
 	}
 
@@ -23,30 +24,26 @@ public class GLSLExtensionSet implements IScope, ITokenTable {
 	private ArrayList<GLSLExtension> extensions = new ArrayList<GLSLExtension>();
 
 	
-	public void enable(GLSLExtension extension) {
-		assert (!extensionsLookup.containsKey(extension.getName()));
+	public void addExtension(GLSLExtension extension) {
 		extensions.add(extension);
 		extensionsLookup.put(extension.getName(), extension);
 	}
 
-	public void disable(GLSLExtension extension) {
+	public void removeExtension(GLSLExtension extension) {
 		extensions.remove(extension);
 		extensionsLookup.remove(extension.getName());
 	}
 
-	public void disable(String extension) {
-		assert (extensionsLookup.containsKey(extension));
-		for (int i = 0; i < extensions.size(); i++) {
-			GLSLExtension e = extensions.get(i);
-			if (e.getName().equals(extension)) {
-				extensions.remove(i);
-				break;
-			}
-		}
-		extensionsLookup.remove(extension);
+	public void removeExtension(String extension) {
+		removeExtension(getExtension(extension));
 	}
 
-	public void disableExtensionAll() {
+
+	public GLSLExtension getExtension(String identifier) {
+		return extensionsLookup.get(identifier);
+	}
+	
+	public void removeExtensionAll() {
 		extensions.clear();
 		extensionsLookup.clear();
 	}
@@ -318,6 +315,11 @@ public class GLSLExtensionSet implements IScope, ITokenTable {
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public Iterator<GLSLExtension> iterator() {
+		return extensions.iterator();
 	}
 
 	

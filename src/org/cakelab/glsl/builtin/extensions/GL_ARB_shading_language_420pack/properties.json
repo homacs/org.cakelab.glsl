@@ -1,0 +1,4 @@
+{
+	"name" : "GL_ARB_shading_language_420pack",
+	"dependencies" : "core:[130,]"
+}

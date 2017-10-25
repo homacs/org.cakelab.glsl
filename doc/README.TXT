@@ -1092,7 +1092,7 @@ Parsing of the preamble requires a few preconditions:
 - No user level listeners (no user level output sink or error handler (all errors are internal errors))
 - Builtin symbols have to be distinguishable from user declared symbols, which will be implemented as flag.
 
-All language tokens recognized by the language parser have a specific mapping to a language parser token
+All language tokens recognised by the language parser have a specific mapping to a language parser token
 type. The TokenTable just has to decide, which language tokens are actually used as keywords, reserved 
 keywords or builtin types. The latter will be identified using the builtin symbol table.
 
@@ -1121,12 +1121,16 @@ added by the preprocessor.
 Extensions
 ==========
 
-Extensions are generally extensions to a specific version
-of the GLSL specification, but they may support even previous
-versions, if the required features are available.
+
+Overview
+--------
+Extensions are generally extensions to a specific version of the GLSL specification, 
+but they may support even previous versions, if the required features are available 
+(e.g. through other extensions).
 
 Extensions may define additional features for glsl:
 	- Keywords
+	- Language rules (preprocessor or parser)
 	- Types
 	- Macros
 	- Functions
@@ -1164,9 +1168,66 @@ Before loading an extension, the following requirements have to be checked:
 If one of the above requirements is not met, the load gets aborted, 
 warning is reported and the translation continues.
 
+Ignoring Extension Disable Directives
+-------------------------------------
+We are interested only in extensions which modify/extend GLSL. 
+Those modifications are mainly introductions of new:
+- keywords
+- builtin symbols (types, functions, variables)
+- language rules
+
+In respect to the main goals of this project, 'disabling' extensions
+isn't really a critical feature.  An extension can be enabled only,
+if it is supported by the current compiler state. Once enabled, the  
+features of the extension are available to the user level code. Disabling 
+it would (at least) require to report syntax errors in the user level code, 
+where those features are used. This however, requires a lot of effort to
+keep track of state changes and dependencies between loaded extensions. 
+The extension has to enabled/disabled during preprocessor and parser run. 
+Both are currently separate, and the parser would require to know, at which
+locations in the sequence of received tokens extensions got enabled or disabled.
+
+Since the main goal is to support parsing (not validating) the code, 
+there is no real benefit in implementing this functionality. Thus (for now), 
+extensions that have been enabled, will never been disabled, and the features 
+of the extension will stay available to user level code. A vendor specific
+GLSL compiler or the Khronos reference implementation can be used, to actually
+validate the syntax.
+
 
 Concept:
 --------
+
+
+Extension States:
+
+- Available: The extension's name is known and it is listed as 'supported' by the compiler.
+- Loaded: The extension has been successfully integrated in the current compiler state but is disabled.
+- Enabled: Extension was enabled through #extension directive
+- Unloaded: Extension has been removed from the current compiler state.
+
+
+                  ==========================
+                 ||                        ||
+                 ||                        \/
+Available ===> Loaded ===> Enabled ===> Unloaded
+                 /\           ||
+                 ||           ||
+                  =============
+
+An extension can be loaded only if it is known and supported.
+- Known: The extension name is known and there is an implemented procedure to load it.
+- Loaded: The preprocessor has at some point processed an #extension directive related 
+		  to the extension with behaviour 'enable' or 'require'. 
+Once loaded, an extension can be enabled.
+All successfully loaded extensions stay in the compiler global state until unloaded.
+Thus, an enabled extension will return to 'Loaded' when disabled.
+All extensions will be unloaded once the compiler run is finished.
+
+
+
+Implementation
+--------------
 
 Extensions will be declared by a set of files in a directory <extension-name>, 
 equivalent to the files for profiles:
