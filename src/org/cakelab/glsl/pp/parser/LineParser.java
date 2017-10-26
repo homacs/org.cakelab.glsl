@@ -7,6 +7,11 @@ import org.cakelab.glsl.pp.tokens.TNumber;
 
 public class LineParser extends Parser {
 
+	// TODO support GL_ARB_shading_language_include properly, #line parser has to change
+	//      accept header path (StringLiteral) as source identifier.
+ 
+	
+	
 	@SuppressWarnings("unused")
 	private Preprocessor control;
 	

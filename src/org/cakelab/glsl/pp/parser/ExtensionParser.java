@@ -10,6 +10,11 @@ import org.cakelab.glsl.pp.tokens.TPunctuator;
 
 public class ExtensionParser extends Parser {
 
+	// TODO to support disabling extensions in user level code, #extension directives need change
+	//     - either execute and record extension directives in preprocessor and then replay and execute in language level parser
+	//     - or turn preprocessor in a pull lexer and enable disable accordingly only once.
+	
+	
 	private Interval interval;
 	@SuppressWarnings("unused")
 	private Preprocessor control;

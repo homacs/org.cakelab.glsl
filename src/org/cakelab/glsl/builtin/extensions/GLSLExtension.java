@@ -121,6 +121,7 @@ public class GLSLExtension extends ScopeImpl {
 	private Properties properties;
 	private HashMap<String, Macro> macros;
 	private KeywordTable tokenTable;
+	private boolean enabled = false;
 	
 	private GLSLExtension(Key key, HashMap<String, Macro> macros) {
 		super(null);
@@ -144,9 +145,15 @@ public class GLSLExtension extends ScopeImpl {
 	
 	
 	public void enable(PPState ws) {
+		this.enabled = true;
 	}
 	
 	public void disable(PPState ws) {
+		this.enabled = false;
+	}
+	
+	public boolean isEnabled() {
+		return enabled;
 	}
 	
 	public Macro getMacro(String name) {
