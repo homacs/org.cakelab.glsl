@@ -493,7 +493,7 @@ GENERIC_FUNCTION_SET(vec4)
 
 
 #undef GENERIC_FUNCTION_SET
-#endif // defined(VERTEX_SHADER) || defined(GEOMETRY_SHADER) || defined(FRAGMENT_SHADER)
+#endif // defined(VERTEX_SHADER) || defined(FRAGMENT_SHADER)
 
 
 

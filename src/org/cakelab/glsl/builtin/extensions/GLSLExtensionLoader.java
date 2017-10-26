@@ -10,6 +10,7 @@ import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.builtin.BuiltinScope;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.GLSLExtensionSet;
+import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.pp.MacroMap;
 import org.cakelab.glsl.pp.Preprocessor;
@@ -109,7 +110,9 @@ public class GLSLExtensionLoader {
 	 */
 	protected GLSLExtension createExtension(Properties properties, GLSLVersion version, ShaderType shaderType,
 			HashMap<String, Macro> extensionMacros, KeywordTable extendedKeywords) {
-		return 	new GLSLExtension(properties, version, shaderType, extensionMacros, extendedKeywords);
+		GLSLExtension e = new GLSLExtension(properties, version, shaderType, extensionMacros, extendedKeywords);
+		if (extendedKeywords != null) addBuiltinTypesForKeywords(e, extendedKeywords);
+		return e;
 	}
 
 
@@ -147,6 +150,27 @@ public class GLSLExtensionLoader {
 		return tokenTable;
 	}
 	
+	/**
+	 * This method adds all known builtin types (see {@link Type.BUILTIN_TYPES}) which 
+	 * are listed as keywords in the given keyword table to the symbol table of the extension 'e' .
+	 * <p>
+	 * This method is called from {@link #createExtension(Properties, GLSLVersion, ShaderType, HashMap, KeywordTable)} 
+	 * if the keyword table is not null. Override it to control whether the types will be added or not.
+	 * </p>
+	 * 
+	 * 
+	 * @param e
+	 * @param addedKeywords
+	 */
+	protected void addBuiltinTypesForKeywords(GLSLExtension e, KeywordTable addedKeywords) {
+		for (Type t : Type.BUILTIN_TYPES) {
+			if (addedKeywords.isLanguageKeyword(t.getName())) {
+				e.addType(t);
+			}
+		}
+	}
+
+
 	/**
 	 * Preprocesses the preamble.glsl file.
 	 * <p>

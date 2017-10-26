@@ -1,0 +1,5 @@
+{
+	"name" : "GL_ARB_compute_shader",
+	"loader" : "Loader",
+	"dependencies" : "core:[420,]"
+}

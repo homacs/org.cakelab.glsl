@@ -1,0 +1,4 @@
+{
+	"name" : "GL_ARB_fragment_shader_interlock",
+	"dependencies" : "core:[420,]"
+}

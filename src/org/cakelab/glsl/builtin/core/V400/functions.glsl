@@ -697,7 +697,6 @@ GENERIC_textureQueryLod(sampler2DArray,   vec2)
 GENERIC_textureQueryLod(samplerCubeArray, vec3)
 
 #undef GENERIC_textureQueryLod
-#endif // FRAGMENT_SHADER
 
 vec2 textureQueryLod(sampler1DShadow sampler, float P);
 vec2 textureQueryLod(sampler2DShadow sampler, vec2 P);
@@ -706,6 +705,7 @@ vec2 textureQueryLod(sampler1DArrayShadow sampler, float P);
 vec2 textureQueryLod(sampler2DArrayShadow sampler, vec2 P);
 vec2 textureQueryLod(samplerCubeArrayShadow sampler, vec3 P);
 
+#endif // FRAGMENT_SHADER
 
 // -----------------------------------------------------------------------------------
 //                           8.9.2 Texel Lookup Functions

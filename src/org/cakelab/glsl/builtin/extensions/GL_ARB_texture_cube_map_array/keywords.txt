@@ -1,0 +1,4 @@
+samplerCubeArray
+samplerCubeArrayShadow
+isamplerCubeArray
+usamplerCubeArray

@@ -1,0 +1,4 @@
+{
+	"name" : "GL_ARB_texture_cube_map_array",
+	"dependencies" : "core:[130,]"
+}

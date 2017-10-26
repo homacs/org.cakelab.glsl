@@ -1,0 +1,2 @@
+sampler2DMS isampler2DMS usampler2DMS
+sampler2DMSArray isampler2DMSArray usampler2DMSArray

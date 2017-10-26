@@ -1,4 +1,4 @@
-package org.cakelab.glsl.builtin.extensions.GL_ARB_shader_image_load_store;
+package org.cakelab.glsl.builtin.extensions.GL_ARB_gl_spirv;
 
 import java.util.HashMap;
 
@@ -15,14 +15,11 @@ public class Loader extends GLSLExtensionLoader {
 	@Override
 	protected GLSLExtension createExtension(Properties properties, GLSLVersion version, ShaderType shaderType,
 			HashMap<String, Macro> extensionMacros, KeywordTable extendedKeywords) {
-		GLSLExtension e = super.createExtension(properties, version, shaderType, extensionMacros, extendedKeywords);
-		assert (!version.profile.equals(GLSLVersion.Profile.es));
-		// add built-in types
-		if (version.number < 420) addBuiltinTypesForKeywords(e, extendedKeywords);
-		return e;
+		return new GLSLExtension_GL_ARB_gl_spirv(properties, version, shaderType, extensionMacros, extendedKeywords);
 	}
 
-
+	
+	
 	
 	
 }

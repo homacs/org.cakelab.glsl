@@ -121,7 +121,7 @@ public class GLSLExtension extends ScopeImpl {
 	private Properties properties;
 	private HashMap<String, Macro> macros;
 	private KeywordTable tokenTable;
-	private boolean enabled = false;
+	protected boolean enabled = false;
 	
 	private GLSLExtension(Key key, HashMap<String, Macro> macros) {
 		super(null);

@@ -1,0 +1,5 @@
+{
+	"name" : "GL_ARB_shader_texture_lod",
+	"loader" : "Loader",
+	"dependencies" : "core:[110,]"
+}

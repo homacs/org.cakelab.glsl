@@ -741,6 +741,7 @@ GEN_textureSamples(sampler2DMSArray)
 
 
 //   ------  textureQueryLod(sampler, P)   -------
+#ifdef FRAGMENT_SHADER
 #define GENERIC_textureQueryLod(SAMPLER_TYPE, P_TYPE)       \
 vec2 textureQueryLod(     SAMPLER_TYPE sampler, P_TYPE P);  \
 vec2 textureQueryLod(i ## SAMPLER_TYPE sampler, P_TYPE P);  \
@@ -763,6 +764,7 @@ vec2 textureQueryLod(sampler1DArrayShadow sampler, float P);
 vec2 textureQueryLod(sampler2DArrayShadow sampler, vec2 P);
 vec2 textureQueryLod(samplerCubeArrayShadow sampler, vec3 P);
 
+#endif // FRAGMENT_SHADER
 
 // -----------------------------------------------------------------------------------
 //                           8.9.2 Texel Lookup Functions

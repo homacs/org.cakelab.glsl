@@ -1,0 +1,4 @@
+{
+	"name" : "GL_ARB_cull_distance",
+	"dependencies" : "core:[130,]"
+}

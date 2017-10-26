@@ -1,0 +1,4 @@
+{
+	"name" : "GL_ARB_geometry_shader4",
+	"dependencies" : "core:[110,400]"
+}

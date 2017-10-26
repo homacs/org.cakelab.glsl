@@ -1,0 +1,4 @@
+{
+	"name" : "GL_ARB_texture_multisample",
+	"dependencies" : "core:[110,]"
+}

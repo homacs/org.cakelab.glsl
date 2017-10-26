@@ -27,6 +27,7 @@
 // -----------------------------------------------------------------------------------
 
 #ifdef COMPUTE_SHADER
+
 // work group dimensions
 in    uvec3 gl_NumWorkGroups;
 const uvec3 gl_WorkGroupSize;
@@ -36,9 +37,13 @@ in    uvec3 gl_LocalInvocationID;
 // derived variables
 in    uvec3 gl_GlobalInvocationID;
 in    uint  gl_LocalInvocationIndex;
+
+
 #elif defined(FRAGMENT_SHADER)
+
 in  int   gl_Layer;
 in  int   gl_ViewportIndex;
+
 #endif
 
 

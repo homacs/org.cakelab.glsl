@@ -1,0 +1,7 @@
+{
+	"name" : "GL_ARB_viewport_array",
+	"dependencies" : { "any" : [
+		"core:[150,]"
+		"GL_ARB_geometry_shader4"
+	]}
+}

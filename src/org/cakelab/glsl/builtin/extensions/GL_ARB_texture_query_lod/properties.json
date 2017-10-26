@@ -1,0 +1,5 @@
+{
+	"name" : "GL_ARB_texture_query_lod",
+	"loader" : "Loader",
+	"dependencies" : "core:[130,]"
+}

@@ -47,35 +47,36 @@
 + ./ARB/ARB_shader_precision.txt
 + ./ARB/ARB_shading_language_include.txt
 26.10.17
-./ARB/ARB_shader_viewport_layer_array.txt
-./ARB/ARB_texture_cube_map_array.txt
-./ARB/ARB_fragment_shader.txt
-./ARB/ARB_vertex_attrib_64bit.txt
-./ARB/ARB_framebuffer_sRGB.txt
-./ARB/ARB_shader_storage_buffer_object.txt
-./ARB/ARB_shading_language_packing.txt
-./ARB/ARB_shader_subroutine.txt
-./ARB/ARB_gl_spirv.txt
-./ARB/ARB_shader_texture_lod.txt
-./ARB/ARB_enhanced_layouts.txt
-./ARB/ARB_explicit_uniform_location.txt
-./ARB/ARB_compute_variable_group_size.txt
-./ARB/ARB_compute_shader.txt
-./ARB/ARB_shader_bit_encoding.txt
-./ARB/ARB_ES2_compatibility.txt
-./ARB/ARB_provoking_vertex.txt
-./ARB/ARB_texture_query_lod.txt
-./ARB/ARB_vertex_array_bgra.txt
-./ARB/ARB_viewport_array.txt
-./ARB/ARB_geometry_shader4.txt
-./ARB/ARB_depth_buffer_float.txt
-./ARB/ARB_draw_buffers.txt
-./ARB/ARB_fragment_shader_interlock.txt
-./ARB/ARB_indirect_parameters.txt
-./ARB/ARB_cull_distance.txt
-./ARB/ARB_fragment_program_shadow.txt
-./ARB/ARB_texture_multisample.txt
-./ARB/ARB_shading_language_100.txt
++ ./ARB/ARB_shader_viewport_layer_array.txt
++ ./ARB/ARB_texture_cube_map_array.txt
++ ./ARB/ARB_fragment_shader.txt
++ ./ARB/ARB_vertex_attrib_64bit.txt
++ ./ARB/ARB_framebuffer_sRGB.txt
++ ./ARB/ARB_shader_storage_buffer_object.txt
++ ./ARB/ARB_shading_language_packing.txt
++ ./ARB/ARB_shader_subroutine.txt
++ ./ARB/ARB_gl_spirv.txt
++ ./ARB/ARB_shader_texture_lod.txt
++ ./ARB/ARB_enhanced_layouts.txt
++ ./ARB/ARB_explicit_uniform_location.txt
++ ./ARB/ARB_compute_variable_group_size.txt
++ ./ARB/ARB_compute_shader.txt
++ ./ARB/ARB_shader_bit_encoding.txt
++ ./ARB/ARB_ES2_compatibility.txt
++ ./ARB/ARB_provoking_vertex.txt
++ ./ARB/ARB_texture_query_lod.txt
++ ./ARB/ARB_vertex_array_bgra.txt
++ ./ARB/ARB_viewport_array.txt
++ ./ARB/ARB_geometry_shader4.txt
++ ./ARB/ARB_depth_buffer_float.txt
++ ./ARB/ARB_draw_buffers.txt
++ ./ARB/ARB_fragment_shader_interlock.txt
++ ./ARB/ARB_indirect_parameters.txt
++ ./ARB/ARB_cull_distance.txt
++ ./ARB/ARB_fragment_program_shadow.txt
++ ./ARB/ARB_texture_multisample.txt
++ ./ARB/ARB_shading_language_100.txt
+
 ./ARM/ARM_shader_framebuffer_fetch_depth_stencil.txt
 ./ARM/ARM_shader_framebuffer_fetch.txt
 ./INTEL/INTEL_fragment_shader_ordering.txt
