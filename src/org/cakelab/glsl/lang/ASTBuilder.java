@@ -11,6 +11,7 @@ import org.cakelab.glsl.GLSLParser.GlslCompoundStatementContext;
 import org.cakelab.glsl.GLSLParser.GlslDeclarationContext;
 import org.cakelab.glsl.GLSLParser.GlslFunctionDefinitionContext;
 import org.cakelab.glsl.GLSLParser.GlslFunctionPrototypeContext;
+import org.cakelab.glsl.GLSLParser.GlslPrimaryExpressionContext;
 import org.cakelab.glsl.GLSLParser.GlslTypePrecisionDeclarationContext;
 import org.cakelab.glsl.GLSLParser.GlslTypeQualifierContext;
 import org.cakelab.glsl.GLSLParser.GlslVariableDeclarationsContext;
@@ -264,6 +265,10 @@ public class ASTBuilder extends GLSLBaseListener {
 	}
 
 
+
+
+	
+
 	private boolean containsError(ParseTree ctx) {
 		if (ctx == null) {
 			throw new Error("internal error: unexpected null value in parse tree validation");
@@ -378,7 +383,23 @@ public class ASTBuilder extends GLSLBaseListener {
 		symbolTable.addFunction(new Function(Interval.NONE, Type._void, string));
 	}
 
-
+	@Override
+	public void exitGlslPrimaryExpression(GlslPrimaryExpressionContext ctx) {
+		
+		if (ctx.glslIdentifier() != null) {
+			// just check whether there is any symbol registered for this identifier
+			String ident = ctx.glslIdentifier().IDENTIFIER().getText();
+			if (symbolTable.getType(ident) != null) return;
+			else if (symbolTable.getVariable(ident) != null) return;
+			else if (symbolTable.hasFunction(ident)) return;
+			else {
+				// TODO we cannot simply assign identifiers to symbols if expression is a
+				//      - field selection             (requires scope)
+				//      - function/constructor call   (requires parameters)
+				// so it is impossible to tell whether we have an unknown identifier here
+			}
+		}
+	}
 
 
 	

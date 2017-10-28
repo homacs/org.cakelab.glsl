@@ -19,6 +19,8 @@ import org.cakelab.glsl.pp.ast.PPGroupScope;
 public class GLSL {
 	
 	private static GLSLCompilerFeatures DEFAULT_COMPILER_FEATURES;
+
+	private boolean enableInclude = true;
 	private ResourceManager resourceManager;
 	private GLSLErrorHandler errorHandler;
 	private GLSLCompilerFeatures features;
@@ -34,8 +36,16 @@ public class GLSL {
 	}
 	
 
+	
+	
+	
 	public GLSL() {
 		this(getDefaultCompilerFeatures(), new GLSLErrorHandlerImpl());
+	}
+	
+	
+	public void enableInclude(boolean enable) {
+		this.enableInclude = enable;
 	}
 	
 	/**
@@ -77,7 +87,7 @@ public class GLSL {
 		
 		pp.setResourceManager(resourceManager);
 		pp.setErrorHandler(errorHandler);
-		pp.enableInclude(true);
+		pp.enableInclude(enableInclude);
 		pp.enableLineDirectiveInsertion(false);
 		
 		
@@ -104,6 +114,7 @@ public class GLSL {
 		IScope langAST = astBuilder.getToplevelScope();
 		return new CombinedAST(ppAST, langAST);
 	}
+
 
 
 }

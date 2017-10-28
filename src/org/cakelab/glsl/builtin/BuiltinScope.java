@@ -20,7 +20,7 @@ import org.cakelab.glsl.lang.ast.types.Type;
  *
  */
 public class BuiltinScope implements IScope {
-	IScope builtins;
+	private IScope builtins;
 	private GLSLExtensionSet extensions = new GLSLExtensionSet();
 	
 	/**
@@ -88,9 +88,16 @@ public class BuiltinScope implements IScope {
 	
 	@Override
 	public Function getFunction(String name, Type[] parameterTypes) {
+		// TODO: builtin gets overridden by extensions, so the resolve order for symbols has to be reversed
+		
 		Function f = builtins.getFunction(name, parameterTypes);
 		if (f != null) return f;
 		return getExtensions().getFunction(name, parameterTypes);
+	}
+	@Override
+	public boolean hasFunctionGroup(String ident) {
+		if (builtins.hasFunctionGroup(ident)) return true;
+		else return getExtensions().hasFunctionGroup(ident);
 	}
 
 	@Override
@@ -176,6 +183,7 @@ public class BuiltinScope implements IScope {
 	public void setExtensions(GLSLExtensionSet extensions) {
 		this.extensions = extensions;
 	}
+
 
 
 

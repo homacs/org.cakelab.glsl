@@ -37,5 +37,6 @@ public interface IScope {
 	ArrayList<IScope> getChildren();
 	
 	void dump(PrintStream out, String indent);
+	boolean hasFunctionGroup(String ident);
 
 }

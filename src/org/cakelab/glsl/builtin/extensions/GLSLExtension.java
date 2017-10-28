@@ -95,12 +95,16 @@ public class GLSLExtension extends ScopeImpl {
 		return null;
 	}
 
+
+	// in case an extension does not define any macros we use this empty map
+	private static final HashMap<String, Macro> EMPTY_MACROS = new HashMap<String, Macro>();
+
 	
 	// TODO: performance: think about a better way to cache extensions and builtin symbols
 	//       builtins and extensions cannot be removed from cache as long as symbols still in use 
 	//      (because of duplicate symbol instantiation when loading it again)
 	// maybe with weak references?
-	static final Map<Key, GLSLExtension> CACHE = new HashMap<Key, GLSLExtension>(4);
+	private static final Map<Key, GLSLExtension> CACHE = new HashMap<Key, GLSLExtension>(4);
 
 	
 	
@@ -126,7 +130,8 @@ public class GLSLExtension extends ScopeImpl {
 	private GLSLExtension(Key key, HashMap<String, Macro> macros) {
 		super(null);
 		this.key = key;
-		this.macros = macros;
+		if (macros != null && macros.size() > 0)	this.macros = macros;
+		else this.macros = EMPTY_MACROS;
 	}
 
 	public GLSLExtension(Properties properties, GLSLVersion version, ShaderType type, HashMap<String, Macro> extensionMacros, KeywordTable addedKeywords) {

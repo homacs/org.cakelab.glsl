@@ -33,7 +33,8 @@ public class InterfaceBlock extends Struct {
 	 * @return
 	 */
 	public static String key(Qualifier direction, String name) {
-		return direction.getName() + " " + name;
+		if (direction != null) return direction.getName() + " " + name;
+		else return name;
 	}
 
 	/** 

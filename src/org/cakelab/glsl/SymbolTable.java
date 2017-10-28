@@ -108,6 +108,14 @@ public class SymbolTable {
 		}
 		return null;
 	}
+	
+	/** returns true if there is any function with that name */
+	public boolean hasFunction(String ident) {
+		for (IScope s = scope; s != null; s = s.getParent()) {
+			if (s.hasFunctionGroup(ident)) return true;
+		}
+		return false;
+	}
 
 	public boolean containsFunctionGroup(String name) {
 		for (IScope s = scope; s != null; s = s.getParent()) {
@@ -151,6 +159,7 @@ public class SymbolTable {
 	public void dump(PrintStream out) {
 		toplevel.dump(out, "");
 	}
+
 
 
 

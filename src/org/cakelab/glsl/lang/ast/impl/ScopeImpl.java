@@ -4,7 +4,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 import org.cakelab.glsl.lang.ast.Function;
 import org.cakelab.glsl.lang.ast.IScope;
@@ -91,7 +90,7 @@ public class ScopeImpl implements IScope {
 	}
 
 	
-	private List<Function> getFunctionGroup(String name) {
+	private FunctionGroup getFunctionGroup(String name) {
 		FunctionGroup functionGroup = functions.get(name);
 		if (functionGroup == null) {
 			functionGroup = new FunctionGroup();
@@ -99,10 +98,15 @@ public class ScopeImpl implements IScope {
 		}
 		return functionGroup;
 	}
+
+	public boolean hasFunctionGroup(String name) {
+		return functions.containsKey(name);
+	}
+	
 	
 	@Override
 	public void addFunction(Function func) {
-		List<Function> functionGroup = getFunctionGroup(func.getName());
+		FunctionGroup functionGroup = getFunctionGroup(func.getName());
 		functionGroup.add(func);
 	}
 

@@ -17,6 +17,7 @@ import org.cakelab.glsl.lang.lexer.tokens.ITokenTable;
 import org.cakelab.glsl.pp.ast.Macro;
 
 public class GLSLExtensionSet implements IScope, ITokenTable, Iterable<GLSLExtension> {
+	// TODO one extension can override symbols of another extension -> resolve order has to be reversed
 	public GLSLExtensionSet() {
 	}
 
@@ -102,6 +103,16 @@ public class GLSLExtensionSet implements IScope, ITokenTable, Iterable<GLSLExten
 		return null;
 	}
 
+	@Override
+	public boolean hasFunctionGroup(String ident) {
+		for (GLSLExtension e : extensions) {
+			if (e.hasFunctionGroup(ident)) return true;
+		}
+		return false;
+	}
+
+
+	
 	@Override
 	public Function getFunctionBestMatch(String name, Type[] parameterTypes) {
 		for (GLSLExtension e : extensions) {

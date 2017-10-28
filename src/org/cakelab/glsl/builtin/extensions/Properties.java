@@ -98,13 +98,15 @@ public class Properties {
 	// transient prevents the decoder from trying to decode
 	private transient Dependency dependencies;
 	private String[] conflicts;
+	private boolean mocked = false;
 	
 	protected Properties(String name) {
 		this.name = name;
+		this.mocked = true;
 	}
 
 	protected Properties(String name, String[] alternatives) {
-		this.name = name;
+		this(name);
 		this.alternatives = alternatives;
 	}
 	
@@ -120,6 +122,10 @@ public class Properties {
 		dependencies = decodeDependency(something);
 	}
 
+	public boolean isMockedExtension() {
+		return mocked;
+	}
+	
 	public boolean checkRequirements(GLSLVersion version, BuiltinScope builtinScope) throws IllegalArgumentException {
 		if (dependencies != null) {
 			if (!dependencies.check(version, builtinScope.getExtensions())) {
@@ -231,5 +237,6 @@ public class Properties {
 	public void setLoader(String loader) {
 		this.loader = loader;
 	}
+
 
 }

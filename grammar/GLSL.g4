@@ -407,7 +407,7 @@ glslIdentifier
     : IDENTIFIER
     ;
     
-/** Identifier, known to be a user defined type. */
+/** Identifier, known to be a defined type. */
 glslTypeName
 	: IDENTIFIER
 	;

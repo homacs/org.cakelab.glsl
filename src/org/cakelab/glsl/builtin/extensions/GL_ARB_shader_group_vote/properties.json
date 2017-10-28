@@ -1,4 +1,4 @@
 {
 	"name" : "GL_ARB_shader_group_vote",
-	"dependencies" : "core:[430,]"
+	"dependencies" : "core:[110,]"
 }

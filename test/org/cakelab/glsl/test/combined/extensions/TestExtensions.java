@@ -21,6 +21,7 @@ public class TestExtensions extends TestingGLSLBase {
 	
 	
 	public static void test() {
+		_GLSL.enableInclude(false);
 		testGL_ARB_gpu_shader_fp64();
 		testGL_ARB_shader_texture_image_samples();
 		testGL_ARB_tessellation_shader();
@@ -30,8 +31,44 @@ public class TestExtensions extends TestingGLSLBase {
 		testGL_ARB_shader_image_load_store();
 		testGL_ARB_sample_shading();
 		testGL_ARB_texture_query_levels();
+		test_files();
+		_GLSL.enableInclude(true);
 	}
 	
+
+	private static void test_files() {
+		assertValid(resource("GL_ARB_shader_group_vote/test_01.frag.glsl"));
+		assertValid(resource("GL_ARB_shader_draw_parameters/test_01.frag.glsl"));
+		assertValid(resource("GL_ARB_shader_atomic_counters/test_01.frag.glsl"));
+
+		assertValid(resource("GL_ARB_shading_language_include/test_01.frag.glsl"));
+		
+	}
+
+
+	private static void assertValid(Resource resource) {
+		String path = resource.getPath();
+		ShaderType type;
+		if (path.endsWith(".vert.glsl")) {
+			type = ShaderType.VERTEX_SHADER;
+		} else if (path.endsWith(".tsct.glsl")) {
+			type = ShaderType.TESS_CONTROL_SHADER;
+		} else if (path.endsWith(".tsev.glsl")) {
+			type = ShaderType.TESS_EVALUATION_SHADER;
+		} else if (path.endsWith(".geom.glsl")) {
+			type = ShaderType.GEOMETRY_SHADER;
+		} else if (path.endsWith(".frag.glsl")) {
+			type = ShaderType.FRAGMENT_SHADER;
+		} else if (path.endsWith(".comp.glsl")) {
+			type = ShaderType.COMPUTE_SHADER;
+		} else if (path.endsWith(".glsl")) {
+			type = ShaderType.GENERIC_SHADER;
+		} else {
+			throw new Error("unknown file extension in shader resource '" + path + "'");
+		}
+		assertValid(resource, type);
+	}
+
 
 	private static void testGL_ARB_texture_query_levels() {
 		assertValid(resource("GL_ARB_texture_query_levels/test_01.frag.glsl"),

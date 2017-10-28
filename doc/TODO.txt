@@ -16,7 +16,7 @@
 				
 				ISSUE: Extensions need access to global compiler state
 			
-				
+				x. Add ES extensions and find duplicates in core extensions
 				0. Go through all change lists of all versions 
 				0. Availability of built-in functions in respect to different shader types
 				1. TODOS. aufschreiben

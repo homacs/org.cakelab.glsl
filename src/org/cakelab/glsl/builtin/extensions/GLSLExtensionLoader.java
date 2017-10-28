@@ -53,22 +53,7 @@ public class GLSLExtensionLoader {
 		
 		GLSLExtension e = null;
 		
-		if (properties.hasPreamble()) {
-		
-			Resource resource = properties.getPreamble();
-		
-			GLSL_ANTLR_PPOutputBuffer buffer = createPPOutputBuffer();
-	
-			HashMap<String, Macro> extensionMacros = preprocess(ws, resource, buffer);
-	
-			KeywordTable extendedKeywords = loadKeywordTable(properties.getName());
-			
-			e = createExtension(properties, version, shaderType, extensionMacros, extendedKeywords);
-			
-			GLSLExtensionSymbolTable symbolTable = new GLSLExtensionSymbolTable(e, builtinScope);
-			
-			parseExtensionPreamble(e, ws, buffer, symbolTable);
-		} else {
+		if (properties.isMockedExtension()) {
 			String[] names = KnownExtensions.getNames(properties.getName());
 			if (names == null) {
 				// unknown extension
@@ -76,6 +61,28 @@ public class GLSLExtensionLoader {
 			} else {
 				// known extension
 				e = new MockedExtension(names, shaderType, version);
+			}
+		} else {
+			boolean hasPreamble = properties.hasPreamble();
+			
+			GLSL_ANTLR_PPOutputBuffer buffer = null;
+			HashMap<String, Macro> extensionMacros = null;
+			
+			if (hasPreamble) {
+				Resource resource = properties.getPreamble();
+			
+				buffer = createPPOutputBuffer();
+		
+				extensionMacros = preprocess(ws, resource, buffer);
+			}
+			
+			KeywordTable extendedKeywords = loadKeywordTable(properties.getName());
+			e = createExtension(properties, version, shaderType, extensionMacros, extendedKeywords);
+
+			if (hasPreamble) {
+				GLSLExtensionSymbolTable symbolTable = new GLSLExtensionSymbolTable(e, builtinScope);
+				
+				parseExtensionPreamble(e, ws, buffer, symbolTable);
 			}
 		}
 		

@@ -81,6 +81,14 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		ws = testExtension(core(130), ShaderType.FRAGMENT_SHADER, "GL_ARB_gpu_shader_int64", "GL_ARB_shader_ballot");
 
 		ws = testExtension(core(130), ShaderType.FRAGMENT_SHADER, "GL_ARB_fragment_layer_viewport");
+
+		ws = testExtension(core(130), ShaderType.GENERIC_SHADER, "GL_ARB_shader_group_vote");
+
+		ws = testExtension(core(130), ShaderType.GENERIC_SHADER, "GL_ARB_shader_draw_parameters");
+
+		ws = testExtension(core(130), ShaderType.GENERIC_SHADER, "GL_ARB_shader_atomic_counters");
+
+		ws = testExtension(core(130), ShaderType.GENERIC_SHADER, "GL_ARB_shading_language_include");
 		ws.dump(System.out);
 
 		// GL_ARB_sparse_texture_clamp
