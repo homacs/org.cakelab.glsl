@@ -482,7 +482,7 @@ glslPrimaryExpression
 //
 glslPostfixExpression
     : glslPrimaryExpression 
-    | glslPostfixExpression glslCallArguments // this rule can evaluate to a function or constructor call depending on the preceding postfix_expression.
+    | glslPostfixExpression glslCallArguments // this rule can evaluate to a function, subroutine or constructor call depending on the preceding postfix_expression.
     | glslPostfixExpression glslArrayDimension // this rule might refer to a type (e.g. float[]) or an array reference (e.g. array[i])
     | glslPostfixExpression DOT glslFieldSelection
     | glslPostfixExpression INC_OP

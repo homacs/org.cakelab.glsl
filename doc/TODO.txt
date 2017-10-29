@@ -31,4 +31,4 @@
 					    -> see v4.10 gl_PerVertex ("gl_PerVertex block can be redeclared in a shader to 
 					       explicitly include these additional fields.")
 				   b. Above probably also affects global variables
-				
+				3. Use 'alias' to refer to alternative extension names

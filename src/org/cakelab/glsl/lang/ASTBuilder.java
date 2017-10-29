@@ -30,6 +30,7 @@ import org.cakelab.glsl.lang.ast.Qualifiers;
 import org.cakelab.glsl.lang.ast.Variable;
 import org.cakelab.glsl.lang.ast.types.CompoundType;
 import org.cakelab.glsl.lang.ast.types.InterfaceBlock;
+import org.cakelab.glsl.lang.ast.types.SubroutineType;
 import org.cakelab.glsl.lang.ast.types.Type;
 
 public class ASTBuilder extends GLSLBaseListener {
@@ -58,6 +59,12 @@ public class ASTBuilder extends GLSLBaseListener {
 	public void exitGlslFunctionPrototype(GlslFunctionPrototypeContext ctx) {
 		
 		Function f = factory.create(ctx);
+		
+		if (f.isSubroutinePrototype()) {
+			symbolTable.addType(new SubroutineType(f));
+		}
+		
+		
 		// lookup a declared function with the same name and parameter types
 		Function declared = symbolTable.getFunction(f.getName(), f.getParameterTypes());
 		
@@ -153,6 +160,7 @@ public class ASTBuilder extends GLSLBaseListener {
 				
 				
 				List<GlslArrayDimensionContext> dimensions = getNonEmptyListOrNull(ctx.glslArrayDimension());
+				
 				Type type = factory.getType(ctx.glslTypeName(), false);
 				if (dimensions == null) {
 					// glslTypeQualifier glslTypeName glslVariableDeclarations

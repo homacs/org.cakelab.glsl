@@ -79,6 +79,7 @@ public class Type extends NodeImpl implements Comparable<Type> {
 	public static final int KIND_STRUCT = 1<<2;
 	public static final int KIND_MATRIX = KIND_ARRAY|KIND_STRUCT;
 	public static final int KIND_VECTOR = KIND_MATRIX;
+	public static final int KIND_SUBROUTINE = 1<<5;
 	
 	/** Signature is the fully specified type name (e.g. 'int[]' or 'void' but not 'int[3]'). */
 	protected Qualifiers qualifiers = new Qualifiers();
@@ -919,5 +920,6 @@ public class Type extends NodeImpl implements Comparable<Type> {
 	public void setScope(IScope scope) {
 		this.scope = scope;
 	}
+
 
 }

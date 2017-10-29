@@ -89,6 +89,24 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		ws = testExtension(core(130), ShaderType.GENERIC_SHADER, "GL_ARB_shader_atomic_counters");
 
 		ws = testExtension(core(130), ShaderType.GENERIC_SHADER, "GL_ARB_shading_language_include");
+
+		ws = testExtension(core(410), ShaderType.VERTEX_SHADER, "GL_ARB_shader_viewport_layer_array");
+
+		ws = testExtension(core(130), ShaderType.GENERIC_SHADER, "GL_ARB_texture_cube_map_array");
+
+		ws = testExtension(core(130), ShaderType.GENERIC_SHADER, "GL_ARB_shader_storage_buffer_object");
+
+		ws = testExtension(core(130), ShaderType.GENERIC_SHADER, "GL_ARB_shading_language_packing");
+
+		ws = testExtension(core(130), ShaderType.GENERIC_SHADER, "GL_ARB_shader_subroutine");
+
+		ws = testExtension(core(400), ShaderType.GENERIC_SHADER, "GL_ARB_shader_texture_lod");
+
+		ws = testExtension(core(430), ShaderType.COMPUTE_SHADER, "GL_ARB_compute_variable_group_size");
+
+		ws = testExtension(core(420), ShaderType.COMPUTE_SHADER, "GL_ARB_compute_shader");
+
+		ws = testExtension(core(130), ShaderType.GENERIC_SHADER, "GL_ARB_shader_bit_encoding");
 		ws.dump(System.out);
 
 		// GL_ARB_sparse_texture_clamp

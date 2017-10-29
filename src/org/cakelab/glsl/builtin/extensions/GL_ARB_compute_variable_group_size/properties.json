@@ -3,7 +3,7 @@
 	"dependencies" : 
 	{ "any" : [
 		"core:[430,]",
-		"ARB_compute_shader"
+		"GL_ARB_compute_shader"
 		]
 	}
 }

@@ -4,6 +4,7 @@ package org.cakelab.glsl.lang.ast;
 import java.util.Arrays;
 
 import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.lang.ast.Qualifier.SubroutineQualifier;
 import org.cakelab.glsl.lang.ast.impl.NodeImpl;
 import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
 import org.cakelab.glsl.lang.ast.types.Type;
@@ -225,6 +226,20 @@ public class Function extends NodeImpl implements Comparable<Function> {
 
 	public static boolean isVoidParameterList(ParameterDeclaration[] argumentTypes) {
 		return argumentTypes == null || argumentTypes.length == 0 || (argumentTypes.length == 1 && argumentTypes[0].type == Type._void);
+	}
+
+
+
+	public boolean isSubroutinePrototype() {
+		if (type.hasQualifiers()) {
+			for (Qualifier q : type.getQualifiers()) {
+				if (q instanceof SubroutineQualifier) {
+					SubroutineQualifier sub = (SubroutineQualifier) q;
+					return sub.functions == null || sub.functions.length == 0;
+				}
+			}
+		}
+		return false;
 	}
 
 

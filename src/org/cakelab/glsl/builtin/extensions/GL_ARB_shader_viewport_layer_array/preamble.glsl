@@ -13,6 +13,10 @@ out int gl_ViewportIndex;
 #endif // VERTEX_SHADER
 
 
+
+
+// add gl_Layer (per standard only available in geometry shader) 
+// for vertex and tesselation evaluation shaders as well
 #if defined(VERTEX_SHADER) || defined(TESS_EVALUATION_SHADER)
 out int gl_Layer;
 #endif // defined(VERTEX_SHADER) || defined(TESS_EVALUATION_SHADER)
