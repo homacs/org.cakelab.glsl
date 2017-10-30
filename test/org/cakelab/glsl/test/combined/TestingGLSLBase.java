@@ -10,11 +10,11 @@ import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.impl.JarResourceManager;
 import org.cakelab.glsl.impl.ResourceString;
 import org.cakelab.glsl.test.lang.TestingTools;
-import org.cakelab.glsl.test.lang.TestingTools.ParserErrorHandler;
+import org.cakelab.glsl.test.lang.TestingTools.TestErrorHandler;
 
 public class TestingGLSLBase {
 	
-	protected static final ParserErrorHandler ERROR_HANDLER = TestingTools.TEST_ERROR_HANLDER;
+	protected static final TestErrorHandler ERROR_HANDLER = TestingTools.TEST_ERROR_HANLDER;
 	protected static final DelegatingResourceManager RESOURCES = new DelegatingResourceManager(new JarResourceManager(), new FileSystemResourceManager());
 	protected static final GLSL _GLSL = new GLSL(GLSL.getDefaultCompilerFeatures(), ERROR_HANDLER, RESOURCES);
 	protected static final String TEST_RESOURCE_PATH = "test.glsl";

@@ -47,7 +47,7 @@ public class TestingTools {
 
 	private static ResourceManager resourceManager = new FileSystemResourceManager();
 	
-	public static class ParserErrorHandler extends GLSLErrorHandlerImpl {
+	public static class TestErrorHandler extends GLSLErrorHandlerImpl {
 		public String message;
 		
 		public String getMessage() {
@@ -108,7 +108,7 @@ public class TestingTools {
 			this.message = "" + origin.getLine() + ":" + origin.getColumn() + ": " + msg;
 		}
 	}
-	public static final ParserErrorHandler TEST_ERROR_HANLDER = new ParserErrorHandler();
+	public static final TestErrorHandler TEST_ERROR_HANLDER = new TestErrorHandler();
 	
 
 

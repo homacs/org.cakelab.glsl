@@ -52,12 +52,12 @@ public class Struct extends Type implements CompoundType {
 	
 	public static class MemberVariable extends Variable implements Member {
 		private Struct struct;
-		public MemberVariable(Struct struct, Type type, String name) {
-			super(struct.body, type, name);
+		public MemberVariable(Interval interval, Struct struct, Type type, String name) {
+			super(interval, struct.body, type, name);
 			this.struct = struct;
 		}
-		public MemberVariable(Struct struct, Type type, String name, Qualifiers qualifiers) {
-			super(struct.body, type, name, qualifiers);
+		public MemberVariable(Interval interval, Struct struct, Type type, String name, Qualifiers qualifiers) {
+			super(interval, struct.body, type, name, qualifiers);
 			this.struct = struct;
 		}
 		@Override

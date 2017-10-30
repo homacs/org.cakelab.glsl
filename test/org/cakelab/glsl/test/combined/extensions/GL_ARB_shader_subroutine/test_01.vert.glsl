@@ -1,7 +1,7 @@
 // Fragement Shader
 
 
-#version 150
+#version 150 
 
 #extension GL_ARB_shader_subroutine : enable
 
@@ -22,6 +22,16 @@ subroutine (colorRedBlue ) vec4 blueColor() {
 
 
 subroutine uniform colorRedBlue myRedBlueSelection;
+
+
+uniform Inputs {
+	mat4 pvm;
+	vec4 position;
+};
+
+
+out vec4 color;
+
 
 void main()
 {

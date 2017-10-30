@@ -8,17 +8,17 @@ public class Variable extends Value implements LValue {
 	String name;
 	private IScope scope;
 	
-	public Variable(IScope scope, Type type, String name, Qualifiers qualifiers) {
-		this(scope, Type._qualified(type, qualifiers), name);
+	public Variable(Interval interval, IScope scope, Type type, String name, Qualifiers qualifiers) {
+		this(interval, scope, Type._qualified(type, qualifiers), name);
 	}
 
-	public Variable(IScope scope, Type type, String name) {
-		this(scope, type);
+	public Variable(Interval interval, IScope scope, Type type, String name) {
+		this(interval, scope, type);
 		this.name = name;
 	}
 
-	protected Variable(IScope scope, Type type) {
-		super(Interval.NONE, type, null);
+	protected Variable(Interval interval, IScope scope, Type type) {
+		super(interval, type, null);
 		this.scope = scope;
 	}
 

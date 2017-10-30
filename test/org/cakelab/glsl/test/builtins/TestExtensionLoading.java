@@ -107,6 +107,18 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		ws = testExtension(core(420), ShaderType.COMPUTE_SHADER, "GL_ARB_compute_shader");
 
 		ws = testExtension(core(130), ShaderType.GENERIC_SHADER, "GL_ARB_shader_bit_encoding");
+
+		ws = testExtension(core(130), ShaderType.FRAGMENT_SHADER, "GL_ARB_texture_query_lod");
+
+		ws = testExtension(core(150), ShaderType.GEOMETRY_SHADER, "GL_ARB_viewport_array");
+
+		ws = testExtension(core(110), ShaderType.GEOMETRY_SHADER, "GL_ARB_geometry_shader4", "GL_ARB_viewport_array");
+
+		ws = testExtension(core(110), ShaderType.GEOMETRY_SHADER, "GL_ARB_fragment_shader_interlock");
+
+		ws = testExtension(compatibility(150), ShaderType.VERTEX_SHADER, "GL_ARB_cull_distance");
+
+		ws = testExtension(core(130), ShaderType.FRAGMENT_SHADER, "GL_ARB_texture_multisample");
 		ws.dump(System.out);
 
 		// GL_ARB_sparse_texture_clamp

@@ -38,14 +38,14 @@ public class TestExtensions extends TestingGLSLBase {
 
 	private static void test_files() {
 		assertValid(resource("GL_ARB_shader_group_vote/test_01.frag.glsl"));
-		assertValid(resource("GL_ARB_shader_draw_parameters/test_01.frag.glsl"));
+		assertValid(resource("GL_ARB_shader_draw_parameters/test_01.vert.glsl"));
 		assertValid(resource("GL_ARB_shader_atomic_counters/test_01.frag.glsl"));
 		assertValid(resource("GL_ARB_shading_language_include/test_01.frag.glsl"));
 		assertValid(resource("GL_ARB_shader_viewport_layer_array/test_01.vert.glsl"));
 		assertValid(resource("GL_ARB_texture_cube_map_array/test_01.frag.glsl"));
 		assertValid(resource("GL_ARB_shader_storage_buffer_object/test_01.frag.glsl"));
 		assertValid(resource("GL_ARB_shading_language_packing/test_01.frag.glsl"));
-		assertValid(resource("GL_ARB_shader_subroutine/test_01.frag.glsl"));
+		assertValid(resource("GL_ARB_shader_subroutine/test_01.vert.glsl"));
 		assertInvalid("#extension GL_ARB_gl_spirv : enable\n"
 				+ "void main() {\n"
 				+ "}", ShaderType.GENERIC_SHADER, "Configure SPIR-V frontend instead.");
@@ -53,6 +53,12 @@ public class TestExtensions extends TestingGLSLBase {
 		assertValid(resource("GL_ARB_compute_variable_group_size/test_01.comp.glsl"));
 		assertValid(resource("GL_ARB_compute_shader/test_01.comp.glsl"));
 		assertValid(resource("GL_ARB_shader_bit_encoding/test_01.comp.glsl"));
+		assertValid(resource("GL_ARB_texture_query_lod/test_01.frag.glsl"));
+		assertValid(resource("GL_ARB_geometry_shader4/test_01.geom.glsl"));
+		assertValid(resource("GL_ARB_viewport_array/test_01.geom.glsl"));
+		assertValid(resource("GL_ARB_fragment_shader_interlock/test_01.frag.glsl"));
+		assertValid(resource("GL_ARB_cull_distance/test_01.vert.glsl"));
+		assertValid(resource("GL_ARB_texture_multisample/test_01.frag.glsl"));
 	}
 
 

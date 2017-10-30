@@ -9,8 +9,12 @@ import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLParser.GlslArrayDimensionContext;
 import org.cakelab.glsl.GLSLParser.GlslCompoundStatementContext;
 import org.cakelab.glsl.GLSLParser.GlslDeclarationContext;
+import org.cakelab.glsl.GLSLParser.GlslFieldSelectionContext;
+import org.cakelab.glsl.GLSLParser.GlslForStatementContext;
 import org.cakelab.glsl.GLSLParser.GlslFunctionDefinitionContext;
 import org.cakelab.glsl.GLSLParser.GlslFunctionPrototypeContext;
+import org.cakelab.glsl.GLSLParser.GlslLayoutQualifierContext;
+import org.cakelab.glsl.GLSLParser.GlslPostfixExpressionContext;
 import org.cakelab.glsl.GLSLParser.GlslPrimaryExpressionContext;
 import org.cakelab.glsl.GLSLParser.GlslTypePrecisionDeclarationContext;
 import org.cakelab.glsl.GLSLParser.GlslTypeQualifierContext;
@@ -28,6 +32,7 @@ import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.Qualifier;
 import org.cakelab.glsl.lang.ast.Qualifiers;
 import org.cakelab.glsl.lang.ast.Variable;
+import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
 import org.cakelab.glsl.lang.ast.types.CompoundType;
 import org.cakelab.glsl.lang.ast.types.InterfaceBlock;
 import org.cakelab.glsl.lang.ast.types.SubroutineType;
@@ -42,13 +47,44 @@ public class ASTBuilder extends GLSLBaseListener {
 	private SymbolTable symbolTable;
 	private boolean functionDefinitionContext;
 	private Function functionDefinition;
+	private boolean validate;
+	
+	
 	
 	
 	public ASTBuilder(SymbolTable symbolTable, GLSLErrorHandler errorHandler) {
 		this.symbolTable = symbolTable;
 		this.errorHandler = errorHandler;
 		factory = new ASTFactory(symbolTable, errorHandler);
+		validate = true;
 	}
+
+	
+	@Override
+	public void enterGlslForStatement(GlslForStatementContext ctx) {
+		symbolTable.enterScope(new ScopeImpl(symbolTable.getScope()));
+	}
+
+	@Override
+	public void exitGlslForStatement(GlslForStatementContext ctx) {
+		symbolTable.leaveScope();
+	}
+
+	
+	
+
+
+
+	@Override
+	public void enterGlslLayoutQualifier(GlslLayoutQualifierContext ctx) {
+		validate = false;
+	}
+
+	@Override
+	public void exitGlslLayoutQualifier(GlslLayoutQualifierContext ctx) {
+		validate = true;
+	}
+
 
 	@Override
 	public void enterGlslFunctionDefinition(GlslFunctionDefinitionContext ctx) {
@@ -244,7 +280,7 @@ public class ASTBuilder extends GLSLBaseListener {
 					}
 					
 					// create qualified variable
-					Variable var = new Variable(symbolTable.getScope(), varType, id);
+					Variable var = new Variable(factory.createInterval(varIdCtx), symbolTable.getScope(), varType, id);
 					
 					symbolTable.addVariable(var);
 				}
@@ -341,15 +377,15 @@ public class ASTBuilder extends GLSLBaseListener {
 				// add variable's array dimensions
 				varType = factory.createArrayType(type, varDims);
 			}
-			
-			String id = getText(varDecl.glslVariableIdentifier());
+			GlslVariableIdentifierContext ident = varDecl.glslVariableIdentifier();
+			String id = getText(ident);
 			// create qualified variable
-			Variable var = new Variable(symbolTable.getScope(), varType, id, qualifiers);
+			Variable var = new Variable(factory.createInterval(ident), symbolTable.getScope(), varType, id, qualifiers);
 			Variable declared = symbolTable.getVariable(var.getName());
 			if (declared != null && declared.getScope() == var.getScope()) {
 				if (var.getType().equals(declared.getType())) {
 					if (var.getType().getQualifiers().equals(var.getType().getQualifiers())) {
-						errorHandler.error(var, "variable already exists with the same signature: " + var.toString());
+						errorHandler.error(var, "variable '" + var.getName() + "' already exists with the same signature: " + var.toString());
 					}
 				}
 			}
@@ -394,17 +430,24 @@ public class ASTBuilder extends GLSLBaseListener {
 	@Override
 	public void exitGlslPrimaryExpression(GlslPrimaryExpressionContext ctx) {
 		
-		if (ctx.glslIdentifier() != null) {
-			// just check whether there is any symbol registered for this identifier
+		if (validate && ctx.glslIdentifier() != null) {
+			
+			// TODO we cannot simply assign identifiers to symbols if expression is a
+			//      - field selection             (requires scope)
+			//      - function/constructor call   (requires parameters)
+			// so it is impossible to tell whether we have an unknown identifier here
+
+			
 			String ident = ctx.glslIdentifier().IDENTIFIER().getText();
-			if (symbolTable.getType(ident) != null) return;
-			else if (symbolTable.getVariable(ident) != null) return;
-			else if (symbolTable.hasFunction(ident)) return;
-			else {
-				// TODO we cannot simply assign identifiers to symbols if expression is a
-				//      - field selection             (requires scope)
-				//      - function/constructor call   (requires parameters)
-				// so it is impossible to tell whether we have an unknown identifier here
+			if (((GlslPostfixExpressionContext)ctx.getParent()).glslFieldSelection() != null) {
+				// determine reference scope and lookup symbols from there
+			} else {
+				if (symbolTable.getType(ident) != null) return;
+				else if (symbolTable.getVariable(ident) != null) return;
+				else if (symbolTable.hasFunction(ident)) return;
+				else {
+					errorHandler.error(ctx.glslIdentifier(), "unknown identifer '" + ident + "'");
+				}
 			}
 		}
 	}

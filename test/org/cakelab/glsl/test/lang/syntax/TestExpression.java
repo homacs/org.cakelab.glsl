@@ -74,7 +74,7 @@ public class TestExpression extends TestingBase {
 	public static void setupMultiTest() {
 		autoTearDown = false;
 		validator.addDeclaredType("MyStruct", new Struct(Interval.NONE, null, "MyStruct", null));
-		validator.addDeclaredVariable("var", new Variable(IScope.NONE, Type._int, "var"));
+		validator.addDeclaredVariable("var", new Variable(Interval.NONE, IScope.NONE, Type._int, "var"));
 		validator.addDeclaredFunction("func");
 	}
 	

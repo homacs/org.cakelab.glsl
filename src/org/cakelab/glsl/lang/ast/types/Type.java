@@ -132,7 +132,7 @@ public class Type extends NodeImpl implements Comparable<Type> {
 		// default constructor
 		addConstructor(new Constructor(Interval.NONE, this));
 		// copy constructor
-		addConstructor(new Constructor(Interval.NONE, this, new ParameterDeclaration(IScope.NONE, this, "value")));
+		addConstructor(new Constructor(Interval.NONE, this, new ParameterDeclaration(Interval.NONE, IScope.NONE, this, "value")));
 		switch (this.getKind()) {
 		case KIND_SCALAR:
 			addConstructorNotEqual(_bool);
@@ -153,7 +153,7 @@ public class Type extends NodeImpl implements Comparable<Type> {
 
 	
 	public static Constructor createCastConstructor(Type type, Type paramType) {
-		return new Constructor(Interval.NONE, type, new ParameterDeclaration(IScope.NONE, paramType, "value"));
+		return new Constructor(Interval.NONE, type, new ParameterDeclaration(Interval.NONE, IScope.NONE, paramType, "value"));
 	}
 	
 	public void addConstructor(Constructor constructor) {

@@ -6,7 +6,7 @@
 
 
 uniform float a;
-int b = floatBitsToInt (a);
+const int b = floatBitsToInt (a);
 
 
 void main() {

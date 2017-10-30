@@ -6,6 +6,7 @@ import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLParser.*;
@@ -342,6 +343,7 @@ public class ASTFactory {
 
 		List<GlslStructMemberDeclaratorContext> dcontext = group.glslStructMemberDeclaratorList().glslStructMemberDeclarator();
 		for (GlslStructMemberDeclaratorContext m : dcontext) {
+			Interval interval = getInterval(m.IDENTIFIER());
 			String memberName = m.IDENTIFIER().getText();
 			Type memberType = basetype;
 			
@@ -352,10 +354,11 @@ public class ASTFactory {
 			if (qualifiers != null) {
 				memberType = Type._qualified(memberType, qualifiers);
 			}
-			struct.addMember(new Struct.MemberVariable(struct, memberType, memberName));
+			struct.addMember(new Struct.MemberVariable(interval, struct, memberType, memberName));
 		}
 	}
 	
+
 	private boolean empty(List<?> list) {
 		return list != null && !list.isEmpty();
 	}
@@ -539,13 +542,17 @@ public class ASTFactory {
 		return new Interval(getStartLocation(context), getEndLocation(context));
 	}
 
+	private Interval getInterval(TerminalNode node) {
+		return ((PPOutputToken)node.getSymbol()).getPPToken().getInterval();
+	}
+
 
 	public Function create(GlslFunctionPrototypeContext ctx) {
 		Type type = create(ctx.glslFullySpecifiedType(), false);
 		
 		String name = ctx.glslFunctionName().getText();
 		ParameterDeclaration[] params = create(ctx.glslFunctionParameters());
-		Interval interval = new Interval(createInterval(ctx));
+		Interval interval = createInterval(ctx);
 		if (params == null) {
 			return new Function(interval, type, name);
 		} else {
@@ -554,6 +561,8 @@ public class ASTFactory {
 	}
 
 
+	
+	
 	private ParameterDeclaration[] create(GlslFunctionParametersContext ctx) {
 		if (ctx == null) return null;
 		List<GlslParameterDeclarationContext> paramCtx = ctx.glslParameterDeclaration();
@@ -564,13 +573,16 @@ public class ASTFactory {
 			int i = 0;
 			for (GlslParameterDeclarationContext p : ctx.glslParameterDeclaration()) {
 				Type type = create(p.glslTypeQualifier(), p.glslTypeSpecifier(), false);
-				String name = getName(p.glslVariableIdentifier());
+				GlslVariableIdentifierContext ident = p.glslVariableIdentifier();
+				String name = getName(ident);
+				Interval interval = (ident != null) ? createInterval(ident) : createInterval(p);
+
 				List<GlslArrayDimensionContext> dims = p.glslArrayDimension();
 				if (dims != null && !dims.isEmpty()) {
 					type = createArrayType(type, dims);
 				}
 				// scope will be assigned if there is a body attached to the function
-				ParameterDeclaration param = new ParameterDeclaration(IScope.NONE, type, name);
+				ParameterDeclaration param = new ParameterDeclaration(interval, IScope.NONE, type, name);
 				params[i] = param;
 				i++;
 			}
