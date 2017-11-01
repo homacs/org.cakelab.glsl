@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.cakelab.glsl.GLSLCompiler;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.GLSLVersion.Profile;
 import org.cakelab.glsl.lang.ast.types.Type;
@@ -92,7 +93,6 @@ public class GLSLTokenTable implements ITokenTable {
 	
 	// TODO: combine with AST builtin type entries
 
-	public static final HashMap<String, Integer> COMMON_PUNCTUATORS = Vocabulary.getPunctuators();
 	
 	static GLSLTokenTable get(GLSLVersion version) {
 		GLSLTokenTable table = cache.get(version);
@@ -111,11 +111,14 @@ public class GLSLTokenTable implements ITokenTable {
 	protected HashMap<String, Integer> keywords;
 	protected HashMap<String, Integer> reserved;
 	protected HashMap<String, Integer> builtinTypes;
-	protected HashMap<String, Integer> punctuators = COMMON_PUNCTUATORS;
+	protected HashMap<String, Integer> punctuators;
 
 	protected GLSLTokenTable(GLSLVersion version) {
 		this.version = version;
-		punctuators = COMMON_PUNCTUATORS;
+		
+		Vocabulary vocabulary = GLSLCompiler.getActiveCompilerImpl().getBuiltinServices().getVocabulary();
+		
+		punctuators = vocabulary.punctuators();;
 		builtinTypes = new HashMap<String, Integer>();
 		reserved = new HashMap<String, Integer>();
 		keywords = new HashMap<String, Integer>();
@@ -136,10 +139,10 @@ public class GLSLTokenTable implements ITokenTable {
 		
 		}
 		InputStream in = BuiltinLoaderHelper.getInputStream(version.number, profile, "keywords.txt");
-		readKeywordList(in, false);
+		readKeywordList(vocabulary, in, false);
 		
 		in = BuiltinLoaderHelper.getInputStream(version.number, profile, "reserved.txt");
-		readKeywordList(in, true);
+		readKeywordList(vocabulary, in, true);
 
 		//
 		// Validate content
@@ -152,13 +155,13 @@ public class GLSLTokenTable implements ITokenTable {
 	}
 	
 
-	protected void readKeywordList(InputStream in, boolean reservedKeywords) {
+	protected void readKeywordList(Vocabulary vocabulary, InputStream in, boolean reservedKeywords) {
 		
 		KeywordStreamIterator iterator = new KeywordStreamIterator(in);
 		
 		while(iterator.hasNext()) {
 			String keyword = iterator.next();
-			Integer vocable = Vocabulary.getKeyword(keyword);
+			Integer vocable = vocabulary.keyword(keyword);
 			if (vocable != null) {
 				int type = vocable;
 				if (reservedKeywords) {

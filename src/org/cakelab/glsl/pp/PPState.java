@@ -3,6 +3,7 @@ package org.cakelab.glsl.pp;
 import java.util.ArrayList;
 
 import org.cakelab.glsl.GLSLCompilerFeatures;
+import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
@@ -11,7 +12,6 @@ import org.cakelab.glsl.builtin.GLSLBuiltin;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.ast.PPGroupScope;
-import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.lexer.ILexer;
 
 public class PPState {
@@ -39,7 +39,7 @@ public class PPState {
 	}
 	
 	private ResourceManager resourceManager;
-	private ErrorHandler errorHandler;
+	private GLSLErrorHandler errorHandler;
 	private ListenerSet listeners;
 	
 	/* ************* results *************** */
@@ -95,10 +95,10 @@ public class PPState {
 	}
 	
 	
-	public ErrorHandler getErrorHandler() {
+	public GLSLErrorHandler getErrorHandler() {
 		return errorHandler;
 	}
-	public void setErrorHandler(ErrorHandler errorHandler) {
+	public void setErrorHandler(GLSLErrorHandler errorHandler) {
 		this.errorHandler = errorHandler;
 	}
 

@@ -5,7 +5,6 @@ import java.util.List;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cakelab.glsl.GLSLBaseListener;
-import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLParser.GlslArrayDimensionContext;
 import org.cakelab.glsl.GLSLParser.GlslCompoundStatementContext;
 import org.cakelab.glsl.GLSLParser.GlslDeclarationContext;
@@ -23,6 +22,7 @@ import org.cakelab.glsl.GLSLParser.GlslVariableDeclaratorContext;
 import org.cakelab.glsl.GLSLParser.GlslVariableIdentifierContext;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.SymbolTable;
+import org.cakelab.glsl.antlr.AntlrErrorHandler;
 import org.cakelab.glsl.lang.ast.ASTFactory;
 import org.cakelab.glsl.lang.ast.CompoundStatement;
 import org.cakelab.glsl.lang.ast.Constructor;
@@ -43,7 +43,7 @@ public class ASTBuilder extends GLSLBaseListener {
 	
 	
 	private ASTFactory factory;
-	private GLSLErrorHandler errorHandler;
+	private AntlrErrorHandler errorHandler;
 	private SymbolTable symbolTable;
 	private Function functionDefinition;
 	private boolean validateIdentifiers;
@@ -52,7 +52,7 @@ public class ASTBuilder extends GLSLBaseListener {
 	
 	
 	
-	public ASTBuilder(SymbolTable symbolTable, GLSLErrorHandler errorHandler) {
+	public ASTBuilder(SymbolTable symbolTable, AntlrErrorHandler errorHandler) {
 		this.symbolTable = symbolTable;
 		this.errorHandler = errorHandler;
 		factory = new ASTFactory(symbolTable, errorHandler);

@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.util.List;
 
 import org.cakelab.glsl.CombinedAST;
-import org.cakelab.glsl.GLSL;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.ShaderType;
+import org.cakelab.glsl.antlr.GLSLAntlrCompiler;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.lang.ast.types.Struct;
 import org.cakelab.glsl.test.Test;
@@ -30,7 +30,7 @@ public class TestFileSystem {
 
 		ResourceManager resources = new FileSystemResourceManager();
 		
-		GLSL glsl = new GLSL(GLSL.getDefaultCompilerFeatures(), resources);
+		GLSLAntlrCompiler glsl = new GLSLAntlrCompiler(GLSLAntlrCompiler.getDefaultCompilerFeatures(), resources);
 		Resource resource;
 		try {
 			resource = resources.resolve(filename);

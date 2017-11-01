@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cakelab.glsl.GLSLCompilerFeatures;
+import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.GLSLVersion.Profile;
 import org.cakelab.glsl.Interval;
@@ -39,7 +40,6 @@ import org.cakelab.glsl.pp.ast.PPIfScope;
 import org.cakelab.glsl.pp.ast.PPIfdefScope;
 import org.cakelab.glsl.pp.ast.PPIfndefScope;
 import org.cakelab.glsl.pp.ast.PPStringifyExpression;
-import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.error.ExpressionError;
 import org.cakelab.glsl.pp.error.Recovery;
 import org.cakelab.glsl.pp.error.SyntaxError;
@@ -1166,7 +1166,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	}
 
 	
-	public void setErrorHandler(ErrorHandler errorHandler) {
+	public void setErrorHandler(GLSLErrorHandler errorHandler) {
 		state.setErrorHandler(errorHandler);
 	}
 

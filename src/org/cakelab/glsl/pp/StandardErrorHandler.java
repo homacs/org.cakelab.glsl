@@ -1,5 +1,6 @@
 package org.cakelab.glsl.pp;
 
+import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
@@ -7,7 +8,6 @@ import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.ast.MacroInvocation;
-import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.error.SyntaxError;
 
 /**
@@ -24,7 +24,7 @@ import org.cakelab.glsl.pp.error.SyntaxError;
  * @author homac
  *
  */
-public class StandardErrorHandler implements ErrorHandler {
+public class StandardErrorHandler implements GLSLErrorHandler {
 	protected ResourceManager resources;
 	private boolean stopOnFirstError;
 

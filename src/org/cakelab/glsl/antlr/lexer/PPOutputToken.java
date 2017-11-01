@@ -1,8 +1,7 @@
-package org.cakelab.glsl.lang.lexer.tokens;
+package org.cakelab.glsl.antlr.lexer;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.TokenSource;
-import org.cakelab.glsl.lang.lexer.PPTokenSource;
 import org.cakelab.glsl.pp.tokens.Token;
 
 public class PPOutputToken implements org.antlr.v4.runtime.Token {

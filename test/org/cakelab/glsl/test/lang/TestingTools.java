@@ -3,7 +3,6 @@ package org.cakelab.glsl.test.lang;
 import java.io.PrintStream;
 import java.util.BitSet;
 
-import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Token;
@@ -14,7 +13,6 @@ import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNodeImpl;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
-import org.cakelab.glsl.GLSL;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Location;
@@ -22,15 +20,17 @@ import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.SymbolTable;
+import org.cakelab.glsl.antlr.AntlrErrorHandler;
+import org.cakelab.glsl.antlr.GLSLAntlrCompiler;
+import org.cakelab.glsl.antlr.PPOutputBuffer;
+import org.cakelab.glsl.antlr.lexer.PPTokenStream;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
-import org.cakelab.glsl.impl.GLSLErrorHandlerImpl;
 import org.cakelab.glsl.impl.ResourceString;
 import org.cakelab.glsl.lang.ASTBuilder;
-import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
-import org.cakelab.glsl.lang.lexer.PPTokenStream;
 import org.cakelab.glsl.pp.Preprocessor;
+import org.cakelab.glsl.pp.StandardErrorHandler;
 import org.cakelab.glsl.test.builtins.TestBuiltinBase;
 
 public class TestingTools {
@@ -47,8 +47,26 @@ public class TestingTools {
 
 	private static ResourceManager resourceManager = new FileSystemResourceManager();
 	
-	public static class TestErrorHandler extends GLSLErrorHandlerImpl {
+	public static class TestErrorHandler extends AntlrErrorHandler {
+
 		public String message;
+		
+		
+		class Delegate extends StandardErrorHandler {
+			@Override
+			protected void printError(Location origin, String msg) {
+				if (hasError()) return;
+				message = "" + origin.getLine() + ":" + origin.getColumn() + ": " + msg;
+			}
+	
+		}
+		
+		public TestErrorHandler() {
+			super(null);
+			super.delegate = new Delegate();
+		}
+		
+		
 		
 		public String getMessage() {
 			return message;
@@ -95,19 +113,7 @@ public class TestingTools {
 			return message != null;
 		}
 
-		public void listenTo(Parser parser, Lexer lexer) {
-			reset();
-			parser.removeErrorListeners();
-			parser.addErrorListener(this);
-			lexer.removeErrorListeners();
-			lexer.addErrorListener(this);
-		}
 
-		@Override
-		protected void printError(Location origin, String msg) {
-			if (hasError()) return;
-			this.message = "" + origin.getLine() + ":" + origin.getColumn() + ": " + msg;
-		}
 	}
 	public static final TestErrorHandler TEST_ERROR_HANLDER = new TestErrorHandler();
 	
@@ -283,9 +289,9 @@ public class TestingTools {
 		TEST_ERROR_HANLDER.reset();
 
 		
-		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(resourceManager);
+		PPOutputBuffer buffer = new PPOutputBuffer(resourceManager);
 		Resource resource = new ResourceString("0", "-- testing --", sourceCode);
-		Preprocessor pp = new Preprocessor(GLSL.getDefaultCompilerFeatures(), new Resource[]{resource}, ShaderType.GENERIC_SHADER, buffer);
+		Preprocessor pp = new Preprocessor(GLSLAntlrCompiler.getDefaultCompilerFeatures(), new Resource[]{resource}, ShaderType.GENERIC_SHADER, buffer);
 
 		pp.setForceVersion(new GLSLVersion(null, 450, GLSLVersion.Profile.core));
 		pp.setResourceManager(resourceManager);
@@ -297,7 +303,7 @@ public class TestingTools {
 
 		GLSLVersion version = buffer.getVersion();
 		GLSLBuiltin builtin = TestBuiltinBase.getTestBuiltinSymbols(version);
-		WorkingSet workingSet = builtin.createWorkingSet(GLSL.getDefaultCompilerFeatures());
+		WorkingSet workingSet = builtin.createWorkingSet(GLSLAntlrCompiler.getDefaultCompilerFeatures());
 		SymbolTable symbolTable;
 		if (presetSymbols != null) {
 			presetSymbols.setBuiltinScope(workingSet.getBuiltinScope());

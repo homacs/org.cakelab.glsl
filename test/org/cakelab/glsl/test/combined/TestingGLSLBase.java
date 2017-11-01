@@ -2,9 +2,9 @@ package org.cakelab.glsl.test.combined;
 
 import java.io.IOException;
 
-import org.cakelab.glsl.GLSL;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
+import org.cakelab.glsl.antlr.GLSLAntlrCompiler;
 import org.cakelab.glsl.impl.DelegatingResourceManager;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.impl.JarResourceManager;
@@ -16,7 +16,7 @@ public class TestingGLSLBase {
 	
 	protected static final TestErrorHandler ERROR_HANDLER = TestingTools.TEST_ERROR_HANLDER;
 	protected static final DelegatingResourceManager RESOURCES = new DelegatingResourceManager(new JarResourceManager(), new FileSystemResourceManager());
-	protected static final GLSL _GLSL = new GLSL(GLSL.getDefaultCompilerFeatures(), ERROR_HANDLER, RESOURCES);
+	protected static final GLSLAntlrCompiler _GLSL = new GLSLAntlrCompiler(GLSLAntlrCompiler.getDefaultCompilerFeatures(), ERROR_HANDLER, RESOURCES);
 	protected static final String TEST_RESOURCE_PATH = "test.glsl";
 	
 	

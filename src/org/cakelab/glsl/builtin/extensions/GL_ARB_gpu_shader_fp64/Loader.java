@@ -7,13 +7,14 @@ import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
+import org.cakelab.glsl.builtin.GLSLBuiltinServices;
 import org.cakelab.glsl.builtin.extensions.GLSLExtension;
 import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoader;
 import org.cakelab.glsl.builtin.extensions.GLSLExtensionSymbolTable;
 import org.cakelab.glsl.builtin.extensions.KeywordTable;
 import org.cakelab.glsl.builtin.extensions.Properties;
 import org.cakelab.glsl.lang.ast.types.Type;
-import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
+import org.cakelab.glsl.pp.PPOutputSink;
 import org.cakelab.glsl.pp.ast.Macro;
 
 public class Loader extends GLSLExtensionLoader {
@@ -32,7 +33,7 @@ public class Loader extends GLSLExtensionLoader {
 		GLSLVersion glslVersion = ws.getGLSLVersion();
 		ShaderType shaderLanguage = ws.getShaderType();
 		
-		GLSL_ANTLR_PPOutputBuffer preprocessedPreamble = createPPOutputBuffer();
+		PPOutputSink preprocessedPreamble = services.createPreprocessorSink(GLSLBuiltinServices.BUILTIN_RESOURCE_MANAGER);
 
 		HashMap<String, Macro> extensionMacros = preprocess(ws, preambleResource, preprocessedPreamble);
 

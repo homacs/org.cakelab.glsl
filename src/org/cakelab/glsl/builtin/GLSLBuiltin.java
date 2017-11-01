@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.cakelab.glsl.GLSLCompiler;
 import org.cakelab.glsl.GLSLCompilerFeatures;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
@@ -13,11 +14,9 @@ import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.builtin.extensions.GLSLExtension;
 import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.types.Type;
-import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.tokens.ExtendedTokenTable;
-import org.cakelab.glsl.pp.MacroMap;
+import org.cakelab.glsl.pp.PPOutputSink;
 import org.cakelab.glsl.pp.PPState;
-import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.Macro;
 
 
@@ -295,18 +294,18 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 		}
 		
 		
+		GLSLBuiltinServices services = GLSLCompiler.getActiveCompilerImpl().getBuiltinServices();
 		
-		
-		GLSL_ANTLR_PPOutputBuffer buffer = new GLSL_ANTLR_PPOutputBuffer(BUILTIN_RESOURCE_MANAGER);
+		PPOutputSink buffer = services.createPreprocessorSink(BUILTIN_RESOURCE_MANAGER);
 
-		HashMap<String, Macro> builtinMacros = preprocess(resource, key.version, key.shaderType, buffer);
+		HashMap<String, Macro> builtinMacros = services.preprocessBuiltinPreamble(resource, key.version, key.shaderType, buffer);
 		addCommonBuiltinMacros(builtinMacros);
 
 		GLSLTokenTable tokenTable = GLSLTokenTable.get(key.version);
 		GLSLBuiltin builtin = new GLSLBuiltin(key, builtinMacros, tokenTable);
 		SymbolTable builtinSymbols = createMinimumBuiltinSymbols(tokenTable);
 
-		parsePreamble(buffer, tokenTable, builtinSymbols);
+		services.parseBuiltinPreamble(buffer, tokenTable, builtinSymbols);
 
 		builtin.builtinScopeSymbols = builtinSymbols.getTopLevelScope();
 		
@@ -314,21 +313,6 @@ public class GLSLBuiltin  extends BuiltinLoaderHelper {
 	}
 	
 	
-	private static HashMap<String, Macro> preprocess(Resource resource, GLSLVersion version, ShaderType shaderType,
-		GLSL_ANTLR_PPOutputBuffer buffer) {
-		
-		Preprocessor pp = setupPreprocessing(resource, shaderType, buffer);
-		
-		pp.setForceVersion(version);
-		
-		pp.process(true);
-		
-		MacroMap macroMap = pp.getState().getMacros();
-		macroMap.undef(shaderType.name());
-
-		return macroMap.getUserLevelMacros();
-	}
-
 
 	
 	private static SymbolTable createMinimumBuiltinSymbols(GLSLTokenTable tokenTable) {

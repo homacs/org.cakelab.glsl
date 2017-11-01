@@ -17,7 +17,7 @@ import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoader;
 import org.cakelab.glsl.lang.ast.types.Type;
-import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
+import org.cakelab.glsl.pp.PPOutputSink;
 import org.cakelab.glsl.pp.Preprocessor;
 
 public class Loader extends GLSLExtensionLoader {
@@ -47,7 +47,7 @@ public class Loader extends GLSLExtensionLoader {
 	}
 
 	@Override
-	protected Preprocessor setupPreprocessor(WorkingSet ws, Resource resource, GLSL_ANTLR_PPOutputBuffer buffer) {
+	protected Preprocessor setupPreprocessor(WorkingSet ws, Resource resource, PPOutputSink buffer) {
 		Preprocessor pp = super.setupPreprocessor(ws, resource, buffer);
 		if (ws.haveBuiltinType(requiredType)) {
 			pp.addDefine(CUBE_ARRAY_AVAILABLE);

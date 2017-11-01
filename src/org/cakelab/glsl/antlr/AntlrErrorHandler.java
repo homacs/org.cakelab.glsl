@@ -1,7 +1,8 @@
-package org.cakelab.glsl.impl;
+package org.cakelab.glsl.antlr;
 
 import java.util.BitSet;
 
+import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
@@ -14,22 +15,39 @@ import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.ResourceManager;
-import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
-import org.cakelab.glsl.pp.StandardErrorHandler;
+import org.cakelab.glsl.antlr.lexer.PPOutputToken;
+import org.cakelab.glsl.lang.ast.Node;
+import org.cakelab.glsl.pp.error.SyntaxError;
 
-public class GLSLErrorHandlerImpl extends StandardErrorHandler implements GLSLErrorHandler {
+public class AntlrErrorHandler implements GLSLErrorHandler, ANTLRErrorListener {
 	
 	private boolean DEBUG = false;
 	private TokenStream tokens;
+	protected GLSLErrorHandler delegate;
 	
-	
-	public GLSLErrorHandlerImpl() {
-		super(false);
+	public AntlrErrorHandler(GLSLErrorHandler delegate) {
+		this.delegate = delegate;
 	}
 
 	
-	public GLSLErrorHandlerImpl(boolean stopOnFirstError) {
-		super(stopOnFirstError);
+
+	public void error(Node node, String message) throws SyntaxError {
+		delegate.error(node, message);
+	}
+
+
+	public void error(Location start, String message) throws SyntaxError {
+		delegate.error(start, message);
+	}
+
+
+	public void warning(Location location, String message) throws SyntaxError {
+		delegate.warning(location, message);
+	}
+
+
+	public void warning(Interval interval, String message) throws SyntaxError {
+		delegate.warning(interval, message);
 	}
 
 
@@ -39,7 +57,7 @@ public class GLSLErrorHandlerImpl extends StandardErrorHandler implements GLSLEr
 	
 	@Override
 	public void setResourceManager(ResourceManager resources) {
-		this.resources = resources;
+		delegate.setResourceManager(resources);
 	}
 
 	public void setLocations(TokenStream tokens) {
@@ -57,7 +75,6 @@ public class GLSLErrorHandlerImpl extends StandardErrorHandler implements GLSLEr
 		error(loc, msg);
 	}
 
-	@Override
 	public void error(ParseTree node, String message) {
 		if (node.getChildCount() == 0) {
 			error(((PPOutputToken)(node.getPayload())).getPPToken(), message);

@@ -1,10 +1,10 @@
 package org.cakelab.glsl.pp.parser;
 
+import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.pp.PPHelper;
 import org.cakelab.glsl.pp.PPState;
-import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.error.ExpressionError;
 import org.cakelab.glsl.pp.error.Recovery;
 import org.cakelab.glsl.pp.error.SyntaxError;
@@ -331,7 +331,7 @@ public abstract class Parser extends PPHelper  {
 		skip_remaining_line();
 	}
 
-	public void setErrorHandler(ErrorHandler errorHandler) {
+	public void setErrorHandler(GLSLErrorHandler errorHandler) {
 		getState().setErrorHandler(errorHandler);
 	}
 

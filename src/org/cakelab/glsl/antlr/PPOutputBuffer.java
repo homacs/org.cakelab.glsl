@@ -1,4 +1,4 @@
-package org.cakelab.glsl.lang.lexer;
+package org.cakelab.glsl.antlr;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,11 +7,11 @@ import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
-import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
+import org.cakelab.glsl.antlr.lexer.PPOutputToken;
+import org.cakelab.glsl.antlr.lexer.PPTokenSource;
 import org.cakelab.glsl.pp.PPHelper;
 import org.cakelab.glsl.pp.PPOutputSink;
 import org.cakelab.glsl.pp.PPState;
-import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.tokens.Token;
 import org.cakelab.glsl.pp.tokens.TokenList;
 
@@ -23,7 +23,7 @@ import org.cakelab.glsl.pp.tokens.TokenList;
  * @author homac
  *
  */
-public class GLSL_ANTLR_PPOutputBuffer extends PPHelper implements PPOutputSink {
+public class PPOutputBuffer extends PPHelper implements PPOutputSink {
 
 
 	/** refers to the position of the last written character in the output stream */
@@ -32,7 +32,7 @@ public class GLSL_ANTLR_PPOutputBuffer extends PPHelper implements PPOutputSink 
 	private ResourceManager resources;
 	private HashMap<String,PPTokenSource> cachedTokenSources = new HashMap<String,PPTokenSource>();
 	
-	public GLSL_ANTLR_PPOutputBuffer(ResourceManager resources) {
+	public PPOutputBuffer(ResourceManager resources) {
 		this.resources = resources;
 		pos = -1;
 	}
@@ -108,7 +108,7 @@ public class GLSL_ANTLR_PPOutputBuffer extends PPHelper implements PPOutputSink 
 
 
 	public GLSLErrorHandler getGLSLErrorHandler() {
-		ErrorHandler handler = state.getErrorHandler();
+		GLSLErrorHandler handler = state.getErrorHandler();
 		if (handler instanceof GLSLErrorHandler) {
 			return (GLSLErrorHandler) handler;
 		} else {

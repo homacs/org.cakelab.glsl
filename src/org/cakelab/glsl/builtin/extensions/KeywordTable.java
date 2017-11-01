@@ -69,24 +69,24 @@ public class KeywordTable implements ITokenTable {
 	}
 	
 
-	public static KeywordTable create(String ... keywords) {
+	public static KeywordTable create(Vocabulary vocabulary, String ... keywords) {
 		KeywordTable table = new KeywordTable();
 		for (String keyword : keywords) {
-			Integer code = Vocabulary.getKeyword(keyword);
+			Integer code = vocabulary.keyword(keyword);
 			assert (code != null) : "unknown keyword '" + keyword + "'";
 			table.keywords.put(keyword, code);
 		}
 		return table;
 	}
 	
-	public static KeywordTable create(InputStream keywordStream) {
+	public static KeywordTable create(Vocabulary vocabulary, InputStream keywordStream) {
 		KeywordTable table = new KeywordTable();
 		
 		Iterator<String> iterator = new GLSLTokenTable.KeywordStreamIterator(keywordStream);
 		
 		while(iterator.hasNext()) {
 			String keyword = iterator.next();
-			Integer code = Vocabulary.getKeyword(keyword);
+			Integer code = vocabulary.keyword(keyword);
 			assert (code != null) : "unknown keyword '" + keyword + "'";
 			table.keywords.put(keyword, code);
 		}

@@ -7,12 +7,13 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLParser.*;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.SymbolTable;
+import org.cakelab.glsl.antlr.AntlrErrorHandler;
+import org.cakelab.glsl.antlr.lexer.PPOutputToken;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Qualifier.LayoutQualifier;
 import org.cakelab.glsl.lang.ast.types.Array;
@@ -20,15 +21,14 @@ import org.cakelab.glsl.lang.ast.types.InterfaceBlock;
 import org.cakelab.glsl.lang.ast.types.Struct;
 import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.lang.ast.types.Type.Rank;
-import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
 
 // TODO [2] supposed to be an interface in parser package
 public class ASTFactory {
 
 	private SymbolTable symbols;
-	private GLSLErrorHandler errorHandler;
+	private AntlrErrorHandler errorHandler;
 
-	public ASTFactory(SymbolTable symbols, GLSLErrorHandler errorHandler) {
+	public ASTFactory(SymbolTable symbols, AntlrErrorHandler errorHandler) {
 		this.errorHandler = errorHandler;
 		this.symbols = symbols;
 	}

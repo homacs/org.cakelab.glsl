@@ -1,13 +1,15 @@
-package org.cakelab.glsl.lang.lexer.tokens;
+package org.cakelab.glsl.antlr;
 
 import java.util.HashMap;
 
 import org.cakelab.glsl.GLSLParser;
+import org.cakelab.glsl.lang.lexer.tokens.Vocabulary;
 
 public class ANTLRVocabulary extends Vocabulary {
 	
 	private static final Integer BUILTIN_TYPE_TOKEN = GLSLParser.IDENTIFIER;
 	private static final Integer RESERVED_KEYWORD_TOKEN = Integer.MIN_VALUE;
+	static final Vocabulary INSTANCE = new ANTLRVocabulary();
 
 
 	

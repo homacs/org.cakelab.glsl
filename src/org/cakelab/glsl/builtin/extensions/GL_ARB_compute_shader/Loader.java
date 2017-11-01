@@ -4,7 +4,7 @@ import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.builtin.BuiltinLoaderHelper;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoader;
-import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
+import org.cakelab.glsl.pp.PPOutputSink;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.tokens.TNumber;
@@ -20,7 +20,7 @@ public class Loader extends GLSLExtensionLoader {
 	}
 
 	@Override
-	protected Preprocessor setupPreprocessor(WorkingSet ws, Resource resource, GLSL_ANTLR_PPOutputBuffer buffer) {
+	protected Preprocessor setupPreprocessor(WorkingSet ws, Resource resource, PPOutputSink buffer) {
 		Preprocessor pp = super.setupPreprocessor(ws, resource, buffer);
 		if (ws.getExtensions().containsExtension("GL_ARB_shader_storage_buffer_object")) {
 			pp.addDefine(HAVE_GL_ARB_shader_storage_buffer_object);

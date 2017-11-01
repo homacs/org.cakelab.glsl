@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
+import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.pp.StandardErrorHandler;
-import org.cakelab.glsl.pp.error.ErrorHandler;
 import org.cakelab.glsl.pp.error.Recovery;
 import org.cakelab.glsl.pp.parser.Parser;
 
@@ -53,7 +53,7 @@ public abstract class TestingBase {
 		}
 	}
 	
-	protected ErrorHandler errorHandler = new StandardErrorHandler() {
+	protected GLSLErrorHandler errorHandler = new StandardErrorHandler() {
 		protected void printError(Location location, String message) {
 			if (error == null && warning == null) error = location.getSourceIdentifier() + ':' + location.getLine() + ':' + location.getColumn() + ": " + message;
 		}

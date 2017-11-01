@@ -3,23 +3,38 @@ package org.cakelab.glsl.builtin.extensions;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.cakelab.glsl.GLSLCompiler;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.SymbolTable;
+import org.cakelab.glsl.antlr.PPOutputBuffer;
 import org.cakelab.glsl.builtin.BuiltinScope;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
+import org.cakelab.glsl.builtin.GLSLBuiltinServices;
 import org.cakelab.glsl.builtin.GLSLExtensionSet;
 import org.cakelab.glsl.lang.ast.types.Type;
-import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
+import org.cakelab.glsl.lang.lexer.tokens.Vocabulary;
 import org.cakelab.glsl.pp.MacroMap;
+import org.cakelab.glsl.pp.PPOutputSink;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.Macro;
 
 public class GLSLExtensionLoader {
 	
 	private static final GLSLExtension TEMPORARY_EXTENSION = new MockedExtension("__TEMPORARY_EXTENSION__USED_WHEN_EXTENSION_INTRODUCES_NEW_KEYWORDS__", null, null);
+	protected final GLSLBuiltinServices services;
+	protected Vocabulary vocabulary;
 
+	
+	public GLSLExtensionLoader() {
+		services = GLSLCompiler.getActiveCompilerImpl().getBuiltinServices();
+		vocabulary = services.getVocabulary();
+
+	}
+	
+	
+	
 	/**
 	 * Loads the extension identified with the given properties in standard way,
 	 * based on the given working set.
@@ -35,8 +50,8 @@ public class GLSLExtensionLoader {
 	 * or use some of the hook-in methods:
 	 * </p>
 	 * <ul>
-	 * <li>{@link #preprocess(WorkingSet, Resource, GLSL_ANTLR_PPOutputBuffer)} </li>
-	 * <li>{@link #parseExtensionPreamble(GLSLExtension, WorkingSet, GLSL_ANTLR_PPOutputBuffer, SymbolTable)} </li>
+	 * <li>{@link #preprocess(WorkingSet, Resource, PPOutputBuffer)} </li>
+	 * <li>{@link #parseExtensionPreamble(GLSLExtension, WorkingSet, PPOutputBuffer, SymbolTable)} </li>
 	 * </ul>
 	 * <p>Those methods provide further hooks (refer to their documentation).
 	 * </p>
@@ -65,13 +80,13 @@ public class GLSLExtensionLoader {
 		} else {
 			boolean hasPreamble = properties.hasPreamble();
 			
-			GLSL_ANTLR_PPOutputBuffer buffer = null;
+			PPOutputSink buffer = null;
 			HashMap<String, Macro> extensionMacros = null;
 			
 			if (hasPreamble) {
 				Resource resource = properties.getPreamble();
 			
-				buffer = createPPOutputBuffer();
+				buffer = services.createPreprocessorSink(GLSLBuiltinServices.BUILTIN_RESOURCE_MANAGER);
 		
 				extensionMacros = preprocess(ws, resource, buffer);
 			}
@@ -125,11 +140,6 @@ public class GLSLExtensionLoader {
 
 
 
-	protected final GLSL_ANTLR_PPOutputBuffer createPPOutputBuffer() {
-		return new GLSL_ANTLR_PPOutputBuffer(GLSLExtensionLoading.BUILTIN_RESOURCE_MANAGER);
-	}
-
-
 
 
 	/** 
@@ -152,7 +162,7 @@ public class GLSLExtensionLoader {
 		if (!GLSLExtensionLoading.hasKeywordsFile(extension)) return null;
 		
 		Resource tokenFile = GLSLExtensionLoading.getResource(extension, GLSLExtensionLoading.KEYWORDS_FILE);
-		KeywordTable tokenTable = KeywordTable.create(tokenFile.openInputStream());
+		KeywordTable tokenTable = KeywordTable.create(vocabulary, tokenFile.openInputStream());
 		
 		return tokenTable;
 	}
@@ -184,7 +194,7 @@ public class GLSLExtensionLoader {
 	 * This method calls the following hooks:
 	 * </p>
 	 * <ul>
-	 * <li>{@link #setupPreprocessor(WorkingSet, Resource, GLSL_ANTLR_PPOutputBuffer)}</li>
+	 * <li>{@link #setupPreprocessor(WorkingSet, Resource, PPOutputBuffer)}</li>
 	 * <li>{@link #finishedPreprocessing(WorkingSet, Preprocessor)}</li>
 	 * </ul>
 	 * 
@@ -194,7 +204,7 @@ public class GLSLExtensionLoader {
 	 * @return
 	 */
 	protected HashMap<String, Macro> preprocess(WorkingSet ws, Resource resource,
-			GLSL_ANTLR_PPOutputBuffer buffer) {
+			PPOutputSink buffer) {
 		Preprocessor pp = setupPreprocessor(ws, resource, buffer);
 
 		// running preprocessor
@@ -256,8 +266,9 @@ public class GLSLExtensionLoader {
 	 * @param buffer
 	 * @return
 	 */
-	protected Preprocessor setupPreprocessor(WorkingSet ws, Resource resource, GLSL_ANTLR_PPOutputBuffer buffer) {
-		Preprocessor pp = GLSLExtensionLoading.setupPreprocessing(resource, ws.getShaderType(), buffer);
+	protected Preprocessor setupPreprocessor(WorkingSet ws, Resource resource, PPOutputSink buffer) {
+		GLSLBuiltinServices builtinServices = GLSLCompiler.getActiveCompilerImpl().getBuiltinServices();
+		Preprocessor pp = builtinServices.setupPreprocessing(resource, ws.getShaderType(), buffer);
 		pp.getState().setWorkingSet(ws);
 		pp.getState().setForcedVersion(true);
 		return pp;
@@ -273,7 +284,7 @@ public class GLSLExtensionLoader {
 	 * @param preprocessedPreamble
 	 * @param symbolTable
 	 */
-	protected void parseExtensionPreamble(GLSLExtension e, WorkingSet ws, GLSL_ANTLR_PPOutputBuffer preprocessedPreamble,
+	protected void parseExtensionPreamble(GLSLExtension e, WorkingSet ws, PPOutputSink preprocessedPreamble,
 			SymbolTable symbolTable) {
 		//
 		// In case the extension adds own keywords, 
@@ -291,13 +302,13 @@ public class GLSLExtensionLoader {
 			TEMPORARY_EXTENSION.setKeywordTable(e.getKeywordTable());
 			extensionSet.addExtension(TEMPORARY_EXTENSION);
 			try {
-				GLSLExtensionLoading.parsePreamble(preprocessedPreamble, ws.getTokenTable(), symbolTable);
+				services.parseBuiltinPreamble(preprocessedPreamble, ws.getTokenTable(), symbolTable);
 			} finally {
 				extensionSet.removeExtension(TEMPORARY_EXTENSION);
 				TEMPORARY_EXTENSION.setKeywordTable(null);
 			}
 		} else {
-			GLSLExtensionLoading.parsePreamble(preprocessedPreamble, ws.getTokenTable(), symbolTable);
+			services.parseBuiltinPreamble(preprocessedPreamble, ws.getTokenTable(), symbolTable);
 		}
 	}
 

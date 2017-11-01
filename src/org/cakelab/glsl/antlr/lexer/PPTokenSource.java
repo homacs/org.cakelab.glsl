@@ -1,4 +1,4 @@
-package org.cakelab.glsl.lang.lexer;
+package org.cakelab.glsl.antlr.lexer;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -8,7 +8,6 @@ import org.antlr.v4.runtime.misc.Pair;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
-import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
 import org.cakelab.glsl.pp.tokens.TUnknownToken;
 
 /**

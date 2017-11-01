@@ -1,4 +1,4 @@
-package org.cakelab.glsl.lang.lexer;
+package org.cakelab.glsl.antlr.lexer;
 
 import java.util.ArrayList;
 
@@ -12,8 +12,8 @@ import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.Location;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.SymbolTable;
+import org.cakelab.glsl.antlr.PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.tokens.ITokenTable;
-import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
 import org.cakelab.glsl.pp.error.TokenFormatException;
 import org.cakelab.glsl.pp.tokens.TEof;
 import org.cakelab.glsl.pp.tokens.TIdentifier;
@@ -71,7 +71,7 @@ public class PPTokenStream implements TokenStream {
 	 * @param symbolTable Access to all currently known symbols
 	 * @param errorHandler
 	 */
-	public PPTokenStream(GLSL_ANTLR_PPOutputBuffer output, ITokenTable tokenTable, SymbolTable symbolTable, GLSLErrorHandler errorHandler) {
+	public PPTokenStream(PPOutputBuffer output, ITokenTable tokenTable, SymbolTable symbolTable, GLSLErrorHandler errorHandler) {
 		this.symbolTable = symbolTable;
 		this.pos = 0;
 		this.errorHandler = errorHandler;

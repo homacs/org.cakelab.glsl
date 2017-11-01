@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.cakelab.glsl.GLSLVersion.Profile;
+import org.cakelab.glsl.antlr.GLSLAntlrCompiler;
 import org.cakelab.glsl.builtin.BuiltinLoaderHelper;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.tokens.TNumber;
@@ -18,7 +19,7 @@ import org.cakelab.glsl.pp.tokens.TNumber;
  * set to mimic a specific compiler implementation.
  * </p>
  * 
- * @see GLSL#getDefaultCompilerFeatures()
+ * @see GLSLAntlrCompiler#getDefaultCompilerFeatures()
  * 
  * @author homac
  *
@@ -29,6 +30,11 @@ public class GLSLCompilerFeatures {
 	private final Collection<String[]> extensions;
 	private final HashMap<String, Macro> featureMacros;
 	
+	/**
+	 * 
+	 * @param profiles supported profiles
+	 * @param extensions supported extensions
+	 */
 	public GLSLCompilerFeatures(Profile[] profiles, Collection<String[]> extensions) {
 		super();
 		assert (profiles != null && profiles.length > 0) : "must support at least one profile";

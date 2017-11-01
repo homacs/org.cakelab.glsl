@@ -7,8 +7,8 @@ import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.builtin.BuiltinLoaderHelper;
 import org.cakelab.glsl.builtin.BuiltinScope;
-import org.cakelab.glsl.builtin.GLSLBuiltin;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
+import org.cakelab.glsl.builtin.GLSLBuiltinServices;
 import org.cakelab.json.JSONException;
 import org.cakelab.json.codec.JSONCodecException;
 
@@ -125,7 +125,7 @@ public abstract class GLSLExtensionLoading extends BuiltinLoaderHelper {
 	static Resource getResource(String extension, String resourceName) throws IOException {
 		String extensionDir = BuiltinLoaderHelper.getExtensionDirectory(extension);
 		String propertiesFile = extensionDir + "/" + resourceName;
-		return	GLSLBuiltin.BUILTIN_RESOURCE_MANAGER.resolve(propertiesFile);
+		return	GLSLBuiltinServices.BUILTIN_RESOURCE_MANAGER.resolve(propertiesFile);
 	}
 
 
