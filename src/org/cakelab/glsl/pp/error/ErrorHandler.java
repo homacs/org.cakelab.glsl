@@ -2,9 +2,15 @@ package org.cakelab.glsl.pp.error;
 
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Location;
+import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.lang.ast.Node;
 
 public interface ErrorHandler {
+	
+	void setResourceManager(ResourceManager resources);
+
+
+	
 	/**
 	 * @param node malicious node
 	 * @param message

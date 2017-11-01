@@ -45,9 +45,9 @@ public class ASTBuilder extends GLSLBaseListener {
 	private ASTFactory factory;
 	private GLSLErrorHandler errorHandler;
 	private SymbolTable symbolTable;
-	private boolean functionDefinitionContext;
 	private Function functionDefinition;
-	private boolean validate;
+	private boolean validateIdentifiers;
+	private boolean inLayoutQualifier;
 	
 	
 	
@@ -56,9 +56,17 @@ public class ASTBuilder extends GLSLBaseListener {
 		this.symbolTable = symbolTable;
 		this.errorHandler = errorHandler;
 		factory = new ASTFactory(symbolTable, errorHandler);
-		validate = true;
+		validateIdentifiers = true;
 	}
 
+	
+	
+	public void setValidateIdentifiers(boolean validateIdentifiers) {
+		this.validateIdentifiers = validateIdentifiers;
+	}
+
+
+	
 	
 	@Override
 	public void enterGlslForStatement(GlslForStatementContext ctx) {
@@ -77,19 +85,14 @@ public class ASTBuilder extends GLSLBaseListener {
 
 	@Override
 	public void enterGlslLayoutQualifier(GlslLayoutQualifierContext ctx) {
-		validate = false;
+		inLayoutQualifier = true;
 	}
 
 	@Override
 	public void exitGlslLayoutQualifier(GlslLayoutQualifierContext ctx) {
-		validate = true;
+		inLayoutQualifier = false;
 	}
 
-
-	@Override
-	public void enterGlslFunctionDefinition(GlslFunctionDefinitionContext ctx) {
-		functionDefinitionContext = true;
-	}
 
 	@Override
 	public void exitGlslFunctionPrototype(GlslFunctionPrototypeContext ctx) {
@@ -104,7 +107,7 @@ public class ASTBuilder extends GLSLBaseListener {
 		// lookup a declared function with the same name and parameter types
 		Function declared = symbolTable.getFunction(f.getName(), f.getParameterTypes());
 		
-		if (functionDefinitionContext) {
+		if (ctx.parent instanceof GlslFunctionDefinitionContext) {
 			if (declared == null) {
 				functionDefinition = f;
 				symbolTable.addFunction(functionDefinition);
@@ -130,15 +133,15 @@ public class ASTBuilder extends GLSLBaseListener {
 
 	@Override
 	public void enterGlslCompoundStatement(GlslCompoundStatementContext ctx) {
-		if (functionDefinitionContext) {
+		if (ctx.parent instanceof GlslFunctionDefinitionContext) {
 			// create and enter function body
 			Body body = functionDefinition.createBody(symbolTable.getScope());
 			symbolTable.enterScope(body);
 			
-			functionDefinitionContext = false;
 			functionDefinition = null;
 		} else {
-			symbolTable.enterScope(new CompoundStatement(symbolTable.getScope()));
+			CompoundStatement statement = new CompoundStatement(symbolTable.getScope());
+			symbolTable.enterScope(statement);
 		}
 	}
 	
@@ -430,7 +433,7 @@ public class ASTBuilder extends GLSLBaseListener {
 	@Override
 	public void exitGlslPrimaryExpression(GlslPrimaryExpressionContext ctx) {
 		
-		if (validate && ctx.glslIdentifier() != null) {
+		if (ctx.glslIdentifier() != null && !inLayoutQualifier && validateIdentifiers) {
 			
 			// TODO we cannot simply assign identifiers to symbols if expression is a
 			//      - field selection             (requires scope)
@@ -439,7 +442,10 @@ public class ASTBuilder extends GLSLBaseListener {
 
 			
 			String ident = ctx.glslIdentifier().IDENTIFIER().getText();
-			if (((GlslPostfixExpressionContext)ctx.getParent()).glslFieldSelection() != null) {
+			
+			GlslFieldSelectionContext fieldSelCtx = ctx.getParent() != null ? ((GlslPostfixExpressionContext)ctx.getParent()).glslFieldSelection() : null;
+			
+			if (fieldSelCtx != null) {
 				// determine reference scope and lookup symbols from there
 			} else {
 				if (symbolTable.getType(ident) != null) return;
@@ -451,6 +457,8 @@ public class ASTBuilder extends GLSLBaseListener {
 			}
 		}
 	}
+
+
 
 
 	

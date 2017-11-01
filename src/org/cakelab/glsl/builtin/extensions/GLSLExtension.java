@@ -177,8 +177,8 @@ public class GLSLExtension extends ScopeImpl {
 		}
 	}
 
-	void setParent(IScope builtinScope) {
-		this.parent = builtinScope;
+	public void setParent(IScope scope) {
+		this.parent = scope;
 	}
 
 	public void finishLoad() {

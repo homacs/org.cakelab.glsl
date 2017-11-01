@@ -108,4 +108,9 @@ public class StandardErrorHandler implements ErrorHandler {
 		}
 		return location;
 	}
+
+	@Override
+	public void setResourceManager(ResourceManager resources) {
+		this.resources = resources;
+	}
 }

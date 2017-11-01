@@ -160,6 +160,12 @@ public class SymbolTable {
 		toplevel.dump(out, "");
 	}
 
+	/** for testing purposes only! */
+	public void setBuiltinScope(BuiltinScope builtinScope) {
+		this.builtin = builtinScope;
+		toplevel.setParent(this.builtin);
+	}
+
 
 
 

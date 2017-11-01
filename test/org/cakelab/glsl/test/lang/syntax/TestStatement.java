@@ -1,12 +1,20 @@
 package org.cakelab.glsl.test.lang.syntax;
 
 import org.cakelab.glsl.GLSLParser.*;
+import org.cakelab.glsl.test.Test;
 import org.cakelab.glsl.test.lang.TestingBase;
 import org.cakelab.glsl.test.lang.TestingTools;
 
 public class TestStatement extends TestingBase {
 	
+	public static void main(String[] args) {
+		Test.checkAssertionsOn();
+		test();
+	}
+	
+	
 	public static void test() {
+		validateIdentifiers = false;
 		testSimpleStatement();
 		testCompoundStatement();
 		testIfStatement();
@@ -14,13 +22,11 @@ public class TestStatement extends TestingBase {
 		testWhileStatement();
 		testDoWhileStatement();
 		testForStatement();
+		validateIdentifiers = true;
 	}
 
 	public static void setupMultiTest() {
 		autoTearDown = false;
-		validator.addDeclaredType("MyStruct", null);
-		validator.addDeclaredVariable("var", null);
-		validator.addDeclaredFunction("func");
 	}
 	
 	public static void tearDownMultiTest() {
@@ -56,7 +62,9 @@ public class TestStatement extends TestingBase {
 		assertValid(p("if (1) ; else ;").glslIfStatement());
 		assertValid(p("if (1) ; else if(a) ;").glslIfStatement());
 		assertValid(p("if (1) if (2) ; else ;").glslIfStatement());
+		assertValid(p("if (1) if (2) {} else {} else {}").glslIfStatement());
 		assertValid(p("if (1) if (2) ; else if (3) ;").glslIfStatement());
+		assertValid(p("if (1) { if (2) ; else if (3) ; } else ;").glslIfStatement());
 		IGNORE_CONTEXT_SENSITIVITY = false;
 	}
 

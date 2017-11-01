@@ -7,9 +7,8 @@ import java.util.Iterator;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.GLSLVersion.Profile;
 import org.cakelab.glsl.lang.ast.types.Type;
-import org.cakelab.glsl.lang.lexer.tokens.GLSLKeywords;
-import org.cakelab.glsl.lang.lexer.tokens.GLSLPunctuators;
 import org.cakelab.glsl.lang.lexer.tokens.ITokenTable;
+import org.cakelab.glsl.lang.lexer.tokens.Vocabulary;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.scanner.StreamScanner;
 import org.cakelab.glsl.util.ObjectCache;
@@ -93,7 +92,7 @@ public class GLSLTokenTable implements ITokenTable {
 	
 	// TODO: combine with AST builtin type entries
 
-	public static final GLSLPunctuators COMMON_PUNCTUATORS = new GLSLPunctuators();
+	public static final HashMap<String, Integer> COMMON_PUNCTUATORS = Vocabulary.getPunctuators();
 	
 	static GLSLTokenTable get(GLSLVersion version) {
 		GLSLTokenTable table = cache.get(version);
@@ -159,9 +158,9 @@ public class GLSLTokenTable implements ITokenTable {
 		
 		while(iterator.hasNext()) {
 			String keyword = iterator.next();
-				
-			if (GLSLKeywords.contains(keyword)) {
-				int type = GLSLKeywords.getTokenType(keyword);
+			Integer vocable = Vocabulary.getKeyword(keyword);
+			if (vocable != null) {
+				int type = vocable;
 				if (reservedKeywords) {
 					// reserved keywords:
 					// TODO: maybe accept unknown reserved keywords as well

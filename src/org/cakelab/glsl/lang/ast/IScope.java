@@ -34,6 +34,8 @@ public interface IScope {
 	
 	void add(IScope child);
 	IScope getParent();
+	/** for testing purposes only! */
+	void setParent(IScope builtin);
 	ArrayList<IScope> getChildren();
 	
 	void dump(PrintStream out, String indent);

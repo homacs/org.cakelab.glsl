@@ -31,7 +31,7 @@ import org.cakelab.glsl.builtin.extensions.Properties;
 import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.lang.ast.types.Type.Rank;
 import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
-import org.cakelab.glsl.lang.lexer.tokens.GLSLKeywords;
+import org.cakelab.glsl.lang.lexer.tokens.Vocabulary;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.tokens.TNumber;
@@ -120,7 +120,7 @@ public class Loader extends GLSLExtensionLoader {
 	@Override
 	protected KeywordTable loadKeywordTable(String extension) throws IOException {
 		// add the new keywords to hide reserved keywords
-		return KeywordTable.create(GLSLKeywords.BUILTIN_TYPE_TOKEN, "int64_t", "i64vec2", "i64vec3", "i64vec4", "uint64_t", "u64vec2", "u64vec2", "u64vec3", "u64vec4");
+		return KeywordTable.create(Vocabulary.getBuiltinType(), "int64_t", "i64vec2", "i64vec3", "i64vec4", "uint64_t", "u64vec2", "u64vec2", "u64vec3", "u64vec4");
 	}
 
 

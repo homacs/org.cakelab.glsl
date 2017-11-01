@@ -10,14 +10,14 @@ import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoader;
 import org.cakelab.glsl.builtin.extensions.KeywordTable;
 import org.cakelab.glsl.builtin.extensions.Properties;
 import org.cakelab.glsl.lang.ast.types.Type;
-import org.cakelab.glsl.lang.lexer.tokens.GLSLKeywords;
+import org.cakelab.glsl.lang.lexer.tokens.Vocabulary;
 import org.cakelab.glsl.pp.ast.Macro;
 
 public class Loader extends GLSLExtensionLoader {
 
 	@Override
 	protected KeywordTable loadKeywordTable(String extension) throws IOException {
-		return KeywordTable.create(GLSLKeywords.BUILTIN_TYPE_TOKEN, "sampler2DRect", "sampler2DRectShadow");
+		return KeywordTable.create(Vocabulary.getBuiltinType(), "sampler2DRect", "sampler2DRectShadow");
 	}
 
 	@Override

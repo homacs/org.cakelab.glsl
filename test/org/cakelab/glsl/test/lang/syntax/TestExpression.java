@@ -2,11 +2,6 @@ package org.cakelab.glsl.test.lang.syntax;
 
 import org.cakelab.glsl.GLSLParser.GlslArrayDimensionContext;
 import org.cakelab.glsl.GLSLParser.GlslCallArgumentsContext;
-import org.cakelab.glsl.Interval;
-import org.cakelab.glsl.lang.ast.IScope;
-import org.cakelab.glsl.lang.ast.Variable;
-import org.cakelab.glsl.lang.ast.types.Struct;
-import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.test.lang.TestingBase;
 import org.cakelab.glsl.test.lang.TestingTools;
 
@@ -54,6 +49,7 @@ public class TestExpression extends TestingBase {
 		
 	
 	public static void test() {
+		
 		testPrimaryExpression();
 		testPostfixExpression();
 		testUnaryExpression();
@@ -73,14 +69,12 @@ public class TestExpression extends TestingBase {
 	
 	public static void setupMultiTest() {
 		autoTearDown = false;
-		validator.addDeclaredType("MyStruct", new Struct(Interval.NONE, null, "MyStruct", null));
-		validator.addDeclaredVariable("var", new Variable(Interval.NONE, IScope.NONE, Type._int, "var"));
-		validator.addDeclaredFunction("func");
+		validateIdentifiers = false;
 	}
 	
 	public static void tearDownMultiTest() {
-		TestingTools.tearDown();
 		autoTearDown = true;
+		TestingTools.tearDown();
 	}
 	
 	
@@ -100,8 +94,8 @@ public class TestExpression extends TestingBase {
 		setupMultiTest();
 		assertValid(p("(func)()").glslPostfixExpression(), GlslCallArgumentsContext.class);
 		assertValid(p("((func))()").glslPostfixExpression(), GlslCallArgumentsContext.class);
-		assertValid(p("a.b()").glslPostfixExpression(), GlslCallArgumentsContext.class);
-		assertValid(p("a.b[3](1,2)").glslPostfixExpression(), GlslCallArgumentsContext.class);
+		assertValid(p("a.f()").glslPostfixExpression(), GlslCallArgumentsContext.class);
+		assertValid(p("b.a[3](1,2)").glslPostfixExpression(), GlslCallArgumentsContext.class);
 		tearDown();
 		
 		setupMultiTest();

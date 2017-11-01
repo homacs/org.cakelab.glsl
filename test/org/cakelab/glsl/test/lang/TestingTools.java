@@ -37,8 +37,8 @@ public class TestingTools {
 
 	protected static GLSLParser parser;
 
-	protected static ASTBuilder validator;
-
+	protected static SymbolTable presetSymbols = null;
+	protected static boolean validateIdentifiers = true;
 	protected static boolean autoTearDown = true;
 
 	private static final boolean DEBUG = false;
@@ -65,6 +65,7 @@ public class TestingTools {
 				BitSet ambigAlts, ATNConfigSet configs) {
 
 			if (hasError()) return;
+			
 			this.message = "reported ambiguity";
 		}
 
@@ -297,7 +298,13 @@ public class TestingTools {
 		GLSLVersion version = buffer.getVersion();
 		GLSLBuiltin builtin = TestBuiltinBase.getTestBuiltinSymbols(version);
 		WorkingSet workingSet = builtin.createWorkingSet(GLSL.getDefaultCompilerFeatures());
-		SymbolTable symbolTable = new SymbolTable(workingSet.getBuiltinScope());
+		SymbolTable symbolTable;
+		if (presetSymbols != null) {
+			presetSymbols.setBuiltinScope(workingSet.getBuiltinScope());
+			symbolTable = presetSymbols;
+		} else {
+			symbolTable = new SymbolTable(workingSet.getBuiltinScope());
+		}
 		PPTokenStream tokens = new PPTokenStream(buffer, workingSet.getTokenTable(), symbolTable, TEST_ERROR_HANLDER);
 		parser = new GLSLParser(tokens);
 
@@ -305,12 +312,13 @@ public class TestingTools {
 
 		parser.removeErrorListeners();
 		parser.addErrorListener(TEST_ERROR_HANLDER);
-		validator = new ASTBuilder(symbolTable, TEST_ERROR_HANLDER);
+		ASTBuilder validator = new ASTBuilder(symbolTable, TEST_ERROR_HANLDER);
+		validator.setValidateIdentifiers(validateIdentifiers);
 		parser.addParseListener(validator);
 	}
 
 	public static void tearDown() {
-
+		if (autoTearDown) presetSymbols = null;
 	}
 
 

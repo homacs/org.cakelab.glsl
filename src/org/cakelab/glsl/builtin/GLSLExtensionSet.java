@@ -333,6 +333,12 @@ public class GLSLExtensionSet implements IScope, ITokenTable, Iterable<GLSLExten
 		return extensions.iterator();
 	}
 
+	@Override
+	public void setParent(IScope builtin) {
+		throw new Error("not permitted");
+		
+	}
+
 	
 	
 }

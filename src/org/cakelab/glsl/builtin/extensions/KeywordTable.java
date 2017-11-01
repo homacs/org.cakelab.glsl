@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.cakelab.glsl.builtin.GLSLTokenTable;
-import org.cakelab.glsl.lang.lexer.tokens.GLSLKeywords;
 import org.cakelab.glsl.lang.lexer.tokens.ITokenTable;
+import org.cakelab.glsl.lang.lexer.tokens.Vocabulary;
 
 public class KeywordTable implements ITokenTable {
 
@@ -72,7 +72,7 @@ public class KeywordTable implements ITokenTable {
 	public static KeywordTable create(String ... keywords) {
 		KeywordTable table = new KeywordTable();
 		for (String keyword : keywords) {
-			Integer code = GLSLKeywords.getTokenType(keyword);
+			Integer code = Vocabulary.getKeyword(keyword);
 			assert (code != null) : "unknown keyword '" + keyword + "'";
 			table.keywords.put(keyword, code);
 		}
@@ -86,7 +86,7 @@ public class KeywordTable implements ITokenTable {
 		
 		while(iterator.hasNext()) {
 			String keyword = iterator.next();
-			Integer code = GLSLKeywords.getTokenType(keyword);
+			Integer code = Vocabulary.getKeyword(keyword);
 			assert (code != null) : "unknown keyword '" + keyword + "'";
 			table.keywords.put(keyword, code);
 		}

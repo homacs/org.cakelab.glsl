@@ -4,7 +4,14 @@ import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.impl.ExpressionImpl;
 import org.cakelab.glsl.lang.ast.types.Type;
-
+/**
+ * Represents: 
+ * <pre>
+ * condition '?' caseTrue ':' caseFalse
+ * </pre>
+ * @author homac
+ *
+ */
 public class ConditionalExpression extends ExpressionImpl {
 
 	protected Expression condition;
@@ -28,5 +35,19 @@ public class ConditionalExpression extends ExpressionImpl {
 	public Type evaluateType() throws EvaluationException {
 		return caseTrue.evaluateType();
 	}
+
+	public Expression getCondition() {
+		return condition;
+	}
+
+	public Expression getCaseTrue() {
+		return caseTrue;
+	}
+
+	public Expression getCaseFalse() {
+		return caseFalse;
+	}
+
+	
 
 }

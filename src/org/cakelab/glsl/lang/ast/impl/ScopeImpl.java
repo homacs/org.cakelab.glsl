@@ -89,7 +89,12 @@ public class ScopeImpl implements IScope {
 		return parent;
 	}
 
-	
+	@Override
+	public void setParent(IScope parent) {
+		this.parent = parent;
+	}
+
+
 	private FunctionGroup getFunctionGroup(String name) {
 		FunctionGroup functionGroup = functions.get(name);
 		if (functionGroup == null) {

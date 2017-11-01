@@ -10,8 +10,6 @@ public interface GLSLErrorHandler extends ErrorHandler, ANTLRErrorListener {
 	// TODO: refactor -> GLSLErrorHandler and GLSLErrorHandlerImpl
 	
 	
-	void setResourceManager(ResourceManager resources);
-
 	void setLocations(TokenStream tokens);
 
 	void error(ParseTree node, String message);

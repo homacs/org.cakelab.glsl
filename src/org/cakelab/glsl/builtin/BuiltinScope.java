@@ -156,24 +156,24 @@ public class BuiltinScope implements IScope {
 
 	@Override
 	public void addFunction(Function func) {
-		throw new Error("not supported");
+		throw new Error("not permitted");
 	}
 
 
 	@Override
 	public void addVariable(Variable var) {
-		throw new Error("not supported");
+		throw new Error("not permitted");
 	}
 
 
 	@Override
 	public void addType(Type type) {
-		throw new Error("not supported");
+		throw new Error("not permitted");
 	}
 
 	@Override
 	public void addInterface(InterfaceBlock block) {
-		throw new Error("not supported");
+		throw new Error("not permitted");
 	}
 
 	public GLSLExtensionSet getExtensions() {
@@ -182,6 +182,11 @@ public class BuiltinScope implements IScope {
 
 	public void setExtensions(GLSLExtensionSet extensions) {
 		this.extensions = extensions;
+	}
+
+	@Override
+	public void setParent(IScope builtin) {
+		throw new Error("not permitted");
 	}
 
 

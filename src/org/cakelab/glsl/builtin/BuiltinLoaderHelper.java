@@ -28,6 +28,7 @@ import org.cakelab.glsl.lang.lexer.GLSL_ANTLR_PPOutputBuffer;
 import org.cakelab.glsl.lang.lexer.PPTokenStream;
 import org.cakelab.glsl.lang.lexer.tokens.ITokenTable;
 import org.cakelab.glsl.lang.lexer.tokens.PPOutputToken;
+import org.cakelab.glsl.pp.PPOutputSink;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.ast.NodeList;
@@ -213,7 +214,7 @@ public class BuiltinLoaderHelper {
 
 
 	public static Preprocessor setupPreprocessing(Resource resource, ShaderType shaderType,
-			GLSL_ANTLR_PPOutputBuffer buffer) {
+			PPOutputSink buffer) {
 		Preprocessor pp = new Preprocessor(EMPTY_FEATURESET, new Resource[]{resource}, shaderType, buffer);
 		
 		pp.addDefine(shaderType.name());

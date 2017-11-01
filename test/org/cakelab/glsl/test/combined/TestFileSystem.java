@@ -23,18 +23,17 @@ public class TestFileSystem {
 	
 	
 	public static void test() {
-		testFileSystemParse();
-		
+		testFile("test_files/100.frag");
 	}
 	
-	public static void testFileSystemParse() {
+	public static void testFile(String filename) {
 
 		ResourceManager resources = new FileSystemResourceManager();
 		
 		GLSL glsl = new GLSL(GLSL.getDefaultCompilerFeatures(), resources);
 		Resource resource;
 		try {
-			resource = resources.resolve("test_files/100.frag");
+			resource = resources.resolve(filename);
 			CombinedAST result = glsl.parse(resource, ShaderType.FRAGMENT_SHADER);
 
 			List<Struct> structs = result.getStructs();

@@ -305,8 +305,7 @@ glslExpressionStatement
  * just needs to read from left to right ..).
  */
 glslIfStatement
-	: IF LEFT_PAREN glslCondition RIGHT_PAREN glslStatement     // includes for example  if(A) /* nothing */ if(B){..} else;
-	| IF LEFT_PAREN glslCondition RIGHT_PAREN glslNonIfStatement ELSE glslStatement // single if with else branch
+	: IF LEFT_PAREN glslCondition RIGHT_PAREN glslStatement (ELSE glslStatement)?
 	;
 
 /**
