@@ -10,7 +10,6 @@ import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.GLSLBuiltinServices;
 import org.cakelab.glsl.builtin.extensions.GLSLExtension;
 import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoader;
-import org.cakelab.glsl.builtin.extensions.GLSLExtensionSymbolTable;
 import org.cakelab.glsl.builtin.extensions.KeywordTable;
 import org.cakelab.glsl.builtin.extensions.Properties;
 import org.cakelab.glsl.lang.ast.types.Type;
@@ -48,12 +47,8 @@ public class Loader extends GLSLExtensionLoader {
 			addTypes(e);
 		}
 
-		// This is just a temporary symbol table 
-		// used during parse of the preamble.
-		GLSLExtensionSymbolTable symbolTable = new GLSLExtensionSymbolTable(e, ws.getBuiltinScope());
-
+		parseExtensionPreamble(e, ws, preprocessedPreamble);
 		
-		parseExtensionPreamble(e, ws, preprocessedPreamble, symbolTable);
 		return e;
 	}
 

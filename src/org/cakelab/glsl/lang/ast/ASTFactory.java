@@ -480,15 +480,15 @@ public class ASTFactory {
 				GlslFunctionNameListContext flist = storage.glslFunctionNameList();
 				if (flist != null) {
 					List<GlslFunctionNameContext> names = flist.glslFunctionName();
-					FunctionReference[] function = new FunctionReference[names.size()];
-					for (int i = 0; i < function.length; i++) {
+					ArrayList<FunctionReference> function = new ArrayList<FunctionReference>(names.size());
+					for (int i = 0; i < function.size(); i++) {
 						GlslFunctionNameContext n = names.get(i);
 						String ident = n.getText();
-						function[i] = new FunctionReference(createInterval(n), ident);
+						function.add(new FunctionReference(createInterval(n), ident));
 					}
-					return Qualifier._subroutine();
+					return Qualifier._subroutine(function);
 				} else {
-					return Qualifier._subroutine();
+					return Qualifier._subroutine;
 				}
 			}
 		} else if (context.glslLayoutQualifier() != null) {

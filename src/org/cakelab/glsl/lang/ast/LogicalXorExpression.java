@@ -21,4 +21,10 @@ public class LogicalXorExpression extends BinaryExpression {
 	}
 
 
+	@Override
+	protected String getOperatorText() {
+		return "^^";
+	}
+
+
 }

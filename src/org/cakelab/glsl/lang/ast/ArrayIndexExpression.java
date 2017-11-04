@@ -38,4 +38,12 @@ public class ArrayIndexExpression extends PostfixExpression {
 		return Type._int;
 	}
 
+	@Override
+	protected String getPostfixText() {
+		return "[" + this.index.getText() + "]";
+	}
+	
+	
+	
+
 }

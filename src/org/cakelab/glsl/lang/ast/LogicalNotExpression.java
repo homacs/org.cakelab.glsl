@@ -21,5 +21,10 @@ public class LogicalNotExpression extends PrefixExpression {
 		return Type._bool;
 	}
 
+	@Override
+	protected String getPrefixText() {
+		return "!";
+	}
+
 
 }

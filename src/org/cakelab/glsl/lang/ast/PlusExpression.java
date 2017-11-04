@@ -20,4 +20,9 @@ public class PlusExpression extends BinaryExpression {
 		return leftOperand.evaluateType();
 	}
 
+	@Override
+	protected String getOperatorText() {
+		return "+";
+	}
+
 }

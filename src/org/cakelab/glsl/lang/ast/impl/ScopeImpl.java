@@ -95,7 +95,7 @@ public class ScopeImpl implements IScope {
 	}
 
 
-	private FunctionGroup getFunctionGroup(String name) {
+	private FunctionGroup getFunctionGroupBucket(String name) {
 		FunctionGroup functionGroup = functions.get(name);
 		if (functionGroup == null) {
 			functionGroup = new FunctionGroup();
@@ -104,6 +104,10 @@ public class ScopeImpl implements IScope {
 		return functionGroup;
 	}
 
+	public FunctionGroup getFunctionGroup(String name) {
+		return functions.get(name);
+	}
+	
 	public boolean hasFunctionGroup(String name) {
 		return functions.containsKey(name);
 	}
@@ -111,7 +115,7 @@ public class ScopeImpl implements IScope {
 	
 	@Override
 	public void addFunction(Function func) {
-		FunctionGroup functionGroup = getFunctionGroup(func.getName());
+		FunctionGroup functionGroup = getFunctionGroupBucket(func.getName());
 		functionGroup.add(func);
 	}
 

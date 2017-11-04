@@ -22,8 +22,8 @@ import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
-import org.cakelab.glsl.builtin.BuiltinLoaderHelper;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
+import org.cakelab.glsl.builtin.GLSLBuiltinServices;
 import org.cakelab.glsl.builtin.extensions.GLSLExtension;
 import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoader;
 import org.cakelab.glsl.builtin.extensions.KeywordTable;
@@ -36,7 +36,7 @@ import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.tokens.TNumber;
 
 public class Loader extends GLSLExtensionLoader {
-	private static final Macro HAVE_DOUBLE = BuiltinLoaderHelper.createMacro("HAVE_DOUBLE", new TNumber("1"));
+	private static final Macro HAVE_DOUBLE = GLSLBuiltinServices.createMacro("HAVE_DOUBLE", new TNumber("1"));
 	static Type _int64_t = new Type(Interval.NONE, "int64_t", Type.KIND_SCALAR, Rank.INT, null);
 	static Type _i64vec2 = new Type(Interval.NONE, "i64vec2", Type.KIND_VECTOR, Rank.NON_SCALAR, null);
 	static Type _i64vec3 = new Type(Interval.NONE, "i64vec3", Type.KIND_VECTOR, Rank.NON_SCALAR, null);

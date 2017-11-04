@@ -25,4 +25,9 @@ public class EqExpression extends BinaryExpression {
 		return Type._bool;
 	}
 
+	@Override
+	protected String getOperatorText() {
+		return "==";
+	}
+
 }

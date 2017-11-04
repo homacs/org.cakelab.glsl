@@ -70,6 +70,11 @@ public class AssignmentExpression extends BinaryExpression {
 		Type targetType = leftOperand.evaluateType();
 		return targetType;
 	}
+
+	@Override
+	protected String getOperatorText() {
+		return "=";
+	}
 	
 
 }

@@ -40,5 +40,10 @@ public class BooleanExpression extends ExpressionImpl {
 		return Type._bool;
 	}
 
+	@Override
+	public String getText() {
+		return expr.getText();
+	}
+
 
 }

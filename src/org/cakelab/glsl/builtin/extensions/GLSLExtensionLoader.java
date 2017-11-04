@@ -9,7 +9,6 @@ import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.antlr.PPOutputBuffer;
-import org.cakelab.glsl.builtin.BuiltinScope;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.GLSLBuiltinServices;
 import org.cakelab.glsl.builtin.GLSLExtensionSet;
@@ -47,7 +46,7 @@ public class GLSLExtensionLoader {
 	 * 
 	 * <p>
 	 * You can override this method to fully control the process yourself 
-	 * or use some of the hook-in methods:
+	 * or use some of the hooks:
 	 * </p>
 	 * <ul>
 	 * <li>{@link #preprocess(WorkingSet, Resource, PPOutputBuffer)} </li>
@@ -62,7 +61,6 @@ public class GLSLExtensionLoader {
 	 * @throws IOException
 	 */
 	public GLSLExtension load(WorkingSet ws, Properties properties) throws IOException {
-		BuiltinScope builtinScope = ws.getBuiltinScope();
 		GLSLVersion version = ws.getGLSLVersion();
 		ShaderType shaderType = ws.getShaderType();
 		
@@ -95,9 +93,7 @@ public class GLSLExtensionLoader {
 			e = createExtension(properties, version, shaderType, extensionMacros, extendedKeywords);
 
 			if (hasPreamble) {
-				GLSLExtensionSymbolTable symbolTable = new GLSLExtensionSymbolTable(e, builtinScope);
-				
-				parseExtensionPreamble(e, ws, buffer, symbolTable);
+				parseExtensionPreamble(e, ws, buffer);
 			}
 		}
 		
@@ -159,9 +155,9 @@ public class GLSLExtensionLoader {
 	 * @throws IOException
 	 */
 	protected KeywordTable loadKeywordTable(String extension) throws IOException {
-		if (!GLSLExtensionLoading.hasKeywordsFile(extension)) return null;
+		if (!GLSLExtensionServices.hasKeywordsFile(extension)) return null;
 		
-		Resource tokenFile = GLSLExtensionLoading.getResource(extension, GLSLExtensionLoading.KEYWORDS_FILE);
+		Resource tokenFile = GLSLExtensionServices.getResource(extension, GLSLExtensionServices.KEYWORDS_FILE);
 		KeywordTable tokenTable = KeywordTable.create(vocabulary, tokenFile.openInputStream());
 		
 		return tokenTable;
@@ -267,8 +263,7 @@ public class GLSLExtensionLoader {
 	 * @return
 	 */
 	protected Preprocessor setupPreprocessor(WorkingSet ws, Resource resource, PPOutputSink buffer) {
-		GLSLBuiltinServices builtinServices = GLSLCompiler.getActiveCompilerImpl().getBuiltinServices();
-		Preprocessor pp = builtinServices.setupPreprocessing(resource, ws.getShaderType(), buffer);
+		Preprocessor pp = services.setupPreprocessing(resource, ws.getShaderType(), buffer);
 		pp.getState().setWorkingSet(ws);
 		pp.getState().setForcedVersion(true);
 		return pp;
@@ -284,8 +279,11 @@ public class GLSLExtensionLoader {
 	 * @param preprocessedPreamble
 	 * @param symbolTable
 	 */
-	protected void parseExtensionPreamble(GLSLExtension e, WorkingSet ws, PPOutputSink preprocessedPreamble,
-			SymbolTable symbolTable) {
+	protected void parseExtensionPreamble(GLSLExtension e, WorkingSet ws, PPOutputSink preprocessedPreamble) {
+		
+		e.setParent(ws.getBuiltinScope());
+		SymbolTable symbolTable = new SymbolTable(ws.getBuiltinScope(), e);
+
 		//
 		// In case the extension adds own keywords, 
 		// we add them here temporary, to be able 
@@ -311,6 +309,7 @@ public class GLSLExtensionLoader {
 			services.parseBuiltinPreamble(preprocessedPreamble, ws.getTokenTable(), symbolTable);
 		}
 	}
+
 
 
 }

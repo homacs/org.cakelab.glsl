@@ -8,6 +8,7 @@ public interface ResourceManager {
 		String getNextId();
 		void reset();
 		boolean isUsed();
+		void consume(String id);
 	}
 
 	

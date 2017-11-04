@@ -89,6 +89,20 @@ public class CallExpression extends PostfixExpression {
 	public Type evaluateType() throws EvaluationException {
 		return function.type;
 	}
+
+
+	@Override
+	protected String getPostfixText() {
+		if (arguments.length == 0)return "()";
+		else {
+			StringBuffer args = new StringBuffer('(');
+			for (int i = 0; i < arguments.length; i++) {
+				args.append(arguments[i].getText());
+				if (i+1 < arguments.length)args.append(", ");
+			}
+			return args.toString();
+		}
+	}
 	
 	
 }

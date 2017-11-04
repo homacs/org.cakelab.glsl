@@ -27,4 +27,11 @@ public class LtExpression extends BinaryExpression {
 	}
 
 
+
+	@Override
+	protected String getOperatorText() {
+		return "<";
+	}
+
+
 }

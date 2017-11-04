@@ -25,6 +25,10 @@ public class PosExpression extends PrefixExpression {
 	public Type evaluateType() throws EvaluationException {
 		return operand.evaluateType();
 	}
+	@Override
+	protected String getPrefixText() {
+		return "+";
+	}
 
 
 }

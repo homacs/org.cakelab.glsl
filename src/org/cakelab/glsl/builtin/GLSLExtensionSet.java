@@ -11,6 +11,7 @@ import org.cakelab.glsl.lang.ast.Function;
 import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.Qualifier;
 import org.cakelab.glsl.lang.ast.Variable;
+import org.cakelab.glsl.lang.ast.impl.FunctionGroup;
 import org.cakelab.glsl.lang.ast.types.InterfaceBlock;
 import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.lang.lexer.tokens.ITokenTable;
@@ -337,6 +338,12 @@ public class GLSLExtensionSet implements IScope, ITokenTable, Iterable<GLSLExten
 	public void setParent(IScope builtin) {
 		throw new Error("not permitted");
 		
+	}
+
+	@Override
+	public FunctionGroup getFunctionGroup(String ident) {
+		// TODO Auto-generated method stub
+		throw new Error("TODO");
 	}
 
 	

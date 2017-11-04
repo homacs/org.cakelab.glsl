@@ -1,10 +1,14 @@
 package org.cakelab.glsl.lang.ast;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
-public class Qualifier {
+import org.cakelab.glsl.lang.ast.impl.NodeImpl;
+
+public class Qualifier extends NodeImpl {
 	public static class LayoutQualifier extends Qualifier {
-		public static class Parameter {
+		public static class Parameter extends NodeImpl {
 			String name;
 			String value;
 			
@@ -20,7 +24,7 @@ public class Qualifier {
 
 			public static Parameter SHARED = new Parameter("shared");
 		}
-		final Parameter[] layoutParams;
+		Parameter[] layoutParams;
 
 		LayoutQualifier(Parameter[] layoutParams) {
 			super(LAYOUT);
@@ -40,21 +44,36 @@ public class Qualifier {
 			return result.toString();
 		}
 
+		public void addParameter(Parameter param) {
+			if (this.layoutParams == null) {
+				this.layoutParams = new Parameter[]{param};
+			} else {
+				this.layoutParams = Arrays.copyOf(this.layoutParams, this.layoutParams.length+1);
+				this.layoutParams[this.layoutParams.length-1] = param;
+			}
+		}
+
 	}
 
 	public static class SubroutineQualifier extends Qualifier {
-		final Function[] functions;
+		private static final ArrayList<FunctionReference> EMPTY_LIST = new ArrayList<FunctionReference>(0);
+		final ArrayList<FunctionReference> functions;
 
-		SubroutineQualifier(Function ... functions) {
+		SubroutineQualifier(ArrayList<FunctionReference> functions2) {
 			super("subroutine");
-			this.functions = functions;
+			this.functions = functions2;
 		}
 		
+		public SubroutineQualifier() {
+			super("subroutine");
+			this.functions = EMPTY_LIST;
+		}
+
 		public String toString() {
 			StringBuffer result = new StringBuffer("subroutine(");
-			for (int i = 0; i < functions.length; i++) {
-				result.append(functions[i].name);
-				if (i+1 < functions.length) result.append(' ');
+			for (int i = 0; i < functions.size(); i++) {
+				result.append(functions.get(i).getName());
+				if (i+1 < functions.size()) result.append(' ');
 			}
 			return result.toString();
 		}
@@ -134,6 +153,10 @@ public class Qualifier {
 	public static LayoutQualifier _layout(LayoutQualifier.Parameter[] layoutParams) {
 		return new LayoutQualifier(layoutParams);
 	}
+	public static Qualifier _layout(ArrayList<LayoutQualifier.Parameter> params) {
+		return new LayoutQualifier(params.toArray(new LayoutQualifier.Parameter[0]));
+	}
+
 	
 	
 	//
@@ -161,10 +184,12 @@ public class Qualifier {
 	public static StorageQualifier _restrict = new StorageQualifier("restrict");
 	public static StorageQualifier _readonly = new StorageQualifier("readonly");
 	public static StorageQualifier _writeonly = new StorageQualifier("writeonly");
+	public static SubroutineQualifier _subroutine = new SubroutineQualifier();
 
-	public static SubroutineQualifier _subroutine(Function ...functions) {
+	public static SubroutineQualifier _subroutine(ArrayList<FunctionReference>functions) {
 		return new SubroutineQualifier(functions);
 	}
+	
 	
 	//
 	// precision qualifier
@@ -236,5 +261,6 @@ public class Qualifier {
 			throw new Error("internal error: precision qualifier '" + text + "' does not exist");
 		}
 	}
+
 
 }

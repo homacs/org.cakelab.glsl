@@ -3,14 +3,14 @@ package org.cakelab.glsl;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.cakelab.glsl.antlr.GLSLAntlrCompiler;
+import org.cakelab.glsl.antlr.AntlrCompiler;
 import org.cakelab.glsl.builtin.GLSLBuiltinServices;
 import org.cakelab.glsl.builtin.extensions.KnownExtensions;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.pp.StandardErrorHandler;
 
 public abstract class GLSLCompiler {
-	private static GLSLCompiler IMPLEMENTATION = new GLSLAntlrCompiler();
+	private static GLSLCompiler IMPLEMENTATION = new AntlrCompiler();
 
 	protected static GLSLCompilerFeatures DEFAULT_COMPILER_FEATURES;
 
@@ -90,6 +90,11 @@ public abstract class GLSLCompiler {
 
 	
 	public abstract GLSLBuiltinServices getBuiltinServices();
+
+
+	public GLSLCompilerFeatures getFeatures() {
+		return features;
+	}
 
 
 }

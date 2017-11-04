@@ -8,6 +8,16 @@ import org.cakelab.glsl.builtin.GLSLTokenTable;
 import org.cakelab.glsl.lang.lexer.tokens.ITokenTable;
 import org.cakelab.glsl.lang.lexer.tokens.Vocabulary;
 
+/**
+ * A token type table for keywords only.
+ * <p>
+ * This token table is used by extensions to introduce
+ * keywords. 
+ * </p>
+ * @see ITokenTable
+ * @author homac
+ *
+ */
 public class KeywordTable implements ITokenTable {
 
 	HashMap<String, Integer> keywords = new HashMap<String, Integer>();

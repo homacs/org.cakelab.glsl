@@ -68,7 +68,11 @@ public abstract class ResourceManagerBase implements ResourceManager {
 		Resource occupied = idMap.get(id);
 		if (occupied != null) {
 			String oPath = toUrl(occupied.getPath());
-			if (!oPath.equals(uniquePath)) throw new IOException("id " + id + " already occupied by " + occupied.getPath());
+			if (!oPath.equals(uniquePath)) {
+				throw new IOException("id " + id + " already occupied by " + occupied.getPath());
+			}
+		} else {
+			idProvider.consume(id);
 		}
 
 		resourceMap.put(uniquePath, resource);

@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cakelab.glsl.GLSLCompiler;
 import org.cakelab.glsl.GLSLCompilerFeatures;
 import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLVersion;
@@ -19,7 +20,7 @@ import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.extensions.GLSLExtension;
-import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoading;
+import org.cakelab.glsl.builtin.extensions.GLSLExtensionServices;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Expression;
@@ -93,17 +94,6 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	private ExtensionParser extensionParser;
 
 
-	/**
-	 * This lexer is responsible to generate tokens of the 
-	 * original source. It will never see for example included 
-	 * sources!
-	 * 
-	 * This lexer is used to identify and forward tokens of the 
-	 * original source to the TokenListener for text 
-	 * highlighting purposes.
-	 */
-	private PPLexer originalSourceLexer;
-	
 	
 	/**
 	 * Construct a preprocessor for standalone preprocessing (without language parsing).
@@ -111,38 +101,57 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	 * @param in
 	 * @param out
 	 */
-	public Preprocessor(GLSLCompilerFeatures features, Resource[] resources, ShaderType shaderType, OutputStream out) {
-		this(features, resources, shaderType, new PreprocessedOutputStream(out));
+	public Preprocessor(GLSLCompiler compiler, Resource[] resources, ShaderType shaderType, OutputStream out) {
+		this(compiler, resources, shaderType, new PreprocessedOutputStream(out));
 	}
-
-	public Preprocessor(GLSLCompilerFeatures features, Resource[] resource, ShaderType shaderType, PPOutputSink out) {
-		super(true, new PPState(features, resource, shaderType));
-		state.addListener(this);
-		state.setInputResource(resource);
-		if (resource.length == 1) originalSourceLexer = new PPLexer(new StreamScanner(resource[0]), state);
-		else originalSourceLexer = new PPLexer(new SourceStringArrayScanner(resource), state);
+	public Preprocessor(GLSLCompiler compiler, Resource[] resources, ShaderType shaderType, PPOutputSink out) {
+		this(compiler, compiler.getFeatures(), resources, shaderType, out);
+	}
+	/** This constructor is used only to parse preambles of builtins and extensions.
+	 * @deprecated */
+	public Preprocessor(GLSLCompiler compiler, GLSLCompilerFeatures features, Resource[] resources, ShaderType shaderType, PPOutputSink out) {
+		super(true, new PPState(features, resources, shaderType));
 		
-		state.setLexer(originalSourceLexer);
+		//
+		// create scanner and lexer
+		//
+		IScanner scanner;
+		if (resources.length == 1) scanner = new StreamScanner(resources[0]);
+		else scanner = new SourceStringArrayScanner(resources);
+		PPLexer lexer = new PPLexer(scanner, state);
+
+		//
+		// finish initialisation of global preprocessor state
+		//
+		state.addListener(this);
+		state.setInputResources(resources);
+		state.setLexer(lexer);
 		state.setResourceManager(new FileSystemResourceManager());
 		state.setErrorHandler(new StandardErrorHandler());
-		state.setInsertLineDirectives(true);
+		state.setInsertLineDirectives(true); // just default
 
+		//
+		// initialise output
+		//
 		out.init(state);
 		outputStream = out;
-		
+
+		//
+		// setup top-level group scope
+		//
 		globalScope = new PPGroupScope(null);
 		pushScope(globalScope);
-		
+
+		//
+		// initialise parsers
+		//
 		includeParser = new IncludeParser(this);
 		versionParser = new VersionParser(this);
 		extensionParser = new ExtensionParser(this);
 		errorParser = new ErrorParser(this);
 		lineParser = new LineParser(this);
-		
 		pragmaParser = new PragmaParserSet(this);
-		
 		pragmaParser.appendPragma(new GlslPragmasParser(this));
-		
 		expressionParser = new ExpressionParser(this);
 		
 		
@@ -242,8 +251,12 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	}
 
 
-	
-	private void setScopeVisibility() {
+	/**
+	 * Checks visibility of current #if/#else etc. group and switches 
+	 * output on/off accordingly.
+	 * Called each time, the scope has changed.
+	 */
+	private void updateScopeVisibility() {
 		// TODO [3] scope visibility (skipping text lines), suspending output generation and location mapping is kind of redundant
 		if (state.getGroupScope().visible()) state.setOutput(outputStream);
 		else state.setOutput(PPOutputSink.DEV_NULL);
@@ -252,13 +265,13 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	private void pushScope(PPGroupScope scope) {
 		if (state.getGroupScope() != null) state.getGroupScope().add(scope);
 		state.setGroupScope(scope);
-		setScopeVisibility();
+		updateScopeVisibility();
 	}
 	
 	private void popScope() {
 		PPGroupScope parent = state.getGroupScope().getParent();
 		state.setGroupScope(parent);
-		setScopeVisibility();
+		updateScopeVisibility();
 	}
 
 
@@ -1186,7 +1199,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	@Override
 	public void reportModifiedVersion(GLSLVersion version) {
 		if (!state.isForcedVersion()) {
-			GLSLBuiltin symbols = GLSLBuiltin.get(version, state.getShaderType());
+			GLSLBuiltin symbols = GLSLBuiltin.getBuiltins(version, state.getShaderType());
 			WorkingSet workingSet = symbols.createWorkingSet(state.getCompilerFeatures());
 			state.setWorkingSet(workingSet);
 		}
@@ -1209,7 +1222,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 			case REQUIRE:
 			case WARN:
 			case ENABLE:
-				if (!GLSLExtensionLoading.canLoadExtenion(directive.identifier)) {
+				if (!GLSLExtensionServices.canLoadExtenion(directive.identifier)) {
 					String message = "unknown extension '" + directive.identifier + "'";
 					if (directive.behaviour == Behaviour.REQUIRE) syntaxError(directive, message);
 					else syntaxWarning(directive.getStart(), message);

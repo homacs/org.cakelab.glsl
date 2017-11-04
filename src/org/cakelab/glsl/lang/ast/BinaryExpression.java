@@ -26,5 +26,13 @@ public abstract class BinaryExpression extends ExpressionImpl {
 		return rightOperand;
 	}
 
+	@Override
+	public String getText() {
+		return leftOperand.getText() + " " + getOperatorText() + " " + rightOperand.getText();
+	}
+
+	protected abstract String getOperatorText();
+
+	
 
 }

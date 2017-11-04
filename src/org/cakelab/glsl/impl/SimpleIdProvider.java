@@ -26,4 +26,14 @@ public class SimpleIdProvider implements ResourceIdProvider {
 		return nextId != INITIAL_ID;
 	}
 
+	@Override
+	public void consume(String id) {
+		try {
+			int i = Integer.valueOf(id);
+			if (i >= nextId) nextId = i+1;
+		} catch (NumberFormatException e) {
+			// not a number -> no conflict possible
+		}
+	}
+
 }

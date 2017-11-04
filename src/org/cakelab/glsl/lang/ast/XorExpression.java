@@ -24,4 +24,10 @@ public class XorExpression extends BinaryExpression {
 	public Type evaluateType() throws EvaluationException {
 		return Type._int;
 	}
+
+
+	@Override
+	protected String getOperatorText() {
+		return "^";
+	}
 }

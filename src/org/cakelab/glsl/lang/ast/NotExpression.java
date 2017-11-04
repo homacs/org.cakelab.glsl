@@ -25,6 +25,11 @@ public class NotExpression extends PrefixExpression {
 		return Type._int;
 	}
 
+	@Override
+	protected String getPrefixText() {
+		return "~";
+	}
+
 
 	
 

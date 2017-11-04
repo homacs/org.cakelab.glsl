@@ -42,5 +42,10 @@ public class Value extends PrimaryExpression {
 		return new Value(interval, type, value);
 	}
 
+	@Override
+	public String getText() {
+		return value != null ? value.toString() : "0";
+	}
+
 
 }

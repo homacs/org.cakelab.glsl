@@ -27,4 +27,10 @@ public class PostfixDecExpression extends PostfixExpression {
 	}
 
 
+	@Override
+	protected String getPostfixText() {
+		return "--";
+	}
+
+
 }

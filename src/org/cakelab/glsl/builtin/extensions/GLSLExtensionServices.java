@@ -5,23 +5,20 @@ import java.io.IOException;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
-import org.cakelab.glsl.builtin.BuiltinLoaderHelper;
 import org.cakelab.glsl.builtin.BuiltinScope;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.GLSLBuiltinServices;
 import org.cakelab.json.JSONException;
 import org.cakelab.json.codec.JSONCodecException;
 
-public abstract class GLSLExtensionLoading extends BuiltinLoaderHelper {
+public class GLSLExtensionServices {
 	static final GLSLExtensionLoader DEFAULT_LOADER = new GLSLExtensionLoader();
 	static final String PROPERTIES_FILE = "properties.json";
 	static final String PREAMBLE_FILE = "preamble.glsl";
 	static final String KEYWORDS_FILE = "keywords.txt";
 	
 
-	
-
-	public static GLSLExtensionLoader getLoaderInstance(Properties properties) {
+	private static GLSLExtensionLoader getLoaderInstance(Properties properties) {
 		try {
 			String name = GLSLExtension.class.getPackage().getName() + '.' + properties.getName() + "." + properties.getLoader();
 			
@@ -123,7 +120,7 @@ public abstract class GLSLExtensionLoading extends BuiltinLoaderHelper {
 	}
 	
 	static Resource getResource(String extension, String resourceName) throws IOException {
-		String extensionDir = BuiltinLoaderHelper.getExtensionDirectory(extension);
+		String extensionDir = "extensions/" + extension;
 		String propertiesFile = extensionDir + "/" + resourceName;
 		return	GLSLBuiltinServices.BUILTIN_RESOURCE_MANAGER.resolve(propertiesFile);
 	}

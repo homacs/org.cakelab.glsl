@@ -23,25 +23,27 @@ import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.StandardErrorHandler;
 import org.cakelab.glsl.pp.ast.PPGroupScope;
 
-public class GLSLAntlrCompiler extends GLSLCompiler {
+public class AntlrCompiler extends GLSLCompiler {
 	
 
 	private AntlrErrorHandler antlrErrorHandler;
+	private GLSLBuiltinServices builtinServices;
 	
 	
-	public GLSLAntlrCompiler() {
+	public AntlrCompiler() {
 		this(getDefaultCompilerFeatures(), new AntlrErrorHandler(new StandardErrorHandler()));
+		builtinServices = new AntlrBuiltinServices(this);
 	}
 
-	public GLSLAntlrCompiler(GLSLCompilerFeatures features, GLSLErrorHandler errorHandler) {
+	public AntlrCompiler(GLSLCompilerFeatures features, GLSLErrorHandler errorHandler) {
 		this(features, errorHandler, new FileSystemResourceManager());
 	}
 	
-	public GLSLAntlrCompiler(GLSLCompilerFeatures features, ResourceManager resources) {
+	public AntlrCompiler(GLSLCompilerFeatures features, ResourceManager resources) {
 		this(features, new AntlrErrorHandler(new StandardErrorHandler()), resources);
 	}
 	
-	public GLSLAntlrCompiler(GLSLCompilerFeatures features, GLSLErrorHandler errorHandler, ResourceManager resources) {
+	public AntlrCompiler(GLSLCompilerFeatures features, GLSLErrorHandler errorHandler, ResourceManager resources) {
 		super(features, errorHandler, resources);
 		this.antlrErrorHandler = new AntlrErrorHandler(errorHandler);
 		this.antlrErrorHandler.setResourceManager(resources);
@@ -50,7 +52,7 @@ public class GLSLAntlrCompiler extends GLSLCompiler {
 	public CombinedAST parse(Resource[] resource, ShaderType shaderType) throws IOException {
 		
 		PPOutputBuffer buffer = new PPOutputBuffer(resourceManager);
-		Preprocessor pp = new Preprocessor(features, resource, shaderType, buffer);
+		Preprocessor pp = new Preprocessor(this, resource, shaderType, buffer);
 		
 		pp.setResourceManager(resourceManager);
 		pp.setErrorHandler(errorHandler);
@@ -84,7 +86,7 @@ public class GLSLAntlrCompiler extends GLSLCompiler {
 
 	@Override
 	public GLSLBuiltinServices getBuiltinServices() {
-		return AntlrBuiltinServices.INSTANCE;
+		return builtinServices;
 	}
 
 

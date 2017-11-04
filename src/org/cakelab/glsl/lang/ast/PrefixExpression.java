@@ -9,4 +9,13 @@ public abstract class PrefixExpression extends UnaryExpression {
 		super(new Interval(start, operand.getEnd()), operand);
 	}
 
+	@Override
+	public String getText() {
+		return getPrefixText() + operand.getText();
+	}
+
+	protected abstract String getPrefixText();
+	
+	
+
 }

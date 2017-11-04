@@ -29,5 +29,20 @@ public class ExpressionList extends ExpressionImpl {
 	public Type evaluateType() throws EvaluationException {
 		return list.get(list.size()-1).evaluateType();
 	}
+
+	@Override
+	public String getText() {
+		if (list.size() == 1) {
+			return list.get(1).getText();
+		} else {
+			StringBuffer result = new StringBuffer();
+			for (int i = 0; i < list.size(); i++) {
+				result.append(list.get(i).getText());
+				if (i+1 < list.size()) result.append(", ");
+			}
+			
+		}
+		return null;
+	}
 	
 }

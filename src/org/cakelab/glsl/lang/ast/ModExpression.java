@@ -25,5 +25,10 @@ public class ModExpression extends BinaryExpression {
 		return leftOperand.evaluateType();
 	}
 
+	@Override
+	protected String getOperatorText() {
+		return "%";
+	}
+
 
 }

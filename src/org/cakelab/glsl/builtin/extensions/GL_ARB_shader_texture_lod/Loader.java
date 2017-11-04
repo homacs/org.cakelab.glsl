@@ -1,8 +1,8 @@
 package org.cakelab.glsl.builtin.extensions.GL_ARB_shader_texture_lod;
 
 import org.cakelab.glsl.Resource;
-import org.cakelab.glsl.builtin.BuiltinLoaderHelper;
 import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
+import org.cakelab.glsl.builtin.GLSLBuiltinServices;
 import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoader;
 import org.cakelab.glsl.pp.PPOutputSink;
 import org.cakelab.glsl.pp.Preprocessor;
@@ -11,7 +11,7 @@ import org.cakelab.glsl.pp.tokens.TNumber;
 
 public class Loader extends GLSLExtensionLoader {
 
-	private static final Macro HAVE_SAMPLER_RECT = BuiltinLoaderHelper.createMacro("HAVE_SAMPLER_RECT", new TNumber("1"));
+	private static final Macro HAVE_SAMPLER_RECT = GLSLBuiltinServices.createMacro("HAVE_SAMPLER_RECT", new TNumber("1"));
 	
 	
 	@Override

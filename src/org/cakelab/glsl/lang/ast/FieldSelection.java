@@ -45,4 +45,9 @@ public class FieldSelection extends PostfixExpression {
 		return primary.evaluateType();
 	}
 
+	@Override
+	protected String getPostfixText() {
+		return "." + identifier;
+	}
+
 }

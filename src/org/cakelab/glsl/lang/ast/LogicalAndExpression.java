@@ -21,5 +21,10 @@ public class LogicalAndExpression extends BinaryExpression {
 		return Type._bool;
 	}
 
+	@Override
+	protected String getOperatorText() {
+		return "&&";
+	}
+
 	
 }

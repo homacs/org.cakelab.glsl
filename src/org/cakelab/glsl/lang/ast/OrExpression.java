@@ -25,5 +25,10 @@ public class OrExpression extends BinaryExpression {
 		return Type._int;
 	}
 
+	@Override
+	protected String getOperatorText() {
+		return "|";
+	}
+
 
 }

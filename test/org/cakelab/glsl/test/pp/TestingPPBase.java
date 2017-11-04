@@ -5,7 +5,7 @@ import java.io.OutputStream;
 
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
-import org.cakelab.glsl.antlr.GLSLAntlrCompiler;
+import org.cakelab.glsl.antlr.AntlrCompiler;
 import org.cakelab.glsl.impl.ResourceString;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.output.PreprocessedOutputBuffer;
@@ -25,9 +25,9 @@ public class TestingPPBase extends TestingBase {
 				} else {
 					outStream = new ByteArrayOutputStream();
 				}
-				parser = new Preprocessor(GLSLAntlrCompiler.getDefaultCompilerFeatures(), new Resource[]{resource}, ShaderType.GENERIC_SHADER, new PreprocessedOutputBuffer(outStream));
+				parser = new Preprocessor(new AntlrCompiler(), new Resource[]{resource}, ShaderType.GENERIC_SHADER, new PreprocessedOutputBuffer(outStream));
 			} else {
-				parser = new Preprocessor(GLSLAntlrCompiler.getDefaultCompilerFeatures(), new Resource[]{resource}, ShaderType.GENERIC_SHADER, output(out));
+				parser = new Preprocessor(new AntlrCompiler(), new Resource[]{resource}, ShaderType.GENERIC_SHADER, output(out));
 			}
 			parser.setErrorHandler(errorHandler);
 		} catch (Throwable e) {

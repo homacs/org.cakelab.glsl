@@ -22,4 +22,9 @@ public class ConstantExpression extends ExpressionImpl {
 		return expr.evaluateType();
 	}
 
+	@Override
+	public String getText() {
+		return expr.getText();
+	}
+
 }

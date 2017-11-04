@@ -48,6 +48,11 @@ public class ConditionalExpression extends ExpressionImpl {
 		return caseFalse;
 	}
 
+	@Override
+	public String getText() {
+		return condition.getText() + " ? " + caseTrue.getText() + " : " + caseFalse.getText();
+	}
+
 	
 
 }

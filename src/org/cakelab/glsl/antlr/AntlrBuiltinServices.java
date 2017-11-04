@@ -2,6 +2,7 @@ package org.cakelab.glsl.antlr;
 
 import java.util.HashMap;
 
+import org.cakelab.glsl.GLSLCompiler;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
@@ -20,9 +21,13 @@ import org.cakelab.glsl.pp.ast.Macro;
 
 public class AntlrBuiltinServices extends GLSLBuiltinServices {
 	
-	static final AntlrBuiltinServices INSTANCE = new AntlrBuiltinServices();
+
+	//static final AntlrBuiltinServices INSTANCE = new AntlrBuiltinServices();
 	static final AntlrErrorHandler ANTLR_ERROR_HANDLER = new AntlrErrorHandler(INTERNAL_ERROR_HANDLER);
 	
+	public AntlrBuiltinServices(GLSLCompiler compiler) {
+		super(compiler);
+	}
 
 	@Override
 	public PPOutputSink createPreprocessorSink(ResourceManager resourceManager) {
@@ -67,7 +72,7 @@ public class AntlrBuiltinServices extends GLSLBuiltinServices {
 
 	@Override
 	public Vocabulary getVocabulary() {
-		return ANTLRVocabulary.INSTANCE;
+		return AntlrVocabulary.INSTANCE;
 	}
 
 

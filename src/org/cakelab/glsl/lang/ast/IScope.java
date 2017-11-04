@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.cakelab.glsl.lang.ast.impl.FunctionGroup;
 import org.cakelab.glsl.lang.ast.types.InterfaceBlock;
 import org.cakelab.glsl.lang.ast.types.Type;
 
@@ -40,5 +41,5 @@ public interface IScope {
 	
 	void dump(PrintStream out, String indent);
 	boolean hasFunctionGroup(String ident);
-
+	FunctionGroup getFunctionGroup(String ident);
 }

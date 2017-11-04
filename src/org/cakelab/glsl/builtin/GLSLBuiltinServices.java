@@ -2,6 +2,7 @@ package org.cakelab.glsl.builtin;
 
 import java.util.HashMap;
 
+import org.cakelab.glsl.GLSLCompiler;
 import org.cakelab.glsl.GLSLCompilerFeatures;
 import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLVersion;
@@ -17,7 +18,9 @@ import org.cakelab.glsl.lang.lexer.tokens.Vocabulary;
 import org.cakelab.glsl.pp.PPOutputSink;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.ast.Macro;
+import org.cakelab.glsl.pp.ast.NodeList;
 import org.cakelab.glsl.pp.error.SyntaxError;
+import org.cakelab.glsl.pp.tokens.Token;
 
 public abstract class GLSLBuiltinServices {
 
@@ -88,7 +91,8 @@ public abstract class GLSLBuiltinServices {
 	public static final BuiltinResourceManager BUILTIN_RESOURCE_MANAGER;
 	static {
 		INTERNAL_ERROR_HANDLER = new InternalErrorHandler();
-		BUILTIN_RESOURCE_MANAGER = GLSLBuiltin.BUILTIN_RESOURCE_MANAGER;
+		String directory = GLSLBuiltinServices.class.getPackage().getName().replace('.', '/');
+		BUILTIN_RESOURCE_MANAGER = new BuiltinResourceManager(directory);
 		INTERNAL_ERROR_HANDLER.setResourceManager(BUILTIN_RESOURCE_MANAGER);
 	}
 	
@@ -108,7 +112,14 @@ public abstract class GLSLBuiltinServices {
 	 * </p>
 	 */
 	private static final GLSLCompilerFeatures EMPTY_FEATURESET = new GLSLCompilerFeatures(GLSLVersion.Profile.values());
+	private GLSLCompiler compiler;
 
+	
+	
+	public GLSLBuiltinServices(GLSLCompiler compiler) {
+		this.compiler = compiler;
+	}
+	
 	
 	public abstract PPOutputSink createPreprocessorSink(ResourceManager resourceManager);
 
@@ -122,7 +133,7 @@ public abstract class GLSLBuiltinServices {
 	
 	public Preprocessor setupPreprocessing(Resource resource, ShaderType shaderType,
 			PPOutputSink buffer) {
-		Preprocessor pp = new Preprocessor(EMPTY_FEATURESET, new Resource[]{resource}, shaderType, buffer);
+		Preprocessor pp = new Preprocessor(compiler, EMPTY_FEATURESET, new Resource[]{resource}, shaderType, buffer);
 		
 		pp.addDefine(shaderType.name());
 		
@@ -135,6 +146,24 @@ public abstract class GLSLBuiltinServices {
 
 
 	public abstract Vocabulary getVocabulary();
+
+	public GLSLBuiltin getBuiltins(GLSLVersion version, ShaderType type) {
+		return GLSLBuiltin.getBuiltins(version, type);
+	}
+
+
+
+	public BuiltinResourceManager getBuiltinResourceManager() {
+		return BUILTIN_RESOURCE_MANAGER;
+	}
+
+	public static Macro createMacro(String name, Token v) {
+		Macro macro = new Macro(name, Interval.NONE);
+		NodeList<Node> nodes = new NodeList<Node>();
+		nodes.add(v);
+		macro.setReplacementList(nodes);
+		return macro;
+	}
 
 
 	

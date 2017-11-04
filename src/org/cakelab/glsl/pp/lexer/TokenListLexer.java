@@ -13,8 +13,8 @@ public class TokenListLexer extends PPLexer {
 	private TEof EOF;
 	
 	
-	public TokenListLexer(TokenList tokens, PPState errorHandler) {
-		super(null, errorHandler);
+	public TokenListLexer(TokenList tokens, PPState state) {
+		super(null, state);
 		
 		assert (tokens.size() > 0);
 		

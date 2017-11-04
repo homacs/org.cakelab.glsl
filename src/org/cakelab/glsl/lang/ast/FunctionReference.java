@@ -34,5 +34,10 @@ public class FunctionReference extends PrimaryExpression implements Identifier {
 		throw new Error("not applicable");
 	}
 
+	@Override
+	public String getText() {
+		return name;
+	}
+
 
 }

@@ -228,14 +228,12 @@ public class Function extends NodeImpl implements Comparable<Function> {
 		return argumentTypes == null || argumentTypes.length == 0 || (argumentTypes.length == 1 && argumentTypes[0].type == Type._void);
 	}
 
-
-
 	public boolean isSubroutinePrototype() {
 		if (type.hasQualifiers()) {
 			for (Qualifier q : type.getQualifiers()) {
 				if (q instanceof SubroutineQualifier) {
 					SubroutineQualifier sub = (SubroutineQualifier) q;
-					return sub.functions == null || sub.functions.length == 0;
+					return sub.functions == null || sub.functions.size() == 0;
 				}
 			}
 		}

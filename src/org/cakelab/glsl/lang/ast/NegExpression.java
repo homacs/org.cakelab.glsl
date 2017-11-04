@@ -34,4 +34,10 @@ public class NegExpression extends PrefixExpression {
 		return operand.evaluateType();
 	}
 
+
+	@Override
+	protected String getPrefixText() {
+		return "-";
+	}
+
 }

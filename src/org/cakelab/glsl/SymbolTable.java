@@ -36,9 +36,13 @@ public class SymbolTable {
 	
 	
 	public SymbolTable(BuiltinScope builtinScope) {
+		this(builtinScope, new ScopeImpl(builtinScope));
+	}
+	
+	public SymbolTable(BuiltinScope builtinScope, IScope toplevel) {
 		this.builtin = builtinScope;
-		scope = new ScopeImpl(builtin);
-		toplevel = scope;
+		scope = toplevel;
+		this.toplevel = scope;
 	}
 	
 	public BuiltinScope getBuiltinScope() {
@@ -108,6 +112,8 @@ public class SymbolTable {
 		}
 		return null;
 	}
+	
+
 	
 	/** returns true if there is any function with that name */
 	public boolean hasFunction(String ident) {

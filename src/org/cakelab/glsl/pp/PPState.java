@@ -51,7 +51,7 @@ public class PPState {
 	private Resource[] inputs;
 
 	private ILexer lexer;
-	
+	/** currently active group scope */
 	private PPGroupScope groupScope;
 
 	private GLSLVersion glslVersion;
@@ -193,7 +193,7 @@ public class PPState {
 		return this.inputs;
 	}
 
-	public void setInputResource(Resource[] resources) {
+	public void setInputResources(Resource[] resources) {
 		this.inputs = resources;
 	}
 

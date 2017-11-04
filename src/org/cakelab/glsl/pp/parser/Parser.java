@@ -185,18 +185,6 @@ public abstract class Parser extends PPHelper  {
 
 	
 
-	protected boolean isOctDigit(char c) {
-		return '0' <= c  && c <= '7';
-	}
-
-	protected boolean isDigit(char c) {
-		return '0' <= c  && c <= '9';
-	}
-
-	protected boolean isHexDigit(char c) {
-		return isDigit(c) || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F');
-	}
-
 	protected boolean NUMBER() {
 		token = null;
 		if (optional(TNumber.class)) {

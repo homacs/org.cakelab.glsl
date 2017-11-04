@@ -33,6 +33,7 @@ public class Properties {
 			return extensions.containsExtension(this.name);
 		}
 	}
+	
 	private static class ProfileDependency implements Dependency {
 
 		final VersionDependency versionDependency;
@@ -198,7 +199,7 @@ public class Properties {
 
 
 	public Resource getPreamble() throws IOException {
-		return GLSLExtensionLoading.getPreambleResource(name);
+		return GLSLExtensionServices.getPreambleResource(name);
 	}
 
 

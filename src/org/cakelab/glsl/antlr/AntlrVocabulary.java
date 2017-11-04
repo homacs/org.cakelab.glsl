@@ -5,17 +5,21 @@ import java.util.HashMap;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.lang.lexer.tokens.Vocabulary;
 
-public class ANTLRVocabulary extends Vocabulary {
+public class AntlrVocabulary extends Vocabulary {
 	
 	private static final Integer BUILTIN_TYPE_TOKEN = GLSLParser.IDENTIFIER;
 	private static final Integer RESERVED_KEYWORD_TOKEN = Integer.MIN_VALUE;
-	static final Vocabulary INSTANCE = new ANTLRVocabulary();
+	static final Vocabulary INSTANCE = new AntlrVocabulary();
 
 
 	
 	
 	@SuppressWarnings("serial")
 	static class Punctuators extends HashMap<String, Integer> {
+
+		HashMap<Integer, String> reverse = new HashMap<Integer,String>();
+		
+		
 		public Punctuators() {
 			put("<<", GLSLParser.LEFT_OP);
 			put(">>", GLSLParser.RIGHT_OP);
@@ -63,11 +67,26 @@ public class ANTLRVocabulary extends Vocabulary {
 			put("&", GLSLParser.AMPERSAND);
 			put("?", GLSLParser.QUESTION);
 		}
+
+		@Override
+		public Integer put(String key, Integer value) {
+			Integer result = super.put(key, value);
+			reverse.put(value, key);
+			return result;
+		}
+		
+		
+		public String reverse(int type) {
+			return reverse.get(type);
+		}
+
+
 	}
 	
 	
 	@SuppressWarnings("serial")
 	static class Keywords extends HashMap<String, Integer> {
+		HashMap<Integer, String> reverse = new HashMap<Integer,String>();
 		
 		Keywords() {
 			
@@ -326,6 +345,25 @@ public class ANTLRVocabulary extends Vocabulary {
 
 		}
 
+		@Override
+		public Integer put(String key, Integer value) {
+			Integer result = super.put(key, value);
+			if (value != BUILTIN_TYPE_TOKEN || value != RESERVED_KEYWORD_TOKEN) {
+				reverse.put(value, key);
+			}
+			return result;
+		}
+		
+		public String reverse(int type) {
+			if (type == BUILTIN_TYPE_TOKEN) {
+				return "builtin type";
+			} else if (type == RESERVED_KEYWORD_TOKEN) {
+				return "reserved keyword";
+			} else {
+				return reverse.get(type);
+			}
+		}
+
 	}
 	
 	
@@ -356,7 +394,14 @@ public class ANTLRVocabulary extends Vocabulary {
 		return BUILTIN_TYPE_TOKEN;
 	}
 
-	
+	@Override
+	public String toString(int type) {
+		String result = punctuators.reverse(type);
+		if (result == null) result = keywords.reverse(type);
+		if (result == null) result = "token:" + Integer.toString(type);
+		return result;
+	}
+
 	
 	
 }

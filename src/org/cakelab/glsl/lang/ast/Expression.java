@@ -51,4 +51,7 @@ public interface Expression extends Node {
 	PrimaryExpression eval() throws EvaluationException;
 
 	Type evaluateType() throws EvaluationException;
+
+	String getText();
+
 }

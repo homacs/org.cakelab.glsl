@@ -2,6 +2,13 @@ package org.cakelab.glsl.lang.lexer.tokens;
 
 import org.cakelab.glsl.builtin.GLSLExtensionSet;
 
+/** 
+ * TokenTable which manages access to generally enabled tokens
+ * and tokens enabled by extensions.
+ * 
+ * @author homac
+ *
+ */
 public class ExtendedTokenTable implements ITokenTable {
 
 	private GLSLExtensionSet extensions;

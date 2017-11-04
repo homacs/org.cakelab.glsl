@@ -23,12 +23,12 @@ public class TestBuiltinSymbols extends TestBuiltinBase {
 		
 		
 		
-		symbols = GLSLBuiltin.get(version, ShaderType.VERTEX_SHADER);
-		symbols = GLSLBuiltin.get(version, ShaderType.TESS_CONTROL_SHADER);
-		symbols = GLSLBuiltin.get(version, ShaderType.TESS_EVALUATION_SHADER);
-		symbols = GLSLBuiltin.get(version, ShaderType.GEOMETRY_SHADER);
-		symbols = GLSLBuiltin.get(version, ShaderType.FRAGMENT_SHADER);
-		symbols = GLSLBuiltin.get(version, ShaderType.COMPUTE_SHADER);
+		symbols = GLSLBuiltin.getBuiltins(version, ShaderType.VERTEX_SHADER);
+		symbols = GLSLBuiltin.getBuiltins(version, ShaderType.TESS_CONTROL_SHADER);
+		symbols = GLSLBuiltin.getBuiltins(version, ShaderType.TESS_EVALUATION_SHADER);
+		symbols = GLSLBuiltin.getBuiltins(version, ShaderType.GEOMETRY_SHADER);
+		symbols = GLSLBuiltin.getBuiltins(version, ShaderType.FRAGMENT_SHADER);
+		symbols = GLSLBuiltin.getBuiltins(version, ShaderType.COMPUTE_SHADER);
 		symbols.dump(System.out);
 	}
 
@@ -92,24 +92,24 @@ public class TestBuiltinSymbols extends TestBuiltinBase {
 		}
 
 		System.out.print("generic ");
-		GLSLBuiltin.get(version, ShaderType.GENERIC_SHADER);
+		GLSLBuiltin.getBuiltins(version, ShaderType.GENERIC_SHADER);
 		System.out.print("compute ");
-		GLSLBuiltin.get(version, ShaderType.COMPUTE_SHADER);
+		GLSLBuiltin.getBuiltins(version, ShaderType.COMPUTE_SHADER);
 		System.out.print("vertex ");
-		GLSLBuiltin.get(version, ShaderType.VERTEX_SHADER);
+		GLSLBuiltin.getBuiltins(version, ShaderType.VERTEX_SHADER);
 		
 		if (hasTesselation) {
 			System.out.print("tess_ctrl ");
-			GLSLBuiltin.get(version, ShaderType.TESS_CONTROL_SHADER);
+			GLSLBuiltin.getBuiltins(version, ShaderType.TESS_CONTROL_SHADER);
 			System.out.print("tess_eval ");
-			GLSLBuiltin.get(version, ShaderType.TESS_EVALUATION_SHADER);
+			GLSLBuiltin.getBuiltins(version, ShaderType.TESS_EVALUATION_SHADER);
 		}
 
 		if (hasGeometry) {
 			System.out.print("geometry ");
-			GLSLBuiltin.get(version, ShaderType.GEOMETRY_SHADER);
+			GLSLBuiltin.getBuiltins(version, ShaderType.GEOMETRY_SHADER);
 		}
 		System.out.println("fragment");
-		GLSLBuiltin.get(version, ShaderType.FRAGMENT_SHADER);
+		GLSLBuiltin.getBuiltins(version, ShaderType.FRAGMENT_SHADER);
 	}
 }

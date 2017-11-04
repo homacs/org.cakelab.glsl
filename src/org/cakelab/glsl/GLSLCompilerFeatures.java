@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.cakelab.glsl.GLSLVersion.Profile;
-import org.cakelab.glsl.antlr.GLSLAntlrCompiler;
-import org.cakelab.glsl.builtin.BuiltinLoaderHelper;
+import org.cakelab.glsl.antlr.AntlrCompiler;
+import org.cakelab.glsl.builtin.GLSLBuiltinServices;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.tokens.TNumber;
 
@@ -19,15 +19,16 @@ import org.cakelab.glsl.pp.tokens.TNumber;
  * set to mimic a specific compiler implementation.
  * </p>
  * 
- * @see GLSLAntlrCompiler#getDefaultCompilerFeatures()
+ * @see AntlrCompiler#getDefaultCompilerFeatures()
  * 
  * @author homac
  *
  */
 public class GLSLCompilerFeatures {
 	private static final TNumber ONE = new TNumber("1");
-	private final GLSLVersion.Profile[] profiles;
-	private final Collection<String[]> extensions;
+	private final GLSLVersion.Profile[] supportedProfiles;
+	private final Collection<String[]> supportedExtensions;
+	/** all <code>#defines</code> for supported extensions and profiles */
 	private final HashMap<String, Macro> featureMacros;
 	
 	/**
@@ -39,8 +40,8 @@ public class GLSLCompilerFeatures {
 		super();
 		assert (profiles != null && profiles.length > 0) : "must support at least one profile";
 		assert (extensions != null) : "use empty list instead";
-		this.profiles = profiles;
-		this.extensions = extensions;
+		this.supportedProfiles = profiles;
+		this.supportedExtensions = extensions;
 		this.featureMacros = new HashMap<String, Macro>();
 		
 		addSupportedExtensionMacros(this.featureMacros, extensions);
@@ -52,11 +53,11 @@ public class GLSLCompilerFeatures {
 	}
 
 	public GLSLVersion.Profile[] getProfiles() {
-		return profiles;
+		return supportedProfiles;
 	}
 
 	public Collection<String[]> getExtensions() {
-		return extensions;
+		return supportedExtensions;
 	}
 	
 
@@ -66,7 +67,7 @@ public class GLSLCompilerFeatures {
 	
 	private static void addSupportedProfileMacros(HashMap<String, Macro> macros, Profile[] profiles) {
 		for (Profile p : profiles) {
-			Macro m = BuiltinLoaderHelper.createMacro(p.getMacroName(), ONE);
+			Macro m = GLSLBuiltinServices.createMacro(p.getMacroName(), ONE);
 			macros.put(p.name(), m);
 		}
 	}
@@ -74,7 +75,7 @@ public class GLSLCompilerFeatures {
 	private static void addSupportedExtensionMacros(HashMap<String, Macro> macros, Collection<String[]> extensionNames) {
 		for (String[] alternativeNames : extensionNames) {
 			for (String name : alternativeNames) {
-				Macro m = BuiltinLoaderHelper.createMacro(name, ONE);
+				Macro m = GLSLBuiltinServices.createMacro(name, ONE);
 				macros.put(name, m);
 			}
 		}

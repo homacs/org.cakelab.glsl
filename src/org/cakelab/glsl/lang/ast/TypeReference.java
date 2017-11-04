@@ -36,4 +36,9 @@ public class TypeReference extends PrimaryExpression implements Identifier {
 	public Type getType() {
 		return type;
 	}
+
+	@Override
+	public String getText() {
+		return type.getName();
+	}
 }

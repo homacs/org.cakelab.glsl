@@ -25,4 +25,9 @@ public class NeExpression extends BinaryExpression {
 		return Type._bool;
 	}
 
+	@Override
+	protected String getOperatorText() {
+		return "!=";
+	}
+
 }

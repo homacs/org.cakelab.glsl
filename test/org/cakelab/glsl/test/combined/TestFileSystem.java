@@ -7,7 +7,7 @@ import org.cakelab.glsl.CombinedAST;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.ShaderType;
-import org.cakelab.glsl.antlr.GLSLAntlrCompiler;
+import org.cakelab.glsl.antlr.AntlrCompiler;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.lang.ast.types.Struct;
 import org.cakelab.glsl.test.Test;
@@ -30,7 +30,7 @@ public class TestFileSystem {
 
 		ResourceManager resources = new FileSystemResourceManager();
 		
-		GLSLAntlrCompiler glsl = new GLSLAntlrCompiler(GLSLAntlrCompiler.getDefaultCompilerFeatures(), resources);
+		AntlrCompiler glsl = new AntlrCompiler(AntlrCompiler.getDefaultCompilerFeatures(), resources);
 		Resource resource;
 		try {
 			resource = resources.resolve(filename);

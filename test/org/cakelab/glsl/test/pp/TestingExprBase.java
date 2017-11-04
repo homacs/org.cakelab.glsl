@@ -4,7 +4,7 @@ import java.io.OutputStream;
 
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
-import org.cakelab.glsl.antlr.GLSLAntlrCompiler;
+import org.cakelab.glsl.antlr.AntlrCompiler;
 import org.cakelab.glsl.impl.ResourceString;
 import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.pp.lexer.PPLexer;
@@ -18,7 +18,7 @@ public class TestingExprBase extends TestingBase {
 	public Parser p(String source) {
 		try {
 			Resource resource = new ResourceString("0", "-- testing --", source);
-			PPState state = new PPState(GLSLAntlrCompiler.getDefaultCompilerFeatures(), new Resource[]{resource}, ShaderType.GENERIC_SHADER);
+			PPState state = new PPState(AntlrCompiler.getDefaultCompilerFeatures(), new Resource[]{resource}, ShaderType.GENERIC_SHADER);
 			state.setErrorHandler(errorHandler);
 			
 			IScanner scanner = new StreamScanner(resource);

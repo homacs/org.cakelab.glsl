@@ -2,6 +2,8 @@ package org.cakelab.glsl.builtin;
 
 import java.io.IOException;
 
+import org.cakelab.glsl.GLSLVersion;
+import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.impl.JarResourceManager;
 
@@ -42,6 +44,16 @@ public class BuiltinResourceManager extends JarResourceManager implements Resour
 			return nextId != INITIAL_ID;
 		}
 
+		@Override
+		public void consume(String id) {
+			try {
+				int i = Integer.valueOf(id);
+				if (i <= nextId) nextId = i-1;
+			} catch (NumberFormatException e) {
+				// not a number -> no conflict possible
+			}
+		}
+
 	}
 
 	private static final String BUILTIN_URL_PROTOCOL = "builtin://";
@@ -80,6 +92,12 @@ public class BuiltinResourceManager extends JarResourceManager implements Resour
 
 	private boolean isAbsolutePath(String relpath) {
 		return relpath.startsWith(baseDir);
+	}
+
+	public Resource resolve(GLSLVersion.Profile profile, int version, String filename) throws IOException {
+		String url = profile.name() + "/V" + version + "/" + filename;
+
+		return resolve(url);
 	}
 
 	

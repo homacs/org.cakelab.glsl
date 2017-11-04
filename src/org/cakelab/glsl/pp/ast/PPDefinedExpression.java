@@ -24,6 +24,11 @@ public class PPDefinedExpression extends PrefixExpression {
 		throw new Error("not supported");
 	}
 
+	@Override
+	protected String getPrefixText() {
+		return "defined";
+	}
+
 
 	
 }

@@ -23,4 +23,11 @@ public class MinusExpression extends BinaryExpression {
 	}
 
 
+
+	@Override
+	protected String getOperatorText() {
+		return "-";
+	}
+
+
 }

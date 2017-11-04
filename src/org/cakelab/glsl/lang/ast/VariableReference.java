@@ -32,6 +32,11 @@ public class VariableReference extends PrimaryExpression implements Identifier {
 		return variable.type;
 	}
 
+	@Override
+	public String getText() {
+		return variable.getName();
+	}
+
 	
 	
 	

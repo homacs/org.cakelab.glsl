@@ -8,6 +8,7 @@ import org.cakelab.glsl.lang.ast.Function;
 import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.Qualifier;
 import org.cakelab.glsl.lang.ast.Variable;
+import org.cakelab.glsl.lang.ast.impl.FunctionGroup;
 import org.cakelab.glsl.lang.ast.types.InterfaceBlock;
 import org.cakelab.glsl.lang.ast.types.Type;
 
@@ -94,12 +95,22 @@ public class BuiltinScope implements IScope {
 		if (f != null) return f;
 		return getExtensions().getFunction(name, parameterTypes);
 	}
+
+	
 	@Override
 	public boolean hasFunctionGroup(String ident) {
 		if (builtins.hasFunctionGroup(ident)) return true;
 		else return getExtensions().hasFunctionGroup(ident);
 	}
 
+	@Override
+	public FunctionGroup getFunctionGroup(String ident) {
+		// TODO Auto-generated method stub
+		throw new Error("TODO");
+	}
+
+
+	
 	@Override
 	public Function getFunctionBestMatch(String name, Type[] parameterTypes) {
 		Function f = builtins.getFunctionBestMatch(name, parameterTypes);

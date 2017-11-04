@@ -13,6 +13,7 @@ import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNodeImpl;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
+import org.cakelab.glsl.GLSLCompiler;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Location;
@@ -21,7 +22,7 @@ import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.antlr.AntlrErrorHandler;
-import org.cakelab.glsl.antlr.GLSLAntlrCompiler;
+import org.cakelab.glsl.antlr.AntlrCompiler;
 import org.cakelab.glsl.antlr.PPOutputBuffer;
 import org.cakelab.glsl.antlr.lexer.PPTokenStream;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
@@ -35,6 +36,7 @@ import org.cakelab.glsl.test.builtins.TestBuiltinBase;
 
 public class TestingTools {
 
+	protected static GLSLCompiler compiler = new AntlrCompiler();
 	protected static GLSLParser parser;
 
 	protected static SymbolTable presetSymbols = null;
@@ -291,7 +293,7 @@ public class TestingTools {
 		
 		PPOutputBuffer buffer = new PPOutputBuffer(resourceManager);
 		Resource resource = new ResourceString("0", "-- testing --", sourceCode);
-		Preprocessor pp = new Preprocessor(GLSLAntlrCompiler.getDefaultCompilerFeatures(), new Resource[]{resource}, ShaderType.GENERIC_SHADER, buffer);
+		Preprocessor pp = new Preprocessor(compiler, new Resource[]{resource}, ShaderType.GENERIC_SHADER, buffer);
 
 		pp.setForceVersion(new GLSLVersion(null, 450, GLSLVersion.Profile.core));
 		pp.setResourceManager(resourceManager);
@@ -303,7 +305,7 @@ public class TestingTools {
 
 		GLSLVersion version = buffer.getVersion();
 		GLSLBuiltin builtin = TestBuiltinBase.getTestBuiltinSymbols(version);
-		WorkingSet workingSet = builtin.createWorkingSet(GLSLAntlrCompiler.getDefaultCompilerFeatures());
+		WorkingSet workingSet = builtin.createWorkingSet(AntlrCompiler.getDefaultCompilerFeatures());
 		SymbolTable symbolTable;
 		if (presetSymbols != null) {
 			presetSymbols.setBuiltinScope(workingSet.getBuiltinScope());

@@ -1,5 +1,6 @@
 package org.cakelab.glsl.builtin;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,10 +30,10 @@ public class GLSLTokenTable implements ITokenTable {
 		public KeywordStreamIterator(InputStream in) {
 			scanner = new StreamScanner("-- word list --", in);
 			s = new StringBuffer();
-			nextWord();
+			nextToken();
 		}
 
-		private void nextWord() {
+		private void nextToken() {
 			word = null;
 			do {
 				// remove all whitespace
@@ -44,6 +45,7 @@ public class GLSLTokenTable implements ITokenTable {
 				}
 				if (s.length() > 0) {
 					word = s.toString();
+					// clear buffer
 					s.delete(0, s.length());
 					break;
 				}
@@ -63,7 +65,7 @@ public class GLSLTokenTable implements ITokenTable {
 		@Override
 		public String next() {
 			String result = word;
-			nextWord();
+			nextToken();
 			return result;
 		}
 
@@ -91,10 +93,7 @@ public class GLSLTokenTable implements ITokenTable {
 	public static final ObjectCache<GLSLVersion, GLSLTokenTable> cache = new ObjectCache<GLSLVersion, GLSLTokenTable>(4);
 	
 	
-	// TODO: combine with AST builtin type entries
-
-	
-	static GLSLTokenTable get(GLSLVersion version) {
+	static GLSLTokenTable getTokenTable(GLSLVersion version) {
 		GLSLTokenTable table = cache.get(version);
 		if (table == null) {
 			// cache miss -> create new
@@ -115,8 +114,10 @@ public class GLSLTokenTable implements ITokenTable {
 
 	protected GLSLTokenTable(GLSLVersion version) {
 		this.version = version;
+		GLSLBuiltinServices builtinService = GLSLCompiler.getActiveCompilerImpl().getBuiltinServices();
+		BuiltinResourceManager resourceManager = builtinService.getBuiltinResourceManager();
 		
-		Vocabulary vocabulary = GLSLCompiler.getActiveCompilerImpl().getBuiltinServices().getVocabulary();
+		Vocabulary vocabulary = builtinService.getVocabulary();
 		
 		punctuators = vocabulary.punctuators();;
 		builtinTypes = new HashMap<String, Integer>();
@@ -136,13 +137,19 @@ public class GLSLTokenTable implements ITokenTable {
 			break;
 		default:
 			throw new Error("internal error: unknown profile '" + profile.name() + "'");
-		
 		}
-		InputStream in = BuiltinLoaderHelper.getInputStream(version.number, profile, "keywords.txt");
-		readKeywordList(vocabulary, in, false);
+		try {
+			InputStream in = resourceManager.resolve(profile, version.number, "keywords.txt").openInputStream();
 		
-		in = BuiltinLoaderHelper.getInputStream(version.number, profile, "reserved.txt");
-		readKeywordList(vocabulary, in, true);
+			readKeywordList(vocabulary, in, false);
+			in.close();
+			
+			in = resourceManager.resolve(profile, version.number, "reserved.txt").openInputStream();
+			readKeywordList(vocabulary, in, true);
+			in.close();
+		} catch (IOException e) {
+			throw new Error("internal error: while loading token table for GLSL version " + version.toString(), e);
+		}
 
 		//
 		// Validate content
@@ -211,20 +218,14 @@ public class GLSLTokenTable implements ITokenTable {
 	
 
 
-
-	public static GLSLTokenTable getDefault() {
-		return get(DEFAULT_GLSL_VERSION);
-	}
-
-
 	public GLSLVersion getVersion() {
 		return version;
 	}
 
 
-	/** for testing purposes only (who would've thought!*/
+	/** for testing purposes only (who would've thought!)*/
 	public static GLSLTokenTable getTestTokenTable(GLSLVersion version) {
-		return get(version);
+		return getTokenTable(version);
 	}
 
 

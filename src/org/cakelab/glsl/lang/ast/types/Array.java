@@ -34,6 +34,7 @@ public class Array extends Type implements CompoundType {
 	private Type baseType;
 	private Type componentType;
 	
+	
 	public Array(Interval interval, Type baseType, Expression ... dimensions) {
 		super(interval, signature(baseType.getSignature(), dimensions.length), KIND_ARRAY, Rank.NON_SCALAR, baseType.getQualifiers().clone());
 		if (baseType instanceof Array) {

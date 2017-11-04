@@ -9,6 +9,13 @@ public abstract class PostfixExpression extends UnaryExpression {
 		super(new Interval(operand.getStart(), end), operand);
 	}
 
+	@Override
+	public String getText() {
+		return operand.getText() + getPostfixText();
+	}
+
+	protected abstract String getPostfixText();
+
 
 
 }

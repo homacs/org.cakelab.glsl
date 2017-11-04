@@ -23,5 +23,10 @@ public class PrefixDecExpression extends PrefixExpression {
 		return operand.evaluateType();
 	}
 
+	@Override
+	protected String getPrefixText() {
+		return "--";
+	}
+
 
 }

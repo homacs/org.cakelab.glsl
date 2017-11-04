@@ -25,5 +25,10 @@ public class PostfixIncExpression extends PostfixExpression {
 		return operand.evaluateType();
 	}
 
+	@Override
+	protected String getPostfixText() {
+		return "++";
+	}
+
 
 }
