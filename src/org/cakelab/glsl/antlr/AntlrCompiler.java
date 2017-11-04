@@ -32,7 +32,6 @@ public class AntlrCompiler extends GLSLCompiler {
 	
 	public AntlrCompiler() {
 		this(getDefaultCompilerFeatures(), new AntlrErrorHandler(new StandardErrorHandler()));
-		builtinServices = new AntlrBuiltinServices(this);
 	}
 
 	public AntlrCompiler(GLSLCompilerFeatures features, GLSLErrorHandler errorHandler) {
@@ -47,6 +46,7 @@ public class AntlrCompiler extends GLSLCompiler {
 		super(features, errorHandler, resources);
 		this.antlrErrorHandler = new AntlrErrorHandler(errorHandler);
 		this.antlrErrorHandler.setResourceManager(resources);
+		builtinServices = new AntlrBuiltinServices(this);
 	}
 
 	public CombinedAST parse(Resource[] resource, ShaderType shaderType) throws IOException {

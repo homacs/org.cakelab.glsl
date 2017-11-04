@@ -133,6 +133,7 @@ public abstract class GLSLBuiltinServices {
 	
 	public Preprocessor setupPreprocessing(Resource resource, ShaderType shaderType,
 			PPOutputSink buffer) {
+		@SuppressWarnings("deprecation")
 		Preprocessor pp = new Preprocessor(compiler, EMPTY_FEATURESET, new Resource[]{resource}, shaderType, buffer);
 		
 		pp.addDefine(shaderType.name());
