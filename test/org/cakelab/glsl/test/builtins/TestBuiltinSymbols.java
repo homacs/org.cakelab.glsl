@@ -3,6 +3,7 @@ package org.cakelab.glsl.test.builtins;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
+import org.cakelab.glsl.builtin.GLSLBuiltinServices;
 import org.cakelab.glsl.test.Test;
 
 public class TestBuiltinSymbols extends TestBuiltinBase {
@@ -17,18 +18,21 @@ public class TestBuiltinSymbols extends TestBuiltinBase {
 	}
 
 	public static void testDump() {
+		
+		GLSLBuiltinServices builtinServices = COMPILER.getBuiltinServices();
+		
 		GLSLBuiltin symbols;
 		
 		GLSLVersion version = core(420);
 		
 		
 		
-		symbols = GLSLBuiltin.getBuiltins(version, ShaderType.VERTEX_SHADER);
-		symbols = GLSLBuiltin.getBuiltins(version, ShaderType.TESS_CONTROL_SHADER);
-		symbols = GLSLBuiltin.getBuiltins(version, ShaderType.TESS_EVALUATION_SHADER);
-		symbols = GLSLBuiltin.getBuiltins(version, ShaderType.GEOMETRY_SHADER);
-		symbols = GLSLBuiltin.getBuiltins(version, ShaderType.FRAGMENT_SHADER);
-		symbols = GLSLBuiltin.getBuiltins(version, ShaderType.COMPUTE_SHADER);
+		symbols = builtinServices.getBuiltins(version, ShaderType.VERTEX_SHADER);
+		symbols = builtinServices.getBuiltins(version, ShaderType.TESS_CONTROL_SHADER);
+		symbols = builtinServices.getBuiltins(version, ShaderType.TESS_EVALUATION_SHADER);
+		symbols = builtinServices.getBuiltins(version, ShaderType.GEOMETRY_SHADER);
+		symbols = builtinServices.getBuiltins(version, ShaderType.FRAGMENT_SHADER);
+		symbols = builtinServices.getBuiltins(version, ShaderType.COMPUTE_SHADER);
 		symbols.dump(System.out);
 	}
 
@@ -72,6 +76,9 @@ public class TestBuiltinSymbols extends TestBuiltinBase {
 
 	private static void test(GLSLVersion version) {
 		
+		GLSLBuiltinServices builtinServices = COMPILER.getBuiltinServices();
+		
+		
 		System.out.print("\t" + version.toString() + " ... ");
 
 		boolean hasGeometry    = false;
@@ -92,24 +99,24 @@ public class TestBuiltinSymbols extends TestBuiltinBase {
 		}
 
 		System.out.print("generic ");
-		GLSLBuiltin.getBuiltins(version, ShaderType.GENERIC_SHADER);
+		builtinServices.getBuiltins(version, ShaderType.GENERIC_SHADER);
 		System.out.print("compute ");
-		GLSLBuiltin.getBuiltins(version, ShaderType.COMPUTE_SHADER);
+		builtinServices.getBuiltins(version, ShaderType.COMPUTE_SHADER);
 		System.out.print("vertex ");
-		GLSLBuiltin.getBuiltins(version, ShaderType.VERTEX_SHADER);
+		builtinServices.getBuiltins(version, ShaderType.VERTEX_SHADER);
 		
 		if (hasTesselation) {
 			System.out.print("tess_ctrl ");
-			GLSLBuiltin.getBuiltins(version, ShaderType.TESS_CONTROL_SHADER);
+			builtinServices.getBuiltins(version, ShaderType.TESS_CONTROL_SHADER);
 			System.out.print("tess_eval ");
-			GLSLBuiltin.getBuiltins(version, ShaderType.TESS_EVALUATION_SHADER);
+			builtinServices.getBuiltins(version, ShaderType.TESS_EVALUATION_SHADER);
 		}
 
 		if (hasGeometry) {
 			System.out.print("geometry ");
-			GLSLBuiltin.getBuiltins(version, ShaderType.GEOMETRY_SHADER);
+			builtinServices.getBuiltins(version, ShaderType.GEOMETRY_SHADER);
 		}
 		System.out.println("fragment");
-		GLSLBuiltin.getBuiltins(version, ShaderType.FRAGMENT_SHADER);
+		builtinServices.getBuiltins(version, ShaderType.FRAGMENT_SHADER);
 	}
 }

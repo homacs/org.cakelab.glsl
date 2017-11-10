@@ -2,7 +2,7 @@ package org.cakelab.glsl.builtin.extensions.GL_ARB_tessellation_shader;
 
 import java.io.IOException;
 
-import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
+import org.cakelab.glsl.builtin.WorkingSet;
 import org.cakelab.glsl.builtin.extensions.GLSLExtension;
 import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoader;
 import org.cakelab.glsl.builtin.extensions.Properties;

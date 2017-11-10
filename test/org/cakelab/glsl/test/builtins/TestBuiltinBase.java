@@ -1,9 +1,15 @@
 package org.cakelab.glsl.test.builtins;
 
+import org.cakelab.glsl.GLSLCompiler;
 import org.cakelab.glsl.GLSLVersion;
+import org.cakelab.glsl.antlr.AntlrCompiler;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
 
 public class TestBuiltinBase {
+	
+	protected static final GLSLCompiler COMPILER = new AntlrCompiler();
+	
+	
 	protected static GLSLVersion core(int number) {
 		return new GLSLVersion(null, number, GLSLVersion.Profile.core);
 	}
@@ -15,7 +21,7 @@ public class TestBuiltinBase {
 	}
 
 	public static GLSLBuiltin getTestBuiltinSymbols(GLSLVersion version) {
-		return GLSLBuiltin.getTestBuiltins(version);
+		return COMPILER.getBuiltinServices().getTestBuiltins(version);
 	}
 
 }

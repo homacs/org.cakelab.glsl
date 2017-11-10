@@ -1,7 +1,7 @@
 package org.cakelab.glsl.builtin.extensions.GL_ARB_texture_query_lod;
 
 import org.cakelab.glsl.Resource;
-import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
+import org.cakelab.glsl.builtin.WorkingSet;
 import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoader;
 import org.cakelab.glsl.pp.PPOutputSink;
 import org.cakelab.glsl.pp.Preprocessor;

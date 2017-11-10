@@ -13,12 +13,13 @@ import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.antlr.lexer.PPTokenStream;
-import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.GLSLBuiltinServices;
+import org.cakelab.glsl.builtin.WorkingSet;
+import org.cakelab.glsl.builtin.extensions.GLSLExtensionServices;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.lang.ASTBuilder;
 import org.cakelab.glsl.lang.ast.IScope;
-import org.cakelab.glsl.lang.lexer.tokens.ExtendedTokenTable;
+import org.cakelab.glsl.lang.lexer.tokens.ExtendableTokenTable;
 import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.StandardErrorHandler;
 import org.cakelab.glsl.pp.ast.PPGroupScope;
@@ -28,6 +29,7 @@ public class AntlrCompiler extends GLSLCompiler {
 
 	private AntlrErrorHandler antlrErrorHandler;
 	private GLSLBuiltinServices builtinServices;
+	private GLSLExtensionServices extensionServices;
 	
 	
 	public AntlrCompiler() {
@@ -47,6 +49,7 @@ public class AntlrCompiler extends GLSLCompiler {
 		this.antlrErrorHandler = new AntlrErrorHandler(errorHandler);
 		this.antlrErrorHandler.setResourceManager(resources);
 		builtinServices = new AntlrBuiltinServices(this);
+		extensionServices = new GLSLExtensionServices(builtinServices);
 	}
 
 	public CombinedAST parse(Resource[] resource, ShaderType shaderType) throws IOException {
@@ -65,7 +68,7 @@ public class AntlrCompiler extends GLSLCompiler {
 
 		WorkingSet workingSet = pp.getState().getWorkingSet();
 		
-		ExtendedTokenTable tokenTable = workingSet.getTokenTable();
+		ExtendableTokenTable tokenTable = workingSet.getTokenTable();
 		
 		SymbolTable symbolTable = new SymbolTable(workingSet.getBuiltinScope());
 		
@@ -87,6 +90,11 @@ public class AntlrCompiler extends GLSLCompiler {
 	@Override
 	public GLSLBuiltinServices getBuiltinServices() {
 		return builtinServices;
+	}
+
+	@Override
+	public GLSLExtensionServices getExtensionServices() {
+		return extensionServices;
 	}
 
 

@@ -3,12 +3,9 @@ package org.cakelab.glsl.builtin.extensions;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.ShaderType;
-import org.cakelab.glsl.builtin.BuiltinScope;
-import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
 import org.cakelab.glsl.pp.PPState;
@@ -65,60 +62,11 @@ public class GLSLExtension extends ScopeImpl {
 		}
 	}
 
-	public static boolean checkRequirements(String extension, GLSLVersion version, BuiltinScope builtinScope) {
-		try {
-			extension = getPrimaryName(extension);
-			if (GLSLExtensionServices.hasPropertiesFile(extension)) {
-				Properties properties = GLSLExtensionServices.loadProperties(extension);
-				return properties.checkRequirements(version, builtinScope);
-			} else {
-				return true;
-			}
-		} catch (IllegalArgumentException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new Error("internal error: while evaluating requirements of '" + extension + "'", e);
-		}
-	}
-
-	/** 
-	 * An extension may be referred to by different names, but it is registered by its primary name only.
-	 * This method looks up the primary name of a known extension.
-	 * @param extension
-	 * @return
-	 */
-	public static String getPrimaryName(String extension) {
-		String[] names = KnownExtensions.getNames(extension);
-		if (names != null) {
-			return names[0];
-		}
-		return null;
-	}
-
 
 	// in case an extension does not define any macros we use this empty map
 	private static final HashMap<String, Macro> EMPTY_MACROS = new HashMap<String, Macro>();
 
 	
-	// TODO: performance: think about a better way to cache extensions and builtin symbols
-	//       builtins and extensions cannot be removed from cache as long as symbols still in use 
-	//      (because of duplicate symbol instantiation when loading it again)
-	// maybe with weak references?
-	private static final Map<Key, GLSLExtension> CACHE = new HashMap<Key, GLSLExtension>(4);
-
-	
-	
-	public static GLSLExtension get(WorkingSet ws, String extension) {
-		extension = getPrimaryName(extension);
-		Key key = new Key(extension, ws.getGLSLVersion(), ws.getShaderType());
-		GLSLExtension e = CACHE.get(key);
-		if (e == null) {
-			e = GLSLExtensionServices.loadExtension(ws, extension);
-			CACHE.put(key, e);
-		}
-		return e;
-	}
-
 	
 	
 	private final Key key;

@@ -18,8 +18,8 @@ import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
-import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
-import org.cakelab.glsl.builtin.extensions.GLSLExtension;
+import org.cakelab.glsl.builtin.GLSLBuiltinServices;
+import org.cakelab.glsl.builtin.WorkingSet;
 import org.cakelab.glsl.builtin.extensions.GLSLExtensionServices;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.lang.EvaluationException;
@@ -110,7 +110,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	/** This constructor is used only to parse preambles of builtins and extensions.
 	 * @deprecated */
 	public Preprocessor(GLSLCompiler compiler, GLSLCompilerFeatures features, Resource[] resources, ShaderType shaderType, PPOutputSink out) {
-		super(true, new PPState(features, resources, shaderType));
+		super(true, new PPState(compiler, features, resources, shaderType));
 		
 		//
 		// create scanner and lexer
@@ -1199,8 +1199,10 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	@Override
 	public void reportModifiedVersion(GLSLVersion version) {
 		if (!state.isForcedVersion()) {
-			GLSLBuiltin symbols = GLSLBuiltin.getBuiltins(version, state.getShaderType());
-			WorkingSet workingSet = symbols.createWorkingSet(state.getCompilerFeatures());
+			GLSLCompiler compiler = state.getCompiler();
+			GLSLBuiltinServices services = compiler.getBuiltinServices();
+			GLSLBuiltin symbols = compiler.getBuiltinServices().getBuiltins(version, state.getShaderType());
+			WorkingSet workingSet = services.createWorkingSet(symbols);
 			state.setWorkingSet(workingSet);
 		}
 	}
@@ -1208,6 +1210,7 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	@Override
 	public void process(PPExtensionDirective directive) throws SyntaxError {
 		WorkingSet workingSet = state.getWorkingSet();
+		GLSLExtensionServices extensionServices = state.getCompiler().getExtensionServices();
 		try {
 
 			
@@ -1222,13 +1225,13 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 			case REQUIRE:
 			case WARN:
 			case ENABLE:
-				if (!GLSLExtensionServices.canLoadExtenion(directive.identifier)) {
+				if (!extensionServices.canLoadExtenion(directive.identifier)) {
 					String message = "unknown extension '" + directive.identifier + "'";
 					if (directive.behaviour == Behaviour.REQUIRE) syntaxError(directive, message);
 					else syntaxWarning(directive.getStart(), message);
 				} else {
 					try {
-						GLSLExtension.checkRequirements(directive.identifier, state.getGlslVersion(), state.getWorkingSet().getBuiltinScope());
+						extensionServices.checkRequirements(directive.identifier, state.getGlslVersion(), state.getWorkingSet().getBuiltinScope());
 						workingSet.enableExtension(state, directive.identifier);
 						if (directive.behaviour == Behaviour.WARN) {
 							syntaxWarning(directive.getStart(), "extension '" + directive.identifier + "' has been enabled");

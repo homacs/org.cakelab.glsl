@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.GLSLExtensionSet;
+import org.cakelab.glsl.builtin.WorkingSet;
 import org.cakelab.glsl.pp.ast.Macro;
 
 
@@ -19,7 +19,8 @@ public class MacroMap {
 	private HashMap<String, Macro> features;
 
 	
-	public MacroMap(HashMap<String, Macro> defaultBuiltinMacros) {
+	public MacroMap(HashMap<String, Macro> features, HashMap<String, Macro> defaultBuiltinMacros) {
+		this.features = features;
 		this.builtin = defaultBuiltinMacros;
 	}
 

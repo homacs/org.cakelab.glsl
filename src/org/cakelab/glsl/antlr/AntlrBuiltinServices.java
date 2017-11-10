@@ -6,7 +6,6 @@ import org.cakelab.glsl.GLSLCompiler;
 import org.cakelab.glsl.GLSLParser;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
-import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.antlr.lexer.PPTokenStream;
@@ -30,8 +29,8 @@ public class AntlrBuiltinServices extends GLSLBuiltinServices {
 	}
 
 	@Override
-	public PPOutputSink createPreprocessorSink(ResourceManager resourceManager) {
-		return new PPOutputBuffer(resourceManager);
+	public PPOutputSink createPreprocessorSink() {
+		return new PPOutputBuffer(INTERNAL_RESOURCE_MANAGER);
 	}
 
 	@Override

@@ -5,7 +5,6 @@ import java.io.InputStream;
 
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.GLSLVersion.Profile;
-import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.builtin.BuiltinScope;
 import org.cakelab.glsl.builtin.GLSLExtensionSet;
 import org.cakelab.json.JSONArray;
@@ -198,20 +197,6 @@ public class Properties {
 	}
 
 
-	public Resource getPreamble() throws IOException {
-		return GLSLExtensionServices.getPreambleResource(name);
-	}
-
-
-	public boolean hasPreamble() {
-		try {
-			getPreamble();
-			return true;
-		} catch (IOException e) {
-			return false;
-		}
-	}
-	
 
 	public String getName() {
 		return name;

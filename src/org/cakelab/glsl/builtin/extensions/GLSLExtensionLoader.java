@@ -3,15 +3,14 @@ package org.cakelab.glsl.builtin.extensions;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.cakelab.glsl.GLSLCompiler;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.antlr.PPOutputBuffer;
-import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
 import org.cakelab.glsl.builtin.GLSLBuiltinServices;
 import org.cakelab.glsl.builtin.GLSLExtensionSet;
+import org.cakelab.glsl.builtin.WorkingSet;
 import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.lang.lexer.tokens.Vocabulary;
 import org.cakelab.glsl.pp.MacroMap;
@@ -22,14 +21,15 @@ import org.cakelab.glsl.pp.ast.Macro;
 public class GLSLExtensionLoader {
 	
 	private static final GLSLExtension TEMPORARY_EXTENSION = new MockedExtension("__TEMPORARY_EXTENSION__USED_WHEN_EXTENSION_INTRODUCES_NEW_KEYWORDS__", null, null);
-	protected final GLSLBuiltinServices services;
+	protected GLSLBuiltinServices builtinServices;
+	protected GLSLExtensionServices extensionServices;
 	protected Vocabulary vocabulary;
 
 	
-	public GLSLExtensionLoader() {
-		services = GLSLCompiler.getActiveCompilerImpl().getBuiltinServices();
-		vocabulary = services.getVocabulary();
-
+	public void init(GLSLBuiltinServices builtinServices, GLSLExtensionServices extensionServices) {
+		this.builtinServices = builtinServices;
+		this.extensionServices = extensionServices;
+		this.vocabulary = builtinServices.getVocabulary();
 	}
 	
 	
@@ -76,15 +76,15 @@ public class GLSLExtensionLoader {
 				e = new MockedExtension(names, shaderType, version);
 			}
 		} else {
-			boolean hasPreamble = properties.hasPreamble();
+			boolean hasPreamble = extensionServices.hasPreamble(properties.getName());
 			
 			PPOutputSink buffer = null;
 			HashMap<String, Macro> extensionMacros = null;
 			
 			if (hasPreamble) {
-				Resource resource = properties.getPreamble();
+				Resource resource = extensionServices.getPreamble(properties.getName());
 			
-				buffer = services.createPreprocessorSink(GLSLBuiltinServices.BUILTIN_RESOURCE_MANAGER);
+				buffer = builtinServices.createPreprocessorSink();
 		
 				extensionMacros = preprocess(ws, resource, buffer);
 			}
@@ -155,9 +155,9 @@ public class GLSLExtensionLoader {
 	 * @throws IOException
 	 */
 	protected KeywordTable loadKeywordTable(String extension) throws IOException {
-		if (!GLSLExtensionServices.hasKeywordsFile(extension)) return null;
+		if (!extensionServices.hasKeywordsFile(extension)) return null;
 		
-		Resource tokenFile = GLSLExtensionServices.getResource(extension, GLSLExtensionServices.KEYWORDS_FILE);
+		Resource tokenFile = extensionServices.getResource(extension, GLSLExtensionServices.KEYWORDS_FILE);
 		KeywordTable tokenTable = KeywordTable.create(vocabulary, tokenFile.openInputStream());
 		
 		return tokenTable;
@@ -263,7 +263,7 @@ public class GLSLExtensionLoader {
 	 * @return
 	 */
 	protected Preprocessor setupPreprocessor(WorkingSet ws, Resource resource, PPOutputSink buffer) {
-		Preprocessor pp = services.setupPreprocessing(resource, ws.getShaderType(), buffer);
+		Preprocessor pp = builtinServices.setupPreprocessing(resource, ws.getShaderType(), buffer);
 		pp.getState().setWorkingSet(ws);
 		pp.getState().setForcedVersion(true);
 		return pp;
@@ -300,13 +300,13 @@ public class GLSLExtensionLoader {
 			TEMPORARY_EXTENSION.setKeywordTable(e.getKeywordTable());
 			extensionSet.addExtension(TEMPORARY_EXTENSION);
 			try {
-				services.parseBuiltinPreamble(preprocessedPreamble, ws.getTokenTable(), symbolTable);
+				builtinServices.parseBuiltinPreamble(preprocessedPreamble, ws.getTokenTable(), symbolTable);
 			} finally {
 				extensionSet.removeExtension(TEMPORARY_EXTENSION);
 				TEMPORARY_EXTENSION.setKeywordTable(null);
 			}
 		} else {
-			services.parseBuiltinPreamble(preprocessedPreamble, ws.getTokenTable(), symbolTable);
+			builtinServices.parseBuiltinPreamble(preprocessedPreamble, ws.getTokenTable(), symbolTable);
 		}
 	}
 

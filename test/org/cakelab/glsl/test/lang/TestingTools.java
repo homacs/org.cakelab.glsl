@@ -26,7 +26,7 @@ import org.cakelab.glsl.antlr.AntlrCompiler;
 import org.cakelab.glsl.antlr.PPOutputBuffer;
 import org.cakelab.glsl.antlr.lexer.PPTokenStream;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
-import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
+import org.cakelab.glsl.builtin.WorkingSet;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.impl.ResourceString;
 import org.cakelab.glsl.lang.ASTBuilder;
@@ -34,7 +34,7 @@ import org.cakelab.glsl.pp.Preprocessor;
 import org.cakelab.glsl.pp.StandardErrorHandler;
 import org.cakelab.glsl.test.builtins.TestBuiltinBase;
 
-public class TestingTools {
+public class TestingTools extends TestBuiltinBase {
 
 	protected static GLSLCompiler compiler = new AntlrCompiler();
 	protected static GLSLParser parser;
@@ -305,7 +305,7 @@ public class TestingTools {
 
 		GLSLVersion version = buffer.getVersion();
 		GLSLBuiltin builtin = TestBuiltinBase.getTestBuiltinSymbols(version);
-		WorkingSet workingSet = builtin.createWorkingSet(AntlrCompiler.getDefaultCompilerFeatures());
+		WorkingSet workingSet = COMPILER.getBuiltinServices().createWorkingSet(builtin);
 		SymbolTable symbolTable;
 		if (presetSymbols != null) {
 			presetSymbols.setBuiltinScope(workingSet.getBuiltinScope());

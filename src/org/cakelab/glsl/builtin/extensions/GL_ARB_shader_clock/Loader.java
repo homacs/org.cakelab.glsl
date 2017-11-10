@@ -1,8 +1,7 @@
 package org.cakelab.glsl.builtin.extensions.GL_ARB_shader_clock;
 
 import org.cakelab.glsl.Resource;
-import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
-import org.cakelab.glsl.builtin.GLSLBuiltinServices;
+import org.cakelab.glsl.builtin.*;
 import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoader;
 import org.cakelab.glsl.pp.PPOutputSink;
 import org.cakelab.glsl.pp.Preprocessor;

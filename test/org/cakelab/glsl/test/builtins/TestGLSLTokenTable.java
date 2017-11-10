@@ -1,6 +1,6 @@
 package org.cakelab.glsl.test.builtins;
 
-import org.cakelab.glsl.builtin.GLSLTokenTable;
+import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.test.Test;
 
 public class TestGLSLTokenTable extends TestBuiltinBase {
@@ -12,40 +12,45 @@ public class TestGLSLTokenTable extends TestBuiltinBase {
 	
 	public static void test() {
 		
-		GLSLTokenTable.getTestTokenTable(es(100));
-		GLSLTokenTable.getTestTokenTable(es(300));
-		GLSLTokenTable.getTestTokenTable(es(310));
+		testTokenTable(es(100));
+		testTokenTable(es(300));
+		testTokenTable(es(310));
 		
-		GLSLTokenTable.getTestTokenTable(core(110));
-		GLSLTokenTable.getTestTokenTable(core(120));
-		GLSLTokenTable.getTestTokenTable(core(130));
-		GLSLTokenTable.getTestTokenTable(core(140));
-		GLSLTokenTable.getTestTokenTable(core(150));
+		testTokenTable(core(110));
+		testTokenTable(core(120));
+		testTokenTable(core(130));
+		testTokenTable(core(140));
+		testTokenTable(core(150));
 		
-		GLSLTokenTable.getTestTokenTable(core(330));
+		testTokenTable(core(330));
 		
-		GLSLTokenTable.getTestTokenTable(core(400));
-		GLSLTokenTable.getTestTokenTable(core(410));
-		GLSLTokenTable.getTestTokenTable(core(420));
-		GLSLTokenTable.getTestTokenTable(core(430));
-		GLSLTokenTable.getTestTokenTable(core(440));
-		GLSLTokenTable.getTestTokenTable(core(450));
-		GLSLTokenTable.getTestTokenTable(core(460));
+		testTokenTable(core(400));
+		testTokenTable(core(410));
+		testTokenTable(core(420));
+		testTokenTable(core(430));
+		testTokenTable(core(440));
+		testTokenTable(core(450));
+		testTokenTable(core(460));
 
 
 		// profile only considered from 150 or above.
 		// Thus, compatibility exists for those versions only.
-		GLSLTokenTable.getTestTokenTable(compatibility(150));
+		testTokenTable(compatibility(150));
 		
-		GLSLTokenTable.getTestTokenTable(compatibility(330));
+		testTokenTable(compatibility(330));
 		
-		GLSLTokenTable.getTestTokenTable(compatibility(400));
-		GLSLTokenTable.getTestTokenTable(compatibility(410));
-		GLSLTokenTable.getTestTokenTable(compatibility(420));
-		GLSLTokenTable.getTestTokenTable(compatibility(430));
-		GLSLTokenTable.getTestTokenTable(compatibility(440));
-		GLSLTokenTable.getTestTokenTable(compatibility(450));
-		GLSLTokenTable.getTestTokenTable(compatibility(460));
+		testTokenTable(compatibility(400));
+		testTokenTable(compatibility(410));
+		testTokenTable(compatibility(420));
+		testTokenTable(compatibility(430));
+		testTokenTable(compatibility(440));
+		testTokenTable(compatibility(450));
+		testTokenTable(compatibility(460));
+	}
+
+
+	private static void testTokenTable(GLSLVersion version) {
+		COMPILER.getBuiltinServices().getTestTokenTable(version);
 	}
 
 }

@@ -2,14 +2,14 @@ package org.cakelab.glsl.pp;
 
 import java.util.ArrayList;
 
+import org.cakelab.glsl.GLSLCompiler;
 import org.cakelab.glsl.GLSLCompilerFeatures;
 import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ResourceManager;
 import org.cakelab.glsl.ShaderType;
-import org.cakelab.glsl.builtin.GLSLBuiltin;
-import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
+import org.cakelab.glsl.builtin.WorkingSet;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.ast.PPGroupScope;
 import org.cakelab.glsl.pp.lexer.ILexer;
@@ -68,17 +68,19 @@ public class PPState {
 	private boolean forcedVersion;
 	private ShaderType shaderType;
 	
-	private MacroMap macros = new MacroMap(GLSLBuiltin.getDefaultBuiltinMacros());
+	private MacroMap macros;
 	private WorkingSet workingSet;
-	private GLSLCompilerFeatures features;
+	private final GLSLCompilerFeatures features;
+	private final GLSLCompiler compiler;
 	
 	
-	public PPState(GLSLCompilerFeatures features, Resource[] inputs, ShaderType shaderType) {
+	public PPState(GLSLCompiler compiler, GLSLCompilerFeatures features, Resource[] inputs, ShaderType shaderType) {
+		this.compiler = compiler;
 		this.features = features;
 		this.inputs = inputs;
 		this.shaderType = shaderType;
-		listeners = new ListenerSet();
-		this.macros.setFeatureMacros(features.getFeatureMacros());
+		this.listeners = new ListenerSet();
+		this.macros = new MacroMap(features.getFeatureMacros(), compiler.getBuiltinServices().getDefaultBuiltinMacros());
 	}
 
 	public GLSLCompilerFeatures getCompilerFeatures() {
@@ -229,6 +231,10 @@ public class PPState {
 
 	public WorkingSet getWorkingSet() {
 		return workingSet;
+	}
+
+	public GLSLCompiler getCompiler() {
+		return compiler;
 	}
 
 	

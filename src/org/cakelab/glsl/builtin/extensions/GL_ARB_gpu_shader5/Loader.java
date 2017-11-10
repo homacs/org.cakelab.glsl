@@ -14,7 +14,7 @@ import static org.cakelab.glsl.lang.ast.types.Type._vec3;
 import static org.cakelab.glsl.lang.ast.types.Type._vec4;
 
 import org.cakelab.glsl.Resource;
-import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
+import org.cakelab.glsl.builtin.WorkingSet;
 import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoader;
 import org.cakelab.glsl.lang.ast.types.Type;
 import org.cakelab.glsl.pp.PPOutputSink;

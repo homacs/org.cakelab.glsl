@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.cakelab.glsl.GLSLCompiler;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.GLSLVersion.Profile;
 import org.cakelab.glsl.lang.ast.types.Type;
@@ -13,7 +12,6 @@ import org.cakelab.glsl.lang.lexer.tokens.ITokenTable;
 import org.cakelab.glsl.lang.lexer.tokens.Vocabulary;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.scanner.StreamScanner;
-import org.cakelab.glsl.util.ObjectCache;
 
 
 
@@ -74,34 +72,7 @@ public class GLSLTokenTable implements ITokenTable {
 	
 	
 	public static final boolean DEBUG = true;
-	/**
-	 * In case no #version directive was given, GLSL always assumes v1.10 core.
-	 */
-	public static final GLSLVersion DEFAULT_GLSL_VERSION = new GLSLVersion(null, 110, GLSLVersion.Profile.core);
 	
-	/**
-	 * A cache for instantiated (used) token tables.
-	 * <p>
-	 * Usually a particular parse for a given glsl file will require
-	 * at least two token tables: the default 110 will be instantiated 
-	 * at the start and a specific may be selected by <code>#version</code>.
-	 * 
-	 * When reusing an instance of a language parser for different files,
-	 * we might have to switch between the same token tables multiple times, but
-	 * the set of used tables will still be small in a single project.
-	 */
-	public static final ObjectCache<GLSLVersion, GLSLTokenTable> cache = new ObjectCache<GLSLVersion, GLSLTokenTable>(4);
-	
-	
-	static GLSLTokenTable getTokenTable(GLSLVersion version) {
-		GLSLTokenTable table = cache.get(version);
-		if (table == null) {
-			// cache miss -> create new
-			table = new GLSLTokenTable(version);
-			cache.put(version, table);
-		}
-		return table;
-	}
 	
 	
 	protected GLSLVersion version;
@@ -112,10 +83,9 @@ public class GLSLTokenTable implements ITokenTable {
 	protected HashMap<String, Integer> builtinTypes;
 	protected HashMap<String, Integer> punctuators;
 
-	protected GLSLTokenTable(GLSLVersion version) {
+	protected GLSLTokenTable(GLSLVersion version, GLSLBuiltinServices builtinService) {
 		this.version = version;
-		GLSLBuiltinServices builtinService = GLSLCompiler.getActiveCompilerImpl().getBuiltinServices();
-		BuiltinResourceManager resourceManager = builtinService.getBuiltinResourceManager();
+		InternalResourceManager resourceManager = builtinService.getBuiltinResourceManager();
 		
 		Vocabulary vocabulary = builtinService.getVocabulary();
 		
@@ -222,11 +192,6 @@ public class GLSLTokenTable implements ITokenTable {
 		return version;
 	}
 
-
-	/** for testing purposes only (who would've thought!)*/
-	public static GLSLTokenTable getTestTokenTable(GLSLVersion version) {
-		return getTokenTable(version);
-	}
 
 
 

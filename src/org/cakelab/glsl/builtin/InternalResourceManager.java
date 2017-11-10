@@ -18,7 +18,7 @@ import org.cakelab.glsl.impl.JarResourceManager;
  * @author homac
  *
  */
-public class BuiltinResourceManager extends JarResourceManager implements ResourceManager {
+public class InternalResourceManager extends JarResourceManager implements ResourceManager {
 
 	public static class ReverseCountingIdProvider implements ResourceIdProvider {
 
@@ -59,7 +59,7 @@ public class BuiltinResourceManager extends JarResourceManager implements Resour
 	private static final String BUILTIN_URL_PROTOCOL = "builtin://";
 	private String baseDir;
 
-	public BuiltinResourceManager(String baseDir) {
+	public InternalResourceManager(String baseDir) {
 		super(new ReverseCountingIdProvider());
 		this.baseDir = baseDir;
 	}

@@ -6,8 +6,7 @@ import java.util.HashMap;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
-import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
-import org.cakelab.glsl.builtin.GLSLBuiltinServices;
+import org.cakelab.glsl.builtin.WorkingSet;
 import org.cakelab.glsl.builtin.extensions.GLSLExtension;
 import org.cakelab.glsl.builtin.extensions.GLSLExtensionLoader;
 import org.cakelab.glsl.builtin.extensions.KeywordTable;
@@ -24,7 +23,7 @@ public class Loader extends GLSLExtensionLoader {
 	public GLSLExtension load(WorkingSet ws, Properties properties) throws IOException {
 		Resource preambleResource;
 		try {
-			preambleResource = properties.getPreamble();
+			preambleResource = extensionServices.getPreamble(properties.getName());
 		} catch (IOException e1) {
 			throw new Error("internal error: failed to load preamble for extension " + properties.getName(), e1);
 		}
@@ -32,7 +31,7 @@ public class Loader extends GLSLExtensionLoader {
 		GLSLVersion glslVersion = ws.getGLSLVersion();
 		ShaderType shaderLanguage = ws.getShaderType();
 		
-		PPOutputSink preprocessedPreamble = services.createPreprocessorSink(GLSLBuiltinServices.BUILTIN_RESOURCE_MANAGER);
+		PPOutputSink preprocessedPreamble = builtinServices.createPreprocessorSink();
 
 		HashMap<String, Macro> extensionMacros = preprocess(ws, preambleResource, preprocessedPreamble);
 

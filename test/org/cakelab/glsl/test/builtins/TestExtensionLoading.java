@@ -5,10 +5,10 @@ import java.io.FileInputStream;
 import org.cakelab.glsl.GLSLCompilerFeatures;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.ShaderType;
-import org.cakelab.glsl.antlr.AntlrCompiler;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
-import org.cakelab.glsl.builtin.GLSLBuiltin.WorkingSet;
+import org.cakelab.glsl.builtin.GLSLBuiltinServices;
 import org.cakelab.glsl.builtin.GLSLExtensionSet;
+import org.cakelab.glsl.builtin.WorkingSet;
 import org.cakelab.glsl.builtin.extensions.MockedExtension;
 import org.cakelab.glsl.builtin.extensions.Properties;
 import org.cakelab.glsl.builtin.extensions.VersionDependency;
@@ -207,20 +207,23 @@ public class TestExtensionLoading extends TestBuiltinBase {
 
 	private static WorkingSet createFakeWorkingSet(GLSLVersion version, String ... names) {
 		GLSLBuiltin builtin = getTestBuiltinSymbols(version);
-		WorkingSet ws = builtin.createWorkingSet(AntlrCompiler.getDefaultCompilerFeatures());
+		
+		WorkingSet ws = COMPILER.getBuiltinServices().createWorkingSet(builtin);
+		
 		GLSLExtensionSet extensions = ws.getExtensions();
 		for (String name : names) {
-			extensions.addExtension(new MockedExtension(name, ShaderType.GENERIC_SHADER, ws.getGLSLVersion()));
+			extensions.addExtension(new MockedExtension(name, ws.getShaderType(), ws.getGLSLVersion()));
 		}
 		return ws;
 	}
 
 
 	public static WorkingSet testExtension(GLSLVersion version, ShaderType shaderType, String ... extensions) {
-		GLSLBuiltin builtin = GLSLBuiltin.getBuiltins(version, shaderType);
-		GLSLCompilerFeatures features = AntlrCompiler.getDefaultCompilerFeatures();
-		PPState state = new PPState(features, null, shaderType);
-		WorkingSet workingSet = builtin.createWorkingSet(features);
+		GLSLBuiltinServices services = COMPILER.getBuiltinServices();
+		GLSLBuiltin builtin = services.getBuiltins(version, shaderType);
+		WorkingSet workingSet = services.createWorkingSet(builtin);
+		GLSLCompilerFeatures features = COMPILER.getFeatures();
+		PPState state = new PPState(COMPILER, features, null, shaderType);
 		for (String extension : extensions) {
 			workingSet.enableExtension(state, extension);
 		}

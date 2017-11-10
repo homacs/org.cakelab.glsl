@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
+import org.cakelab.glsl.GLSLCompiler;
 import org.cakelab.glsl.GLSLErrorHandler;
 import org.cakelab.glsl.Location;
+import org.cakelab.glsl.antlr.AntlrCompiler;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.lang.ast.Node;
@@ -16,6 +18,7 @@ import org.cakelab.glsl.pp.parser.Parser;
 
 public abstract class TestingBase {
 
+	protected static final GLSLCompiler COMPILER = new AntlrCompiler();
 	protected String error;
 	protected String warning;
 	protected boolean ignoreWarning = true;

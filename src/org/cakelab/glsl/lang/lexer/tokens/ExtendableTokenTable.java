@@ -9,12 +9,12 @@ import org.cakelab.glsl.builtin.GLSLExtensionSet;
  * @author homac
  *
  */
-public class ExtendedTokenTable implements ITokenTable {
+public class ExtendableTokenTable implements ITokenTable {
 
 	private GLSLExtensionSet extensions;
 	private ITokenTable main;
 
-	public ExtendedTokenTable(ITokenTable main, GLSLExtensionSet extensions) {
+	public ExtendableTokenTable(ITokenTable main, GLSLExtensionSet extensions) {
 		this.main = main;
 		this.extensions = extensions;
 	}
