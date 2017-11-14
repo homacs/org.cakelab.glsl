@@ -1,41 +1,31 @@
 package org.cakelab.glsl.test.lang.syntax;
 
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.cakelab.glsl.GLSLParser.GlslStructSpecifierContext;
-import org.cakelab.glsl.test.lang.TestingBase;
 
-public class TestStruct extends TestingBase {
-	public static void test() {
-
+public abstract class TestStruct extends TestingSyntaxBase {
+	public void test() {
 		testStructPrototype();
 		testStructDefinition();
 		testStructType();
-		
-
 	}
 
-	private static void testStructDefinition() {
+	public void testStructDefinition() {
 		String source;
-		Class<? extends ParseTree> expected = GlslStructSpecifierContext.class;
 		
 		// glsl: struct must have at least one member
 		source = "struct boo{};";
-		assertInvalid(source, expected);
-		tearDown();
+		assertInvalid(source);
 		
 		// glsl: struct prototyping not supported
 		source = "struct boo;";
-		assertInvalid(source, expected);
-		tearDown();
+		assertInvalid(source);
 		
 		source = "struct boo{"
 				+ "int a;"
 				+ "float b;"
 				+ "bool c;"
 				+ "};";
-		assertValid(source, expected);
+		assertValid(source);
 
-		tearDown();
 
 		source = ""
 				+ "struct myType {"
@@ -49,36 +39,33 @@ public class TestStruct extends TestingBase {
 				+ "  myType c;"
 				+ " } d[2];"
 				+ "};";
-		assertValid(source, expected);
-		tearDown();
+		assertValid(source);
 	}
 
-	private static void testStructType() {
+	public void testStructType() {
 		String source;
-		Class<? extends ParseTree> expected = GlslStructSpecifierContext.class;
 		
 		source = "struct boo {"
 				+ "  int a;"
 				+ "  float b;"
 				+ "  bool c;"
 				+ "} x;";
-		assertValid(p(source).glslDeclarationStatement(), expected);
+		assertValid(source);
 
 		source = "struct boo {"
 				+ "  int a;"
 				+ "  float b;"
 				+ "  bool c;"
 				+ "} x[4];";
-		assertValid(p(source).glslDeclarationStatement(), expected);
+		assertValid(source);
 
 	}
 
-	private static void testStructPrototype() {
+	public void testStructPrototype() {
 		String source;
-		Class<? extends ParseTree> expected = GlslStructSpecifierContext.class;
 		// apparently not allowed in glsl
 		source = "struct boo;";
-		assertInvalid(p(source).glslDeclarationStatement(), expected);
+		assertInvalid(source);
 
 	}
 

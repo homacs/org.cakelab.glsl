@@ -3,17 +3,10 @@ package org.cakelab.glsl.test.pp.parse;
 import org.cakelab.glsl.test.Test;
 import org.cakelab.glsl.test.pp.TestingPPBase;
 
-public class TestConditionalInclusion extends TestingPPBase {
+public class TestConditionalInclusion extends TestingPPBase implements Test {
 	
-	public static void main(String[] args) {
-		Test.checkAssertionsOn();
-		test();
-	}
-
-	
-	public static void test() {
-		TestConditionalInclusion tester = new TestConditionalInclusion();
-		tester.testConditionalInclusions();
+	public void test() {
+		testConditionalInclusions();
 	}
 	
 	public void testConditionalInclusions() {

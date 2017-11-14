@@ -1,11 +1,7 @@
 package org.cakelab.glsl.test.lang.syntax;
 
-import org.cakelab.glsl.GLSLParser.GlslArrayDimensionContext;
-import org.cakelab.glsl.GLSLParser.GlslCallArgumentsContext;
-import org.cakelab.glsl.test.lang.TestingBase;
-import org.cakelab.glsl.test.lang.TestingTools;
 
-public class TestExpression extends TestingBase {
+public abstract class TestExpression extends TestingSyntaxBase {
 	static String[] PRIMARY_EXPRESSION_EXAMPLES = new String[]{
 		"var",
 		"(var)",
@@ -48,7 +44,7 @@ public class TestExpression extends TestingBase {
 		};
 		
 	
-	public static void test() {
+	public void test() {
 		
 		testPrimaryExpression();
 		testPostfixExpression();
@@ -67,64 +63,55 @@ public class TestExpression extends TestingBase {
 	}
 
 	
-	public static void setupMultiTest() {
-		autoTearDown = false;
-		validateIdentifiers = false;
-	}
-	
-	public static void tearDownMultiTest() {
-		autoTearDown = true;
-		TestingTools.tearDown();
-	}
 	
 	
-	private static void testPrimaryExpression() {
+	private void testPrimaryExpression() {
 		setupMultiTest();
 		for (String primary : PRIMARY_EXPRESSION_EXAMPLES) {
-			assertValid(p(primary).glslPrimaryExpression());
+			assertValid(primary);
 		}
 		tearDownMultiTest();
 	}
 
-	private static void testPostfixExpression() {
-		assertValid(p("float[](8.0f)").glslPostfixExpression(), GlslArrayDimensionContext.class);
-		assertValid(p("float[](8.0f)").glslAssignmentExpression(), GlslArrayDimensionContext.class);
+	private void testPostfixExpression() {
+		assertValid("float[](8.0f)");
+		assertValid("float[](8.0f)");
 		assertValid("int light(bool exists, int times); int lightvar = light(true, 1);");
 		
 		setupMultiTest();
-		assertValid(p("(func)()").glslPostfixExpression(), GlslCallArgumentsContext.class);
-		assertValid(p("((func))()").glslPostfixExpression(), GlslCallArgumentsContext.class);
-		assertValid(p("a.f()").glslPostfixExpression(), GlslCallArgumentsContext.class);
-		assertValid(p("b.a[3](1,2)").glslPostfixExpression(), GlslCallArgumentsContext.class);
-		tearDown();
+		assertValid("(func)()");
+		assertValid("((func))()");
+		assertValid("a.f()");
+		assertValid("b.a[3](1,2)");
+		tearDownMultiTest();
 		
 		setupMultiTest();
 		for (String primary : PRIMARY_EXPRESSION_EXAMPLES) {
-			assertValid(p(primary).glslPostfixExpression());
+			assertValid(primary);
 		}
 		tearDownMultiTest();
 		
 		setupMultiTest();
 		for (String postfix : POSTFIX_EXPRESSION_EXAMPLES) {
-			assertValid(p(postfix).glslPostfixExpression());
+			assertValid(postfix);
 		}
 		tearDownMultiTest();
 	}
 
-	private static void testUnaryExpression() {
+	private void testUnaryExpression() {
 		setupMultiTest();
 
-		assertValid(p("++a--").glslUnaryExpression());
+		assertValid("++a--");
 		
 		for (String primary : PRIMARY_EXPRESSION_EXAMPLES) {
 			for (String op : UNARY_OPERATORS) {
-				assertValid(p(op + primary).glslUnaryExpression());
+				assertValid(op + primary);
 			}
 		}
 
 		for (String postfix : POSTFIX_EXPRESSION_EXAMPLES) {
 			for (String op : UNARY_OPERATORS) {
-				assertValid(p(op + postfix).glslUnaryExpression());
+				assertValid(op + postfix);
 			}
 		}
 		tearDownMultiTest();
@@ -132,10 +119,10 @@ public class TestExpression extends TestingBase {
 	}
 	
 	
-	private static void testMultiplicativeExpression() {
+	private void testMultiplicativeExpression() {
 		setupMultiTest();
-		assertValid(p("a * ++b * +c * func()").glslMultiplicativeExpression());
-		assertValid(p("a * ++b * +c-- * func()").glslMultiplicativeExpression());
+		assertValid("a * ++b * +c * func()");
+		assertValid("a * ++b * +c-- * func()");
 		
 		StringBuffer expr = new StringBuffer();
 		int i = 0;
@@ -146,7 +133,7 @@ public class TestExpression extends TestingBase {
 				i = (i+1) % MUL_OPERATORS.length;
 				expr.append(op).append(primary);
 			}
-			assertValid(p(expr.toString()).glslMultiplicativeExpression());
+			assertValid(expr.toString());
 		}
 
 		i = 0;
@@ -157,15 +144,15 @@ public class TestExpression extends TestingBase {
 				i = (i+1) % MUL_OPERATORS.length;
 				expr.append(op).append(postfix);
 			}
-			assertValid(p(expr.toString()).glslMultiplicativeExpression());
+			assertValid(expr.toString());
 		}
 		tearDownMultiTest();
 	}
 	
 
-	private static void testAdditiveExpression() {
+	private void testAdditiveExpression() {
 		setupMultiTest();
-		assertValid(p("a++ + ++ +b").glslAdditiveExpression());
+		assertValid("a++ + ++ +b");
 		
 		StringBuffer expr = new StringBuffer();
 		int i = 0;
@@ -178,7 +165,7 @@ public class TestExpression extends TestingBase {
 			}
 			if (expr.length() > 0) expr.append(ADD_OPERATORS[i%2]);
 			expr.append(term);
-			assertValid(p(expr.toString()).glslAdditiveExpression());
+			assertValid(expr.toString());
 		}
 
 		i = 0;
@@ -192,18 +179,18 @@ public class TestExpression extends TestingBase {
 			}
 			if (expr.length() > 0) expr.append(ADD_OPERATORS[i%2]);
 			expr.append(term);
-			assertValid(p(expr.toString()).glslAdditiveExpression());
+			assertValid(expr.toString());
 		}
 		
 		tearDownMultiTest();
 	}
 	
-	private static void testShiftExpression() {
+	private void testShiftExpression() {
 		setupMultiTest();
 
-		assertValid(p("a>>b").glslShiftExpression());
-		assertValid(p("a>>b<<3").glslShiftExpression());
-		assertValid(p(" 1+1 << 1*1 >> 1").glslShiftExpression());
+		assertValid("a>>b");
+		assertValid("a>>b<<3");
+		assertValid(" 1+1 << 1*1 >> 1");
 		
 
 		StringBuffer expr = new StringBuffer();
@@ -227,7 +214,7 @@ public class TestExpression extends TestingBase {
 			j++;
 			expr.append(term);
 			
-			assertValid(p(expr.toString()).glslShiftExpression());
+			assertValid(expr.toString());
 		}
 
 		i = 0;
@@ -254,110 +241,110 @@ public class TestExpression extends TestingBase {
 			}
 			j++;
 			expr.append(term);
-			assertValid(p(expr.toString()).glslShiftExpression());
+			assertValid(expr.toString());
 		}
 		
 		tearDownMultiTest();
 	}
 	
-	private static void testRelationalExpression() {
+	private void testRelationalExpression() {
 		setupMultiTest();
 
-		assertValid(p("a < b").glslRelationalExpression());
-		assertValid(p("a > b").glslRelationalExpression());
-		assertValid(p("a <= b").glslRelationalExpression());
-		assertValid(p("a >= b").glslRelationalExpression());
-		assertValid(p("a < b<<2").glslRelationalExpression());
-		assertValid(p("a < b > 2").glslRelationalExpression());
+		assertValid("a < b");
+		assertValid("a > b");
+		assertValid("a <= b");
+		assertValid("a >= b");
+		assertValid("a < b<<2");
+		assertValid("a < b > 2");
 		
 		tearDownMultiTest();
 	}
 	
-	private static void testEqualityExpression() {
+	private void testEqualityExpression() {
 		setupMultiTest();
 
-		assertValid(p("a == b").glslEqualityExpression());
-		assertValid(p("a != b").glslEqualityExpression());
-		assertValid(p("a <= b").glslEqualityExpression());
-		assertValid(p("a >= b == 3 != 4").glslEqualityExpression());
-		assertValid(p("a < b<<2 == 5").glslEqualityExpression());
-		assertValid(p("a != !b").glslEqualityExpression());
-		assertInvalid(p("a =! b").glslEqualityExpression());
-		assertInvalid(p("a != != b").glslEqualityExpression());
+		assertValid("a == b");
+		assertValid("a != b");
+		assertValid("a <= b");
+		assertValid("a >= b == 3 != 4");
+		assertValid("a < b<<2 == 5");
+		assertValid("a != !b");
+		assertInvalid("a =! b");
+		assertInvalid("a != != b");
 		
 		tearDownMultiTest();
 	}
 	
-	private static void testAndExpression() {
+	private void testAndExpression() {
 		setupMultiTest();
-		assertValid(p("a & b").glslAndExpression());
-		assertValid(p("a & b & c").glslAndExpression());
-		assertValid(p("a & b == c & d").glslAndExpression());
+		assertValid("a & b");
+		assertValid("a & b & c");
+		assertValid("a & b == c & d");
 		tearDownMultiTest();
 	}
 	
-	private static void testExclusiveOrExpression() {
+	private void testExclusiveOrExpression() {
 		setupMultiTest();
-		assertValid(p("a ^ b").glslExclusiveOrExpression());
-		assertValid(p("a ^ b ^ c").glslExclusiveOrExpression());
-		assertValid(p("a ^ b & c ^ d").glslExclusiveOrExpression());
+		assertValid("a ^ b");
+		assertValid("a ^ b ^ c");
+		assertValid("a ^ b & c ^ d");
 		tearDownMultiTest();
 	}
 	
-	private static void testInclusiveOrExpression() {
+	private void testInclusiveOrExpression() {
 		setupMultiTest();
-		assertValid(p("a | b").glslInclusiveOrExpression());
-		assertValid(p("a | b ^ c").glslInclusiveOrExpression());
-		assertValid(p("a | b | c & d ^ e").glslInclusiveOrExpression());
+		assertValid("a | b");
+		assertValid("a | b ^ c");
+		assertValid("a | b | c & d ^ e");
 		tearDownMultiTest();
 	}
 	
-	private static void testConditionalExpression() {
+	private void testConditionalExpression() {
 		setupMultiTest();
-		assertValid(p("a || b | c").glslConditionalExpression());
-		assertValid(p("a && b & c").glslConditionalExpression());
-		assertValid(p("a ^^ b ^ c & d ^ e").glslConditionalExpression());
-		assertValid(p("a&&b ? a : b").glslConditionalExpression());
-		assertValid(p("a&&b ? a&&b ? a : b : b").glslConditionalExpression());
-		assertValid(p("a&&b ? a&&b ? +a : b++ : b<<1").glslConditionalExpression());
+		assertValid("a || b | c");
+		assertValid("a && b & c");
+		assertValid("a ^^ b ^ c & d ^ e");
+		assertValid("a&&b ? a : b");
+		assertValid("a&&b ? a&&b ? a : b : b");
+		assertValid("a&&b ? a&&b ? +a : b++ : b<<1");
 		tearDownMultiTest();
 	}
 	
-	private static void testAssignmentExpression() {
+	private void testAssignmentExpression() {
 		setupMultiTest();
-		assertValid(p("a = b").glslAssignmentExpression());
-		assertValid(p("a = b | c").glslAssignmentExpression());
-		assertValid(p("a = b = c").glslAssignmentExpression());
-		assertValid(p("a = b == c").glslAssignmentExpression());
-		assertValid(p("(a == b) = c").glslAssignmentExpression());
+		assertValid("a = b");
+		assertValid("a = b | c");
+		assertValid("a = b = c");
+		assertValid("a = b == c");
+		assertValid("(a == b) = c");
 		
-		assertValid(p("a += b | c").glslAssignmentExpression());
-		assertValid(p("a -= b | c").glslAssignmentExpression());
-		assertValid(p("a *= b | c").glslAssignmentExpression());
-		assertValid(p("a /= b | c").glslAssignmentExpression());
-		assertValid(p("a %= b | c").glslAssignmentExpression());
-		assertValid(p("a ^= b | c").glslAssignmentExpression());
-		assertValid(p("a |= b | c").glslAssignmentExpression());
-		assertValid(p("a &= b | c").glslAssignmentExpression());
-		assertValid(p("a <<= b | c").glslAssignmentExpression());
-		assertValid(p("a >>= b | c").glslAssignmentExpression());
+		assertValid("a += b | c");
+		assertValid("a -= b | c");
+		assertValid("a *= b | c");
+		assertValid("a /= b | c");
+		assertValid("a %= b | c");
+		assertValid("a ^= b | c");
+		assertValid("a |= b | c");
+		assertValid("a &= b | c");
+		assertValid("a <<= b | c");
+		assertValid("a >>= b | c");
 		
-		assertValid(p("x = a || b | c").glslAssignmentExpression());
-		assertValid(p("float[] = a && b & c").glslAssignmentExpression());
-		assertValid(p("x = a ^^ b ^ c & d ^ e").glslAssignmentExpression());
-		assertValid(p("(a ^^ b ^ c & d ^ e) = x").glslAssignmentExpression());
-		assertValid(p("++x = x").glslAssignmentExpression());
-		assertValid(p("x = a&&b ? a : b").glslAssignmentExpression());
-		assertValid(p("a&&b ? a&&b ? a = b : b : b").glslAssignmentExpression());
-		assertValid(p("a&&b ? a&&(b=3) ? +a : b++ : b  += 3").glslAssignmentExpression());
+		assertValid("x = a || b | c");
+		assertValid("float[] = a && b & c");
+		assertValid("x = a ^^ b ^ c & d ^ e");
+		assertValid("(a ^^ b ^ c & d ^ e) = x");
+		assertValid("++x = x");
+		assertValid("x = a&&b ? a : b");
+		assertValid("a&&b ? a&&b ? a = b : b : b");
+		assertValid("a&&b ? a&&(b=3) ? +a : b++ : b  += 3");
 		tearDownMultiTest();
 	}
 	
-	private static void testExpression() {
+	private void testExpression() {
 		setupMultiTest();
-		assertValid(p("a = b").glslExpression());
-		assertValid(p("a = b, c = d").glslExpression());
-		assertValid(p("a = b, c = d, e = f").glslExpression());
+		assertValid("a = b");
+		assertValid("a = b, c = d");
+		assertValid("a = b, c = d, e = f");
 		tearDownMultiTest();
 	}
 }

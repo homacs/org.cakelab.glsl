@@ -23,27 +23,27 @@ import org.cakelab.glsl.lang.ast.ShiftLeftExpression;
 import org.cakelab.glsl.lang.ast.ShiftRightExpression;
 import org.cakelab.glsl.lang.ast.UnaryExpression;
 import org.cakelab.glsl.lang.ast.XorExpression;
+import org.cakelab.glsl.test.Test;
 import org.cakelab.glsl.test.pp.TestingExprBase;
 
-public class TestExpression extends TestingExprBase {
+public class TestExpression extends TestingExprBase implements Test {
 	
-	public static void test() {
-		TestExpression tester = new TestExpression();
-		tester.testPrimaryExpression();
-		tester.testUnaryExpression();
-		tester.testMultiplicativeExpression();
-		tester.testAdditiveExpression();
-		tester.testShiftExpression();
-		tester.testRelationalExpression();
-		tester.testEqualityExpression();
-		tester.testAndExpression();
-		tester.testXorExpression();
-		tester.testOrExpression();
-		tester.testLogicalAndExpression();
-		tester.testLogicalXorExpression();
-		tester.testLogicalOrExpression();
-		tester.testConditionalExpression();
-		tester.testExpression();
+	public void test() {
+		testPrimaryExpression();
+		testUnaryExpression();
+		testMultiplicativeExpression();
+		testAdditiveExpression();
+		testShiftExpression();
+		testRelationalExpression();
+		testEqualityExpression();
+		testAndExpression();
+		testXorExpression();
+		testOrExpression();
+		testLogicalAndExpression();
+		testLogicalXorExpression();
+		testLogicalOrExpression();
+		testConditionalExpression();
+		testExpression();
 	}
 
 	

@@ -2,12 +2,11 @@ package org.cakelab.glsl.test.builtins;
 
 import org.cakelab.glsl.GLSLCompiler;
 import org.cakelab.glsl.GLSLVersion;
-import org.cakelab.glsl.antlr.AntlrCompiler;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
 
 public class TestBuiltinBase {
 	
-	protected static final GLSLCompiler COMPILER = new AntlrCompiler();
+	protected static final GLSLCompiler COMPILER = null;
 	
 	
 	protected static GLSLVersion core(int number) {

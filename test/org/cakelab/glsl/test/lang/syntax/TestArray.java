@@ -1,30 +1,26 @@
 package org.cakelab.glsl.test.lang.syntax;
 
-import org.cakelab.glsl.test.lang.TestingBase;
-
-public class TestArray extends TestingBase {
-	public static void test() {
-
+public abstract class TestArray extends TestingSyntaxBase {
+	public void test() {
 		testArrayVariableDeclaration();
-		
-
 	}
 
-	private static void testArrayVariableDeclaration() {
+	private void testArrayVariableDeclaration() {
 		
-		assertValid(p("int[] boo;").glslDeclarationStatement());
+		assertValid("int[] boo;");
 		
-		assertInvalid(p("int x[] boo;").glslDeclarationStatement());
+		assertInvalid("int x[] boo;");
 		
-		assertValid(p("int boo[];").glslDeclarationStatement());
+		assertValid("int boo[];");
 		
-		assertValid(p("int boo[3];").glslDeclarationStatement());
+		assertValid("int boo[3];");
 
 		// common static initialisation
-		assertValid(p("float b[] = { 3.4, 4.2, 5.0, 5.2, 1.1 };").glslDeclarationStatement());
+		assertValid("float b[] = { 3.4, 4.2, 5.0, 5.2, 1.1 };");
 		
 		// constructor call style initialisation
-		assertValid(p("float a[] = float[](3.4, 4.2, 5.0, 5.2, 1.1);").glslDeclarationStatement());
+		assertValid("float a[] = float[](3.4, 4.2, 5.0, 5.2, 1.1);");
 	}
+
 
 }

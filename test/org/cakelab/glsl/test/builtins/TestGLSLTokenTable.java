@@ -3,14 +3,10 @@ package org.cakelab.glsl.test.builtins;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.test.Test;
 
-public class TestGLSLTokenTable extends TestBuiltinBase {
-	public static void main(String[] args) {
-		Test.checkAssertionsOn();
-		test();
-	}
+public class TestGLSLTokenTable extends TestBuiltinBase implements Test {
 	
 	
-	public static void test() {
+	public void test() {
 		
 		testTokenTable(es(100));
 		testTokenTable(es(300));

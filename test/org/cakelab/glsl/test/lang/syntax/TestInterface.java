@@ -1,31 +1,23 @@
 package org.cakelab.glsl.test.lang.syntax;
 
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.cakelab.glsl.GLSLParser.GlslInterfaceBlockStructureContext;
-import org.cakelab.glsl.test.lang.TestingBase;
-
-public class TestInterface extends TestingBase {
-	public static void test() {
-
+public abstract class TestInterface extends TestingSyntaxBase {
+	public void test() {
 		testInterfaceBlock();
-		
-
 	}
 
-	private static void testInterfaceBlock() {
-		Class<? extends ParseTree> expected = GlslInterfaceBlockStructureContext.class;
+	private void testInterfaceBlock() {
 		
 		assertValid("in boo {\n"
 				+ "	int a;\n"
-				+ "};", expected);
+				+ "};");
 		
 		assertValid("in boo {\n"
 				+ "	int a;\n"
-				+ "}a;", expected);
+				+ "}a;");
 		
 		assertValid("in boo {\n"
 				+ "	int a;\n"
-				+ "}a;", expected);
+				+ "}a;");
 		
 		assertValid("in boo {\n"
 				+ "	int a;\n"

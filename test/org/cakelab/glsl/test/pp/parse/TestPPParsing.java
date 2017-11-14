@@ -1,17 +1,12 @@
 package org.cakelab.glsl.test.pp.parse;
 
-import org.cakelab.glsl.test.Test;
+import org.cakelab.glsl.test.TestProvider;
 
 public class TestPPParsing {
 
-	public static void main(String[] args) {
-		Test.checkAssertionsOn();
-		test();
-	}
-
-	public static void test() {
-		TestMacros.test();
-		TestConditionalInclusion.test();
+	public static void test(TestProvider tester) {
+		tester.test(TestMacros.class);
+		tester.test(TestConditionalInclusion.class);
 	}
 	
 	

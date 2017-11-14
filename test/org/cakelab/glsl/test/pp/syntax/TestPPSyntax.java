@@ -1,17 +1,13 @@
 package org.cakelab.glsl.test.pp.syntax;
 
-import org.cakelab.glsl.test.Test;
+import org.cakelab.glsl.test.TestProvider;
 
 public class TestPPSyntax {
-	public static void main(String[] args) {
-		Test.checkAssertionsOn();
-		test();
-	}
-
-	public static void test() {
-		TestNumber.test();
-		TestStringLiteral.test();
-		TestExpression.test();
-		TestDirective.test();
+	
+	public static void test(TestProvider tester) {
+		tester.test(TestNumber.class);
+		tester.test(TestStringLiteral.class);
+		tester.test(TestExpression.class);
+		tester.test(TestDirective.class);
 	}
 }

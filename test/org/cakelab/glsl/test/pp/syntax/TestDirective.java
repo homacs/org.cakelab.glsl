@@ -1,18 +1,18 @@
 package org.cakelab.glsl.test.pp.syntax;
 
+import org.cakelab.glsl.test.Test;
 import org.cakelab.glsl.test.pp.TestingPPBase;
 
-public class TestDirective extends TestingPPBase {
+public class TestDirective extends TestingPPBase implements Test {
 
-	public static void test() {
-		TestDirective tester = new TestDirective();
-		tester.testNonDirective();
-		tester.testMacros();
-		tester.testConditions();
-		tester.testInclude();
-		tester.testLine();
-		tester.testError();
-		tester.testGLSLExtensions();
+	public void test() {
+		testNonDirective();
+		testMacros();
+		testConditions();
+		testInclude();
+		testLine();
+		testError();
+		testGLSLExtensions();
 	}
 
 	private void testNonDirective() {

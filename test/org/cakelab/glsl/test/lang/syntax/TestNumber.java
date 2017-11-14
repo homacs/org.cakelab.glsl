@@ -1,222 +1,220 @@
 package org.cakelab.glsl.test.lang.syntax;
 
-import org.cakelab.glsl.test.lang.TestingBase;
+public abstract class TestNumber extends TestingSyntaxBase {
 
-public class TestNumber extends TestingBase {
-
-	public static void test() {
+	public void test() {
 		testInteger();
 		testUnsignedInteger();
 		testFloat();
 		testDouble();
 	}
 
-	private static void testDouble() {
+	private void testDouble() {
 		
 		// FLOATCONSTANT DECIMAL
-		assertValid(p("0.").glslDoubleConstant());
-		assertValid(p("00.").glslDoubleConstant());
-		assertValid(p("10.").glslDoubleConstant());
-		assertValid(p("90000.").glslDoubleConstant());
-		assertValid(p("9.").glslDoubleConstant());
+		assertValid("0.");
+		assertValid("00.");
+		assertValid("10.");
+		assertValid("90000.");
+		assertValid("9.");
 		
-		assertValid(p("010.").glslDoubleConstant());
-		assertValid(p("09.").glslDoubleConstant());
+		assertValid("010.");
+		assertValid("09.");
 
-		assertValid(p("010.l").glslDoubleConstant());
-		assertValid(p("09.L").glslDoubleConstant());
+		assertValid("010.l");
+		assertValid("09.L");
 
-		assertValid(p("010.e1").glslDoubleConstant());
-		assertValid(p("09.E900").glslDoubleConstant());
+		assertValid("010.e1");
+		assertValid("09.E900");
 
-		assertValid(p("010.e+1").glslDoubleConstant());
-		assertValid(p("09.E-900").glslDoubleConstant());
+		assertValid("010.e+1");
+		assertValid("09.E-900");
 
-		assertValid(p("010.e1l").glslDoubleConstant());
-		assertValid(p("09.E900L").glslDoubleConstant());
+		assertValid("010.e1l");
+		assertValid("09.E900L");
 
-		assertValid(p("010.e+1l").glslDoubleConstant());
-		assertValid(p("09.E-900L").glslDoubleConstant());
+		assertValid("010.e+1l");
+		assertValid("09.E-900L");
 
 		
 		
-		assertValid(p(".0").glslDoubleConstant());
-		assertValid(p(".00").glslDoubleConstant());
-		assertValid(p(".1").glslDoubleConstant());
-		assertValid(p(".9").glslDoubleConstant());
-		assertValid(p(".00001").glslDoubleConstant());
-		assertValid(p(".00009").glslDoubleConstant());
+		assertValid(".0");
+		assertValid(".00");
+		assertValid(".1");
+		assertValid(".9");
+		assertValid(".00001");
+		assertValid(".00009");
 
-		assertInvalid(p(".").glslDoubleConstant());
-		assertInvalid(p("-.").glslDoubleConstant());
-		assertInvalid(p("a.").glslDoubleConstant());
+		assertInvalid(".");
+		assertInvalid("-.");
+		assertInvalid("a.");
 
-		assertInvalid(p(".a").glslDoubleConstant());
-		assertInvalid(p(".00a").glslDoubleConstant());
+		assertInvalid(".a");
+		assertInvalid(".00a");
 
-		assertInvalid(p("+010.e").glslDoubleConstant());
-		assertInvalid(p("-09.E").glslDoubleConstant());
+		assertInvalid("+010.e");
+		assertInvalid("-09.E");
 
-		assertInvalid(p("+010.-e1").glslDoubleConstant());
-		assertInvalid(p("-09.+E9").glslDoubleConstant());
+		assertInvalid("+010.-e1");
+		assertInvalid("-09.+E9");
 
-		assertInvalid(p("+010.-ea").glslDoubleConstant());
-		assertInvalid(p("-09.+Ef").glslDoubleConstant());
+		assertInvalid("+010.-ea");
+		assertInvalid("-09.+Ef");
 
-		assertInvalid(p("+010.el").glslDoubleConstant());
-		assertInvalid(p("-09.EL").glslDoubleConstant());
+		assertInvalid("+010.el");
+		assertInvalid("-09.EL");
 
 		// FLOATCONSTANT HEX
-		assertValid(p("0x0.").glslDoubleConstant());
-		assertValid(p("0X0.").glslDoubleConstant());
-		assertValid(p("0x00.").glslDoubleConstant());
-		assertValid(p("0x10.").glslDoubleConstant());
-		assertValid(p("0xf0000.").glslDoubleConstant());
-		assertValid(p("0xf.").glslDoubleConstant());
+		assertValid("0x0.");
+		assertValid("0X0.");
+		assertValid("0x00.");
+		assertValid("0x10.");
+		assertValid("0xf0000.");
+		assertValid("0xf.");
 		
-		assertValid(p("0x010.").glslDoubleConstant());
-		assertValid(p("0x0F.").glslDoubleConstant());
+		assertValid("0x010.");
+		assertValid("0x0F.");
 
-		assertValid(p("0x010.l").glslDoubleConstant());
-		assertValid(p("0x0f.L").glslDoubleConstant());
+		assertValid("0x010.l");
+		assertValid("0x0f.L");
 
-		assertValid(p("0x010.p1").glslDoubleConstant());
-		assertValid(p("0x0F.P900").glslDoubleConstant());
+		assertValid("0x010.p1");
+		assertValid("0x0F.P900");
 
-		assertValid(p("0x010.p+1").glslDoubleConstant());
-		assertValid(p("0x09.P-900").glslDoubleConstant());
+		assertValid("0x010.p+1");
+		assertValid("0x09.P-900");
 
-		assertValid(p("0x010.p1l").glslDoubleConstant());
-		assertValid(p("0x09.P900L").glslDoubleConstant());
+		assertValid("0x010.p1l");
+		assertValid("0x09.P900L");
 
-		assertValid(p("0x010.p+1l").glslDoubleConstant());
-		assertValid(p("0x09.P-900L").glslDoubleConstant());
+		assertValid("0x010.p+1l");
+		assertValid("0x09.P-900L");
 
 		
 		
-		assertValid(p("0x.0").glslDoubleConstant());
-		assertValid(p("0x.00").glslDoubleConstant());
-		assertValid(p("0x.1").glslDoubleConstant());
-		assertValid(p("0x.9").glslDoubleConstant());
-		assertValid(p("0x.00001").glslDoubleConstant());
-		assertValid(p("0x.00009").glslDoubleConstant());
+		assertValid("0x.0");
+		assertValid("0x.00");
+		assertValid("0x.1");
+		assertValid("0x.9");
+		assertValid("0x.00001");
+		assertValid("0x.00009");
 
-		assertInvalid(p("0x.").glslDoubleConstant());
-		assertInvalid(p("-0x.").glslDoubleConstant());
-		assertInvalid(p("0xg.").glslDoubleConstant());
+		assertInvalid("0x.");
+		assertInvalid("-0x.");
+		assertInvalid("0xg.");
 
-		assertInvalid(p("0x.g").glslDoubleConstant());
-		assertInvalid(p("0x.00g").glslDoubleConstant());
+		assertInvalid("0x.g");
+		assertInvalid("0x.00g");
 
-		assertInvalid(p("+0x010.e+5").glslDoubleConstant());
-		assertInvalid(p("-0x0F.E-1").glslDoubleConstant());
+		assertInvalid("+0x010.e+5");
+		assertInvalid("-0x0F.E-1");
 
-		assertInvalid(p("+0x010.p+a").glslDoubleConstant());
-		assertInvalid(p("-0x0f.P-F").glslDoubleConstant());
+		assertInvalid("+0x010.p+a");
+		assertInvalid("-0x0f.P-F");
 
 
-		assertInvalid(p("+0x010.p").glslDoubleConstant());
-		assertInvalid(p("-0x0f.P").glslDoubleConstant());
+		assertInvalid("+0x010.p");
+		assertInvalid("-0x0f.P");
 
-		assertInvalid(p("+0x010.-p1").glslDoubleConstant());
-		assertInvalid(p("-0x0f.+P9").glslDoubleConstant());
+		assertInvalid("+0x010.-p1");
+		assertInvalid("-0x0f.+P9");
 
-		assertInvalid(p("+0x010.-pa").glslDoubleConstant());
-		assertInvalid(p("-0x0f.+Pf").glslDoubleConstant());
+		assertInvalid("+0x010.-pa");
+		assertInvalid("-0x0f.+Pf");
 
-		assertInvalid(p("+0x010.pl").glslDoubleConstant());
-		assertInvalid(p("-0x0f.PL").glslDoubleConstant());
+		assertInvalid("+0x010.pl");
+		assertInvalid("-0x0f.PL");
 		
 	}
 
-	private static void testFloat() {
+	private void testFloat() {
 		// FLOATCONSTANT DECIMAL
-		assertValid(p("0.f").glslFloatConstant());
-		assertValid(p("0.F").glslFloatConstant());
-		assertValid(p(".0f").glslFloatConstant());
-		assertValid(p("0.0F").glslFloatConstant());
-		assertValid(p("1.0e1f").glslFloatConstant());
-		assertValid(p("1.0E1f").glslFloatConstant());
-		assertValid(p("1.0E100f").glslFloatConstant());
-		assertValid(p("1.0E+1f").glslFloatConstant());
-		assertValid(p("1.0E-1f").glslFloatConstant());
-		assertInvalid(p("1.0fE-1f").glslFloatConstant());
-		assertInvalid(p("1.0E1.00f").glslFloatConstant());
+		assertValid("0.f");
+		assertValid("0.F");
+		assertValid(".0f");
+		assertValid("0.0F");
+		assertValid("1.0e1f");
+		assertValid("1.0E1f");
+		assertValid("1.0E100f");
+		assertValid("1.0E+1f");
+		assertValid("1.0E-1f");
+		assertInvalid("1.0fE-1f");
+		assertInvalid("1.0E1.00f");
 		// FLOATCONSTANT HEX
-		assertValid(p("0x1.f").glslFloatConstant());
-		assertValid(p("0x.F").glslFloatConstant());
-		assertValid(p(".0f").glslFloatConstant());
-		assertValid(p("0.0F").glslFloatConstant());
-		assertInvalid(p("1.0e1").glslFloatConstant());
-		assertValid(p("1.0E1f").glslFloatConstant());
-		assertValid(p("1.0E100f").glslFloatConstant());
-		assertValid(p("1.0E+1f").glslFloatConstant());
-		assertValid(p("1.0E-1f").glslFloatConstant());
+		assertValid("0x1.f");
+		assertValid("0x.F");
+		assertValid(".0f");
+		assertValid("0.0F");
+		assertInvalid("1.0e1");
+		assertValid("1.0E1f");
+		assertValid("1.0E100f");
+		assertValid("1.0E+1f");
+		assertValid("1.0E-1f");
 	}
-	private static void testUnsignedInteger() {
+	private void testUnsignedInteger() {
 		// INTCONSTANT DECIMAL
 		
-		assertValid(p("0u").glslUnsignedIntegerConstant());
-		assertValid(p("1u").glslUnsignedIntegerConstant());
-		assertValid(p("1234567890u").glslUnsignedIntegerConstant());
+		assertValid("0u");
+		assertValid("1u");
+		assertValid("1234567890u");
 		
-		assertInvalid(p("1").glslUnsignedIntegerConstant());
-		assertValid(p("0u").glslUnsignedIntegerConstant());
-		assertInvalid(p("1").glslUnsignedIntegerConstant());
-		assertValid(p("1234567890Ul").glslUnsignedIntegerConstant());
+		assertInvalid("1");
+		assertValid("0u");
+		assertInvalid("1");
+		assertValid("1234567890Ul");
 		
 		
 		
 		// INTCONSTANT OCTAL
 		
-		assertValid(p("01234567u").glslUnsignedIntegerConstant());
-		assertInvalid(p("08u").glslUnsignedIntegerConstant());
-		assertInvalid(p("09u").glslUnsignedIntegerConstant());
-		assertInvalid(p("0au").glslUnsignedIntegerConstant());
+		assertValid("01234567u");
+		assertInvalid("08u");
+		assertInvalid("09u");
+		assertInvalid("0au");
 		
 
 		// INTCONSTANT HEXADECIMAL
 		
-		assertValid(p("0x8U").glslUnsignedIntegerConstant());
-		assertValid(p("0X9U").glslUnsignedIntegerConstant());
-		assertValid(p("0xaU").glslUnsignedIntegerConstant());
+		assertValid("0x8U");
+		assertValid("0X9U");
+		assertValid("0xaU");
 		
-		assertInvalid(p("0x-8").glslUnsignedIntegerConstant());
-		assertInvalid(p("0X9abcdefABCDEFL").glslUnsignedIntegerConstant());
-		assertInvalid(p("0xa").glslUnsignedIntegerConstant());
+		assertInvalid("0x-8");
+		assertInvalid("0X9abcdefABCDEFL");
+		assertInvalid("0xa");
 				
 	}
 
-	private static void testInteger() {
+	private void testInteger() {
 		// INTCONSTANT DECIMAL
 		
 		
-		assertValid(p("0").glslIntegerConstant());
-		assertValid(p("1").glslIntegerConstant());
-		assertValid(p("1234567890").glslIntegerConstant());
+		assertValid("0");
+		assertValid("1");
+		assertValid("1234567890");
 		
-		assertInvalid(p("1u").glslIntegerConstant());
-		assertInvalid(p("1234567890Ul").glslIntegerConstant());
+		assertInvalid("1u");
+		assertInvalid("1234567890Ul");
 		
 		
 		
 		// INTCONSTANT OCTAL
 		
-		assertValid(p("01234567").glslIntegerConstant());
-		assertInvalid(p("08").glslIntegerConstant());
-		assertInvalid(p("09").glslIntegerConstant());
-		assertInvalid(p("0a").glslIntegerConstant());
+		assertValid("01234567");
+		assertInvalid("08");
+		assertInvalid("09");
+		assertInvalid("0a");
 		
 
 		// INTCONSTANT HEXADECIMAL
 		
-		assertValid(p("0x8").glslIntegerConstant());
-		assertValid(p("0X9").glslIntegerConstant());
-		assertValid(p("0xa").glslIntegerConstant());
+		assertValid("0x8");
+		assertValid("0X9");
+		assertValid("0xa");
 		
-		assertInvalid(p("0x-8").glslIntegerConstant());
-		assertValid(p("0X9abcdefABCDEFL").glslIntegerConstant());
-		assertValid(p("0xaL").glslIntegerConstant());
+		assertInvalid("0x-8");
+		assertValid("0X9abcdefABCDEFL");
+		assertValid("0xaL");
 				
 	}
 

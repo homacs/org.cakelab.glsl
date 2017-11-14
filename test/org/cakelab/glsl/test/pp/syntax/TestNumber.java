@@ -1,16 +1,16 @@
 package org.cakelab.glsl.test.pp.syntax;
 
 import org.cakelab.glsl.lang.ast.Expression;
+import org.cakelab.glsl.test.Test;
 import org.cakelab.glsl.test.pp.TestingExprBase;
 
-public class TestNumber extends TestingExprBase {
+public class TestNumber extends TestingExprBase implements Test {
 
-	public static void test() {
-		TestNumber tester = new TestNumber();
-		tester.testInteger();
-		tester.testUnsignedInteger();
-		tester.testFloat();
-		tester.testDouble();
+	public void test() {
+		testInteger();
+		testUnsignedInteger();
+		testFloat();
+		testDouble();
 	}
 
 	private void testDouble() {

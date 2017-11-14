@@ -2,21 +2,21 @@ package org.cakelab.glsl.test.combined;
 
 import java.io.IOException;
 
+import org.cakelab.glsl.GLSLCompiler;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
-import org.cakelab.glsl.antlr.AntlrCompiler;
 import org.cakelab.glsl.impl.DelegatingResourceManager;
 import org.cakelab.glsl.impl.FileSystemResourceManager;
 import org.cakelab.glsl.impl.JarResourceManager;
 import org.cakelab.glsl.impl.ResourceString;
+import org.cakelab.glsl.test.TestErrorHandler;
 import org.cakelab.glsl.test.lang.TestingTools;
-import org.cakelab.glsl.test.lang.TestingTools.TestErrorHandler;
 
 public class TestingGLSLBase {
 	
-	protected static final TestErrorHandler ERROR_HANDLER = TestingTools.TEST_ERROR_HANLDER;
+	protected static TestErrorHandler ERROR_HANDLER;
 	protected static final DelegatingResourceManager RESOURCES = new DelegatingResourceManager(new JarResourceManager(), new FileSystemResourceManager());
-	protected static final AntlrCompiler _GLSL = new AntlrCompiler(AntlrCompiler.getDefaultCompilerFeatures(), ERROR_HANDLER, RESOURCES);
+	protected static GLSLCompiler COMPILER;
 	protected static final String TEST_RESOURCE_PATH = "test.glsl";
 	
 	
@@ -69,7 +69,7 @@ public class TestingGLSLBase {
 	public static void assertValid(Resource resource, ShaderType shaderType) {
 		p(resource, shaderType);
 		if (ERROR_HANDLER.hasError()) {
-			TestingTools.error(ERROR_HANDLER.message);
+			TestingTools.error(ERROR_HANDLER.getMessage());
 		}
 	}
 	
@@ -85,7 +85,7 @@ public class TestingGLSLBase {
 	public static void p(Resource resource, ShaderType shaderType) {
 		try {
 			ERROR_HANDLER.reset();
-			_GLSL.parse(resource, shaderType);
+			COMPILER.parse(resource, shaderType);
 		} catch (IOException e) {
 			// internal error
 			throw new Error("internal error: ", e);

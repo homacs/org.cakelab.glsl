@@ -6,37 +6,9 @@ import org.cakelab.glsl.builtin.GLSLBuiltin;
 import org.cakelab.glsl.builtin.GLSLBuiltinServices;
 import org.cakelab.glsl.test.Test;
 
-public class TestBuiltinSymbols extends TestBuiltinBase {
+public class TestBuiltinSymbols extends TestBuiltinBase implements Test {
 	
-	
-	
-	public static void main(String[] args) {
-		Test.checkAssertionsOn();
-		testDump();
-		
-		
-	}
-
-	public static void testDump() {
-		
-		GLSLBuiltinServices builtinServices = COMPILER.getBuiltinServices();
-		
-		GLSLBuiltin symbols;
-		
-		GLSLVersion version = core(420);
-		
-		
-		
-		symbols = builtinServices.getBuiltins(version, ShaderType.VERTEX_SHADER);
-		symbols = builtinServices.getBuiltins(version, ShaderType.TESS_CONTROL_SHADER);
-		symbols = builtinServices.getBuiltins(version, ShaderType.TESS_EVALUATION_SHADER);
-		symbols = builtinServices.getBuiltins(version, ShaderType.GEOMETRY_SHADER);
-		symbols = builtinServices.getBuiltins(version, ShaderType.FRAGMENT_SHADER);
-		symbols = builtinServices.getBuiltins(version, ShaderType.COMPUTE_SHADER);
-		symbols.dump(System.out);
-	}
-
-	public static void test() {
+	public void test() {
 		test(es(100));
 		test(es(300));
 		test(es(310));
@@ -73,8 +45,27 @@ public class TestBuiltinSymbols extends TestBuiltinBase {
 		
 	}
 
+	public void testDump() {
+		
+		GLSLBuiltinServices builtinServices = COMPILER.getBuiltinServices();
+		
+		GLSLBuiltin symbols;
+		
+		GLSLVersion version = core(420);
+		
+		
+		
+		symbols = builtinServices.getBuiltins(version, ShaderType.VERTEX_SHADER);
+		symbols = builtinServices.getBuiltins(version, ShaderType.TESS_CONTROL_SHADER);
+		symbols = builtinServices.getBuiltins(version, ShaderType.TESS_EVALUATION_SHADER);
+		symbols = builtinServices.getBuiltins(version, ShaderType.GEOMETRY_SHADER);
+		symbols = builtinServices.getBuiltins(version, ShaderType.FRAGMENT_SHADER);
+		symbols = builtinServices.getBuiltins(version, ShaderType.COMPUTE_SHADER);
+		symbols.dump(System.out);
+	}
 
-	private static void test(GLSLVersion version) {
+
+	private void test(GLSLVersion version) {
 		
 		GLSLBuiltinServices builtinServices = COMPILER.getBuiltinServices();
 		

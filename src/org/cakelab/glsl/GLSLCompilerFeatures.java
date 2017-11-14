@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.cakelab.glsl.GLSLVersion.Profile;
-import org.cakelab.glsl.antlr.AntlrCompiler;
 import org.cakelab.glsl.builtin.GLSLBuiltinServices;
 import org.cakelab.glsl.pp.ast.Macro;
 import org.cakelab.glsl.pp.tokens.TNumber;

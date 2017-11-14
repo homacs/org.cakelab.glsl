@@ -8,20 +8,15 @@ import org.cakelab.glsl.impl.JarResourceManager;
 import org.cakelab.glsl.test.Test;
 import org.cakelab.glsl.test.combined.TestingGLSLBase;
 
-public class TestExtensions extends TestingGLSLBase {
+public class TestExtensions extends TestingGLSLBase implements Test {
 	static {
 		// register a resource manager to resolve paths relative to this package
 		RESOURCES.register(new JarResourceManager(TestExtensions.class.getPackage()));
 	}
 	
-	public static void main(String[] args) {
-		Test.checkAssertionsOn();
-		test();
-	}
 	
-	
-	public static void test() {
-		_GLSL.enableInclude(false);
+	public void test() {
+		COMPILER.enableInclude(false);
 		testGL_ARB_gpu_shader_fp64();
 		testGL_ARB_shader_texture_image_samples();
 		testGL_ARB_tessellation_shader();
@@ -32,11 +27,11 @@ public class TestExtensions extends TestingGLSLBase {
 		testGL_ARB_sample_shading();
 		testGL_ARB_texture_query_levels();
 		test_files();
-		_GLSL.enableInclude(true);
+		COMPILER.enableInclude(true);
 	}
 
 
-	private static void test_files() {
+	public void test_files() {
 		assertValid(resource("GL_ARB_shader_group_vote/test_01.frag.glsl"));
 		assertValid(resource("GL_ARB_shader_draw_parameters/test_01.vert.glsl"));
 		assertValid(resource("GL_ARB_shader_atomic_counters/test_01.frag.glsl"));
@@ -62,19 +57,19 @@ public class TestExtensions extends TestingGLSLBase {
 	}
 
 
-	private static void testGL_ARB_texture_query_levels() {
+	public void testGL_ARB_texture_query_levels() {
 		assertValid(resource("GL_ARB_texture_query_levels/test_01.frag.glsl"),
 				ShaderType.GENERIC_SHADER);
 	}
 
 
-	private static void testGL_ARB_sample_shading() {
+	public void testGL_ARB_sample_shading() {
 		assertValid(resource("GL_ARB_sample_shading/test_01.frag.glsl"),
 				ShaderType.FRAGMENT_SHADER);
 	}
 
 
-	private static void testGL_ARB_shader_image_load_store() {
+	public void testGL_ARB_shader_image_load_store() {
 		assertValid(resource("GL_ARB_shader_image_load_store/test_01.frag.glsl"),
 				ShaderType.FRAGMENT_SHADER);
 	}
@@ -89,7 +84,7 @@ public class TestExtensions extends TestingGLSLBase {
 	}
 
 
-	private static void testGL_ARB_shader_image_size() {
+	public void testGL_ARB_shader_image_size() {
 		assertValid("#version 420 compatibility\n"
 				+ "#extension GL_ARB_shader_image_size : enable\n"
 				+ "in image1D image;\n"
@@ -101,7 +96,7 @@ public class TestExtensions extends TestingGLSLBase {
 	}
 
 
-	private static void testGL_ARB_shader_atomic_counter_ops() {
+	public void testGL_ARB_shader_atomic_counter_ops() {
 		assertValid("#version 420 compatibility\n"
 				+ "#extension GL_ARB_shader_atomic_counter_ops : enable\n"
 				+ "atomic_uint counter;\n"
@@ -113,7 +108,7 @@ public class TestExtensions extends TestingGLSLBase {
 	}
 
 
-	private static void testGL_ARB_derivative_control() {
+	public void testGL_ARB_derivative_control() {
 		assertValid("#version 400 compatibility\n"
 				+ "#extension GL_ARB_derivative_control : enable\n"
 				+ "void main () {\n"
@@ -124,7 +119,7 @@ public class TestExtensions extends TestingGLSLBase {
 	}
 
 
-	private static void testGL_ARB_tessellation_shader() {
+	public void testGL_ARB_tessellation_shader() {
 		assertValid("#version 150 compatibility\n"
 				+ "#extension GL_ARB_tessellation_shader : enable\n"
 				+ "void main () {\n"
@@ -136,7 +131,7 @@ public class TestExtensions extends TestingGLSLBase {
 	}
 
 
-	private static void testGL_ARB_shader_texture_image_samples() {
+	public void testGL_ARB_shader_texture_image_samples() {
 		assertValid("#version 420\n"
 				+ "#extension GL_ARB_shader_texture_image_samples : enable\n"
 				+ "in sampler2DMS sampler;\n"
@@ -150,7 +145,7 @@ public class TestExtensions extends TestingGLSLBase {
 	}
 
 
-	private static void testGL_ARB_gpu_shader_fp64() {
+	public void testGL_ARB_gpu_shader_fp64() {
 		assertValid("#version 150\n"
 				+ "#extension GL_ARB_gpu_shader_fp64 : enable\n"
 				+ "double d;\n",

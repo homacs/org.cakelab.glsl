@@ -1,20 +1,16 @@
 package org.cakelab.glsl.test.lang.syntax;
 
-import org.cakelab.glsl.GLSLParser.*;
-import org.cakelab.glsl.test.Test;
-import org.cakelab.glsl.test.lang.TestingBase;
-import org.cakelab.glsl.test.lang.TestingTools;
+import org.cakelab.glsl.test.TestAll;
 
-public class TestStatement extends TestingBase {
+public abstract class TestStatement extends TestingSyntaxBase {
 	
-	public static void main(String[] args) {
-		Test.checkAssertionsOn();
+	public void main(String[] args) {
+		TestAll.checkAssertionsOn();
 		test();
 	}
 	
 	
-	public static void test() {
-		validateIdentifiers = false;
+	public void test() {
 		testSimpleStatement();
 		testCompoundStatement();
 		testIfStatement();
@@ -22,78 +18,64 @@ public class TestStatement extends TestingBase {
 		testWhileStatement();
 		testDoWhileStatement();
 		testForStatement();
-		validateIdentifiers = true;
 	}
 
-	public static void setupMultiTest() {
-		autoTearDown = false;
-	}
 	
-	public static void tearDownMultiTest() {
-		TestingTools.tearDown();
-		autoTearDown = true;
-	}
-	
-	private static void testSimpleStatement() {
-		assertValid(p("int a;").glslSimpleStatement(), GlslDeclarationStatementContext.class);
-		assertValid(p(";").glslSimpleStatement(), GlslExpressionStatementContext.class);
-		assertValid(p("a++;").glslSimpleStatement(), GlslExpressionStatementContext.class);
+	public void testSimpleStatement() {
+		assertValid("int a;");
+		assertValid(";");
+		assertValid("a++;");
 	}
 
-	private static void testCompoundStatement() {
-		assertValid(p("{}").glslCompoundStatement());
-		assertValid(p("{a = a++;}").glslCompoundStatement());
-		assertValid(p("{ {a = a++;}}").glslCompoundStatement());
-		assertValid(p("{ ; ; }").glslCompoundStatement());
+	public void testCompoundStatement() {
+		assertValid("{}");
+		assertValid("{a = a++;}");
+		assertValid("{ {a = a++;}}");
+		assertValid("{ ; ; }");
 		
 	}
 	
-	private static void testIfStatement() {
-		assertValid(p("if(false);").glslIfStatement());
-		assertValid(p("if (true) exit();").glslIfStatement());
-		assertValid(p("if (1) if (2) ;").glslIfStatement());
+	public void testIfStatement() {
+		assertValid("if(false);");
+		assertValid("if (true) exit();");
+		assertValid("if (1) if (2) ;");
 		
-		// TODO [3] If statements with else branches are the only case 
-		// where ANTLR suspects context sensitivity, but I 
-		// really can't find the reason!
-		IGNORE_CONTEXT_SENSITIVITY = true;
-		assertValid(p("if (1) {} else {}").glslIfStatement());
-		assertValid(p("if (1) {} else ;").glslIfStatement());
-		assertValid(p("if (1) ; else ;").glslIfStatement());
-		assertValid(p("if (1) ; else if(a) ;").glslIfStatement());
-		assertValid(p("if (1) if (2) ; else ;").glslIfStatement());
-		assertValid(p("if (1) if (2) {} else {} else {}").glslIfStatement());
-		assertValid(p("if (1) if (2) ; else if (3) ;").glslIfStatement());
-		assertValid(p("if (1) { if (2) ; else if (3) ; } else ;").glslIfStatement());
-		IGNORE_CONTEXT_SENSITIVITY = false;
+		assertValid("if (1) {} else {}");
+		assertValid("if (1) {} else ;");
+		assertValid("if (1) ; else ;");
+		assertValid("if (1) ; else if(a) ;");
+		assertValid("if (1) if (2) ; else ;");
+		assertValid("if (1) if (2) {} else {} else {}");
+		assertValid("if (1) if (2) ; else if (3) ;");
+		assertValid("if (1) { if (2) ; else if (3) ; } else ;");
 	}
 
-	private static void testSwitchStatement() {
-		assertValid(p("switch(1){}").glslSwitchStatement());
-		assertValid(p("switch(1){default: return; }").glslSwitchStatement());
-		assertValid(p("switch(1){case 1:switch(2){} break;}").glslSwitchStatement());
-		assertValid(p("switch(1){case 1: switch(2){case 2: return; } break;}").glslSwitchStatement());
+	public void testSwitchStatement() {
+		assertValid("switch(1){}");
+		assertValid("switch(1){default: return; }");
+		assertValid("switch(1){case 1:switch(2){} break;}");
+		assertValid("switch(1){case 1: switch(2){case 2: return; } break;}");
 	}
 
-	private static void testWhileStatement() {
-		assertValid(p("while(true);").glslWhileStatement());
-		assertValid(p("while(true){ return; }").glslWhileStatement());
-		assertValid(p("while(true) while(false){}").glslWhileStatement());
+	public void testWhileStatement() {
+		assertValid("while(true);");
+		assertValid("while(true){ return; }");
+		assertValid("while(true) while(false){}");
 		
-		assertValid(p("while(bool a = true);").glslWhileStatement());
+		assertValid("while(bool a = true);");
 	}
 
-	private static void testDoWhileStatement() {
-		assertValid(p("do ; while(true);").glslDoWhileStatement());
-		assertValid(p("do do ; while (true); while(true);").glslDoWhileStatement());
+	public void testDoWhileStatement() {
+		assertValid("do ; while(true);");
+		assertValid("do do ; while (true); while(true);");
 	}
 	
-	private static void testForStatement() {
-		assertValid(p("for(;;)break;").glslForStatement());
-		assertValid(p("for(int i = 0; i < 10; i++);").glslForStatement());
-		assertValid(p("for(int i = 0, j = 1; i < 10 && j > 2; i++, j++);").glslForStatement());
-		assertValid(p("for(;;)for(;;);").glslForStatement());
-		assertValid(p("for(;;)for(;;){}").glslForStatement());
-		assertValid(p("for(;;){for(;;){}}").glslForStatement());
+	public void testForStatement() {
+		assertValid("for(;;)break;");
+		assertValid("for(int i = 0; i < 10; i++);");
+		assertValid("for(int i = 0, j = 1; i < 10 && j > 2; i++, j++);");
+		assertValid("for(;;)for(;;);");
+		assertValid("for(;;)for(;;){}");
+		assertValid("for(;;){for(;;){}}");
 	}
 }

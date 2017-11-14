@@ -15,22 +15,17 @@ import org.cakelab.glsl.builtin.extensions.VersionDependency;
 import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.test.Test;
 
-public class TestExtensionLoading extends TestBuiltinBase {
-
-	public static void main(String[] args) {
-		Test.checkAssertionsOn();
-		test();
-	}
+public class TestExtensionLoading extends TestBuiltinBase implements Test {
 	
 	
-	public static void test() {
+	public void test() {
 		testVersionDependency();
 		testExtensionProperties();
 		testMockedExtensions();
 		testLoading();
 	}
 	
-	private static void testMockedExtensions() {
+	public void testMockedExtensions() {
 		WorkingSet ws = testExtension(core(110), ShaderType.VERTEX_SHADER, "GL_NV_vertex_program4");
 
 		assert (ws.getExtensions().containsExtension("GL_NV_vertex_program4"));
@@ -44,7 +39,7 @@ public class TestExtensionLoading extends TestBuiltinBase {
 	}
 
 
-	private static void testLoading() {
+	public void testLoading() {
 		WorkingSet ws = testExtension(core(150), ShaderType.VERTEX_SHADER, "GL_ARB_sparse_texture", "GL_ARB_sparse_texture2");
 		
 		ws = testExtension(core(400), ShaderType.VERTEX_SHADER, "GL_ARB_gpu_shader_int64");
@@ -131,7 +126,7 @@ public class TestExtensionLoading extends TestBuiltinBase {
 	}
 
 
-	public static void testVersionDependency() {
+	public void testVersionDependency() {
 		VersionDependency dependency = VersionDependency.parse(" 100 ");
 		assertValid(dependency, 100);
 		assertInvalid(dependency, 101,99);
@@ -162,7 +157,7 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		assertInvalidVersionString("100,110,");
 		
 	}
-	public static void testExtensionProperties() {
+	public void testExtensionProperties() {
 		try {
 			String dir = "test/" + TestBuiltinSymbols.class.getPackage().getName().replace('.', '/');
 			FileInputStream props = new FileInputStream(dir + "/example.extension.properties.json");
@@ -188,12 +183,12 @@ public class TestExtensionLoading extends TestBuiltinBase {
 	}
 	
 	
-	private static void assertValid(Properties p, GLSLVersion version, String ... enabled) {
+	public void assertValid(Properties p, GLSLVersion version, String ... enabled) {
 		WorkingSet ws = createFakeWorkingSet(version, enabled);
 		assert p.checkRequirements(ws.getGLSLVersion(), ws.getBuiltinScope());
 	}
 
-	private static void assertInvalid(Properties p, GLSLVersion version, String ... enabled) {
+	public void assertInvalid(Properties p, GLSLVersion version, String ... enabled) {
 		WorkingSet ws = createFakeWorkingSet(version, enabled);
 		try {
 			assert !p.checkRequirements(ws.getGLSLVersion(), ws.getBuiltinScope());
@@ -204,7 +199,7 @@ public class TestExtensionLoading extends TestBuiltinBase {
 	}
 
 
-	private static WorkingSet createFakeWorkingSet(GLSLVersion version, String ... names) {
+	private WorkingSet createFakeWorkingSet(GLSLVersion version, String ... names) {
 		GLSLBuiltin builtin = getTestBuiltinSymbols(version);
 		
 		WorkingSet ws = COMPILER.getBuiltinServices().createWorkingSet(builtin);
@@ -217,7 +212,7 @@ public class TestExtensionLoading extends TestBuiltinBase {
 	}
 
 
-	public static WorkingSet testExtension(GLSLVersion version, ShaderType shaderType, String ... extensions) {
+	public WorkingSet testExtension(GLSLVersion version, ShaderType shaderType, String ... extensions) {
 		GLSLBuiltinServices services = COMPILER.getBuiltinServices();
 		GLSLBuiltin builtin = services.getBuiltins(version, shaderType);
 		WorkingSet workingSet = services.createWorkingSet(builtin);
@@ -229,7 +224,7 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		return workingSet;
 	}
 	
-	private static void assertInvalidVersionString(String string) {
+	public void assertInvalidVersionString(String string) {
 		try {
 			VersionDependency.parse(string);
 			assert false : "expected IllegalArgumentException";
@@ -238,13 +233,13 @@ public class TestExtensionLoading extends TestBuiltinBase {
 	}
 
 
-	private static void assertValid(VersionDependency d, int ... versions) {
+	public void assertValid(VersionDependency d, int ... versions) {
 		for (int v : versions) {
 			assert (d.check(v));
 		}
 	}
 
-	private static void assertInvalid(VersionDependency d, int ... versions) {
+	public void assertInvalid(VersionDependency d, int ... versions) {
 		for (int v : versions) {
 			assert (!d.check(v));
 		}

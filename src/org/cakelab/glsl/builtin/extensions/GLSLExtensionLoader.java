@@ -7,7 +7,6 @@ import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.SymbolTable;
-import org.cakelab.glsl.antlr.PPOutputBuffer;
 import org.cakelab.glsl.builtin.GLSLBuiltinServices;
 import org.cakelab.glsl.builtin.GLSLExtensionSet;
 import org.cakelab.glsl.builtin.WorkingSet;

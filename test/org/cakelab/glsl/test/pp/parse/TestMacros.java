@@ -3,22 +3,16 @@ package org.cakelab.glsl.test.pp.parse;
 import org.cakelab.glsl.test.Test;
 import org.cakelab.glsl.test.pp.TestingPPBase;
 
-public class TestMacros extends TestingPPBase {
+public class TestMacros extends TestingPPBase implements Test {
 	
-	public static void main(String[] args) {
-		Test.checkAssertionsOn();
-		test();
-	}
-	
-	public static void test() {
-		TestMacros tester = new TestMacros();
-		tester.testBuiltinMacros();
-		tester.testObjectMacros();
-		tester.testFunctionMacros();
-		tester.testStringify();
-		tester.testConcatenation();
-		tester.testDefUndef();
-		tester.testVariadicMacros();
+	public void test() {
+		testBuiltinMacros();
+		testObjectMacros();
+		testFunctionMacros();
+		testStringify();
+		testConcatenation();
+		testDefUndef();
+		testVariadicMacros();
 	}
 	
 	

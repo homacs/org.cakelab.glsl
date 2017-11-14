@@ -1,29 +1,7 @@
 package org.cakelab.glsl.test.lang;
 
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.cakelab.glsl.GLSLParser;
-import org.cakelab.glsl.GLSLParser.GlslContext;
 
 public class TestingBase extends TestingTools {
-
-	public static GLSLParser p(String source) {
-		TestingTools.setup(source);
-		return (GLSLParser)parser;
-	}
-
-
-	@SafeVarargs
-	public static void assertValid(String source, Class<? extends ParseTree> ... types) {
-		ParseTree ast = p(source).glsl();
-		assertValid(ast, types);
-	}
-
-	@SafeVarargs
-	public static void assertInvalid(String source, Class<? extends ParseTree> ... types) {
-		GlslContext ast = p(source).glsl();
-		assertInvalid(ast, types);
-	}
-
 
 	public static String[] BUILTIN_TYPES = new String[]{
 			"atomic_uint",
