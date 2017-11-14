@@ -29,7 +29,9 @@ public class Interval {
 		this.start = start;
 	}
 
-	
+	public Interval clone() {
+		return new Interval(start, end);
+	}
 	
 	
 

@@ -450,7 +450,7 @@ public class ASTBuilder extends GLSLBaseListener {
 			} else {
 				if (symbolTable.getType(ident) != null) return;
 				else if (symbolTable.getVariable(ident) != null) return;
-				else if (symbolTable.hasFunction(ident)) return;
+				else if (symbolTable.containsFunction(ident)) return;
 				else {
 					errorHandler.error(ctx.glslIdentifier(), "unknown identifer '" + ident + "'");
 				}

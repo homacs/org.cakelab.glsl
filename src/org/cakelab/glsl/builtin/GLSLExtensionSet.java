@@ -104,15 +104,6 @@ public class GLSLExtensionSet implements IScope, ITokenTable, Iterable<GLSLExten
 		return null;
 	}
 
-	@Override
-	public boolean hasFunctionGroup(String ident) {
-		for (GLSLExtension e : extensions) {
-			if (e.hasFunctionGroup(ident)) return true;
-		}
-		return false;
-	}
-
-
 	
 	@Override
 	public Function getFunctionBestMatch(String name, Type[] parameterTypes) {

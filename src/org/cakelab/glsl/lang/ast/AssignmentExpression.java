@@ -1,7 +1,6 @@
 package org.cakelab.glsl.lang.ast;
 
 
-import static org.cakelab.glsl.GLSLParser.*;
 
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ProcessingException;
@@ -10,9 +9,25 @@ import org.cakelab.glsl.lang.InstructionProcessor;
 
 public class AssignmentExpression extends BinaryExpression {
 
-	private int operator;
+	public enum Operator {
+		EQUAL,
+		MUL_ASSIGN,
+		DIV_ASSIGN,
+		MOD_ASSIGN,
+		ADD_ASSIGN,
+		SUB_ASSIGN,
+		LEFT_ASSIGN,
+		RIGHT_ASSIGN,
+		AND_ASSIGN,
+		XOR_ASSIGN,
+		OR_ASSIGN,
+	}
+	
+	
+	private Operator operator;
+	
 
-	public AssignmentExpression(Expression leftOperand, int operator, Expression rightOperand) {
+	public AssignmentExpression(Expression leftOperand, Operator operator, Expression rightOperand) {
 		super(leftOperand, rightOperand);
 		this.operator = operator;
 	}

@@ -2,13 +2,22 @@ package org.cakelab.glsl.lang.ast;
 
 import java.util.ArrayList;
 
+import org.cakelab.glsl.Interval;
+import org.cakelab.glsl.Location;
+
 @SuppressWarnings("serial")
-public class Qualifiers extends ArrayList<Qualifier> {
+public class Qualifiers extends ArrayList<Qualifier> implements Node {
+	private Interval interval;
+	private int lastUpdate;
+
 	public Qualifiers(Qualifiers qualifiers) {
+		this();
 		add(qualifiers);
 	}
 
 	public Qualifiers() {
+		lastUpdate = super.modCount;
+		this.interval = new Interval(Interval.NONE);
 	}
 
 	public Qualifiers clone() {
@@ -76,6 +85,40 @@ public class Qualifiers extends ArrayList<Qualifier> {
 
 	public void add(Qualifiers qualifiers) {
 		addAll(qualifiers);
+	}
+
+	@Override
+	public Interval getInterval() {
+		if (super.modCount != lastUpdate) {
+			if (isEmpty()) {
+				interval.setStart(Location.NONE);
+				interval.setEnd(Location.NONE);
+			} else {
+				interval.setStart(get(0).getStart());
+				interval.setEnd(get(size()-1).getEnd());
+			}
+			lastUpdate = super.modCount;
+		}
+		return interval;
+	}
+
+	@Override
+	public Qualifier set(int index, Qualifier element) {
+		int before = super.modCount;
+		Qualifier previously =  super.set(index, element);
+		if (before == super.modCount) super.modCount++;
+		return previously;
+	}
+
+
+	@Override
+	public Location getStart() {
+		return getInterval().getStart();
+	}
+
+	@Override
+	public Location getEnd() {
+		return getInterval().getEnd();
 	}
 
 

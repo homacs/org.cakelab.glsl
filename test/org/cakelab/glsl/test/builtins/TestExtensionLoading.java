@@ -40,7 +40,6 @@ public class TestExtensionLoading extends TestBuiltinBase {
 		ws = testExtension(core(110), ShaderType.VERTEX_SHADER, "GL_KHR_blend_equation_advanced_coherent");
 		assert (ws.getExtensions().containsExtension("GL_KHR_blend_equation_advanced"));
 		assert (ws.getExtensions().containsExtension("GL_KHR_blend_equation_advanced_coherent"));
-
 	
 	}
 

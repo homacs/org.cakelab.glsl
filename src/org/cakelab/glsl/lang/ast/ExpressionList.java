@@ -7,13 +7,14 @@ import org.cakelab.glsl.lang.ast.impl.ExpressionImpl;
 import org.cakelab.glsl.lang.ast.types.Type;
 
 public class ExpressionList extends ExpressionImpl {
-	ArrayList<Expression> list;
+	protected ArrayList<Expression> list;
 
 	public ExpressionList(ArrayList<Expression> list) {
 		super(list.get(0).getStart(), list.get(list.size()-1).getEnd());
 		this.list = list;
 	}
 
+	
 	@Override
 	public PrimaryExpression eval() throws EvaluationException {
 		PrimaryExpression result = null;

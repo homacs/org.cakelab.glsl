@@ -98,12 +98,6 @@ public class BuiltinScope implements IScope {
 
 	
 	@Override
-	public boolean hasFunctionGroup(String ident) {
-		if (builtins.hasFunctionGroup(ident)) return true;
-		else return getExtensions().hasFunctionGroup(ident);
-	}
-
-	@Override
 	public FunctionGroup getFunctionGroup(String ident) {
 		// TODO Auto-generated method stub
 		throw new Error("TODO");

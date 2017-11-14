@@ -15,6 +15,7 @@ import org.cakelab.glsl.SymbolTable;
 import org.cakelab.glsl.antlr.AntlrErrorHandler;
 import org.cakelab.glsl.antlr.lexer.PPOutputToken;
 import org.cakelab.glsl.lang.EvaluationException;
+import org.cakelab.glsl.lang.ast.AssignmentExpression.Operator;
 import org.cakelab.glsl.lang.ast.Qualifier.LayoutQualifier;
 import org.cakelab.glsl.lang.ast.types.Array;
 import org.cakelab.glsl.lang.ast.types.InterfaceBlock;
@@ -60,7 +61,24 @@ public class ASTFactory {
 	public Expression create(GlslAssignmentExpressionContext assign) {
 		GlslConditionalExpressionContext cond = assign.glslConditionalExpression();
 		if (cond != null) return create(cond);
-		else return new AssignmentExpression(create(assign.glslUnaryExpression()), assign.glslAssignmentOperator().getStart().getType(), create(assign.glslAssignmentExpression()));
+		else {
+			AssignmentExpression.Operator operator;
+			switch(assign.glslAssignmentOperator().getStart().getType()) {
+			case GLSLParser.EQUAL: operator = Operator.EQUAL; break;
+			case GLSLParser.MUL_ASSIGN: operator = Operator.MUL_ASSIGN; break;
+			case GLSLParser.DIV_ASSIGN: operator = Operator.DIV_ASSIGN; break;
+			case GLSLParser.MOD_ASSIGN: operator = Operator.MOD_ASSIGN; break;
+			case GLSLParser.ADD_ASSIGN: operator = Operator.ADD_ASSIGN; break;
+			case GLSLParser.SUB_ASSIGN: operator = Operator.SUB_ASSIGN; break;
+			case GLSLParser.LEFT_ASSIGN: operator = Operator.LEFT_ASSIGN; break;
+			case GLSLParser.RIGHT_ASSIGN: operator = Operator.RIGHT_ASSIGN; break;
+			case GLSLParser.AND_ASSIGN: operator = Operator.AND_ASSIGN; break;
+			case GLSLParser.XOR_ASSIGN: operator = Operator.XOR_ASSIGN; break;
+			case GLSLParser.OR_ASSIGN: operator = Operator.OR_ASSIGN; break;
+			default: operator = null;
+			}
+			return new AssignmentExpression(create(assign.glslUnaryExpression()), operator, create(assign.glslAssignmentExpression()));
+		}
 	}
 
 	public Expression create(GlslLogicalOrExpressionContext logOr) {

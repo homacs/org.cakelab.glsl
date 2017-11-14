@@ -24,7 +24,7 @@ public class GLSLExtensionServices {
 	//       builtins and extensions cannot be removed from cache as long as symbols still in use 
 	//      (because of duplicate symbol instantiation when loading it again)
 	// maybe with weak references?
-	private final Map<Key, GLSLExtension> CACHE = new HashMap<Key, GLSLExtension>(4);
+	private final Map<Key, GLSLExtension> EXTENSIONS_CACHE = new HashMap<Key, GLSLExtension>(4);
 	private GLSLExtensionLoader defaultLoader;
 
 
@@ -35,16 +35,18 @@ public class GLSLExtensionServices {
 
 	/** 
 	 * An extension may be referred to by different names, but it is registered by its primary name only.
-	 * This method looks up the primary name of a known extension.
-	 * @param extension
-	 * @return
+	 * This method looks up the primary name of a known extension (see {@link KnownExtensions}). 
+	 * If the extension is unknown to the system, then the given name will be returned.
+	 * 
+	 * @param extension 
+	 * @return primary name for known extension or given extension name for unknown extensions.
 	 */
 	public static String getPrimaryName(String extension) {
 		String[] names = KnownExtensions.getNames(extension);
 		if (names != null) {
 			return names[0];
 		}
-		return null;
+		return extension;
 	}
 
 	
@@ -91,10 +93,10 @@ public class GLSLExtensionServices {
 	public GLSLExtension getExtension(WorkingSet ws, String extension) {
 		extension = getPrimaryName(extension);
 		Key key = new Key(extension, ws.getGLSLVersion(), ws.getShaderType());
-		GLSLExtension e = CACHE.get(key);
+		GLSLExtension e = EXTENSIONS_CACHE.get(key);
 		if (e == null) {
 			e = loadExtension(ws, extension);
-			CACHE.put(key, e);
+			EXTENSIONS_CACHE.put(key, e);
 		}
 		return e;
 	}
@@ -116,7 +118,14 @@ public class GLSLExtensionServices {
 	}
 	
 	
-
+	/**
+	 * loads properties file for a given extension. Given extension name, must be its primary name (see {@link #getPrimaryName(String)}).
+	 * @param extension primary name of the extension.
+	 * @return properties for the extension.
+	 * @throws JSONCodecException
+	 * @throws IOException
+	 * @throws JSONException
+	 */
 	public Properties loadProperties(String extension) throws JSONCodecException, IOException, JSONException {
 		
 		Resource resource = getPropertiesResource(extension);

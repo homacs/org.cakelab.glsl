@@ -6,6 +6,7 @@ import org.cakelab.glsl.builtin.BuiltinScope;
 import org.cakelab.glsl.lang.ast.Function;
 import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.Variable;
+import org.cakelab.glsl.lang.ast.impl.FunctionGroup;
 import org.cakelab.glsl.lang.ast.impl.ScopeImpl;
 import org.cakelab.glsl.lang.ast.types.InterfaceBlock;
 import org.cakelab.glsl.lang.ast.types.Type;
@@ -115,14 +116,6 @@ public class SymbolTable {
 	
 
 	
-	/** returns true if there is any function with that name */
-	public boolean hasFunction(String ident) {
-		for (IScope s = scope; s != null; s = s.getParent()) {
-			if (s.hasFunctionGroup(ident)) return true;
-		}
-		return false;
-	}
-
 	public boolean containsFunctionGroup(String name) {
 		for (IScope s = scope; s != null; s = s.getParent()) {
 			if (s.containsFunction(name)) return true;
@@ -170,6 +163,11 @@ public class SymbolTable {
 	public void setBuiltinScope(BuiltinScope builtinScope) {
 		this.builtin = builtinScope;
 		toplevel.setParent(this.builtin);
+	}
+
+	public FunctionGroup getFunctionGroup(String text) {
+		// TODO Auto-generated method stub
+		throw new Error("TODO");
 	}
 
 

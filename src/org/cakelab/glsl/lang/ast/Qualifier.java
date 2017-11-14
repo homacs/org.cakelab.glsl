@@ -41,6 +41,7 @@ public class Qualifier extends NodeImpl {
 				}
 				if (i+1 < layoutParams.length) result.append(", ");
 			}
+			result.append(')');
 			return result.toString();
 		}
 
@@ -75,6 +76,7 @@ public class Qualifier extends NodeImpl {
 				result.append(functions.get(i).getName());
 				if (i+1 < functions.size()) result.append(' ');
 			}
+			result.append(')');
 			return result.toString();
 		}
 	}

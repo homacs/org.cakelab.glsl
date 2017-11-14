@@ -26,6 +26,7 @@ public interface IScope {
 	// FIXME: Function lookup has to consider return parameter types!
 	void addFunction(Function func);
 	boolean containsFunction(String name);
+	FunctionGroup getFunctionGroup(String ident);
 	Function getFunction(String name, Type[] parameterTypes);
 	Function getFunctionBestMatch(String name, Type[] parameterTypes);
 	
@@ -40,6 +41,4 @@ public interface IScope {
 	ArrayList<IScope> getChildren();
 	
 	void dump(PrintStream out, String indent);
-	boolean hasFunctionGroup(String ident);
-	FunctionGroup getFunctionGroup(String ident);
 }

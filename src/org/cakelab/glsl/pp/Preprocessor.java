@@ -107,8 +107,8 @@ public class Preprocessor extends Parser implements MacroInterpreter, PPState.Li
 	public Preprocessor(GLSLCompiler compiler, Resource[] resources, ShaderType shaderType, PPOutputSink out) {
 		this(compiler, compiler.getFeatures(), resources, shaderType, out);
 	}
-	/** This constructor is used only to parse preambles of builtins and extensions.
-	 * @deprecated */
+	/** This constructor is used only when the set of compiler features is intentionally different from that of 
+	 * the current compiler. This is required when parsing preambles of builtins and extensions. */
 	public Preprocessor(GLSLCompiler compiler, GLSLCompilerFeatures features, Resource[] resources, ShaderType shaderType, PPOutputSink out) {
 		super(true, new PPState(compiler, features, resources, shaderType));
 		
