@@ -2,9 +2,14 @@ package org.cakelab.glsl.test.pp.syntax;
 
 import org.cakelab.glsl.lang.ast.Expression;
 import org.cakelab.glsl.test.Test;
+import org.cakelab.glsl.test.TestProvider;
 import org.cakelab.glsl.test.pp.TestingExprBase;
 
 public class TestNumber extends TestingExprBase implements Test {
+
+	public TestNumber(TestProvider tester) {
+		super(tester);
+	}
 
 	public void test() {
 		testInteger();

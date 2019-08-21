@@ -1,10 +1,15 @@
 package org.cakelab.glsl.test.pp.parse;
 
 import org.cakelab.glsl.test.Test;
+import org.cakelab.glsl.test.TestProvider;
 import org.cakelab.glsl.test.pp.TestingPPBase;
 
 public class TestConditionalInclusion extends TestingPPBase implements Test {
 	
+	public TestConditionalInclusion(TestProvider tester) {
+		super(tester);
+	}
+
 	public void test() {
 		testConditionalInclusions();
 	}

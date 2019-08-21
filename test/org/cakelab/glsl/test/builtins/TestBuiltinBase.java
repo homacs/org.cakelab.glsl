@@ -3,10 +3,16 @@ package org.cakelab.glsl.test.builtins;
 import org.cakelab.glsl.GLSLCompiler;
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
+import org.cakelab.glsl.test.TestProvider;
 
 public class TestBuiltinBase {
 	
-	protected static final GLSLCompiler COMPILER = null;
+	protected final GLSLCompiler compiler;
+	
+	public TestBuiltinBase(TestProvider tester) {
+		this.compiler = tester.getCompiler();
+	}
+	
 	
 	
 	protected static GLSLVersion core(int number) {
@@ -19,8 +25,8 @@ public class TestBuiltinBase {
 		return new GLSLVersion(null, number, GLSLVersion.Profile.es);
 	}
 
-	public static GLSLBuiltin getTestBuiltinSymbols(GLSLVersion version) {
-		return COMPILER.getBuiltinServices().getTestBuiltins(version);
+	public GLSLBuiltin getTestBuiltinSymbols(GLSLVersion version) {
+		return compiler.getBuiltinServices().getTestBuiltins(version);
 	}
 
 }

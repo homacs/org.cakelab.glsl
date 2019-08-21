@@ -2,10 +2,16 @@ package org.cakelab.glsl.test.builtins;
 
 import org.cakelab.glsl.GLSLVersion;
 import org.cakelab.glsl.test.Test;
+import org.cakelab.glsl.test.TestProvider;
 
-public class TestGLSLTokenTable extends TestBuiltinBase implements Test {
+public abstract class TestGLSLTokenTable extends TestBuiltinBase implements Test {
 	
 	
+	public TestGLSLTokenTable(TestProvider tester) {
+		super(tester);
+	}
+
+
 	public void test() {
 		
 		testTokenTable(es(100));
@@ -45,8 +51,6 @@ public class TestGLSLTokenTable extends TestBuiltinBase implements Test {
 	}
 
 
-	private static void testTokenTable(GLSLVersion version) {
-		COMPILER.getBuiltinServices().getTestTokenTable(version);
-	}
+	protected abstract void testTokenTable(GLSLVersion version);
 
 }

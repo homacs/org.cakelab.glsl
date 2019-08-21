@@ -19,11 +19,11 @@
 				x. Add ES extensions and find duplicates in core extensions
 				0. Go through all change lists of all versions 
 				0. Availability of built-in functions in respect to different shader types
-				1. TODOS. aufschreiben
+				1. TODOS. write down:
 					- Function signature and subroutines
 					- Identifikation von Funktionsaufrufen und Konstruktoraufrufen, wenn Typ und Function selber Name
 					- Beenden von Extensions Loading bzgl. Dependencies				  
-				2. Symbol Table redesign (siehe FIXME)
+				2. Symbol Table redesign (see FIXME)
 				   a. Interface Blocks need redesign:
 					  - Interface blocks can be redeclared, narrowing the number of members
 					    -> see v4.00 gl_PerVertex

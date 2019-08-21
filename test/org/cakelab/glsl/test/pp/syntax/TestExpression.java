@@ -24,10 +24,17 @@ import org.cakelab.glsl.lang.ast.ShiftRightExpression;
 import org.cakelab.glsl.lang.ast.UnaryExpression;
 import org.cakelab.glsl.lang.ast.XorExpression;
 import org.cakelab.glsl.test.Test;
+import org.cakelab.glsl.test.TestProvider;
 import org.cakelab.glsl.test.pp.TestingExprBase;
 
 public class TestExpression extends TestingExprBase implements Test {
 	
+	public TestExpression(TestProvider tester) {
+		super(tester);
+	}
+
+
+
 	public void test() {
 		testPrimaryExpression();
 		testUnaryExpression();

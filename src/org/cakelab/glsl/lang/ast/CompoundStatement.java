@@ -51,4 +51,5 @@ public class CompoundStatement extends ScopeImpl implements Statement {
 	public Location getEnd() {
 		return interval.getEnd();
 	}
+
 }

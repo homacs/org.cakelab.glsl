@@ -1,5 +1,6 @@
 package org.cakelab.glsl.lang.ast.types;
 
+import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.Node;
 
 public interface CompoundType {
@@ -14,4 +15,5 @@ public interface CompoundType {
 	/** member can be variable, method, constructor or type */
 	void addMember(Member member);
 	Member getMember(String identifier);
+	IScope getBody();
 }

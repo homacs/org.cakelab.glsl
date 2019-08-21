@@ -6,17 +6,21 @@ import org.cakelab.glsl.Resource;
 import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.impl.JarResourceManager;
 import org.cakelab.glsl.test.Test;
+import org.cakelab.glsl.test.TestProvider;
 import org.cakelab.glsl.test.combined.TestingGLSLBase;
 
 public class TestExtensions extends TestingGLSLBase implements Test {
-	static {
+	public TestExtensions(TestProvider provider) {
+		super(provider);
 		// register a resource manager to resolve paths relative to this package
-		RESOURCES.register(new JarResourceManager(TestExtensions.class.getPackage()));
+		resources.register(new JarResourceManager(TestExtensions.class.getPackage()));
 	}
+
+
 	
 	
 	public void test() {
-		COMPILER.enableInclude(false);
+		compiler.enableInclude(false);
 		testGL_ARB_gpu_shader_fp64();
 		testGL_ARB_shader_texture_image_samples();
 		testGL_ARB_tessellation_shader();
@@ -27,7 +31,7 @@ public class TestExtensions extends TestingGLSLBase implements Test {
 		testGL_ARB_sample_shading();
 		testGL_ARB_texture_query_levels();
 		test_files();
-		COMPILER.enableInclude(true);
+		compiler.enableInclude(true);
 	}
 
 
@@ -75,9 +79,9 @@ public class TestExtensions extends TestingGLSLBase implements Test {
 	}
 
 
-	private static Resource resource(String relpath) {
+	public Resource resource(String relpath) {
 		try {
-			return TestingGLSLBase.RESOURCES.resolve(relpath);
+			return resources.resolve(relpath);
 		} catch (IOException e) {
 			throw new AssertionError(e);
 		}

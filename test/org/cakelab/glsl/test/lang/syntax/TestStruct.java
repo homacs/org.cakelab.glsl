@@ -1,7 +1,12 @@
 package org.cakelab.glsl.test.lang.syntax;
 
+import org.cakelab.glsl.test.TestProvider;
 
-public abstract class TestStruct extends TestingSyntaxBase {
+public class TestStruct extends TestingSyntaxBase {
+	public TestStruct(TestProvider tester) {
+		super(tester);
+	}
+
 	public void test() {
 		testStructPrototype();
 		testStructDefinition();

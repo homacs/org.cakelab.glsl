@@ -1,6 +1,12 @@
 package org.cakelab.glsl.test.lang.syntax;
 
-public abstract class TestFunction extends TestingSyntaxBase {
+import org.cakelab.glsl.test.TestProvider;
+
+public class TestFunction extends TestingSyntaxBase {
+	public TestFunction(TestProvider tester) {
+		super(tester);
+	}
+
 	public void test() {
 
 		testFunctionDeclaration();
@@ -9,7 +15,7 @@ public abstract class TestFunction extends TestingSyntaxBase {
 
 	}
 
-	private void testFunctionDeclaration() {
+	public void testFunctionDeclaration() {
 		String source;
 		
 		source = "void myfunction();\n";
@@ -47,7 +53,7 @@ public abstract class TestFunction extends TestingSyntaxBase {
 		
 	}
 
-	private void testFunctionDefinition() {
+	public void testFunctionDefinition() {
 		String source;
 		
 		source = "void block(){}\n";

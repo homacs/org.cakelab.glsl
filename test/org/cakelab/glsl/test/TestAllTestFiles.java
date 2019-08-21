@@ -6,6 +6,10 @@ import org.cakelab.glsl.test.lang.TestingTools;
 
 public class TestAllTestFiles extends TestingTools {
 
+	public TestAllTestFiles(TestProvider tester) {
+		super(tester);
+	}
+
 	public static void main(String[] args) {
 		TestAll.checkAssertionsOn();
 		File folder = new File("test_files");

@@ -1,9 +1,14 @@
 package org.cakelab.glsl.test.pp.syntax;
 
 import org.cakelab.glsl.test.Test;
+import org.cakelab.glsl.test.TestProvider;
 import org.cakelab.glsl.test.pp.TestingPPBase;
 
 public class TestDirective extends TestingPPBase implements Test {
+
+	public TestDirective(TestProvider tester) {
+		super(tester);
+	}
 
 	public void test() {
 		testNonDirective();

@@ -1,11 +1,17 @@
 package org.cakelab.glsl.test.lang.syntax;
 
-public abstract class TestInterface extends TestingSyntaxBase {
+import org.cakelab.glsl.test.TestProvider;
+
+public class TestInterface extends TestingSyntaxBase {
+	public TestInterface(TestProvider tester) {
+		super(tester);
+	}
+
 	public void test() {
 		testInterfaceBlock();
 	}
 
-	private void testInterfaceBlock() {
+	public void testInterfaceBlock() {
 		
 		assertValid("in boo {\n"
 				+ "	int a;\n"

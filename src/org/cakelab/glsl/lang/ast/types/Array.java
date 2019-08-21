@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.cakelab.glsl.Interval;
 import org.cakelab.glsl.lang.EvaluationException;
 import org.cakelab.glsl.lang.ast.Expression;
+import org.cakelab.glsl.lang.ast.IScope;
 import org.cakelab.glsl.lang.ast.Method;
 import org.cakelab.glsl.lang.ast.Value;
 
@@ -104,6 +105,11 @@ public class Array extends Type implements CompoundType {
 		if (identifier.equals(length.getName())) {
 			return length;
 		}
+		return null;
+	}
+
+	@Override
+	public IScope getBody() {
 		return null;
 	}
 

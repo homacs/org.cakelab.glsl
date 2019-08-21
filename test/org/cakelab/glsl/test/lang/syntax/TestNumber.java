@@ -1,6 +1,12 @@
 package org.cakelab.glsl.test.lang.syntax;
 
-public abstract class TestNumber extends TestingSyntaxBase {
+import org.cakelab.glsl.test.TestProvider;
+
+public class TestNumber extends TestingSyntaxBase {
+
+	public TestNumber(TestProvider tester) {
+		super(tester);
+	}
 
 	public void test() {
 		testInteger();

@@ -1,9 +1,15 @@
 package org.cakelab.glsl.test.lang.syntax;
 
 import org.cakelab.glsl.test.TestAll;
+import org.cakelab.glsl.test.TestProvider;
 
-public abstract class TestStatement extends TestingSyntaxBase {
+public class TestStatement extends TestingSyntaxBase {
 	
+	public TestStatement(TestProvider tester) {
+		super(tester);
+	}
+
+
 	public void main(String[] args) {
 		TestAll.checkAssertionsOn();
 		test();

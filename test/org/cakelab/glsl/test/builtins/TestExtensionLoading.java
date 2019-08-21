@@ -14,10 +14,15 @@ import org.cakelab.glsl.builtin.extensions.Properties;
 import org.cakelab.glsl.builtin.extensions.VersionDependency;
 import org.cakelab.glsl.pp.PPState;
 import org.cakelab.glsl.test.Test;
+import org.cakelab.glsl.test.TestProvider;
 
 public class TestExtensionLoading extends TestBuiltinBase implements Test {
 	
 	
+	public TestExtensionLoading(TestProvider tester) {
+		super(tester);
+	}
+
 	public void test() {
 		testVersionDependency();
 		testExtensionProperties();
@@ -202,7 +207,7 @@ public class TestExtensionLoading extends TestBuiltinBase implements Test {
 	private WorkingSet createFakeWorkingSet(GLSLVersion version, String ... names) {
 		GLSLBuiltin builtin = getTestBuiltinSymbols(version);
 		
-		WorkingSet ws = COMPILER.getBuiltinServices().createWorkingSet(builtin);
+		WorkingSet ws = compiler.getBuiltinServices().createWorkingSet(builtin);
 		
 		GLSLExtensionSet extensions = ws.getExtensions();
 		for (String name : names) {
@@ -213,11 +218,11 @@ public class TestExtensionLoading extends TestBuiltinBase implements Test {
 
 
 	public WorkingSet testExtension(GLSLVersion version, ShaderType shaderType, String ... extensions) {
-		GLSLBuiltinServices services = COMPILER.getBuiltinServices();
+		GLSLBuiltinServices services = compiler.getBuiltinServices();
 		GLSLBuiltin builtin = services.getBuiltins(version, shaderType);
 		WorkingSet workingSet = services.createWorkingSet(builtin);
-		GLSLCompilerFeatures features = COMPILER.getFeatures();
-		PPState state = new PPState(COMPILER, features, null, shaderType);
+		GLSLCompilerFeatures features = compiler.getFeatures();
+		PPState state = new PPState(compiler, features, null, shaderType);
 		for (String extension : extensions) {
 			workingSet.enableExtension(state, extension);
 		}

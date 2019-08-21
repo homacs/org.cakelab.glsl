@@ -28,6 +28,13 @@ import org.cakelab.glsl.pp.error.SyntaxError;
 import org.cakelab.glsl.pp.tokens.Token;
 import org.cakelab.glsl.util.ObjectCache;
 
+/**
+ * This class provides access to and manages built-in symbols and macros 
+ * of different GLSL version/extensions in use.
+ * 
+ * @author homac
+ * @see GLSLBuiltin
+ */
 public abstract class GLSLBuiltinServices {
 
 
@@ -155,7 +162,6 @@ public abstract class GLSLBuiltinServices {
 
 	public Preprocessor setupPreprocessing(Resource resource, ShaderType shaderType,
 			PPOutputSink buffer) {
-		@SuppressWarnings("deprecation")
 		Preprocessor pp = new Preprocessor(compiler, EMPTY_FEATURESET, new Resource[]{resource}, shaderType, buffer);
 		
 		pp.addDefine(shaderType.name());

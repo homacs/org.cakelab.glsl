@@ -5,9 +5,14 @@ import org.cakelab.glsl.ShaderType;
 import org.cakelab.glsl.builtin.GLSLBuiltin;
 import org.cakelab.glsl.builtin.GLSLBuiltinServices;
 import org.cakelab.glsl.test.Test;
+import org.cakelab.glsl.test.TestProvider;
 
 public class TestBuiltinSymbols extends TestBuiltinBase implements Test {
 	
+	public TestBuiltinSymbols(TestProvider tester) {
+		super(tester);
+	}
+
 	public void test() {
 		test(es(100));
 		test(es(300));
@@ -47,7 +52,7 @@ public class TestBuiltinSymbols extends TestBuiltinBase implements Test {
 
 	public void testDump() {
 		
-		GLSLBuiltinServices builtinServices = COMPILER.getBuiltinServices();
+		GLSLBuiltinServices builtinServices = compiler.getBuiltinServices();
 		
 		GLSLBuiltin symbols;
 		
@@ -65,9 +70,9 @@ public class TestBuiltinSymbols extends TestBuiltinBase implements Test {
 	}
 
 
-	private void test(GLSLVersion version) {
+	public void test(GLSLVersion version) {
 		
-		GLSLBuiltinServices builtinServices = COMPILER.getBuiltinServices();
+		GLSLBuiltinServices builtinServices = compiler.getBuiltinServices();
 		
 		
 		System.out.print("\t" + version.toString() + " ... ");

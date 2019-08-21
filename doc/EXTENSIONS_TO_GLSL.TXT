@@ -1,3 +1,8 @@
+This is a list of extensions to be added to the compiler.
+All entries with a + sign in front, have been added already.
+
+So far, all ARB extensions have been added.
+
 + ./ARB/ARB_fragment_coord_conventions.txt
 + ./ARB/ARB_texture_gather.txt
 + ./ARB/ARB_ES3_1_compatibility.txt

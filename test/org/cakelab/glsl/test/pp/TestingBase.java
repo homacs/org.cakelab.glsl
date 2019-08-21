@@ -14,10 +14,11 @@ import org.cakelab.glsl.lang.ast.Node;
 import org.cakelab.glsl.pp.StandardErrorHandler;
 import org.cakelab.glsl.pp.error.Recovery;
 import org.cakelab.glsl.pp.parser.Parser;
+import org.cakelab.glsl.test.TestProvider;
 
 public abstract class TestingBase {
 
-	protected static GLSLCompiler COMPILER;
+	protected GLSLCompiler compiler;
 	protected String error;
 	protected String warning;
 	protected boolean ignoreWarning = true;
@@ -74,6 +75,10 @@ public abstract class TestingBase {
 		else return out;
 	}
 
+	public TestingBase(TestProvider tester) {
+		compiler = tester.getCompiler();
+	}
+	
 	
 	public abstract Parser p(String source, OutputStream out);
 	

@@ -1,8 +1,13 @@
 package org.cakelab.glsl.test.lang.syntax;
 
+import org.cakelab.glsl.test.TestProvider;
 
-public abstract class TestVariable extends TestingSyntaxBase {
+public class TestVariable extends TestingSyntaxBase {
 	
+	public TestVariable(TestProvider tester) {
+		super(tester);
+	}
+
 	public void test() {
 		testScalarVariable();
 		testScalarVariableList();
@@ -81,5 +86,6 @@ public abstract class TestVariable extends TestingSyntaxBase {
 			assertValid(text);
 		}
 	}
+
 
 }

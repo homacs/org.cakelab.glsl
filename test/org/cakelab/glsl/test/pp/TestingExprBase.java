@@ -11,13 +11,18 @@ import org.cakelab.glsl.pp.parser.ExpressionParser;
 import org.cakelab.glsl.pp.parser.Parser;
 import org.cakelab.glsl.pp.scanner.IScanner;
 import org.cakelab.glsl.pp.scanner.StreamScanner;
+import org.cakelab.glsl.test.TestProvider;
 
 public class TestingExprBase extends TestingBase {
+
+	public TestingExprBase(TestProvider tester) {
+		super(tester);
+	}
 
 	public Parser p(String source) {
 		try {
 			Resource resource = new ResourceString("0", "-- testing --", source);
-			PPState state = new PPState(COMPILER, COMPILER.getFeatures(), new Resource[]{resource}, ShaderType.GENERIC_SHADER);
+			PPState state = new PPState(compiler, compiler.getFeatures(), new Resource[]{resource}, ShaderType.GENERIC_SHADER);
 			state.setErrorHandler(errorHandler);
 			
 			IScanner scanner = new StreamScanner(resource);

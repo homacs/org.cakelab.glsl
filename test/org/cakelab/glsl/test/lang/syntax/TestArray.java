@@ -1,11 +1,17 @@
 package org.cakelab.glsl.test.lang.syntax;
 
-public abstract class TestArray extends TestingSyntaxBase {
+import org.cakelab.glsl.test.TestProvider;
+
+public class TestArray extends TestingSyntaxBase {
+	public TestArray(TestProvider tester) {
+		super(tester);
+	}
+
 	public void test() {
 		testArrayVariableDeclaration();
 	}
 
-	private void testArrayVariableDeclaration() {
+	public void testArrayVariableDeclaration() {
 		
 		assertValid("int[] boo;");
 		

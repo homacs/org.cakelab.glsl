@@ -1,11 +1,16 @@
 package org.cakelab.glsl.test.pp.syntax;
 
 import org.cakelab.glsl.test.Test;
+import org.cakelab.glsl.test.TestProvider;
 import org.cakelab.glsl.test.pp.TestingExprBase;
 
 public class TestStringLiteral extends TestingExprBase implements Test {
 	// TODO [4] string testing more serious
 
+
+	public TestStringLiteral(TestProvider tester) {
+		super(tester);
+	}
 
 	public void test() {
 		testCharacterSequence();

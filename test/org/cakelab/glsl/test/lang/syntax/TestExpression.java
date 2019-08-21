@@ -1,7 +1,9 @@
 package org.cakelab.glsl.test.lang.syntax;
 
+import org.cakelab.glsl.test.TestProvider;
 
-public abstract class TestExpression extends TestingSyntaxBase {
+public class TestExpression extends TestingSyntaxBase {
+
 	static String[] PRIMARY_EXPRESSION_EXAMPLES = new String[]{
 		"var",
 		"(var)",
@@ -43,7 +45,10 @@ public abstract class TestExpression extends TestingSyntaxBase {
 			"-",
 		};
 		
-	
+	public TestExpression(TestProvider tester) {
+		super(tester);
+	}
+
 	public void test() {
 		
 		testPrimaryExpression();
