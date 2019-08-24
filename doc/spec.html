@@ -1,176 +1,298 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<title>${project.title}</title>
+		<!-- standard meta data -->
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="author" content="Holger Machens">
+		<meta name="date" content="${system.datetime}">
+		<!-- meta data for search engines -->
+		<meta name="description" content="${project.description}">
+		<meta name="keywords" lang="en" content="${project.keywords}">
+		<!-- meta name="robots" content="noindex,nofollow"-->
+	</head>
+	<body>
+		<h1 style="text-align: center">${project.title}</h1>
+		<h2 style="text-align: center">Notes on Specification Details</h2>
+		<p style="text-align: center"><b>(work in progress)</b></p>
+		<p style="text-align: center">Version ${project.version}<br/></p> 
+		<p style="text-align: center">${system.date}</p>
 
 
-===============
-A N A L Y S I S
-===============
+<h2>Analysis</h2>
 
 
+<h3>Requirements</h3>
 
-Requirements
-============
-
-
-1. Preprocessor:
-	a) Requires builtin macros to be set (e.g. GL_core_profile).
-	b) CRLF is a token in directive lines: Directive lines
+<ol>
+<li>
+Preprocessor
+<ol type="a">
+	<li>
+	Requires builtin macros to be set (e.g. GL_core_profile).
+	</li><li>
+	CRLF is a token in directive lines: Directive lines
 	   are started and terminated with CRLF (in most cases).
-	c) Line continuations are ignored (removed from text).
-	d) Whitespace is a token in directive lines of macro definitions only.
-	e) Directives have to be parsed and interpreted:
-	   1. Expressions in conditional inclusions (#if etc.).
-	   2. Operators (# and ##) and parameter references in macro definitions.
-	f) In respect to conditional inclusion, errors in 
+	</li><li>
+	Line continuations are ignored (removed from text).
+	</li><li>
+	Whitespace is a token in directive lines of macro definitions only.
+	</li><li>
+	Directives have to be parsed and interpreted:
+	<ol type="i">
+	   <li>
+	  	Expressions in conditional inclusions (#if etc.).
+	  </li><li>
+	   	Operators (# and ##) and parameter references in macro definitions.
+	  </li>
+	</ol>
+	</li><li>
+	In respect to conditional inclusion, errors in 
 	   tokens of excluded lines have to be completely ignored.
-	g) Text lines are parsed for macro identifiers
+	</li><li>
+	Text lines are parsed for macro identifiers
 	   only, but for the most part passed through
 	   to the language parser.
-	h) Macro invocations have to be identified and executed.
-	i) Output is a preprocessed translation unit
-	   i.   Directive lines are removed entirely or replaced by text in case of #include.
-	   ii.  Macros are expanded and inserted in text.
-
-2. Language Parser
-	.) Requires builtin symbols (keywords, functions, variables) to be defined according 
+	</li><li>
+	Macro invocations have to be identified and executed.
+	</li><li>
+	Output is a preprocessed translation unit
+		<ol type="i">
+		   <li>
+		   Directive lines are removed entirely or replaced by text in case of #include.
+		   </li><li>
+		   Macros are expanded and inserted in text.
+		   <li>
+		</ol>
+	</li>
+</ol>
+</li>
+<li>
+Language Parser
+	<ol type="a">
+	<li>
+	Requires builtin symbols (keywords, functions, variables) to be defined according 
 	   to glsl version (functions, variables, ..).
-    a) Input is a preprocessed translation unit which 
+	</li><li>
+    Input is a preprocessed translation unit which 
        contains preprocessing tokens of macro expanded text lines only.
-    b) CRLF is not a token.
-    c) Whitespace is not a token.
-    c) Requires table to map text position to original 
+	</li><li>
+    CRLF is not a token.
+	</li><li>
+    Whitespace is not a token.
+	</li><li>
+    Requires table to map text position to original 
        position (considering macro expansions and 
        removed content). Otherwise, error messages
        point to position in preprocessed translation unit.
-    d) Output is an AST with language features only.
-
-3. Text Highlighting Support:
-    Text highlighting requires a parse tree which is the result of preprocessing
+	</li><li>
+    Output is an AST with language features only.
+	</li>
+</ol>
+</li><li>
+Text Highlighting Support:     Text highlighting requires a parse tree which is the result of preprocessing
     and language parsing.
-    a) Requires the sequence of preprocessing tokens of the original input.
-    b) Requires parse results of the preprocessor to identify:
+
+	<ol type="a">
+	<li>
+    Requires the sequence of preprocessing tokens of the original input.
+    </li><li>
+    Requires parse results of the preprocessor to identify:
+	<ol type="i">
+		<li>
        1. Directive symbols (keywords, macro names, macro parameters)
+       	</li><li>
        2. Macro invocations, their parameter lists and corresponding macro definition
+       	</li><li>
        3. Builtin macros
+       	</li><li>
        4. Scopes of conditional inclusion/exclusion
-    c) Requires parse results of the language parser to identify:
-       0. Keywords and their type.
-       1. Defined (builtin) symbols and their type (functions, variables, types)
-       2. Symbol use (function call, variable or type reference)
-       3. Code blocks and their nesting.
-    d) Requires message and location of errors.
-    e) Requires interpreter to decode macro calls and point out errors in there.
+       	</li>
+    </ol>
+    </li><li>
+    Requires parse results of the language parser to identify:
+	<ol type="i">
+       	<li>
+       	Keywords and their type.
+       	</li><li>
+       	Defined (builtin) symbols and their type (functions, variables, types)
+       	</li><li>
+       	Symbol use (function call, variable or type reference)
+       	</li><li>
+       	Code blocks and their nesting.
+       	</li>
+	</ol>
+    </li><li>
+    Requires message and location of errors.
+    </li><li>
+    Requires interpreter to decode macro calls and point out errors in there.
+    </li>
+    </ol>
+</li>
+</ol>
 
 
+<h3>Preprocessing</h3>
 
+<h4>Preprocessing Tokens</h4>
 
-Preprocessing:
-==============
-
-Preprocessing Tokens:
----------------------
-
-
+<p>
 The preprocessor requires a properly tokenized input
 stream for the following cases:
-1. Differentiating text from preprocessor directives.
-2. Parsing of preprocessor directives.
-3. Identifying macro invocations including arguments.
-4. Interpreting expressions of conditional inclusion
+</p>
+<ol>
+<li>
+Differentiating text from preprocessor directives.
+</li><li>
+Parsing of preprocessor directives.
+</li><li>
+Identifying macro invocations including arguments.
+</li><li>
+Interpreting expressions of conditional inclusion
    directives (#if , #elif).
-
-
+</li>
+</ol>
+<p>
 This results in a set of three different types of 
 preprocessing tokens:
-1. Language Tokens
-2. Separator Tokens
-3. Directive Tokens
+</p>
+<ol>
+<li>
+Language Tokens
+</li><li>
+Separator Tokens
+</li><li>
+Directive Tokens
+</li>
+</ol>
 
-
+<p>
 Since the preprocessor should be independent of the 
 language it is used for, it should not require language
 level tokens, but unfortunately, it can't.
-
+</p>
+<p>
 The specification declares preprocessing tokens to be
 very basic. For example a number is just a sequence 
 of digits, eventually containing a dot. This is not 
 enough to distinguish e.g. between hexadecimal 
 constants and identifiers. Given a hexadecimal constant 
-such as 0xCAFFEE, a basic lexer would emit a number token '0' followed
-by an identifier token 'xCAFFEE'. If there was a defined macro
+such as <tt>0xCAFFEE</tt>, a basic lexer would emit a number token '0' followed
+by an identifier token <tt>'xCAFFEE'</tt>. If there was a defined macro
 with the same name, this would turn into a macro invocation, 
 which is wrong. Thus, the preprocessor already requires 
 a stream of language level tokens containing 
-even special operators such as '->' or even '#!' to 
+even special operators such as <tt>'->'</tt> or even <tt>'#!'</tt> to 
 distinguish from its own preprocessing operators (# and ##).
 The same applies, when considering strings; the preprocessor 
 must be able to distinguish the content of a string from 
 everything else.
-
+</p>
+<p>
 On the other hand, the preprocessor has to determine
 its own keywords such as 'defined' or 'include', but those
 aren't keywords of the language. Thus, the preprocessor
 has to investigate received identifier tokens based on the 
 parsing context.
+</p>
 
 
+<h4>Language Tokens</h4>
 
-Language Tokens:
-
-
+<p>
 The set of language level tokens recognised by the 
 preprocessor for C are these:
-
-- String Literal: Considering all escape sequences but not interpreting it.
-- Character Constant: As string literals but just one character (depending on the language).
-- Number Constants: Considering all the different types including hexadecimal, octal, 
+</p>
+<ul>
+<li>
+String Literal: Considering all escape sequences but not interpreting it.
+</li><li>
+Character Constant: As string literals but just one character (depending on the language).
+</li><li>
+Number Constants: Considering all the different types including hexadecimal, octal, 
   floating point with exponents etc.
-- Punctuators: 
-  * Operators
-  * Characters, separating instructions such as ';' or ','
-  * Brackets, all kinds of them ([{}]).
-- Comments: '//' <text> or '/*' <text> '*/'
-- Unknown: Unknown tokens will be added in all other cases.
+</li><li>
+Punctuators:
+	<ul>
+	<li>
+	Operators
+	</li><li>
+  	Characters, separating instructions such as ';' or ','
+	</li><li>
+	Brackets, all kinds of them ([{}]).
+	</li>
+	</ul>
+</li><li>
+Comments: '//' &lt;text&gt; or '/*' &lt;text&gt; '*/'
+</li><li>
+Unknown: Unknown tokens will be added in all other cases.
+</li>
+</ul>
   
+<p>
 Those language level tokens will also be forwarded to the output.
+</p>
 
 
-
-
+<h4>
 Separator Tokens:
-
-
+</h4>
+<p>
 To distinguish between directive lines and text, to 
 distinguish a macro parameter list from the expansion 
 list of a macro definition and to preserve white space 
 characters in the output, the preprocessor will need
 those tokens additionally, to be emitted by the lower 
 level lexer:
-- HASH '#'
-- Whitespace (BLANK, TAB, CRLF)
-- SOF (start of file)
-- EOF (end of file)
-
+</p>
+<ul>
+<li>
+HASH '#'
+</li><li>
+Whitespace (BLANK, TAB, CRLF)
+</li><li>
+SOF (start of file)
+</li><li>
+EOF (end of file)
+</li>
+</ul>
+<p>
 SOF and EOF are (both) especially needed to properly parse text 
 inserted from includes (will be explained below).
+</p>
 
 
+<h4>
+Directive Tokens
+</h4>
 
-
-Directive Tokens:
-
-
+<p>
 To select and parse directives, the preprocessor will add directive tokens, 
 which can only occur in directive lines. Those directive 
 tokens contain the keywords of the directives and their context specific 
 tokens:
+</p>
+<ul>
+<li>
+Directive identifiers (define, if, ifdef, ifndef, elif, else, endif, include, pragma, version, ..?) 
+</li><li>
+Macro operators (defined, #, ##)
+</li><li>
+Version and extension arguments (profile names, enable, disable, extension names etc.)
+</li><li>
+Pragma specific tokens
+</li><li>
+Include Header Path: String literal with delimiters '&lt;' and '&gt;' or '"' and '"'.
+</li><li>
+Excluded tokens: Tokens of sections which have been excluded through conditional inclusion.
+</li><li>
+etc.
+</li>
+</ul>
 
-- Directive identifiers (define, if, ifdef, ifndef, elif, else, endif, include, pragma, version, ..?) 
-- Macro operators (defined, #, ##)
-- Version and extension arguments (profile names, enable, disable, extension names etc.)
-- Pragma specific tokens
-- Include Header Path: String literal with delimiters '<' and '>' or '"' and '"'.
-- Excluded tokens: Tokens of sections which have been excluded through conditional inclusion.
-- etc.
-
+<p>
 Those tokens cannot be emitted by the lower level language 
 token lexer, because they are context sensitive. Thus, the 
 preprocessor must be able to select token sets based
@@ -180,55 +302,79 @@ be a parser for each directive, which reinterprets the tokens
 accordingly and emits new tokens if required (e.g. for 
 text highlighting). This approach allows to add or 
 remove directives (such as #include or options to #pragma).
-
+</p>
+<p>
 Accordingly, there will be a parser for text sections which accepts
 listeners to be called on certain token types. This allows to add
 functionality such as macro expansion to the text parser.
-
+</p>
+<p>
 Parsers may behave differently based on certain preprocessor 
 output modes, which will be explained in a section below.
+</p>
 
 
+<h4>Macro Expansion</h4>
 
-Macro Expansion:
-----------------
- 
+<p> 
 There three different cases to consider in respect to
 macro expansion:
-1. Execution of an identified macro invocation in text.
-2. Expansion of an argument for a macro invocation.
-3. Expansion of macro invocations originating from 
+</p>
+<ol>
+<li>
+Execution of an identified macro invocation in text.
+</li><li>
+Expansion of an argument for a macro invocation.
+</li><li>
+Expansion of macro invocations originating from 
    the expansion of another macro.
-4. Expansion of preprocessing tokens for the expression
+</li><li>
+Expansion of preprocessing tokens for the expression
    of a conditional inclusion.
-   
+</li>
+</ol>
 
-Execution of Macro Invocations:
+<h4>
+Execution of Macro Invocations
+</h4>
 
-
+<p>
 If a macro invocation was identified in the text, the 
 following procedure occurs:
-1. Arguments will be assigned to macro parameters.
-2. Expressions in the replacement list (using # or ##)
+</p>
+<ol>
+<li>
+Arguments will be assigned to macro parameters.
+</li><li>
+Expressions in the replacement list (using # or ##)
    will be evaluated which requires expansion of arguments.
-3. The resulting list of preprocessing tokens is inserted
+</li><li>
+The resulting list of preprocessing tokens is inserted
    in the text at the location of the macro invocation 
    expression (replacing it).
-
+</li>
+</ol>
+<p>
 Macro names in the expansion list will be considered when
 the preprocessor proceeds parsing the text.
+</p>
 
 
-
-
+<h4>
 Macro Invocations Originating from Expansion Lists:
-
-
+</h4>
+<p>
 Two important things:
-1. Macro names in expansion lists are ignored until expanded
+</p>
+<ol>
+<li>
+Macro names in expansion lists are ignored until expanded
    to the text.
-2. Macros cannot call itself.
-
+</li><li>
+Macros cannot call itself.
+</li>
+</ol>
+<p>
 Macro names contained in an expansion list will be considered 
 only, when the macro containing it, was expanded to the text. 
 The preprocessor then continues parsing the text, which now 
@@ -239,24 +385,27 @@ location of its definition, but before its invocation.
 Another example is, that the replacement list
 contains just the name of a macro, but the required
 arguments are in the text, following the macro invocation.
-
+</p>
+<p>
 Macros cannot invoke itself. Thus, identifiers in the 
 replacement list, which have the same name, are not 
 interpreted as macro invocations, but treated as ordinary 
 identifiers. To determine this case, the inserted tokens of
 an expansion list have to be associated with its originating
 macro definition, in some way.
+</p>
 
 
-
-
+<h4>
 Expansion of Arguments:
-
+</h4>
+<p>
 Expansion of arguments is applied to the preprocessing tokens
 of that argument only. Compared to macro invocation execution, 
 it does not include the following text, but behaves the same
 way in every other aspect.
-
+</p>
+<p>
 Expansion of arguments occurs, only if the corresponding macro 
 parameter is associated with one of the operators # and ## 
 in the expansion list. In all other occurrences of the
@@ -264,105 +413,166 @@ parameter, it is just replaced by the preprocessing tokens
 of the argument. Thus, the same parameter can be just replaced
 by the argument in one case, but replaced by its fully expanded tokens
 in the other.
-
+</p>
+<p>
 An argument is fully expanded, if all contained macro invocations 
 have been executed according to the exact same procedure explained above, 
 but without the following text. 
+</p>
 
-
-
+<h4>
 Expansion of Expressions for Conditional Inclusion:
-
+</h4>
+<p>
 All preprocessing tokens in a directive line following #if or #elif
 up to the end of the line, have to be fully expanded the same 
 way as macro arguments (i.e. not including the following text).
+</p>
 
 
-
-
+<h4>
 Conditional Inclusion
----------------------
+</h4>
 
+<p>
 Conditional inclusion refers to use of #if etc. Each of it describes 
 a scope of text lines and directive lines, which will be either included 
 or excluded from parsing. Conditional scopes do affect visibility of 
 declared symbols or macros. Macro definitions are always global, 
 they just do not get parsed (and registered) in excluded scopes.
-
+</p><p>
 Directives involved in conditional inclusion are these:
-- #if
-- #ifdef
-- #ifndef
-- #elif
-- #else
-- #endif
-
+</p>
+<ul>
+<li>
+	#if
+</li><li>
+ #ifdef
+</li><li>
+ #ifndef
+</li><li>
+ #elif
+</li><li>
+ #else
+</li><li>
+ #endif
+</li>
+</ul>
+<p>
 A conditional scope is started with any #if... directive and ends with any of
 #else, #elif or #endif. Any #else or #elif scope ends the previous scope on 
 whatever nesting level it was and starts a successor scope on the same nesting 
 level. A sequence of conditional scopes on the same nesting level is ended by #endif.
 Nested conditional scopes have a parent scope.
-
+</p>
+<p>
 Visibility of a conditional scope depends on:
-1. The result of its conditional expressions (0 or 1).
-2. The visibility of its predecessor scope.
-3. The visibility of its parent scope.
+</p>
+<ol>
+<li>
+The result of its conditional expressions (0 or 1).
+</li><li>
+The visibility of its predecessor scope.
+</li><li>
+The visibility of its parent scope.
+</li>
+</ol>
 
+<p>
 Visibility of a conditional scope controls parsing. In excluded scopes
 only conditional directives will be parsed properly. All other
 lines, will be treated as text lines. In case of text tokenizing mode,
 tokens will be turned into excluded tokens and added to the tokenized output.
 All other modes will just skip tokens until a conditional directive was found.
-
+</p>
+<p>
 To track scope sequences and scope nesting, the preprocessor always has to parse 
 directive lines of conditional inclusion, even in excluded scopes.
+</p>
 
 
+<h4>Location of a Token</h4>
 
-Location of a Token
-===================
-
-
+<p>
 The location of a token is required for
-1. Error reporting in Preprocessor
-2. Error reporting in Language Parser
-3. Utility functions such as lookup of function or type definitions in IDE.
-
+</p>
+<ol>
+<li>
+ Error reporting in Preprocessor
+</li><li>
+ Error reporting in Language Parser
+</li><li>
+ Utility functions such as lookup of function or type definitions in IDE.
+</li>
+</ol>
+<p>
 Generally, a location is defined by start and 
 end position of a token in the input stream of
 an associated resource (e.g. file). 
-
+</p>
+<p>
 The preprocessor reads from multiple sources 
 (ref. #include), and writes tokens to the output.
 Most of the tokens to the output are forwarded from 
 the input, but there are several other cases:
-1. Removed: 
-    - Directive lines get removed.
-    - Macro invocation expressions get removed.
-2. Added: 
-    - #line directives may be added for #include
-    - missing CRLF at end of a file may be added
-3. Transformed:
-    - ## concatenation transforms two tokens in a new one
-    - # stringification transforms multiple tokens in a new one
-4. Copied:
-    - Macro expansion copies possibly transformed tokens 
+</p>
+<ol>
+<li>
+Removed: 
+<ul>
+	<li>
+    	Directive lines get removed.
+    </li><li>
+    Macro invocation expressions get removed.
+    </li>
+</ul></li>
+<li>
+Added: 
+<ul>
+	<li>
+    #line directives may be added for #include
+    </li><li>
+    missing CRLF at end of a file may be added
+    </li>
+</ul>
+</li>
+<li>
+ Transformed:
+	<ul>
+	<li>
+     ## concatenation transforms two tokens in a new one
+    </li><li>
+     # stringification transforms multiple tokens in a new one
+     </li>
+     </ul>
+</li>
+<li>
+ Copied:
+ <ul>
+ 	<li>
+     Macro expansion copies possibly transformed tokens 
       from the macro definition to the location of the 
       macro invocation.
+    </li>
+ </ul>
+</li>
+</ol>
 
 
-
+<h5>
 Simple Location:
-
+</h5>
+<p>
 Error reporting generally needs to point out the original 
 location of an error, which requires to identify the 
 input resource, and line and column in the input. Thus, 
 a location gets associated with all of that.
+</p>
 
-
-
+<h5>
 Macro Expanded Location:
-
+</h5>
+<p>
 Reporting of errors originating from macro expansion, additionally
 requires the location of the macro definition and the location of
 the corresponding characters in the replacement list, which was copied 
@@ -374,7 +584,7 @@ a copy of the location of the origin of the corresponding token
 in the macro definition. Thus, the location of the macro invocation is the
 location, where the error occurred, but the given location of token
 in the replacement list might be the origin of the error.
-
+</p><p>
 Macro expansions may occur on top of each other (expanded text 
 contains new macro invocations). As a consequence, macro expanded 
 locations can be associated with a macro invocation, which has
@@ -384,8 +594,9 @@ the location of the error in the text. To retrieve the origin of an
 error, the macro expanded location of macro invocations has to be
 followed recursively until a macro invocation with an ordinary location
 in the text was found.
-
-Example:
+</p>
+<h6>Example:</h6>
+<pre>
 Location getErrorCauseLocation(Location start) {
 	Location start = token.getStart();
 	while (start instanceof MacroExpandedLocation) {
@@ -394,7 +605,8 @@ Location getErrorCauseLocation(Location start) {
 	// start is now the location of the first macro invocation, which caused the error
 	return start;
 }
-
+</pre>
+<p>
 There is an alternative solution to this approach, which would be to
 let the macro expanded location already point to the cause of the error
 (i.e. the macro invocation), which could reduce the processing effort 
@@ -410,536 +622,692 @@ which lead to the error. Thus, in this approach, a macro expanded location
 had to be additionally associated with its macro invocation. Considering
 that error reporting is not the general case, and location tracking is already
 expensive in terms of memory and processing, the fist approach was chosen.
-
+</p>
+<p>
 There are more alternative approaches not mentioned here, which are either 
 more expensive or cause the API to be error prone.
- 
+</p>
 
 
+<h4>
 Preprocessor Output Modes
-=========================
-
-
+</h4>
+<p>
 There are different output types required to be generated by the preprocessor, 
 based on use cases:
-1. Runtime Preprocessing: Generates preprocessed output which can be fed to a GLSL compiler.
-2. Language Preprocessing: Generates a preprocessed sequence of tokens to be used by a language parser.
-3. Text Tokenizing: Turns the given input in a sequence of tokens to be used for text highlighting.
+</p>
+<ol>
+<li>
+ Runtime Preprocessing: Generates preprocessed output which can be fed to a GLSL compiler.
+ </li><li>
+ Language Preprocessing: Generates a preprocessed sequence of tokens to be used by a language parser.
+ </li><li>
+ Text Tokenizing: Turns the given input in a sequence of tokens to be used for text highlighting.
+ </li>
+</ol>
 
-
+<h5>
 Output of Runtime Preprocessing:
---------------------------------
-
+</h5>
+<p>
 For runtime preprocessing, the preprocessor executes and removes 
 just selected directives and writes the text of generated tokens 
 into an output stream.
-
+</p>
+<p>
 There are tasks that can be performed in this mode, but 
 some directives have to be left in the output.
-
-
+</p>
+<p>
 The preprocessor can perform the following tasks only:
-  - Conditional inclusion
-  - Includes of other resources
-
-
+</p>
+<ul>
+	<li>
+  Conditional inclusion
+  </li><li>
+  Includes of other resources
+	</li>
+</ul>
+<p>
 To keep track of errors reported by an external GLSL compiler, those tasks 
 need to add appropriate #line directives in this mode.
-
+</p>
+<p>
 Macro expansion cannot be performed, since the expansion may change
 locations of tokens (column and row) and reported errors of an external
 GLSL compiler cannot be located properly.
-
-
+</p>
+<p>
 The following directives will be parsed but not fully executed or removed from output:
-  - #version : parsed for information but not removed.
-  - #extension : parsed for information but not removed.
-  - #pragma : parsed but not removed.
-  - #line : will be parsed and executed, so that error reports will consider seen line directives.
-  - #define and macro invocations: parsed and registered, but not executed or removed. 
+</p>
+<ul>
+<li>
+  #version : parsed for information but not removed.
+  </li>
+  <li>
+  #extension : parsed for information but not removed.
+  </li><li>
+  #pragma : parsed but not removed.
+  </li><li>
+   #line : will be parsed and executed, so that error reports will consider seen line directives.
+  </li><li>
+   #define and macro invocations: parsed and registered, but not executed or removed. 
             Missing argument lists will be ignored. 
+  </li>
+</ul>
 
-
+<p>
 Note: This functionality is useful only, if the include directive is used. 
 Otherwise, the preprocessor of the compiler will be probably faster.
+</p>
 
 
-
-Output for Language Parsing:
-----------------------------
-
+<h5>Output for Language Parsing:</h5>
+<p>
 All tokens of text sections will be forwarded to the output sink. Those can be
 buffered and filtered by the output sink (such as removing all whitespace tokens). 
 All tokens of directive lines will be removed. #line directives will be fully 
 considered to adjust locations of tokens accordingly. 
+</p>
 
 
+<h5>Output for Text Tokenizing:</h5>
 
-Output for Text Tokenizing:
----------------------------
-
+<p>
 This mode is useful for text highlighting. Since the preprocessor parses
 the tokens anyway, it can generate a sequence of tokens according 
 to original input without actual preprocessing. That means, that 
 given tokens always map to its original location in the input. 
 Macro expansion is not performed, and thus there are no macro 
 expanded locations.
-
+</p>
+<p>
 The output contains:
-1. Language Tokens and Separator Tokens unless replaced by higher level tokens.
-2. Directive tokens, which basically add type information to input tokens.
-3. Tokens for excluded sections in respect to conditional inclusion.
-
+</p>
+<ol>
+<li>
+ Language Tokens and Separator Tokens unless replaced by higher level tokens.
+</li><li>
+ Directive tokens, which basically add type information to input tokens.
+</li><li>
+ Tokens for excluded sections in respect to conditional inclusion.
+</li>
+</ol>
+<p>
 Text tokenizing requires 
-1. all tokens of the original input stream only (no included tokens)
-2. and their original location in the input stream.
-
+</p>
+<ol>
+<li>
+ all tokens of the original input stream only (no included tokens)
+</li><li>
+ and their original location in the input stream.
+</li>
+</ol>
+<p>
 To achieve (1), the lexer of the original input resource will
 provide TextTokenizerListener capabilities. All committed tokens
 will be forwarded to the listener.
-
+</p>
+<p>
 Regarding (2), the row and column of tokens may refer to different
 locations in respect to #line directives. But the position (see
 Location.getPosition()) will always be the original offset 
 in the input stream.
-
+</p>
+<p>
 Forwarded token instances will be identical (same memory) to the 
 tokens used by the language parser and will be enriched with
 links to symbol references identified by the parser (e.g.
 identifiers of functions will refer to the function).
+</p>
 
 
 
-
-Error Handling
-==============
-
+<h4>Error Handling</h4>
+<p>
 Error handling has to be consistent over all components 
 such as scanner, lexer, preprocessor and language parser.
-
+</p>
+<p>
 There are two strategies to handle syntax errors:
-1. Report and exit on first error.
-2. Report error and recover to proceed parsing.
-
+</p>
+<ol>
+<li>
+ Report and exit on first error.
+ </li><li>
+ Report error and recover to proceed parsing.
+</li>
+</ol>
+<p>
 The second strategy is useful in case of text highlighting 
 but almost useless otherwise. Most of the time
 errors lead to subsequent parsing errors and only the 
 first error in a file is an actual syntax error. This
 is due to the fact, that error recovery is quite complex.
 However, error handling will support both error strategies.
-
+</p>
+<p>
 Error reporting occurs in two flavours:
-1. Report to an error handler.
-2. Adding of error nodes to parse results.
+</p>
+<ol>
+<li>
+ Report to an error handler.
+ </li><li>
+ Adding of error nodes to parse results.
+ </li>
+</ol>
 
 
 
-Error Handler:
---------------
-
+<h6>Error Handler:</h6>
+<p>
 Error handler will be the component which receives error reports
 and decides whether to proceed or exit.
+</p>
 
-
-Error Reporting:
-----------------
-
+<h6>Error Reporting:</h6>
+<p>
 Any syntax error is reported to the error handler using the token,
 which caused the error and an explanatory message. The return value
 of the error handler on that report decides whether the parser aborts
 or performs error recovery and proceeds parsing.
+</p>
 
 
+<h5>Error Abort:</h5>
 
-Error Abort:
-------------
-
+<p>
 In case of an abort due to an error, the parser will immediately 
 stop parsing, discard all results and return to API callers 
 context.
+</p>
 
-
-
+<h5>
 Error Recovery:
----------------
+</h5>
 
+<p>
 Error recovery occurs only if the error handler decides to proceed
 and consists of two tasks:
-
-1. Generating error output (error node/token)
-2. Selecting a follower rule and skip to the prefix token of that rule.
-
+</p>
+<ol>
+<li>
+ Generating error output (error node/token)
+ </li><li>
+ Selecting a follower rule and skip to the prefix token of that rule.
+</li>
+</ol>
+<p>
 The easiest way to recover from an error in a language parser
 is to search for the start of the next bigger parse rule 
 such as a sentence or a statement with a prefix token set, 
 which differs significantly from other prefix token sets. 
 All tokens up to that location should be ignored, because 
 most of the time those tokens just cause false positives. 
-
+</p><p>
 The preprocessor will have to differentiate, whether the error
 occurs in a directive line or in text (e.g. macro expansion). 
 In directive lines, recovery will skip to the end of the line.
 In text (i.e. in macro invocation expressions), recovery will 
 skip to the next token only.
+</p>
 
 
+<h3>Language Parsing</h3>
 
-Language Parsing
-================
-
-
+<p>
 Minimum input for the language parser is the sequence of preprocessed 
 language tokens of the preprocessor.
-
+</p>
+<p>
 Main task of the preprocessor is to parse preprocessed tokens and
 call listeners on matching parser rules.
+</p>
+
+<h4>Output Modes:</h4>
+
+<ol>
+<li>
+Symbol Table
+</li><li>
+Text Tokenizing
+</li>
+</ol>
 
 
-Output Modes:
--------------
 
-1. Symbol Table
-2. Text Tokenizing
+<h5>Symbol Table:</h5>
 
-
-
-
-Symbol Table:
-
-
+<p>
 Symbol table is useful, to lookup symbols without having the
 text tokens.
-
+</p>
+<p>
 Requires symbol table of the preprocessor.
-
+</p>
+<p>
 Symbol Table contains declarations of all:
-- Macros
-- Functions
-- Variables
-- Types
-
+</p>
+<ul>
+<li>
+ Macros
+ </li><li>
+ Functions
+ </li><li>
+ Variables
+ </li><li>
+ Types
+</li>
+</ul>
+<p>
 Generated symbol table provides lookup of a symbol declaration
 for a given location (see above).
-
+</p>
+<p>
 Lookup has to consider macro expanded locations
+</p>
 
 
 
-
-
+<h5>
 Text Tokenizing:
+</h5>
 
-
+<p>
 Text tokenizing is useful for text highlighting in IDEs.
 Lookup of symbols is much easier, because they are already
 associated with their declaration.
-
+</p>
+<p>
 Parser receives tokenized text of the preprocessor 
 and exchanges certain tokens by higher level language 
 tokens, unknown to the language parser.
-
+</p>
+<p>
 Higher level language tokens are:
-* Language Keywords (struct, do, while, if, ...)
-* Symbol Tokens
-  - Function
-  - Variable
-  - Type
-
+</p>
+<ul>
+<li>
+ Language Keywords (struct, do, while, if, ...)
+</li><li>
+ Symbol Tokens
+ <ul>
+ <li>
+   Function
+ </li><li>
+   Variable
+ </li><li>
+   Type
+ </li>
+</ul>
+</li>
+</ul>
+<p>
 Symbol tokens (function, variable, type) are associated 
 with their declaration. The declarations provides information
 whether the symbol is a builtin symbol or not.
+</p>
 
 
 
 
-
-===========
-D E S I G N
-===========
+<h2>Design</h2>
 
 
+
+<h3>
 Preprocessor
-============
+</h3>
 
+<h4>Architecture Overview:</h4>
 
-Architecture Overview:
-----------------------
-                             Conditional Scope
-                                     |
-                                     |         Context *
-Resource Manager   <-------    Preprocessor   --------->   Parser  -->  Output Generators
-      ||                             |                       ||
-      \/*                            |                       \/1
-   Resource                    Symbol Table                 Lexer
-                                  (Macros)                   ||
-                                                             \/1
-                                                           Scanner
+<p style="text-align: center"><img alt="" src="img/pp-arch.svg"/></p>
 
-
-
+<p>
 The preprocessor controls preprocessing. It selects 
 rules and delegates parsing to them. For parsing the
 parser of the rule gets the Context object, which
 contains a Lexer, the list of Output Generators,
 the Symbol Table and the Conditional Scope.
+</p>
 
 
 
+<h4>Scanner:</h4>
 
-Scanner:
---------
-
+<p>
 Scanner reads an input stream and keeps track of 
 the location in the input stream. This includes 
 resource identifier, line, column and position 
 in the stream.
-
+</p>
+<p>
 Line and source identifier may be manipulated by 
 #line directives.
-
+</p>
+<p>
 Scanner may read lookaheads but cannot rewind consumed 
 characters.
+</p>
 
-
-
+<h5>
 Constructor:
+</h5>
+<ul>
+<li>
 - Scanner(Resource in): Creates a scanner 
   reading from the given resource. Location will be set
   to represent the -1 item in the data stream of the resource.
-
-Methods:
-  int lookahead(int n): Calculates location.pos + n and returns
+</li>
+</ul>
+<h5>Methods</h5>
+<dl>
+<dt>
+  int lookahead(int n): 
+</dt><dd>Calculates location.pos + n and returns
       that item from the stream. If the n-th item does not exist
       in the stream it returns EOF.
-  void consume(int n): Updates location: 
+</dd><dt>  void consume(int n): 
+	</dt><dd>Updates location: 
       Position is incremented by n.
       Line and column are updated considering CRLF items in the 
       stream.
-  int current(): Returns the last item consumed. If no items
+      
+</dd><dt>int current(): </dt><dd>Returns the last item consumed. If no items
       where consumed, it returns SOF. 
-  Location location(): Returns the location of the last item
+</dd><dt>Location location(): </dt><dd>Returns the location of the last item
       consumed.
-  Location nextLocation(): Returns the location of the next
+</dd><dt>Location nextLocation(): </dt><dd>Returns the location of the next
       item (lookahead(1)).
-  void setLocation(String resourceIdentifier, int line): Sets
+</dd><dt>void setLocation(String resourceIdentifier, int line): </dt><dd>Sets
       resource identifier and line of the current location. This
       affects all subsequently received values from location() 
       and nextLocation().
+</dd>
+</dl>
 
+<h4>Lexer:</h4>
 
-Lexer:
-------
-
-Lexer is context sensitive. 
-- #include requires <header.path> to be lexed as THeaderPath may contain
+<p>Lexer is context sensitive. </p>
+<ul>
+<li> #include requires &lt;header.path&gt; to be lexed as THeaderPath may contain
   items equal to prefixes of other tokens.
-- # and ## are accepted in expansion lists only.
+</li>
+<li>
+ # and ## are accepted in expansion lists only.
+</li>
+</ul>
 
 
-
-
+<p>
 Lexer uses a Scanner to transform the input in a sequence of language 
 and separator tokens on demand and for a given context.
-
+</p>
+<p>
 The lexer has a set of Lexer Rules which perform the lexical analysis
 of the input received from the scanner. 
-
+</p>
+<p>
 The location of generated tokens is received from the Scanner and can
 be influenced (e.g. by #line directives).
-
+</p><p>
 The lexer provides a method to receive the n-th lookahead token. Lookahead
 tokens are ordinary tokens, but without location attributes. For each lookahead 
 token, the lexer stores  information on their relative position (scanner lookahead) 
 and number of items read (not consumed). Location is assigned once the token
 was actually consumed. Lookahead tokens will be stored until either consumed or 
 invalidated.
-
+</p><p>
 Tokens are usually read from the scanner. To support macro expansion,
 the lexer also allows to prepend tokens to the stream of the scanner.
 Preprended tokens are stored in a queue. Certain methods behave differently,
 when prepended tokens exist in the queue: 
-- lookaheads with n<prepend.size() are read from the queue 
+</p><ul>
+<li>
+  lookaheads with n&lt;prepend.size() are read from the queue 
   directly and not stored in the lookahead queue. For 
   n >= prepend.size() , lookaheads will be handled the usual way with n = n-prepend.size().
-- consume of n < prepend.size() tokens, will remove those tokens 
+</li><li>
+ consume of n &lt; prepend.size() tokens, will remove those tokens 
   from the queue. n >= prepend.size() will be handled as usual with n = n-prepend.size().
-- setLocation is inactive until prepend.isEmpty() and will cause 
+</li><li>
+ setLocation is inactive until prepend.isEmpty() and will cause 
   an assertion error to indicate an invalid state.
-- isEmpty has to consider the prepended tokens as well.
+</li><li>
+ isEmpty has to consider the prepended tokens as well.
+</li>
+</ul>
 
 
+<h5>Constructor:</h5>
 
-Constructor:
-
+<ul><li>
 - Lexer(Scanner in): Creates a Lexer wich reads from the given scanner.
+</li></ul>
 
-
-
+<h5>
 Methods:
-- void  setLocation(String resourceIdentifier, int line):
+</h5>
+<dl><dt>
+ void  setLocation(String resourceIdentifier, int line):</dt><dd>
         Changes the current location according to the given
         resourceIdentifier and line.
-- Token current(): Returns the last token, which was consumed or null
+</dd><dt>
+ Token current():</dt><dd> Returns the last token, which was consumed or null
         if there is no such token.
-- Token lookahead(int n): Returns the n-th lookahead token which is either
+</dd><dt>
+ Token lookahead(int n):</dt><dd> Returns the n-th lookahead token which is either
         received from the prepend queue, the lookahead queue or from a
         lexer rule.
-- void  consume(int n): Consumes either the first n lookahead tokens and assigns
+</dd><dt>
+ void  consume(int n):</dt><dd> Consumes either the first n lookahead tokens and assigns
 		a proper location to them using scanner.location() or returns 
 		prepended tokens.
-- void  prepend(List<Token> tokens): Adds the given tokens to the prepend queue. 
-- boolean isEmpty(): Checks the prepend queue and the scanner and returns 
+</dd><dt>
+ void  prepend(List&lt;Token&gt; tokens): </dt><dd>Adds the given tokens to the prepend queue. 
+</dd><dt>
+ boolean isEmpty():</dt><dd> Checks the prepend queue and the scanner and returns 
         true if no more tokens are available.
-- void  setLocation(String resourceIdentifier, int line): Forwards
+</dd><dt>
+ void  setLocation(String resourceIdentifier, int line):</dt><dd> Forwards
         this call to the scanner.
+</dd></dl>
 
-
+<p>
 Method prepend is meant to be used in macro expansion to prepend
 the tokens of the expansion list to the front of the queue.
+</p>
 
 
-Lexer Rule:
------------
-
+<h4>Lexer Rule:</h4>
+<p>
 A Lexer Rule provides methods to perform lexical analysis on 
 given input (Scanner) and generate lookahead tokens. Lexer rules are
 independent of each other and not context sensitive.
-
+</p>
+<p>
 Generated lookahead tokens do not have a location.
-
+</p>
+<p>
 Lexer rules are supposed to be derived from a common base class
 LexerRule.
+</p>
 
-
+<h5>
 Constructor:
+</h5>
+<ul><li>
 - LexerRule(): Creates a lexer rule.
+</li></ul>
 
-Methods:
-- LookaheadToken analyse(Scanner in, int start): 
+<h5>Methods:</h5>
+<dl>
+<dt>LookaheadToken analyse(Scanner in, int start): </dt><dd>
         Checks whether the next characters beginning at start match
         its own prefix characters, parses accordingly and creates one
 		token which is returned to the caller. If there is no match
 		with the prefix tokens, it returns null. If parsing failed,
 		it creates an error token containing the error message.
+</dd></dl>
 
-
-Lookahead Token:
-----------------
-
+<h5>Lookahead Token:</h5>
+<p>
 Stores information about a lookahead token using the following attributes:
-- int start: Scanner lookahead of the first item used.
-- int length: Number of scanned items used.
-- Token token: Result of the lexical analysis. 
+</p>
+<ul>
+<li>
+ int start: Scanner lookahead of the first item used.
+ </li><li>
+ int length: Number of scanned items used.
+ </li><li>
+ Token token: Result of the lexical analysis. 
+</li></ul>
 
 
 
+<h4>FilteringLexer:</h4>
 
-FilteringLexer:
----------------
-
+<p>
 A filtering lexer is used to filter tokens received from another lexer.
-
+</p>
+<p>
 Token filter have the same methods as the Lexer.
+</p>
 
-Constructor:
-- TokenFilter(Lexer lexer, FilterCallback filter):
+<h5>Constructor:</h5>
+<dl><dt>
+ TokenFilter(Lexer lexer, FilterCallback filter):</dt><dd>
 	Creates a token
+	</dd>
+</dl>
 
-Methods:
-- Token current(): returns the token, which was last consumed.
-- Token lookahead(int n): Returns the n-th token of the lexer, which 
+<h5>Methods:</h5>
+<dl><dt>
+ Token current():</dt><dd> returns the token, which was last consumed.
+</dd><dt> Token lookahead(int n): </dt><dd>Returns the n-th token of the lexer, which 
         does not match the filtered token types.
-- void consume(int n): Consumes all first tokens of the lexer
+</dd><dt>void consume(int n):</dt><dd> Consumes all first tokens of the lexer
        (including filtered tokens), until the n-th non-filtered token
        was consumed.
+</dd></dl>
 
 
 
+<h4>ParserRule:</h4>
 
-ParserRule:
------------
-
+<p>
 A parser rule implements a given parser rule. It is responsible to parse
 tokens of a Lexer according to its rule and based
 on the given context. It reports syntax errors to the error handler,
 reports results to its listeners and updates the context 
 (symbol table, conditional scope).
-
-
+</p>
+<p>
 There are parsers for the following rules:
-* Text: Parses lines of text and triggers macro expansion.
-* Directive: Parses directive lines. Parsers of directives are further 
+</p>
+<ul><li>
+ Text: Parses lines of text and triggers macro expansion.
+</li><li> 
+ Directive: Parses directive lines. Parsers of directives are further 
   subdivided in:
-  - #define
-  - #undef
-  - #if
-  - #ifdef
-  - #ifndef
-  - #elif
-  - #else
-  - #endif
-  - #pragma
-  - #version
-  - #extension
-  - #line
-  - #include
+  <ul><li>
+   #define
+  </li><li>
+   #undef
+  </li><li>
+   #if
+  </li><li>
+   #ifdef
+  </li><li>
+   #ifndef
+  </li><li>
+   #elif
+  </li><li>
+   #else
+  </li><li>
+   #endif
+  </li><li>
+   #pragma
+  </li><li>
+   #version
+  </li><li>
+   #extension
+  </li><li>
+   #line
+  </li><li>
+   #include
+  </li></ul>
+</li></ul>
 
 
 
-Parser Listeners
-----------------
+<h4>Parser Listeners</h4>
 
+<p>
 Parser listeners generate output of parser rules.
-
-- [mandatory] PPOutputSink receives generated preprocessor output tokens
-- [optional]  TextTokenizerListener receives tokens of the original input
-
-
-
-Tasks Affecting Lexing and Parsing
-----------------------------------
-
-- Macro Argument Expansion
-- Macro Expansion
-- Line
-- Include
-- Condition Parsing
+</p>
+<ul><li>
+ [mandatory] PPOutputSink receives generated preprocessor output tokens
+ </li><li>
+ [optional]  TextTokenizerListener receives tokens of the original input
+</li></ul>
 
 
+<h4>Tasks Affecting Lexing and Parsing</h4>
+
+<ul>
+<li>
+ Macro Argument Expansion
+</li><li>
+ Macro Expansion
+</li><li>
+ Line
+</li><li>
+ Include
+</li><li>
+ Condition Parsing
+</li></ul>
 
 
-Macro Argument Expansion:
 
 
+<h4>Macro Argument Expansion:</h4>
+
+<p>
 Tokens of the argument will be given to a private lexer, and then 
 presented to a Text parser for expansion. Result of the text parser
 will be captured using a different output sink.
+</p>
 
 
 
+<h4>Macro Expansion:</h4>
 
-Macro Expansion:
 
-
+<p>
 Iterates through the expansion list and 
-1. Expands arguments for parameter references if required (see above).
-2. Applies operators to retrieve their result token.
-3. Copies each token and assigns a macro expanded location.
-
+<ol><li>
+ Expands arguments for parameter references if required (see above).
+</li><li>
+ Applies operators to retrieve their result token.
+</li><li>
+ Copies each token and assigns a macro expanded location.
+</li></ol>
+<p>
 Assigned macro expanded locations are copies of the given location in macro definition
 with the macro invocation expression added.
-
+</p><p>
 Locations of tokens generated by operators # and ## refer to the locations of the involved
 parameter references in the replacement list.
-
+</p><p>
 The concatenated tokens will be presented to a private Text lexer to 
 generate a joined token. If there is no match to any of the regular
 text token rules, it is replaced by an error token and the error will be reported.
+</p>
 
+<h4>Condition Parsing:</h4>
 
-Condition Parsing:
-
-
+<p>
 Subsequent tokens to #if or #elif upto CRLF/EOF will be presented to a Text 
 parser for expansion, before it gets parsed into an expression. 
 The text parser usually forwards a sequence of output tokens 
@@ -949,126 +1317,172 @@ next CRLF/EOF. So the received tokens are the tokens of the
 remainder of the line. The received tokens then will be added to a private lexer,
 which is used to parse the expression. If the lexer is not empty after the expression
 was fully consumed, it indicates an expression error "unexpected tokens".
+</p>
 
 
+<h4>Include:</h4>
 
-Include:
-
-
+<p>
 Includes require preprocessing the entire content of another file using the current
 preprocessor state (symbol table, scope, etc.).
+</p>
 
+<p>
 Includes will instantiate a new lexer and scanner and call process() on the preprocessor.
 When the process() method returns, it resets to the previous lexer.
+</p>
 
 
+<h4>Line Directive</h4>
 
-Line Directive
-
-
+<p>
 Line directives may change line and source identifier of all locations of subsequent tokens 
 only of the resource, where they occurred. This does not affect macro expanded tokens.
-
+</p><p>
 Execution of a line directive involves a call to lexer.setLocation().
+</p>
 
 
 
-
-Error Handling
-==============
+<h4>Error Handling</h4>
 
 
-Modes:
-- Dismiss and exit: Error handler throws a SyntaxError exception. 
-- Recover and proceed: Error handler does not throw an exception.
+
+<p>Modes:</p>
+<ul><li>
+ Dismiss and exit: Error handler throws a SyntaxError exception. 
+ </li><li>
+ Recover and proceed: Error handler does not throw an exception.
+ </li></ul>
 
 
-Error Types:
-------------
+<p>Error Types:</p>
 
+<table border="1">
+<tr>
+<th>Error Type</th>     <th>Reference</th>              <th>Explanation</th>
+</tr>
+<tr>
+<th>Lexer Errors:</th>
+</tr>
+<tr>
+<td>Missing item inside token</td><td>Location        </td><td>(such as end terminator of strings)</td>
+</tr><tr>
+<td> Wrong item inside token</td><td>Location         </td><td>(such as a non-existing escape sequence in strings)</td>
+</tr><tr>
+<td>Unknown prefix-items </td><td>Token               </td><td>(any character, which does not exist in the language)</td>
+</tr><tr>
 
-Error Type                  Reference                   Explanation
+<th>Parser Errors:</th>
+</tr><tr>
+<td>Missing token        </td><td>previous.end        </td><td>(a different token was expected such as TPunctuator instead of TEof)</td>
+</tr><tr>
+<td>Unexpected token     </td><td>Token               </td><td>(such as tokens after a conditional expression)</td>
+</tr><tr>
+<td>Unknown Token        </td><td>Token               </td><td>(received from lexer due to unknown prefix items)</td>
+</tr>
+</table>
 
-Lexer Errors:
-- Missing item inside token Location                    (such as end terminator of strings)
-- Wrong item inside token   Location                    (such as a non-existing escape sequence in strings)
-- Unknown prefix-items      Token                       (any character, which does not exist in the language)
+<h4>Error Handling Options:</h4>
 
-Parser Errors:
-- Missing token             previous.end                (a different token was expected such as TPunctuator instead of TEof)
-- Unexpected token          Token                       (such as tokens after a conditional expression)
-- Unknown Token             Token                       (received from lexer due to unknown prefix items)
-
-
-Error Handling Options:
------------------------
-Lexer: 
+<p>Lexer:</p>
+<p> 
 Missing or wrong items only occur inside already identified tokens. 
+</p>
+<ul><li>
 - Report error location inside token and proceed normally, emitting a regular token.
+</li></ul>
+<p> 
 Unkown prefix-items have to be emitted as TUnknown tokens, derived from TWhitespace. 
+</p>
+<ul><li>
 - Report unknown token error and emit unknown token.
-
+</li></ul>
+<p>
 None of the lexer errors is supposed to affect the parser. 
+</p>
 
-
-Parser:
+<p>Parser:</p>
+<ul><li>
 - TUnknown tokens will be handled as whitespace to not interfere 
 with parser rules and to not cause redundant error reports. 
-
-
+</li></ul>
+<p>
 Missing and unexpected tokens can be recovered in this way:
+</p>
+<ul><li>
 - report, consume all tokens up to the next safe point (e.g. CRLF) and exit rule
-
+</li></ul>
+<p>
 Recovery from missing tokens may also jump to the next token, but risks 
 to get into follow-up errors and false-positives or redundant error reporting. 
 Thus, skipping to the next safe point is more beneficial.
+</p>
 
-Implementation:
----------------
+<h5>Implementation:</h5>
 
+<dl><dt>
 Lexer error handling:
+</dt><dd>
 method syntaxError() reports to handler only. If the handler decides to 
 throw an exception, preprocessing will exit immediately without any 
 results. 
-
+</dd><dt>
 Parser error handling:
+</dt><dd>
 Method syntaxError() reports to handler and throws a Recovery exception
 unless the handler already threw a syntax error exception (which always
 causes a stop).
+</dd><dd>
 A Recovery exception has to be handled inside of the parser rule, which 
 issued the call to syntaxError(). General recovery method for every
 parser will be to read all remaining tokens up to and including the next
 CRLF and exit the rule without result. Depending on the rule, read tokens
 will eventually be forwarded to output, but not parsed or interpreted.
+</dd></dl>
 
 
-
-GLSL Versioning
-===============
+<h4>GLSL Versioning</h4>
 
 
+<p>
 Max supported version can be queried via 
-
+<pre>
    glGetStringi(GL_SHADING_LANGUAGE_VERSION)
-
+</pre>
+<p>
 Each GLSL version has a set of unique properties:
-
-- keywords
-- reserved keywords
-- builtin types
-- builtin functions
-- builtin variables
-
+</p>
+<ul><li>
+ keywords
+ </li><li>
+ reserved keywords
+ </li><li>
+ builtin types
+ </li><li>
+ builtin functions
+ </li><li>
+ builtin variables
+</li></ul>
+<p>
 All GLSL versions have a set of common properties:
-- punctuator tokens
-- builtin macros (__FILE__, __LINE__, __VERSION__)
-
+</p>
+<ul><li>
+ punctuator tokens
+ </li><li>
+ builtin macros (__FILE__, __LINE__, __VERSION__)
+</li></ul>
+<p>
 This results in a set of version specific tokens and symbols, which are 
 stored in instances of those two classes:
-- TokenTable maps preprocessed tokens to language parser token types.
-- SymbolTable maps identifier tokens to builtin symbols (i.e. macros
+</p>
+<ul><li>
+ TokenTable maps preprocessed tokens to language parser token types.
+ </li><li>
+ SymbolTable maps identifier tokens to builtin symbols (i.e. macros
   types, functions and variables).
-
+</li></ul>
+<p>
 Both are required in different stages of the translation process 
 (preprocessing and language parsing). 
 TokenTable is used by the PPOutputSink, which converts received 
@@ -1076,7 +1490,7 @@ tokens into language parser tokens.
 SymbolTable is used by the preprocessor to identify builtin macros
 and by the language parser to identify builtin types, functions and
 variables.
-
+</p><p>
 Maintenance should be kept simple to allow simple adaption to new versions. 
 It is common practice to use the capabilities of a compiler to declare 
 all builtin symbols using the
@@ -1084,98 +1498,150 @@ language itself. Thus, the builtin table will be initialised with glsl
 source code, which contains all declaration statements and #define
 directives of that version, which will be called 'preamble'. The 
 only exception are scalar builtin types (int, float, bool etc. and void).
-
+</p><p>
 Parsing of the preamble requires a few preconditions:
-
-- A fresh SymbolTable filled with scalar builtin types and common builtin macros.
-- An isolated preprocessor and language parser
-- No user level listeners (no user level output sink or error handler (all errors are internal errors))
-- Builtin symbols have to be distinguishable from user declared symbols, which will be implemented as flag.
-
+</p>
+<ul><li>
+ A fresh SymbolTable filled with scalar builtin types and common builtin macros.
+ </li><li>
+ An isolated preprocessor and language parser
+ </li><li>
+ No user level listeners (no user level output sink or error handler (all errors are internal errors))
+ </li><li>
+ Builtin symbols have to be distinguishable from user declared symbols, which will be implemented as flag.
+ </li></ul>
+<p>
 All language tokens recognised by the language parser have a specific mapping to a language parser token
 type. The TokenTable just has to decide, which language tokens are actually used as keywords, reserved 
 keywords or builtin types. The latter will be identified using the builtin symbol table.
+</p>
 
+<h5>Implementation:</h5>
 
-Implementation:
----------------
-
+<p>
 Valid language tokens are split into keywords and reserved keywords. For each version there will be two
 files, which contain each a whitespace separated list of (reserved) keywords of that version. All token
-locations of the preamble will have a special source identifier (<0) to differentiate them from user 
+locations of the preamble will have a special source identifier (&lt;0) to differentiate them from user 
 source code.
-
+</p>
+<p>
 The preamble contains #define directives and declarations of builtin symbols.
-
+</p>
+<p>
 For each version X exists:
-- versioning/X/keywords.txt  (keywords)
-- versioning/X/reserved.txt  (reserved keywords)
-- versioning/X/preamble.glsl (builtin symbols)
+</p>
+<ul><li>
+ versioning/X/keywords.txt  (keywords)
+</li><li>
+ versioning/X/reserved.txt  (reserved keywords)
+</li><li>
+ versioning/X/preamble.glsl (builtin symbols)
+</li></ul>
 
+<p>
 Usual builtin macros such as __VERSION__, GL_compatibility_profile, etc. will be added to the preamble.glsl.
-
+</p>
+<p>
 Special builtin macros such as __LINE__ and __FILE__ require a specific implementation and will be 
 added by the preprocessor.
+</p>
+
+<h3>Extensions</h3>
 
 
-Extensions
-==========
-
-
-Overview
---------
+<h4>Overview</h4>
+<p>
 Extensions are generally extensions to a specific version of the GLSL specification, 
 but they may support even previous versions, if the required features are available 
 (e.g. through other extensions).
-
+</p>
+<p>
 Extensions may define additional features for glsl:
-	- Keywords
-	- Language rules (preprocessor or parser)
-	- Types
-	- Macros
-	- Functions
-	- Variables
+</p>
+<ul><li>
+	 Keywords
+	</li><li>
+	 Language rules (preprocessor or parser)
+	</li><li>
+	 Types
+	</li><li>
+	 Macros
+	</li><li>
+	 Functions
+	</li><li>
+	 Variables
+	</li>
+</ul>
 	
-Extensions have dependencies on features of
-	- A specific range of GLSL version, profile and hardware combinations
-	- Other extensions
-	- A set of extension out of a group of equivalent extensions 
+<p>Extensions have dependencies on features of</p>
+<ul><li>
+	 A specific range of GLSL version, profile and hardware combinations
+	 </li><li>
+	 Other extensions
+	 </li><li>
+	 A set of extension out of a group of equivalent extensions 
 	  and/or extension sets, which can be mutually exclusive.
+</li></ul>
 
+<p>
 Extensions may conflict with
-	- A specific range of GLSL version and profile combinations
-	- Other extensions
-	- Certain compiler (hardware/software)
-
+</p>
+<ul><li>
+	 A specific range of GLSL version and profile combinations
+	</li><li>
+	 Other extensions
+	</li><li>
+	 Certain compiler (hardware/software)
+</li></ul>
+<p>
 Due to the fact, that equivalent extensions can be mutually exclusive 
 a specific GLSL version and profile can have multiple sets of valid
 extension combinations. This is the reason, why the preprocessor
-directive 
+directive </p>
+<pre>
   #extension all : enable
+</pre>
+<p>
 is invalid.
-
+</p>
+<p>
 The hardware provides a list of _all_ extensions supported by it. 
+</p>
+<pre>
 	 int num = glGetIntegerv(GL_NUM_EXTENSIONS)
 	 glGetStringi(GL_EXTENSIONS, index)
+</pre>
 
-
+<p>
 Before loading an extension, the following requirements have to be checked:
-- GLSL version and profile (min/max versions and list of supported profiles)
-- Availability (list of all supported extensions of this compiler)
-- Conflicts    (list of conflicting extensions)
-- Dependencies (list of extensions and groups of equivalent extensions)
-
+</p>
+<ul><li>
+ GLSL version and profile (min/max versions and list of supported profiles)
+</li><li>
+ Availability (list of all supported extensions of this compiler)
+</li><li>
+ Conflicts    (list of conflicting extensions)
+</li><li>
+ Dependencies (list of extensions and groups of equivalent extensions)
+</li></ul>
+<p>
 If one of the above requirements is not met, the load gets aborted, 
 warning is reported and the translation continues.
+</p>
 
-Ignoring Extension Disable Directives
--------------------------------------
+<h4>Ignoring Extension Disable Directives</h4>
+<p>
 We are interested only in extensions which modify/extend GLSL. 
 Those modifications are mainly introductions of new:
-- keywords
-- builtin symbols (types, functions, variables)
-- language rules
-
+</p>
+<ul><li>
+ keywords
+</li><li>
+ builtin symbols (types, functions, variables)
+</li><li>
+ language rules
+</li></ul>
+<p>
 In respect to the main goals of this project, 'disabling' extensions
 isn't really a critical feature.  An extension can be enabled only,
 if it is supported by the current compiler state. Once enabled, the  
@@ -1186,56 +1652,59 @@ keep track of state changes and dependencies between loaded extensions.
 The extension has to enabled/disabled during preprocessor and parser run. 
 Both are currently separate, and the parser would require to know, at which
 locations in the sequence of received tokens extensions got enabled or disabled.
-
+</p>
+<p>
 Since the main goal is to support parsing (not validating) the code, 
 there is no real benefit in implementing this functionality. Thus (for now), 
 extensions that have been enabled, will never been disabled, and the features 
 of the extension will stay available to user level code. A vendor specific
 GLSL compiler or the Khronos reference implementation can be used, to actually
 validate the syntax.
+</p>
+
+<h5>Concept:</h5>
 
 
-Concept:
---------
-
-
+<p>
 Extension States:
+</p>
+<p style="text-align: center"><img src="img/extension-states.svg"/></p>
+<ul><li>
+ Available: The extension's name is known and it is listed as 'supported' by the compiler.
+ </li><li>
+ Loaded: The extension has been successfully integrated in the current compiler state but is disabled.
+ </li><li>
+ Enabled: Extension was enabled through #extension directive
+ </li><li>
+ Unloaded: Extension has been removed from the current compiler state.
+ </li></ul>
 
-- Available: The extension's name is known and it is listed as 'supported' by the compiler.
-- Loaded: The extension has been successfully integrated in the current compiler state but is disabled.
-- Enabled: Extension was enabled through #extension directive
-- Unloaded: Extension has been removed from the current compiler state.
-
-
-                  ==========================
-                 ||                        ||
-                 ||                        \/
-Available ===> Loaded ===> Enabled ===> Unloaded
-                 /\           ||
-                 ||           ||
-                  =============
-
-An extension can be loaded only if it is known and supported.
-- Known: The extension name is known and there is an implemented procedure to load it.
-- Loaded: The preprocessor has at some point processed an #extension directive related 
-		  to the extension with behaviour 'enable' or 'require'. 
-Once loaded, an extension can be enabled.
-All successfully loaded extensions stay in the compiler global state until unloaded.
-Thus, an enabled extension will return to 'Loaded' when disabled.
+<p>
+An extension can be loaded only if it is known and supported (<i>Available</i>). 
+This means, the extension name is known and there is an implemented procedure to load it. 
+An extension is <i>loaded</i>, if the preprocessor has at some point processed an #extension 
+directive related to the extension with behaviour 'enable' or 'require'. 
+Once loaded, an extension can be <i>enabled</i>.
+All successfully loaded extensions stay in the compiler global state until <i>unloaded</i>.
+Thus, an enabled extension will return to <i>Loaded</i> when disabled.
 All extensions will be unloaded once the compiler run is finished.
+</p>
 
 
-
-Implementation
---------------
-
-Extensions will be declared by a set of files in a directory <extension-name>, 
+<h5>Implementation</h5>
+<p>
+Extensions will be declared by a set of files in a directory &lt;extension-name&gt;, 
 equivalent to the files for profiles:
-- <extension-name>/properties.json : mainly a set of requirements (dependencies on other extensions).
-- <extension-name>/preamble.glsl : all declared GLSL symbols.
-
+</p>
+<ul><li>
+ &lt;extension-name&gt;/properties.json : mainly a set of requirements (dependencies on other extensions).
+ </li><li>
+ &lt;extension-name&gt;/preamble.glsl : all declared GLSL symbols.
+</li></ul>
+<p>
 Properties file has the following content:
-
+</p>
+<pre>
 {
 	"names" : ["GL_EXT_example"],         // name strings of the extension (may have more than one)
 	"prefix" : "EXT",                     // extension's prefix      (classifies extensions)
@@ -1268,34 +1737,60 @@ Properties file has the following content:
 		"EXT_conflict2"
 	]
 }
+</pre>
 
-
-
-				- requires list of available extensions from user (or compiler)
-				- allow to create list of all known extensions
-				- allow to accept any extension
-				- every extension has in GLSL
-				  - a GL_<extension_name> macro variable set to 1
-				  - its vendor specific range of supported GLSL versions
-				  - possibly a set of additional keywords         (keywords.txt)
-				  - possibly a set of additional extension symbols (preamble.glsl)
-				- extensions can be dynamically loaded and unloaded (enable/disable)
-				- files of extensions will be stored in directory builtins/extensions/
-				  - no version required!
-				  - user can add a path to look for extensions
-
-				- support for known extensions
-				  - allow to check availability based on given availability list 
-				  - add its keywords to builtin keyword table
-				  - add extension symbol table to builtin symbol table
-				  - allow disabling in glsl which then removes its 
-				    extension symbol table from builtin symbol-table 
-				- basic support for unknown extensions in the availability list:
-				  - report warning about unknown extension (may be ignored on higher level)
-				  - enable/disable and add/remove extension symbol table with macro variable only
-				- error strategy for unknown extensions
-				  - report error
-
-
-
-
+<ul>
+	<li>
+	 requires list of available extensions from user (or compiler)
+	</li><li>
+	 allow to create list of all known extensions
+	</li><li>
+	 allow to accept any extension
+	</li><li>
+	 every extension has in GLSL
+	  <ul><li>
+	   a GL_&lt;extension_name/&gt; macro variable set to 1
+	  </li><li>
+	   its vendor specific range of supported GLSL versions
+	  </li><li>
+	   possibly a set of additional keywords         (keywords.txt)
+	  </li><li>
+	   possibly a set of additional extension symbols (preamble.glsl)
+	  </li></ul>
+	</li><li>
+	 extensions can be dynamically loaded and unloaded (enable/disable)
+	</li><li>
+	 files of extensions will be stored in directory builtins/extensions/
+	  <ul><li>
+	   no version required!
+	  </li><li>
+	   user can add a path to look for extensions
+	  </li></ul>
+	</li><li>
+	 support for known extensions
+	  <ul><li>
+	   allow to check availability based on given availability list 
+	  </li><li>
+	   add its keywords to builtin keyword table
+	  </li><li>
+	   add extension symbol table to builtin symbol table
+	  </li><li>
+	   allow disabling in glsl which then removes its 
+	    extension symbol table from builtin symbol-table 
+	  </li></ul>
+	</li><li>
+	 basic support for unknown extensions in the availability list:
+	  <ul><li>
+	   report warning about unknown extension (may be ignored on higher level)
+	  </li><li>
+	   enable/disable and add/remove extension symbol table with macro variable only
+	  </li></ul>
+	</li><li>
+	 error strategy for unknown extensions
+	  <ul><li>
+	   report error
+	  </li></ul>
+	</li>
+</ul>
+	</body>
+</html>
